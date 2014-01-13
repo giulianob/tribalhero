@@ -52,7 +52,7 @@ namespace Game.Comm
 
         #endregion
 
-        public abstract bool Write(Packet packet);
+        public abstract void Write(Packet packet);
 
         public void CloseSession()
         {

@@ -57,6 +57,11 @@ namespace Game.Module
             chatPacket.AddString(playerName);
             chatPacket.AddString(message);
 
+            if (logger.IsDebugEnabled)
+            {
+                logger.Debug("Sending chat to {0} players", channel.SubscriberCount(channelName));
+            }
+
             channel.Post(channelName, chatPacket);
         }
 

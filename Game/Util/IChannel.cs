@@ -5,6 +5,8 @@ namespace Game.Util
 {
     public interface IChannel
     {
+        int SubscriberCount(string channelId);
+
         void Post(string channelId, Packet message);
 
         void Post(string channelId, Func<Packet> message);

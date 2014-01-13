@@ -170,10 +170,9 @@ namespace Game.Comm
                     return;
                 }
 
-                if (logger.IsDebugEnabled)
+                if (dcSession.Player != null)
                 {
-                    var player = dcSession.Player;
-                    logger.Debug("Socket disconnect IP[{0}] player[{1}]", dcSession.Name, player != null ? player.Name : "N/A");
+                    logger.Info("Player disconnect {0}(1) IP: {2}", dcSession.Player.Name, dcSession.Player.PlayerId, dcSession.Name);
                 }
 
                 sessions.Remove(s);

@@ -48,6 +48,25 @@ namespace Game.Util
 
         #region Methods
 
+        public int SubscriberCount(string channelId)
+        {
+            channelLock.EnterReadLock();
+            try
+            {
+                List<Subscriber> subscribers;
+                if (!subscribersByChannel.TryGetValue(channelId, out subscribers))
+                {
+                    return 0;
+                }
+
+                return subscribers.Count;
+            }
+            finally
+            {
+                channelLock.ExitReadLock();
+            }
+        }
+
         public void Post(string channelId, Packet message)
         {
             Post(channelId, () => message);

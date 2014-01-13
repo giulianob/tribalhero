@@ -19,7 +19,7 @@ namespace Game.Comm
 
         public Socket Socket { get; private set; }
 
-        public override bool Write(Packet packet)
+        public override void Write(Packet packet)
         {
             lock (writeLock)
             {
@@ -51,12 +51,17 @@ namespace Game.Comm
                         {
                             try
                             {
+                                if (Logger.IsDebugEnabled)
+                                {
+                                    Logger.Debug(e, "Socket would block. Setting it to blocking and trying again {0} {1}", Name);
+                                }
+
                                 Socket.Blocking = true;
                             }
                             catch(SocketException e2)
                             {
                                 Logger.Warn(e, "Socket unhandled exception when trying to block {0} {1}", e2.SocketErrorCode, e2.Message);
-                                return false;
+                                return;
                             }
                             catch(Exception e2)
                             {
@@ -66,26 +71,29 @@ namespace Game.Comm
                             continue;
                         }
 
-                        if (e.SocketErrorCode == SocketError.TimedOut)
+                        if (e.SocketErrorCode == SocketError.ConnectionReset || e.SocketErrorCode == SocketError.TimedOut)
                         {
-                            Logger.Debug(e, "Socket send timed out packetLength[{0}] ", packetBytes.Length);
+                            if (Logger.IsDebugEnabled)
+                            {
+                                Logger.Debug(e, "Socket error handled packetLength[{0}] socketErrorCode[{1}]", packetBytes.Length, e.SocketErrorCode);
+                            }
                         }
                         else
                         {
                             Logger.Warn(e, "Socket exception with unhandled error {0} {1}", e.SocketErrorCode, e.Message);
                         }
 
-                        return false;
+                        return;
                     }
                     catch(ObjectDisposedException)
                     {
                         // This exception happens if the client disconnects and we shut down the socket but then still try to send data
-                        return false;
+                        return;
                     }
                     catch(Exception e)
                     {
                         Logger.Warn(e, "Unhandled exception when trying to send data to socket {0}", e.Message);
-                        return false;
+                        return;
                     }
                 }
 
@@ -100,8 +108,6 @@ namespace Game.Comm
                 {
                     Logger.Warn(e, "Failed to reset socket blocking status");
                 }
-                
-                return totalBytesSent == packetBytes.Length;
             }
         }
     }

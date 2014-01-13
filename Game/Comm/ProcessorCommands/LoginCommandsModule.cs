@@ -223,7 +223,7 @@ namespace Game.Comm.ProcessorCommands
                 //If it's a new player then add him to our session
                 if (newPlayer)
                 {
-                    logger.Info(string.Format("Creating new player {0}({1})", playerName, playerId));
+                    logger.Info(string.Format("Creating new player {0}({1}) IP: {2}", playerName, playerId, session.Name));
 
                     player = new Player(playerId, SystemClock.Now, SystemClock.Now, playerName, string.Empty, playerRights, sessionId);
 
@@ -235,10 +235,11 @@ namespace Game.Comm.ProcessorCommands
                 }
                 else
                 {
-                    logger.Info(string.Format("Player login in {0}({1})", player.Name, player.PlayerId));
 
                     player.Name = playerName;
                 }
+
+                logger.Info(string.Format("Player login in {0}({1}) IP: {2}", player.Name, player.PlayerId, session.Name));
             }
 
             locker.Lock(player).Do(() =>

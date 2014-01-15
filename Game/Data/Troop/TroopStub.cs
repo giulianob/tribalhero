@@ -578,6 +578,11 @@ namespace Game.Data.Troop
 
         public override void AddUnit(FormationType formationType, ushort type, ushort count)
         {
+            if (count <= 0)
+            {
+                return;
+            }
+
             lock (objLock)
             {
                 IFormation formation;

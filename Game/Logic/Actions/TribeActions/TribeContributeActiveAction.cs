@@ -181,9 +181,13 @@ namespace Game.Logic.Actions
                     return;
                 }
 
-                if (city == null || tribe == null)
+                if (tribe == null || city == null)
                 {
-                    RefundResource(city);
+                    if (city != null)
+                    {
+                        RefundResource(city);
+                    }
+
                     StateChange(ActionState.Failed);
                     return;
                 }

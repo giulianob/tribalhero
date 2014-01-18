@@ -67,5 +67,9 @@ namespace Game.Data
 
         AchievementList Achievements { get; }
         bool SoundMuted { get; set; }
+
+        DateTime? HasTwoFactorAuthenticated { get; set; }
+
+        string TwoFactorSecretKey { get; set; }
     }
 }

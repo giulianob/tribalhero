@@ -102,6 +102,7 @@ namespace Game.Comm.ProcessorCommands
             string playerName;
             string playerPassword = string.Empty;
             uint playerId;
+            string twoFactorSecretKey = null;
             bool banned = false;
             var achievements = new List<Achievement>();
             
@@ -162,6 +163,7 @@ namespace Game.Comm.ProcessorCommands
 
                 playerId = uint.Parse(response.Data.player.id);
                 playerName = response.Data.player.name;
+                twoFactorSecretKey = response.Data.player.two_factor_secret_key;
                 banned = int.Parse(response.Data.player.banned) == 1;
                 playerRights = (PlayerRights)Int32.Parse(response.Data.player.rights);
 
@@ -260,6 +262,8 @@ namespace Game.Comm.ProcessorCommands
 
                 // Setup session references
                 session.Player = player;
+                player.HasTwoFactorAuthenticated = null;
+                player.TwoFactorSecretKey = twoFactorSecretKey;
                 player.Session = session;
                 player.SessionId = sessionId;
                 player.Rights = playerRights;

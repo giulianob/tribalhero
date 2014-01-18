@@ -181,5 +181,14 @@ namespace Game.Comm
 
             return MakeCall("player", "give_achievement", parms);
         }
+
+        public static ApiResponse ResetAuthCode(string name)
+        {
+            var parms = new List<KeyValuePair<string, string>>
+            {
+                    new KeyValuePair<string, string>("name", name)
+            };
+            return MakeCall("player", "reset_auth_code", parms);
+        }
     }
 }

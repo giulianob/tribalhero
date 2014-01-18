@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Game.Data;
+using Game.Setup;
 using Game.Util;
 using Ninject.Extensions.Logging;
 
@@ -51,6 +52,15 @@ namespace Game.Comm
             if (!commands.TryGetValue(cmd, out cmdWorker) || cmdWorker.RightsRequired > session.Player.Rights)
             {
                 return "Command not found";
+            }
+
+            if (Config.database_load_players &&
+                cmdWorker.RightsRequired > PlayerRights.Basic &&
+                cmd != "auth" &&
+                (session.Player.HasTwoFactorAuthenticated == null ||
+                 SystemClock.Now.Subtract(session.Player.HasTwoFactorAuthenticated.Value).TotalHours > 1))
+            {
+                return "You must first authenticate as a moderator by using the '/auth' command. If you have not yet set up your account for moderator authentication, visit http://tribalhero.com/mod/players/generate_auth_code";
             }
 
             var result = cmdWorker.Function(session, CmdParserExtension.SplitCommandLine(parms).ToArray());

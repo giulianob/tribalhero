@@ -172,6 +172,8 @@ namespace Game.Comm
 
                 if (dcSession.Player != null)
                 {
+                    dcSession.Player.HasTwoFactorAuthenticated = null;
+
                     logger.Info("Player disconnect {0}(1) IP: {2}", dcSession.Player.Name, dcSession.Player.PlayerId, dcSession.Name);
                 }
 

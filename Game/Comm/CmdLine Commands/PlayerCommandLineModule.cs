@@ -13,6 +13,7 @@ using Game.Module.Remover;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
+using Game.Util.TwoFactor;
 using NDesk.Options;
 using Persistance;
 
@@ -71,7 +72,9 @@ namespace Game.Comm
 
         public override void RegisterCommands(CommandLineProcessor processor)
         {
-            processor.RegisterCommand("playerinfo", Info, PlayerRights.Moderator);
+            processor.RegisterCommand("auth", Auth, PlayerRights.Moderator);
+            processor.RegisterCommand("resetauthcode", ResetAuthCode, PlayerRights.Bureaucrat);
+            processor.RegisterCommand("playerinfo", Info, PlayerRights.Moderator);            
             processor.RegisterCommand("playersearch", Search, PlayerRights.Moderator);
             processor.RegisterCommand("ban", BanPlayer, PlayerRights.Moderator);
             processor.RegisterCommand("unban", UnbanPlayer, PlayerRights.Moderator);
@@ -325,6 +328,83 @@ namespace Game.Comm
             ApiResponse response = ApiCaller.SetPlayerRights(playerName, rights.GetValueOrDefault());
 
             return response.Success ? "OK!" : response.ErrorMessage;
+        }
+
+        public string ResetAuthCode(Session session, string[] parms)
+        {
+            bool help = false;
+            string playerName = string.Empty;
+
+            try
+            {
+                var p = new OptionSet
+                {
+                        {"?|help|h", v => help = true},
+                        {"p=|player=", v => playerName = v.TrimMatchingQuotes()}
+                };
+                p.Parse(parms);
+            }
+            catch(Exception)
+            {
+                help = true;
+            }
+
+            if (help || string.IsNullOrEmpty(playerName))
+            {
+                return String.Format("resetauthcode --player=player");
+            }
+
+            ApiResponse response = ApiCaller.ResetAuthCode(playerName);
+
+            return response.Success ? "OK!" : response.ErrorMessage;
+        }
+
+        public string Auth(Session session, String[] parms)
+        {
+            if (session.Player.TwoFactorSecretKey == null)
+            {
+                return "You must first set up two factor authentication by visiting http://tribalhero.com/mod/players/generate_auth_code . If you've already finished set up, you need to refresh the game once.";
+            }
+
+            bool help = false;
+            int? code = null;
+
+            try
+            {
+
+                var p = new OptionSet
+                {
+                    {"?|help|h", v => help = true},
+                    {"c=|code=", v => code = int.Parse(v.TrimMatchingQuotes())},
+                };
+                p.Parse(parms);
+            }
+            catch(Exception)
+            {
+                help = true;
+            }
+
+            if (help || code == null)
+            {
+                return String.Format("auth --code=###### (Note: You will be logged out if the code is invalid. If you have trouble authenticating, contact us at giuliano@tribalhero.com)");
+            }
+
+            try
+            {
+                if (!new Totp(session.Player.TwoFactorSecretKey).Verify(code.Value))
+                {
+                    session.CloseSession();
+                    
+                    return "Fail";
+                }
+
+                session.Player.HasTwoFactorAuthenticated = SystemClock.Now;
+                return "Ok. You may use admin commands for one hour or until you log off before you have to re-authenticate.";
+            }
+            catch(Exception e)
+            {
+                return string.Format("Fail: {0}", e.Message);
+            }
         }
 
         public string Info(Session session, String[] parms)

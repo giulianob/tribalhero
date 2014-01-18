@@ -112,6 +112,7 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Xml" />
     <Reference Include="Thrift">
       <HintPath>..\Lib\thrift\Thrift.dll</HintPath>
@@ -544,6 +545,12 @@
     <Compile Include="Util\Ninject\FactoryReturns.cs" />
     <Compile Include="Util\NumberExtensions.cs" />
     <Compile Include="Util\ResharperAnnotations.cs" />
+    <Compile Include="Util\TwoFactor\Base32Encoding.cs" />
+    <Compile Include="Util\TwoFactor\HOTP.cs" />
+    <Compile Include="Util\TwoFactor\OTP.cs" />
+    <Compile Include="Util\TwoFactor\StringExtensions.cs" />
+    <Compile Include="Util\TwoFactor\TOTP.cs" />
+    <Compile Include="Util\TwoFactor\Unixtime.cs" />
     <Compile Include="Util\UnixDateTime.cs" />
     <Compile Include="Util\XMLSerializer.cs" />
   </ItemGroup>

@@ -37,6 +37,10 @@ namespace Game.Data
 
         public DateTime LastDeletedTribe { get; set; }
 
+        public DateTime? HasTwoFactorAuthenticated { get; set; }
+
+        public string TwoFactorSecretKey { get; set; }
+
         public Player(uint playerid,
                       DateTime created,
                       DateTime lastLogin,

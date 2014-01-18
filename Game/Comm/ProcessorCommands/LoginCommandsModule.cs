@@ -163,7 +163,11 @@ namespace Game.Comm.ProcessorCommands
 
                 playerId = uint.Parse(response.Data.player.id);
                 playerName = response.Data.player.name;
-                twoFactorSecretKey = response.Data.player.two_factor_secret_key;
+                if (((IDictionary<string, Object>)response.Data.player).ContainsKey("two_factor_secret_key"))
+                {
+                    twoFactorSecretKey = response.Data.player.two_factor_secret_key;
+                }
+                
                 banned = int.Parse(response.Data.player.banned) == 1;
                 playerRights = (PlayerRights)Int32.Parse(response.Data.player.rights);
 

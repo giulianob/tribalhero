@@ -8,23 +8,25 @@ package src.Objects.Technologies {
 
         public function CreateSummarizer(key: String, array: Array): ITechnologySummarizer {
             var summarizer: ITechnologySummarizer;
-            if (key.indexOf("WEAPON_RESEARCH_TECHNOLOGY") != -1) {
+            if (key == "WEAPON_RESEARCH_TECHNOLOGY") {
                 summarizer = new AttackDefenseBonusSummarizer(EffectPrototype.EFFECT_ATTACK_BONUS);
-            } else if (key.indexOf("ARMOR_RESEARCH_TECHNOLOGY") != -1) {
+            } else if (key == "ARMOR_RESEARCH_TECHNOLOGY") {
                 summarizer = new AttackDefenseBonusSummarizer(EffectPrototype.EFFECT_DEFENSE_BONUS);
-            } else if (key.indexOf("SUNDANCE") != -1) {
+            } else if (key == "SUNDANCE_TECHNOLOGY") {
                 summarizer = new SundanceSummarizer();
-            } else if (key.indexOf("GREED") != -1) {
+            } else if (key == "GREED_IS_GOOD_TECHNOLOGY") {
                 summarizer = new GreedIsGoodSummarizer();
-            } else if (key.indexOf("DOUBLE_TIME") != -1) {
+            } else if (key == "DOUBLE_TIME_TECHNOLOGY") {
                 summarizer = new DoubleTimeSummarizer();
-            } else if (key.indexOf("RUSH") != -1) {
-                summarizer = new RushSummarizer();
-            } else if (key.indexOf("URGENCY") != -1) {
+            } else if (key == "RUSH_ATTACK_TECHNOLOGY") {
+                summarizer = new RushSummarizer(4);
+            } else if (key == "RUSH_DEFENSE_TECHNOLOGY") {
+                summarizer = new RushSummarizer(8);
+            } else if (key == "SENSE_OF_URGENCY_TECHNOLOGY") {
                 summarizer = new SenseOfUrgencySummarizer();
-            } else if (key.indexOf("HAPPYHOUR") != -1) {
+            } else if (key == "HAPPYHOUR_TECHNOLOGY") {
                 summarizer = new HappyHourSummarizer();
-            } else if (key.indexOf("UPKEEP_REDUCE") != -1) {
+            } else if (key.indexOf("UPKEEP_REDUCE_") == 0) {
                 summarizer = new DietSummarizer();
             } else if (key.indexOf("INSTANT_") == 0) {
                 if (key.indexOf("TRAINING_GROUND") != -1) {

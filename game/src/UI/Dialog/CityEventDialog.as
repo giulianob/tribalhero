@@ -1,15 +1,15 @@
 ﻿package src.UI.Dialog
 {
 
-import System.Collection.Generic.IGrouping;
-import System.Linq.Enumerable;
+    import System.Collection.Generic.IGrouping;
+    import System.Linq.Enumerable;
 
-import flash.events.*;
-    import flash.geom.Point;
+    import flash.events.*;
 
     import org.aswing.*;
     import org.aswing.border.*;
     import org.aswing.event.*;
+    import org.aswing.ext.MultilineLabel;
     import org.aswing.geom.*;
     import org.aswing.table.*;
 
@@ -19,13 +19,13 @@ import flash.events.*;
     import src.Objects.Effects.*;
     import src.Objects.Factories.*;
     import src.Objects.Prototypes.*;
-import src.Objects.Technologies.ITechnologySummarizer;
-import src.Objects.Technologies.TechnologySummarizer;
-import src.Objects.Technologies.TechnologySummarizerFactory;
-import src.UI.*;
+    import src.Objects.Technologies.ITechnologySummarizer;
+    import src.Objects.Technologies.TechnologySummarizerFactory;
+    import src.UI.*;
     import src.UI.Components.*;
     import src.UI.Components.CityActionGridList.*;
     import src.UI.Components.TableCells.*;
+    import src.UI.LookAndFeel.GameLookAndFeel;
     import src.UI.Tooltips.TextTooltip;
     import src.Util.*;
 
@@ -292,36 +292,7 @@ import src.UI.*;
 
             // Technologies Tab
             {
-                var technologiesListModel: VectorListModel = new VectorListModel();
-                var technologiesTable: JTable = new JTable(new PropertyTableModel(technologiesListModel, [StringHelper.localize("CITY_OVERVIEW_TECHNOLOGIES_NAME_COLUMN"), StringHelper.localize("CITY_OVERVIEW_TECHNOLOGIES_SUMMARY_COLUMN")], ["name", "summary"], [null, null]));
-                technologiesTable.getColumnAt(0).setPreferredWidth(160);
-                technologiesTable.getColumnAt(1).setPreferredWidth(600);
-                technologiesTable.setCellSelectionEnabled(false);
-                technologiesTable.addEventListener(TableCellEditEvent.EDITING_STARTED, function(e: TableCellEditEvent) : void {
-                    technologiesTable.getCellEditor().cancelCellEditing();
-                });
-
-                // Mouseover to show tooltip
-                technologiesTable.addEventListener(MouseEvent.MOUSE_MOVE, function(e: MouseEvent): void {
-                    var mousePos: Point = technologiesTable.globalToLocal(new Point(e.stageX, e.stageY));
-                    var row: int = technologiesTable.rowAtPoint(new IntPoint(mousePos.x, mousePos.y - technologiesTable.getHeaderHeight()));
-                    if (row == -1) {
-                        return;
-                    }
-
-                    var technologySummary: * = technologiesListModel.get(row);
-
-                    technologySummaryTooltip.setText(technologySummary.summary, technologySummary.name);
-                    technologySummaryTooltip.showFixed(new IntPoint(e.stageX, e.stageY));
-                });
-
-                technologiesTable.addEventListener(MouseEvent.MOUSE_OUT, function (e: MouseEvent): void {
-                    technologySummaryTooltip.hide();
-                });
-
-                technologiesTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-                technologiesTable.setRowHeight(20);
-                pnlTabs.appendTab(new JScrollPane(technologiesTable), StringHelper.localize("CITY_OVERVIEW_TECHNOLOGIES_TAB"));
+                var technologiesTable: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
 
                 var summarierFactory : TechnologySummarizerFactory = new TechnologySummarizerFactory();
                 for each(var grouping: IGrouping in Enumerable.from(city.structures()).selectMany(function(obj: CityObject): Array{
@@ -332,8 +303,16 @@ import src.UI.*;
                     return group.key;
                 })) {
                     var summarizer:ITechnologySummarizer = summarierFactory.CreateSummarizer(grouping.key, grouping.toArray());
-                    technologiesListModel.append({name:summarizer.getName(),summary:summarizer.getSummary()});
+
+                    var techNameLabel: JLabel = new JLabel(summarizer.getName(), null, AsWingConstants.LEFT);
+                    var techSummaryLabel: MultilineLabel = new MultilineLabel(summarizer.getSummary());
+
+                    GameLookAndFeel.changeClass(techNameLabel, "darkHeader");
+
+                    technologiesTable.appendAll(techNameLabel, techSummaryLabel);
                 }
+
+                pnlTabs.appendTab(Util.createTopAlignedScrollPane(technologiesTable), StringHelper.localize("CITY_OVERVIEW_TECHNOLOGIES_TAB"));
             }
 
             //component layoution

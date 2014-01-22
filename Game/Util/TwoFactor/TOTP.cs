@@ -86,7 +86,7 @@ namespace Game.Util.TwoFactor
 
         public bool Verify(int otp)
         {
-            for (var i = -1; i <= 1; i++)
+            for (var i = -2; i <= 2; i++)
             {
                 if (this.Verify(otp, new Unixtime().ToTimeStamp() + (i * Interval)))
                 {

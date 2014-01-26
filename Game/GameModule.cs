@@ -63,8 +63,12 @@ namespace Game
             Bind<IChannel>().To<Channel>().InSingletonScope();
             Bind<IPolicyServer>().To<PolicyServer>().InSingletonScope();
             Bind<ITcpServer>().To<TcpServer>().InSingletonScope();
-            Bind<TServer>().ToMethod(c => new TSimpleServer(new Notification.Processor(c.Kernel.Get<NotificationHandler>()), new TServerSocket(46000)))
-                           .InSingletonScope();
+            Bind<TServer>().ToMethod(c =>
+            {
+                var logger = LoggerFactory.Current.GetLogger(typeof(TSimpleServer));
+                return new TSimpleServer(new Notification.Processor(c.Kernel.Get<NotificationHandler>()), new TServerSocket(46000), logger.Warn);
+            }).InSingletonScope();
+
             Bind<IProtocol>().To<PacketProtocol>();
 
             Bind<Chat>().ToSelf().InSingletonScope();

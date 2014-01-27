@@ -31,8 +31,6 @@
 
     public class CityEventDialog extends GameJPanel
 	{
-        private var technologySummaryTooltip: TextTooltip = new TextTooltip();
-
 		private var pnlResources:JPanel;
 		private var pnlTabs:JTabbedPane;
 		
@@ -56,6 +54,7 @@
 		private var city:City;
 		
 		private var lstCities: JComboBox;
+        private var technologiesTable: JPanel;
 		
 		public function CityEventDialog(city:City)
 		{
@@ -119,6 +118,7 @@
 			
 			recreateResourcesPanel();
 			drawResources();
+            drawTechnologySummaries();
 		}
 		
 		private function simpleLabelMaker(tooltip:String, icon:Icon = null):JLabel
@@ -292,26 +292,7 @@
 
             // Technologies Tab
             {
-                var technologiesTable: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
-
-                var summarierFactory : TechnologySummarizerFactory = new TechnologySummarizerFactory();
-                for each(var grouping: IGrouping in Enumerable.from(city.structures()).selectMany(function(obj: CityObject): Array{
-                    return obj.techManager.technologies;
-                }).groupBy(function(tech: TechnologyStats): String{
-                    return tech.techPrototype.spriteClass;
-                }).orderBy(function(group: IGrouping): String {
-                    return group.key;
-                })) {
-                    var summarizer:ITechnologySummarizer = summarierFactory.CreateSummarizer(grouping.key, grouping.toArray());
-
-                    var techNameLabel: JLabel = new JLabel(summarizer.getName(), null, AsWingConstants.LEFT);
-                    var techSummaryLabel: MultilineLabel = new MultilineLabel(summarizer.getSummary());
-
-                    GameLookAndFeel.changeClass(techNameLabel, "darkHeader");
-
-                    technologiesTable.appendAll(techNameLabel, techSummaryLabel);
-                }
-
+                technologiesTable = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
                 pnlTabs.appendTab(Util.createTopAlignedScrollPane(technologiesTable), StringHelper.localize("CITY_OVERVIEW_TECHNOLOGIES_TAB"));
             }
 
@@ -321,8 +302,35 @@
 			append(pnlTabs);
 			
 			recreateResourcesPanel();
+            drawTechnologySummaries();
 			drawResources();
 		}
+
+        private function drawTechnologySummaries(): void {
+            technologiesTable.removeAll();
+
+            var summarierFactory : TechnologySummarizerFactory = new TechnologySummarizerFactory();
+            for each(var grouping: IGrouping in Enumerable.from(city.structures()).selectMany(function(obj: CityObject): Array{
+                return obj.techManager.technologies;
+            }).groupBy(function(tech: TechnologyStats): String{
+                        return tech.techPrototype.spriteClass;
+                    }).orderBy(function(group: IGrouping): String {
+                        return group.key;
+                    })) {
+                var summarizer:ITechnologySummarizer = summarierFactory.CreateSummarizer(grouping.key, grouping.toArray());
+
+                var techNameLabel: JLabel = new JLabel(summarizer.getName(), null, AsWingConstants.LEFT);
+                var techSummaryLabel: MultilineLabel = new MultilineLabel(summarizer.getSummary());
+
+                GameLookAndFeel.changeClass(techNameLabel, "darkHeader");
+
+                technologiesTable.appendAll(techNameLabel, techSummaryLabel);
+            }
+
+            if (getFrame()) {
+                getFrame().pack();
+            }
+        }
 	
 	}
 }

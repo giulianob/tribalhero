@@ -53,7 +53,7 @@ namespace Game.Comm
                             {
                                 if (Logger.IsDebugEnabled)
                                 {
-                                    Logger.Debug(e, "Socket would block. Setting it to blocking and trying again {0} {1}", Name);
+                                    Logger.Debug(e, "Socket would block. Setting it to blocking and trying again {0}", Name);
                                 }
 
                                 Socket.Blocking = true;

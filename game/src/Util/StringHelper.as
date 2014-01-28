@@ -118,7 +118,9 @@ package src.Util {
 			
 			var localizedStr: String = Locale.loadString(msgId);
 			if (localizedStr == null) {
-				return "[" + msgId + "]";				
+                Util.log("Missing translation: " + localizedStr);
+
+				return "";
 			}
 
 			params.unshift(localizedStr);

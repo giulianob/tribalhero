@@ -12,10 +12,10 @@ import src.Objects.Prototypes.EffectPrototype;
 import src.Objects.TechnologyStats;
 import src.Util.StringHelper;
 
-public class HappyHourSummarizer extends TechnologySummarizer {
+public class HappyHourSummarizer extends NoStackingTechnologySummarizer {
 
         override public function getSummary():* {
-            return StringHelper.localize(name+"_SUMMARY",30+(array.length-1)*8);
+            return StringHelper.localize(name+"_SUMMARY",30+(technologies.length-1)*8);
         }
 
     }

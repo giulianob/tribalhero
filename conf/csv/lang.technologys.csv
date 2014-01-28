@@ -1,10 +1,12 @@
 Key,EN
+NO_TECH_SUMMARY,No information is available for this technology.
+,
 OVERTIME_TECHNOLOGY_NAME,Overtime
-OVERTIME_TECHNOLOGY_LVL_1,Decrease laborer assigning time by 10%
-OVERTIME_TECHNOLOGY_LVL_2,Decrease laborer assigning time by 20%
-OVERTIME_TECHNOLOGY_LVL_3,Decrease laborer assigning time by 30%
-OVERTIME_TECHNOLOGY_LVL_4,Decrease laborer assigning time by 40%
-OVERTIME_TECHNOLOGY_LVL_5,Decrease laborer assigning time by 50%
+OVERTIME_TECHNOLOGY_LVL_1,Decrease laborer assigning time by 10%. (Does not stack)
+OVERTIME_TECHNOLOGY_LVL_2,Decrease laborer assigning time by 20%. (Does not stack)
+OVERTIME_TECHNOLOGY_LVL_3,Decrease laborer assigning time by 30%. (Does not stack)
+OVERTIME_TECHNOLOGY_LVL_4,Decrease laborer assigning time by 40%. (Does not stack)
+OVERTIME_TECHNOLOGY_LVL_5,Decrease laborer assigning time by 50%. (Does not stack)
 ,
 A_CALL_TO_ARMS_TECHNOLOGY_NAME,A Call To Arms
 A_CALL_TO_ARMS_TECHNOLOGY_LVL_1,Order idle laborers to provide up to 3% damage bonus with 60 laborers when the town is under attack. (Does not stack)
@@ -300,8 +302,8 @@ TWO_FOR_ONE_TECHNOLOGY_NAME,Two For One
 TWO_FOR_ONE_TECHNOLOGY_LVL_1,Receive the 2nd unit free for every 1 unit that is trained for this structure only.
 ,
 HAPPYHOUR_TECHNOLOGY_NAME,Happy Hour
-HAPPYHOUR_TECHNOLOGY_SUMMARY,Increases the laborer production rate by {0}%. (8% for every addition)
-HAPPYHOUR_TECHNOLOGY_LVL_1,Increases the laborer production rate by 30%. (8% for every addition)
+HAPPYHOUR_TECHNOLOGY_SUMMARY,Increases the laborer production rate by {0}%. (30% for the first then 8% for every additional)
+HAPPYHOUR_TECHNOLOGY_LVL_1,Increases the laborer production rate by 30%. (8% for every additional)
 ,
 SUNDANCE_TECHNOLOGY_NAME,Sun Dance
 SUNDANCE_TECHNOLOGY_SUMMARY,Increase maximum loot bonus by {0}% (Stacks additively)
@@ -312,26 +314,26 @@ SUNDANCE_TECHNOLOGY_LVL_4,Increase maximum loot bonus by 40% (Stacks additively)
 SUNDANCE_TECHNOLOGY_LVL_5,Increase maximum loot bonus by 50% (Stacks additively)
 ,
 GREED_IS_GOOD_TECHNOLOGY_NAME,Greed Is Good
-GREED_IS_GOOD_TECHNOLOGY_SUMMARY,Reduce time to load up loot by {0} (Stacks additively up to 10 Rounds)
-GREED_IS_GOOD_TECHNOLOGY_LVL_1,Reduce time to load up loot by 1 Round (Stacks additively up to 10 Rounds)
-GREED_IS_GOOD_TECHNOLOGY_LVL_2,Reduce time to load up loot by 2 Rounds (Stacks additively up to 10 Rounds)
-GREED_IS_GOOD_TECHNOLOGY_LVL_3,Reduce time to load up loot by 3 Rounds (Stacks additively up to 10 Rounds)
-GREED_IS_GOOD_TECHNOLOGY_LVL_4,Reduce time to load up loot by 4 Rounds (Stacks additively up to 10 Rounds)
-GREED_IS_GOOD_TECHNOLOGY_LVL_5,Reduce time to load up loot by 5 Rounds (Stacks additively up to 10 Rounds)
+GREED_IS_GOOD_TECHNOLOGY_SUMMARY,Reduce time to load up loot by {0} round(s) (Stacks additively up to 10 rounds)
+GREED_IS_GOOD_TECHNOLOGY_LVL_1,Reduce time to load up loot by 1 round (Stacks additively up to 10 rounds)
+GREED_IS_GOOD_TECHNOLOGY_LVL_2,Reduce time to load up loot by 2 rounds (Stacks additively up to 10 rounds)
+GREED_IS_GOOD_TECHNOLOGY_LVL_3,Reduce time to load up loot by 3 rounds (Stacks additively up to 10 rounds)
+GREED_IS_GOOD_TECHNOLOGY_LVL_4,Reduce time to load up loot by 4 rounds (Stacks additively up to 10 rounds)
+GREED_IS_GOOD_TECHNOLOGY_LVL_5,Reduce time to load up loot by 5 rounds (Stacks additively up to 10 rounds)
 ,
 COORDINATED_DEFENSE_TECHNOLOGY_NAME,Coordinated Defense
-COORDINATED_DEFENSE_TECHNOLOGY_LVL_1,Defensive Reinforcement Troops gain 2% Max HP.  (Stacks additively up to 40%)
-COORDINATED_DEFENSE_TECHNOLOGY_LVL_2,Defensive Reinforcement Troops gains 4% Max HP. (Stacks additively up to 40%)
-COORDINATED_DEFENSE_TECHNOLOGY_LVL_3,Defensive Reinforcement Troops gains 6% Max HP. (Stacks additively up to 40%)
-COORDINATED_DEFENSE_TECHNOLOGY_LVL_4,Defensive Reinforcement Troops gains 8% Max HP. (Stacks additively up to 40%)
-COORDINATED_DEFENSE_TECHNOLOGY_LVL_5,Defensive Reinforcement Troops gains 10% Max HP. (Stacks additively up to 40%)
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_1,Defensive reinforcement troops gain 2% max HP.  (Stacks additively up to 40%)
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_2,Defensive reinforcement troops gains 4% max HP. (Stacks additively up to 40%)
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_3,Defensive reinforcement troops gains 6% max HP. (Stacks additively up to 40%)
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_4,Defensive reinforcement troops gains 8% max HP. (Stacks additively up to 40%)
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_5,Defensive reinforcement troops gains 10% max HP. (Stacks additively up to 40%)
 ,
 COORDINATED_ATTACK_TECHNOLOGY_NAME,Coordinated Attack
-COORDINATED_ATTACK_TECHNOLOGY_LVL_1,Offensive Troops gains 2% Max HP. (Stacks additively up to 40%)
-COORDINATED_ATTACK_TECHNOLOGY_LVL_2,Offensive Troops gains 4% Max HP. (Stacks additively up to 40%)
-COORDINATED_ATTACK_TECHNOLOGY_LVL_3,Offensive Troops gains 6% Max HP. (Stacks additively up to 40%)
-COORDINATED_ATTACK_TECHNOLOGY_LVL_4,Offensive Troops gains 8% Max HP. (Stacks additively up to 40%)
-COORDINATED_ATTACK_TECHNOLOGY_LVL_5,Offensive Troops gains 10% Max HP. (Stacks additively up to 40%)
+COORDINATED_ATTACK_TECHNOLOGY_LVL_1,Offensive troops gains 2% max HP. (Stacks additively up to 40%)
+COORDINATED_ATTACK_TECHNOLOGY_LVL_2,Offensive troops gains 4% max HP. (Stacks additively up to 40%)
+COORDINATED_ATTACK_TECHNOLOGY_LVL_3,Offensive troops gains 6% max HP. (Stacks additively up to 40%)
+COORDINATED_ATTACK_TECHNOLOGY_LVL_4,Offensive troops gains 8% max HP. (Stacks additively up to 40%)
+COORDINATED_ATTACK_TECHNOLOGY_LVL_5,Offensive troops gains 10% max HP. (Stacks additively up to 40%)
 ,
 REINVENT_WHEEL_TECHNOLOGY_NAME,Reinvent the Wheel
 REINVENT_WHEEL_TECHNOLOGY_LVL_1,Increase send/trade resource speed by 8% for this structure only.
@@ -354,9 +356,9 @@ SPIKE_BARRICADE_TECHNOLOGY_LVL_3,Increases building's splash damage count by 3 (
 SPIKE_BARRICADE_TECHNOLOGY_LVL_4,Increases Tower and Cannon Tower's splash damage count by 1.
 ,
 HANZO_SWORD_TECHNOLOGY_NAME,Hanzo Formation
-HANZO_SWORD_TECHNOLOGY_LVL_1,"Reduce splash damage received by 5% for Fighter, Swordsman and gladiator."
-HANZO_SWORD_TECHNOLOGY_LVL_2,"Reduce splash damage received by 10% for Fighter, Swordsman and gladiator."
-HANZO_SWORD_TECHNOLOGY_LVL_3,"Reduce splash damage received by 15% for Fighter, Swordsman and gladiator."
+HANZO_SWORD_TECHNOLOGY_LVL_1,"Reduce splash damage received by 5% for Fighter, Swordsman and gladiator. (Does not stack)"
+HANZO_SWORD_TECHNOLOGY_LVL_2,"Reduce splash damage received by 10% for Fighter, Swordsman and gladiator. (Does not stack)"
+HANZO_SWORD_TECHNOLOGY_LVL_3,"Reduce splash damage received by 15% for Fighter, Swordsman and gladiator. (Does not stack)"
 ,
 UPKEEP_REDUCE_FIGHTER_TECHNOLOGY_NAME,Fighter Diet
 UPKEEP_REDUCE_FIGHTER_TECHNOLOGY_SUMMARY,Reduce upkeep by {0}% for Fighter. (Stacks additively up to 30%)

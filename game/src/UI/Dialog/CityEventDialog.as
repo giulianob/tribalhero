@@ -317,7 +317,12 @@
                     }).orderBy(function(group: IGrouping): String {
                         return group.key;
                     })) {
+
                 var summarizer:ITechnologySummarizer = summarierFactory.CreateSummarizer(grouping.key, grouping.toArray());
+
+                if (summarizer == null) {
+                    continue;
+                }
 
                 var techNameLabel: JLabel = new JLabel(summarizer.getName(), null, AsWingConstants.LEFT);
                 var techSummaryLabel: MultilineLabel = new MultilineLabel(summarizer.getSummary());

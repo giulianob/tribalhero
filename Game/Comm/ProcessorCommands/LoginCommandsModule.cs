@@ -248,7 +248,11 @@ namespace Game.Comm.ProcessorCommands
                 logger.Info(string.Format("Player login in {0}({1}) IP: {2}", player.Name, player.PlayerId, session.Name));
             }
 
-            locker.Lock(player).Do(() =>
+            locker.Lock(args =>
+            {
+                var lockedPlayer = (IPlayer)args[0];
+                return lockedPlayer.IsInTribe ? new ILockable[] {lockedPlayer.Tribesman.Tribe} : new ILockable[0];
+            }, new object[] { player }, player).Do(() =>
             {
                 // If someone is already connected as this player, kick them off potentially
                 if (player.Session != null)

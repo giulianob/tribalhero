@@ -265,6 +265,10 @@ namespace Game.Comm
                             {
                                 SocketDisconnect(s);
                             }
+                            catch(ObjectDisposedException)
+                            {
+                                // This exception happens if the client disconnects and we shut down the socket but then still try to read data
+                            }
                         }
                     }
                 }

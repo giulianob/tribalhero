@@ -19,6 +19,8 @@ namespace Game.Data.Stronghold
 {
     public class StrongholdManager : IStrongholdManager
     {
+        private readonly object indexLock = new object();
+
         public event EventHandler<StrongholdGainedEventArgs> StrongholdGained;
 
         public event EventHandler<StrongholdLostEventArgs> StrongholdLost;
@@ -130,12 +132,12 @@ namespace Game.Data.Stronghold
 
         public bool TryGetStronghold(string name, out IStronghold stronghold)
         {
-            if (indexDirty)
+            lock (indexLock)
             {
-                Reindex();
-            }
+                ReindexIfNeeded();
 
-            return nameIndex.TryGetValue(name.ToLowerInvariant(), out stronghold);
+                return nameIndex.TryGetValue(name.ToLowerInvariant(), out stronghold);
+            }
         }
 
         public void Generate(int count)
@@ -229,22 +231,22 @@ namespace Game.Data.Stronghold
 
         public IEnumerable<IStronghold> StrongholdsForTribe(ITribe tribe)
         {
-            if (indexDirty)
+            lock (indexLock)
             {
-                Reindex();
-            }
+                ReindexIfNeeded();
 
-            return !tribeIndex.Contains(tribe) ? new IStronghold[] {} : tribeIndex[tribe];
+                return !tribeIndex.Contains(tribe) ? new IStronghold[] {} : tribeIndex[tribe];
+            }
         }
 
         public IEnumerable<IStronghold> OpenStrongholdsForTribe(ITribe tribe)
         {
-            if (indexDirty)
+            lock (indexLock)
             {
-                Reindex();
-            }
+                ReindexIfNeeded();
 
-            return !gateOpenToIndex.Contains(tribe) ? new IStronghold[] {} : gateOpenToIndex[tribe];
+                return !gateOpenToIndex.Contains(tribe) ? new IStronghold[] {} : gateOpenToIndex[tribe];
+            }
         }
 
         public void RemoveStrongholdsFromTribe(ITribe tribe)
@@ -331,30 +333,27 @@ namespace Game.Data.Stronghold
 
         #endregion
 
-        private void Reindex()
+        private void ReindexIfNeeded()
         {
-            lock (this)
+            if (!indexDirty)
             {
-                if (!indexDirty)
-                {
-                    return;
-                }
-
-                indexDirty = false;
-                tribeIndex =
-                        strongholds.Values.Where(stronghold => stronghold.Tribe != null)
-                                   .ToLookup(stronghold => stronghold.Tribe, stronghold => stronghold);
-                gateOpenToIndex =
-                        strongholds.Values.Where(stronghold => stronghold.GateOpenTo != null)
-                                   .ToLookup(stronghold => stronghold.GateOpenTo, stronghold => stronghold);
-                nameIndex = strongholds.Values.ToDictionary(stronghold => stronghold.Name.ToLowerInvariant(),
-                                                            stronghold => stronghold);
+                return;
             }
+
+            indexDirty = false;
+            tribeIndex =
+                    strongholds.Values.Where(stronghold => stronghold.Tribe != null)
+                               .ToLookup(stronghold => stronghold.Tribe, stronghold => stronghold);
+            gateOpenToIndex =
+                    strongholds.Values.Where(stronghold => stronghold.GateOpenTo != null)
+                               .ToLookup(stronghold => stronghold.GateOpenTo, stronghold => stronghold);
+            nameIndex = strongholds.Values.ToDictionary(stronghold => stronghold.Name.ToLowerInvariant(),
+                                                        stronghold => stronghold);
         }
 
         private void MarkIndexDirty()
         {
-            lock (this)
+            lock (indexLock)
             {
                 indexDirty = true;
             }

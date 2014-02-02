@@ -10,10 +10,6 @@ package src.Objects.Technologies {
         protected var technologies: Array;
 
         public function getName():* {
-            if (technologies.length > 1) {
-                return StringHelper.localize(name+"_NAME") + " (" + technologies.length + ")";
-            }
-
             return StringHelper.localize(name+"_NAME");
         }
 

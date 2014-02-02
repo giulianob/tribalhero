@@ -107,6 +107,7 @@ namespace Game.Setup
         public static int newbie_protection = 259200;
         public static bool battle_instant_watch;
         public static double battle_turn_interval = 20.0f;
+        public static double battle_gate_turn_interval = 0f;
         public static int battle_min_rounds = 5;
         public static int battle_retreat_min_rounds = 0;
         public static int battle_loot_till_full = 15; 

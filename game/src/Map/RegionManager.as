@@ -47,8 +47,6 @@
 
         public function addObject(obj: SimpleGameObject, fadeIn: Boolean = true): void
         {
-            trace("Adding obj " + obj.type + " " + obj.groupId);
-
             var regionId: int = TileLocator.getRegionIdFromMapCoord(obj.primaryPosition.toPosition());
             var primaryRegion: Region = get(regionId);
 
@@ -91,8 +89,6 @@
 
 		public function updateObject(regionId: int, newObj: SimpleGameObject): SimpleGameObject
 		{
-            trace("Updating obj " + newObj.type + " " + newObj.groupId);
-
 			var region: Region = get(regionId);
 
 			if (region == null) {
@@ -126,26 +122,19 @@
 
 		public function removeObject(regionId: int, groupId: int, objectId: int):void
 		{
-            trace("Removing obj " + groupId);
-
             var region: Region = get(regionId);
 
 			if (region == null) {
-                trace("Failed to remove");
 				return;
             }
 
             var obj: SimpleGameObject = region.getObject(groupId, objectId);
-
-            trace("Removed " + obj.type);
 
             removeFromPrimaryRegionAndTiles(obj, true);
 		}
 
 		public function moveObject(oldRegionId: int, newObj: SimpleGameObject): SimpleGameObject
 		{
-            trace("Moving obj " + newObj.type + " " + newObj.groupId);
-
             var oldRegion: Region = get(oldRegionId);
 
 			if (oldRegion == null) {

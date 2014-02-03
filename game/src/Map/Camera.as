@@ -33,10 +33,13 @@
 		public function endMove(): void {
 			updating = false;
 
-			if (!isDirty) return;
+			if (!isDirty) {
+                return;
+            }
 
 			isDirty = false;
-			dispatchEvent(new Event(ON_MOVE));
+
+			fireOnMove();
 		}
 
 		private function fireOnMove() : void {
@@ -77,10 +80,10 @@
 			return new Point((point.x / Constants.tileW) * Constants.miniMapTileW, (point.y / Constants.tileH) * Constants.miniMapTileH);
 		}
 
-		public function Camera(x: int, y: int)
+		public function Camera(x: Number, y: Number)
 		{
-			currentPosition.x = x;
-            currentPosition.y = y;
+			currentPosition.setXAsNumber(x);
+            currentPosition.setYAsNumber(y);
 		}
 
 		public function MoveLeft(step :int): void
@@ -203,7 +206,8 @@
 
 			fireOnMove();
 		}
-		
+
+        //noinspection JSUnusedGlobalSymbols
         public function set zoomFactor(factor: int): void {
             _zoomFactor = factor;
             zoomFactorOverOne = (1.0 / getZoomFactorPercentage());

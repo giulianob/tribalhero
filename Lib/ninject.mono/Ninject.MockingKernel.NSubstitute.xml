@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>c:\source\ninject\ninject.mockingkernel\build\mono-4.0\release\Ninject.MockingKernel.NSubstitute</name>
+    </assembly>
+    <members>
+        <member name="T:Ninject.MockingKernel.NSubstitute.NSubstituteMockingKernel">
+            <summary>
+            Mocking kernel for NSubstitute
+            </summary>
+        </member>
+        <member name="M:Ninject.MockingKernel.NSubstitute.NSubstituteMockingKernel.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ninject.MockingKernel.NSubstitute.NSubstituteMockingKernel" /> class.
+            </summary>
+        </member>
+        <member name="M:Ninject.MockingKernel.NSubstitute.NSubstituteMockingKernel.#ctor(Ninject.INinjectSettings,Ninject.Modules.INinjectModule[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ninject.MockingKernel.NSubstitute.NSubstituteMockingKernel" /> class.
+            </summary>
+            <param name="settings">
+            The configuration to use.
+            </param>
+            <param name="modules">
+            The modules to load into the kernel.
+            </param>
+        </member>
+        <member name="T:Ninject.MockingKernel.NSubstitute.NSubstituteMockProvider">
+            <summary>
+            Creates mocked instances via <c>NSubstitute</c>.
+            </summary>
+        </member>
+        <member name="P:Ninject.MockingKernel.NSubstitute.NSubstituteMockProvider.Type">
+            <summary>
+            Gets the type (or prototype) of instances the provider creates.
+            </summary>
+        </member>
+        <member name="M:Ninject.MockingKernel.NSubstitute.NSubstituteMockProvider.GetCreationCallback">
+            <summary>
+            Gets a callback that creates an instance of the <see cref="T:Ninject.MockingKernel.NSubstitute.NSubstituteMockProvider" />.
+            </summary>
+            <returns>
+            The created callback.
+            </returns>
+        </member>
+        <member name="M:Ninject.MockingKernel.NSubstitute.NSubstituteMockProvider.Create(Ninject.Activation.IContext)">
+            <summary>
+            Creates an instance within the specified context.
+            </summary>
+            <param name="context">
+            The context.
+            </param>
+            <returns>
+            The created instance.
+            </returns>
+        </member>
+        <member name="T:Ninject.MockingKernel.NSubstitute.NSubstituteModule">
+            <summary>
+            The module for moq
+            </summary>
+        </member>
+        <member name="M:Ninject.MockingKernel.NSubstitute.NSubstituteModule.Load">
+            <summary>
+            Loads the module into the kernel.
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -35,7 +35,7 @@ namespace Testing.FormulaTests
                                         CreateMockStructure(1, 10, 3), 
                                         CreateMockStructure(3, 5, 3),
                                         CreateMockStructure(101, 10, 2)
-                                }, 136
+                                }, 46
                         };
             }
         }

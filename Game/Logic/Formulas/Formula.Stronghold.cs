@@ -8,14 +8,24 @@ namespace Game.Logic.Formulas
 {
     public partial class Formula
     {
+        private static readonly double gateScaling = Math.Pow(2d, 1d / 500d);
+
         public virtual decimal StrongholdGateLimit(byte level)
         {
             if (Config.stronghold_gate_limit > 0)
             {
                 return Config.stronghold_gate_limit;
             }
-            return StrongholdMainBattleMeter(level) * 10;
-         }
+
+            int hoursSinceScalingStarted = Convert.ToInt32(SystemClock.Now.Subtract((DateTime)SystemVariableManager["Server.date"].Value).TotalHours) - 30 * 24;
+
+            if (hoursSinceScalingStarted > 0)
+            {
+                return (decimal)(Math.Round(Math.Pow(gateScaling,hoursSinceScalingStarted) * StrongholdMainBattleMeterBase(level)) * 10);
+            }
+
+            return StrongholdMainBattleMeterBase(level) * 10;
+        }
 
         public virtual int StrongholdGateHealHp(StrongholdState state, byte level)
         {
@@ -33,10 +43,16 @@ namespace Game.Logic.Formulas
             return new Resource(0, (int)(damagedGateHp / 8), (int)(damagedGateHp / 16), (int)(damagedGateHp / 4));
         }
 
-        public virtual int StrongholdMainBattleMeter(byte level)
+        private int StrongholdMainBattleMeterBase(byte level)
         {
             int[] meters = { 0, 500, 600, 700, 800, 950, 1100, 1250, 1450, 1650, 1850, 2100, 2350, 2600, 2900, 3200, 3500, 3850, 4200, 4600, 5000 };
+            return meters[level];
+        }
 
+        private static readonly double meterScaling = Math.Pow(2d, 3d / 1000d);
+
+        public virtual int StrongholdMainBattleMeter(byte level)
+        {
             if (Config.stronghold_battle_meter > 0)
             {
                 return Config.stronghold_battle_meter;
@@ -44,17 +60,12 @@ namespace Game.Logic.Formulas
 
             int hoursSinceScalingStarted = Convert.ToInt32(SystemClock.Now.Subtract((DateTime)SystemVariableManager["Server.date"].Value).TotalHours) - 30 * 24;
 
-            decimal scaling;            
             if (hoursSinceScalingStarted > 0)
             {
-                scaling = Math.Min((decimal)Math.Pow(1.002, hoursSinceScalingStarted), 8);
-            }
-            else
-            {
-                scaling = 1;
+                return (int)Math.Round(Math.Pow(meterScaling, hoursSinceScalingStarted) * StrongholdMainBattleMeterBase(level));
             }
 
-            return (int)Math.Round(meters[level] * scaling);
+            return StrongholdMainBattleMeterBase(level);
         }
 
         public virtual void StrongholdUpkeep(byte level, out int upkeep, out byte unitLevel)

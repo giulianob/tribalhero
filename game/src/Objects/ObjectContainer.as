@@ -353,7 +353,7 @@ package src.Objects {
                 }
 
                 if (!highestPriorityObject.visible) {
-                    highestPriorityObject.fadeIn();
+                    highestPriorityObject.visible = true;
                 }
 
                 // Hide the other objects in the tile
@@ -462,7 +462,7 @@ package src.Objects {
                     eachHighestPriorityObject.setObjectCount(getSelectableObjectCount(eachObjectsInTile));
 
                     if (!eachHighestPriorityObject.visible) {
-                        eachHighestPriorityObject.fadeIn();
+                        eachHighestPriorityObject.visible = true;
                     }
 
                     for (var i: int = 1; i < eachObjectsInTile.length; i++) {

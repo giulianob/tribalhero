@@ -81,7 +81,7 @@
                 Global.map.selectObject(obj);
             }
 
-            if (fadeIn)
+            if (obj.visible && fadeIn)
             {
                 obj.fadeIn();
             }

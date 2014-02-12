@@ -3,8 +3,6 @@ package src.Objects {
 
     import System.Linq.Enumerable;
 
-    import com.greensock.TweenMax;
-
     import flash.display.*;
     import flash.events.*;
     import flash.geom.*;
@@ -21,11 +19,9 @@ package src.Objects {
     public class ObjectContainer extends Sprite {
 
 		public static const LOWER: int = 1;
-		public static const UPPER: int = 3;
 
 		private var objSpace: Sprite;
 		private var bottomSpace: Sprite;
-		private var topSpace: Sprite;
 
 		private var dimmedObjects: Array = [];
 		private var highlightedObject: SimpleObject;
@@ -51,10 +47,7 @@ package src.Objects {
 			objSpace = new Sprite();
 			addChild(objSpace);
 
-			topSpace = new Sprite();
-			addChild(topSpace);
-
-			this.mouseEnabled = mouseEnabled;			
+			this.mouseEnabled = mouseEnabled;
 
 			if (mouseEnabled)
 			{
@@ -64,7 +57,6 @@ package src.Objects {
 
 			bottomSpace.name = "Object Bottom Space";
 			objSpace.name = "Object Space";
-			topSpace.name = "Object Top Space";
 		}
 
 		public function addToStage(e: Event) : void {
@@ -170,7 +162,7 @@ package src.Objects {
 			{
 				obj = objSpace.getChildAt(i) as SimpleObject;
 
-				if (!obj || !obj.visible || obj.alpha == 0 || !obj.isSelectable()) continue;
+				if (!obj || !obj.isHighestPriority || !obj.isSelectable()) continue;
 				
 				selectableCnt++;
 				
@@ -223,7 +215,9 @@ package src.Objects {
 			{
 				obj = objSpace.getChildAt(i) as SimpleObject;
 
-				if (!obj.visible || obj.alpha == 0) continue;
+				if (!obj.visible) {
+                    continue;
+                }
 
 				if (obj == highestObj || obj.primaryPosition.y <= highestObj.primaryPosition.y) continue;
 				
@@ -233,7 +227,7 @@ package src.Objects {
 					if (TileLocator.distance(highestObjMapPos.x, highestObjMapPos.y, highestObj.size, objMapPos.x, objMapPos.y, obj.size) <= 1)
 					{
 						dimmedObjects.push(obj);
-						TweenMax.to(obj, 1, { alpha: 0.25 } );
+						obj.dim();
 					}
 				}
 			}
@@ -283,7 +277,7 @@ package src.Objects {
 			if (dimmedObjects)
 			{
 				for each (var dimmedObj: SimpleObject in dimmedObjects) {
-					TweenMax.to(dimmedObj, 1, { alpha: 1 } );
+					dimmedObj.fadeIn(true);
 				}
 			}
 
@@ -297,8 +291,6 @@ package src.Objects {
 				case LOWER:
 					return bottomSpace;
 				break;
-				case UPPER:
-					return topSpace;
 				break;
 				default:
 					return objSpace;
@@ -309,70 +301,64 @@ package src.Objects {
 		public function addObject(obj: DisplayObject, layer: int = 0):void
 		{
 			var simpleObj: SimpleObject = obj as SimpleObject;
-			if (layer == 0 && simpleObj)
+
+			if (layer != 0 || !simpleObj)
 			{
-                simpleObj.setObjectCount(1);
+                getLayer(layer).addChildAt(obj, calculateDepth(obj.y, Constants.mapObjectPriority.none, getLayer(layer)));
+                return;
+            }
 
-				getLayer(layer).addChildAt(simpleObj, calculateDepth(simpleObj.primaryPosition.y, getLayer(layer)));
+            simpleObj.setObjectCount(1);
 
-                addObjectToDictionary(simpleObj);
+            getLayer(layer).addChildAt(simpleObj, calculateDepth(simpleObj.primaryPosition.y, simpleObj.mapPriority, getLayer(layer)));
 
-                var objectsInTile: Array = objects[getGlobalTileIndex(simpleObj.primaryPosition.toPosition())];
+            addObjectToDictionary(simpleObj);
 
-                // Sort the objects by priority
-                objectsInTile.sortOn("mapPriority", Array.NUMERIC);
+            var objectsInTile: Array = objects[getGlobalTileIndex(simpleObj.primaryPosition.toPosition())];
 
-                var highestPriorityObject: SimpleObject = objectsInTile[0];
+            // Sort the objects by priority
+            objectsInTile.sortOn("mapPriority", Array.NUMERIC);
 
-                // If we just added the highest priority obj then go through each of its tiles and grab all the objs to hide
-                if (highestPriorityObject == obj) {
-                    objectsInTile = [];
-                    var objCount: int = 1;
-                    for each (var position: Position in TileLocator.foreachMultitileObject(simpleObj)) {
-                        for each (var objectToHide: SimpleObject in objects[getGlobalTileIndex(position)]) {
-                            // Only consider the primary location of the obj so we dont count them multiple times
-                            if (objectToHide === highestPriorityObject) {
-                                continue;
-                            }
+            var highestPriorityObject: SimpleObject = objectsInTile[0];
 
-                            objectsInTile.push(objectToHide);
+            // If we just added the highest priority obj then go through each of its tiles and grab all the objs to hide
+            if (highestPriorityObject == obj) {
+                objectsInTile = [];
+                var objCount: int = 1;
+                for each (var position: Position in TileLocator.foreachMultitileObject(simpleObj)) {
+                    for each (var objectToHide: SimpleObject in objects[getGlobalTileIndex(position)]) {
+                        // Only consider the primary location of the obj so we dont count them multiple times
+                        if (objectToHide === highestPriorityObject) {
+                            continue;
+                        }
 
-                            if (objectToHide.isSelectable()) {
-                                objCount++;
-                            }
+                        objectsInTile.push(objectToHide);
+
+                        if (objectToHide.isSelectable()) {
+                            objCount++;
                         }
                     }
-
-                    highestPriorityObject.setObjectCount(objCount);
-                }
-                // Increment the count of the first one if there are multiple objs in the tile
-                else {
-                    if (simpleObj.isSelectable()) {
-                        highestPriorityObject.setObjectCount(highestPriorityObject.getObjectCount() + 1);
-                    }
                 }
 
-                if (!highestPriorityObject.visible) {
-                    highestPriorityObject.visible = true;
+                highestPriorityObject.setObjectCount(objCount);
+            }
+            // Increment the count of the first one if there are multiple objs in the tile
+            else {
+                if (simpleObj.isSelectable()) {
+                    highestPriorityObject.setObjectCount(highestPriorityObject.getObjectCount() + 1);
                 }
+            }
 
-                // Hide the other objects in the tile
-                for (var i: int = 0; i < objectsInTile.length; i++)
-                {
-                    var objectInTile: SimpleObject = objectsInTile[i];
+            highestPriorityObject.setVisibilityPriority(true, objectsInTile);
 
-                    if (objectInTile === highestPriorityObject) {
-                        continue;
-                    }
-
-                    objectInTile.setObjectCount(1);
-                    objectInTile.visible = false;
-                }
-			}
-			else {
-				getLayer(layer).addChildAt(obj, calculateDepth(obj.y, getLayer(layer)));
-			}
-		}
+            // Hide the other objects in the tile
+            for (var i: int = 1; i < objectsInTile.length; i++)
+            {
+                var objectInTile: SimpleObject = objectsInTile[i];
+                objectInTile.setObjectCount(1);
+                objectInTile.setVisibilityPriority(false, objectsInTile);
+            }
+        }
 
         private function addObjectToDictionary(simpleObj: SimpleObject): void
         {
@@ -439,9 +425,15 @@ package src.Objects {
                     // If the current highest obj was already visible then
                     // the obj being removed was already hidden by someone else.
                     // In this case, we can just decrement the highestObj count.
-                    if (highestPriorityObject.visible) {
+                    if (highestPriorityObject.isHighestPriority) {
                         if (simpleObj.isSelectable()) {
                             highestPriorityObject.setObjectCount(highestPriorityObject.getObjectCount() - 1);
+                        }
+
+                        highestPriorityObject.setVisibilityPriority(true, objectsInTile);
+
+                        for (var i: int = 1; i < objectsInTile.length; i++) {
+                            objectsInTile[i].setVisibilityPriority(false, objectsInTile);
                         }
 
                         return;
@@ -461,13 +453,11 @@ package src.Objects {
                     var eachHighestPriorityObject: SimpleObject = eachObjectsInTile[0];
                     eachHighestPriorityObject.setObjectCount(getSelectableObjectCount(eachObjectsInTile));
 
-                    if (!eachHighestPriorityObject.visible) {
-                        eachHighestPriorityObject.visible = true;
-                    }
+                    eachObjectsInTile[0].setVisibilityPriority(true, eachObjectsInTile);
 
-                    for (var i: int = 1; i < eachObjectsInTile.length; i++) {
+                    for (i = 1; i < eachObjectsInTile.length; i++) {
                         eachObjectsInTile[i].setObjectCount(1);
-                        eachObjectsInTile[i].visible = false;
+                        eachObjectsInTile[i].setVisibilityPriority(false, eachObjectsInTile);
                     }
                 }
 			}
@@ -483,7 +473,6 @@ package src.Objects {
 		public function moveWithCamera(x: int, y: int):void
 		{
 			var camera: Camera = new Camera(x, y);
-			moveLayerWithCamera(camera, topSpace);
 			moveLayerWithCamera(camera, bottomSpace);
 			moveLayerWithCamera(camera, objSpace);
 		}
@@ -494,12 +483,12 @@ package src.Objects {
 			layer.y = -camera.currentPosition.y;
 		}
 
-		private function calculateDepth(y: Number, layer: Sprite): int
+		private function calculateDepth(y: Number, mapPriority: int, layer: Sprite): int
 		{
-			return binarySearchDepth(y, 0, layer.numChildren - 1, layer);
+			return binarySearchDepth(y, mapPriority, 0, layer.numChildren - 1, layer);
 		}
 		
-		private function binarySearchDepth(y: Number, low: int, high: int, layer: Sprite): int
+		private function binarySearchDepth(y: Number, mapPrioty: int, low: int, high: int, layer: Sprite): int
 		{
 			while (low <= high) {
 				var mid: int = (low + high) / 2;
@@ -507,6 +496,7 @@ package src.Objects {
 				var currentObj: DisplayObject = layer.getChildAt(mid) as DisplayObject;
 				var simpleObj: SimpleObject = currentObj as SimpleObject;
 				var objY: Number = simpleObj == null ? currentObj.y : simpleObj.primaryPosition.y;
+                var objPriority: int = simpleObj == null ? Constants.mapObjectPriority.displayObject : simpleObj.mapPriority;
 
                 if (objY > y) {
 					high = mid - 1;
@@ -514,7 +504,13 @@ package src.Objects {
 				else if (objY < y) {
 					low = mid + 1;
 				}
-				else {
+				else if (objPriority < mapPrioty)  {
+                    high = mid - 1;
+                }
+                else if (objPriority > mapPrioty) {
+                    low = mid + 1;
+                }
+                else {
 					return mid;
 				}
 			}

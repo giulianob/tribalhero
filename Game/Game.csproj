@@ -189,6 +189,7 @@
     <Compile Include="Comm\CmdLine Commands\BarbarianTribeCommandsLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\RegionCommandsLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\StrongholdCommandLineModule.cs" />
+    <Compile Include="Comm\CmdLine Commands\SystemCommandLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\TribeCommandLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\PlayerCommandLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\ResourcesCommandLineModule.cs" />

@@ -34,6 +34,8 @@ package src.Objects {
 
         public var mapPriority: int;
 
+        public var isHighestPriority: Boolean;
+
 		public function SimpleObject(objX: int, objY: int, size: int) {
 			super();
 
@@ -103,13 +105,16 @@ package src.Objects {
 			dispatchEvent(new Event(DISPOSED));
 		}
 		
-		public function fadeIn():void
+		public function fadeIn(startFromCurrentAlpha: Boolean = false):void
 		{
-            alpha = 0;
+            if (!startFromCurrentAlpha) {
+                alpha = 0;
+            }
+
             visible = true;
 			TweenMax.to(this, 1, {alpha:1});
 		}
-			
+
 		public function setOnSelect(callback: Function):void
 		{
 			onSelect = callback;
@@ -192,6 +197,8 @@ package src.Objects {
 		}
 
         public function setSprite(sprite: DisplayObject, spritePosition: Point): void {
+            spriteContainer.removeChildren();
+
             this.spritePosition = spritePosition;
 
             spriteContainer.addChild(sprite);
@@ -211,6 +218,15 @@ package src.Objects {
 
         override public function set y(value: Number): void {
             super.y = int(value);
+        }
+
+        public function dim(): void {
+            TweenMax.to(this, 1, { alpha: 0.25 } );
+        }
+
+        public function setVisibilityPriority(isHighestPriority: Boolean, objectsInTile: Array): void {
+            visible = isHighestPriority;
+            this.isHighestPriority = isHighestPriority;
         }
 	}
 	

@@ -288,7 +288,6 @@
 		private static const WALL_VARIATIONS: int = 2;
 
 		public var objects: Array = [];
-        public var bitmaps: Array = [];
 
 		private var parent: SimpleGameObject;
 		public var radius: int = 0;
@@ -313,12 +312,6 @@
             }
 
 			objects = [];
-
-            for each(var bitmap: Bitmap in bitmaps) {
-                bitmap.bitmapData.dispose();
-            }
-
-            bitmaps = [];
 		}
 
 		public function draw(radius: int):void {						
@@ -367,18 +360,13 @@
 		}
 
 		private function pushWall(tileId: int, x: int, y: int) : void {
-            // TODO: Add wall variations back in
-            var wall: Bitmap = Constants.wallTileset.getTile(tileId);
-
             var mapPosition: Position = new Position(x, y);
             var screenPosition: ScreenPosition = mapPosition.toScreenPosition();
 
-            var simpleObject: SimpleObject = new SimpleObject(screenPosition.x, screenPosition.y, 1);
-            simpleObject.addChild(wall);
+            var simpleObject: SimpleObject = new WallObject(screenPosition.x, screenPosition.y, tileId);
 
 			Global.map.objContainer.addObject(simpleObject);
 
-            bitmaps.push(wall);
 			objects.push(simpleObject);
 		}
 	}

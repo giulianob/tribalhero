@@ -4,6 +4,7 @@
     import flash.display.DisplayObject;
     import flash.display.DisplayObjectContainer;
     import flash.display.Sprite;
+    import flash.geom.Point;
 
     import src.Assets;
     import src.Constants;
@@ -40,10 +41,10 @@
 
 		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, size: int, playerId: int, cityId: int, objectId: int): TroopObject
 		{
-			var troopObject: TroopObject = new TroopObject(type, state, objX, objY, size, playerId, cityId, objectId);
+            var defaultSprite: DisplayObjectContainer = getSprite("map", true);
+            var defaultPosition: Point = Assets.getPosition(getSpriteName(), "map");
+			var troopObject: TroopObject = new TroopObject(type, state, defaultSprite, defaultPosition, objX, objY, size, playerId, cityId, objectId);
 
-			troopObject.setSprite(getSprite("map", true), Assets.getPosition(getSpriteName(), "map"));
-			
 			troopObject.setOnSelect(Global.map.selectObject);
 			
 			return troopObject;

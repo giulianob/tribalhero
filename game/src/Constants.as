@@ -153,9 +153,11 @@ package src
             barbarianTribe: 3,
             forest: 4,
             troopObject: 5,
-            gameObject: 6,
-            simpleGameObject: 7,
-            simpleObject: 8
+            wallPriority: 6,
+            gameObject: 7,
+            simpleGameObject: 8,
+            simpleObject: 9,
+            displayObject: 10
         };
 
         public static const shadowAlpha: Number = 0.75;

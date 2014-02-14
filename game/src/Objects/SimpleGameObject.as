@@ -13,7 +13,7 @@ package src.Objects {
     public class SimpleGameObject extends SimpleObject {
 		
 		public static var OBJECT_UPDATE: String = "OBJECT_UPDATE";
-		
+
 		public static var STATE_NORMAL: int = 0;
 		public static var STATE_BATTLE: int = 1;
 		public static var STATE_MOVING: int = 2;		

@@ -87,7 +87,7 @@
 			Global.main = this;
 
 			//Init right context menu for debugging
-			if (Constants.debug > 0) {
+			CONFIG::debug {
 				var fm_menu:ContextMenu = new ContextMenu();
 				var dump:ContextMenuItem = new ContextMenuItem("Dump stage");
 				dump.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, function(e:Event):void { Util.dumpDisplayObject(stage); } );

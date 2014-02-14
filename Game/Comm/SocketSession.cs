@@ -71,16 +71,19 @@ namespace Game.Comm
                             continue;
                         }
 
-                        if (e.SocketErrorCode == SocketError.ConnectionReset || e.SocketErrorCode == SocketError.TimedOut)
+                        switch(e.SocketErrorCode)
                         {
-                            if (Logger.IsDebugEnabled)
-                            {
-                                Logger.Debug(e, "Socket error handled packetLength[{0}] socketErrorCode[{1}]", packetBytes.Length, e.SocketErrorCode);
-                            }
-                        }
-                        else
-                        {
-                            Logger.Warn(e, "Socket exception with unhandled error {0} {1}", e.SocketErrorCode, e.Message);
+                            case SocketError.ConnectionReset:
+                            case SocketError.TimedOut:
+                            case SocketError.Shutdown:
+                                if (Logger.IsDebugEnabled)
+                                {
+                                    Logger.Debug(e, "Socket error handled packetLength[{0}] socketErrorCode[{1}] IP[{2}", packetBytes.Length, e.SocketErrorCode, Name);
+                                }
+                                break;
+                            default:
+                                Logger.Warn(e, "Socket exception with unhandled error {0} {1} {2}", e.SocketErrorCode, e.Message, Name);
+                                break;
                         }
 
                         return;

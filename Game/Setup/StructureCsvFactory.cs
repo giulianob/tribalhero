@@ -81,7 +81,7 @@ namespace Game.Setup
                                                            workerId,
                                                            byte.Parse(toks[col["Size"]]));
 
-                    logger.Info(string.Format("{0}:{1}", int.Parse(toks[col["Type"]]) * 100 + int.Parse(toks[col["Lvl"]]), toks[col["Name"]]));
+                    logger.Trace(string.Format("{0}:{1}", int.Parse(toks[col["Type"]]) * 100 + int.Parse(toks[col["Lvl"]]), toks[col["Name"]]));
 
                     dict[int.Parse(toks[col["Type"]]) * 100 + int.Parse(toks[col["Lvl"]])] = basestats;
                 }

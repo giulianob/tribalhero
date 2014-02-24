@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Diagnostics;
+using System.Net;
 using System.Threading;
 using Game.Comm;
 using Game.Data;
@@ -43,6 +44,8 @@ namespace Game.Logic
 
         private Timer timer;
 
+        private readonly string hostname;
+
         public SystemVariablesUpdater(IWorld world,
                                       ITribeManager tribeManager,
                                       IDbManager dbManager,
@@ -58,6 +61,8 @@ namespace Game.Logic
             this.strongholdManager = strongholdManager;
             this.forestManager = forestManager;
             this.systemVariableManager = systemVariableManager;
+
+            hostname = Dns.GetHostName();
         }
 
         [Obsolete("Inject SystemVariablesUpdater instead")]
@@ -207,6 +212,7 @@ namespace Game.Logic
                     variables.Add(new SystemVariable("Forests.count", forestManager.ForestCount));
 
                     // Update vars
+                    var graphiteKeyPrefix = string.Format("servers.{0}.tribalhero.", hostname);
                     foreach (var variable in variables)
                     {
                         if (!systemVariableManager.ContainsKey(variable.Key))
@@ -218,7 +224,22 @@ namespace Game.Logic
                             systemVariableManager[variable.Key].Value = variable.Value;
                         }
 
-                        dbManager.Save(systemVariableManager[variable.Key]);
+                        var actualVariable = systemVariableManager[variable.Key];
+                        dbManager.Save(actualVariable);
+
+                        if (actualVariable.Value is int)
+                        {
+                            try
+                            {
+                                NStatsD.Client.Current.Gauge(string.Format("{0}{1}",
+                                                                           graphiteKeyPrefix,
+                                                                           actualVariable.Key.Replace('.', '-').ToLowerInvariant()),
+                                                             (int)actualVariable.Value);
+                            }
+                            catch(Exception)
+                            {
+                            }
+                        }
                     }
                     #endregion
                 }

@@ -14,6 +14,7 @@ using Game.Map;
 using Game.Module;
 using Game.Setup;
 using Game.Util;
+using Ninject.Extensions.Logging;
 using Persistance;
 
 #endregion
@@ -22,6 +23,8 @@ namespace Game.Logic
 {
     public class SystemVariablesUpdater : IGameTask
     {
+        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+
         private readonly IDbManager dbManager;
 
         private readonly object objLock = new object();
@@ -44,7 +47,7 @@ namespace Game.Logic
 
         private Timer timer;
 
-        private readonly string hostname;
+        private readonly string graphiteKeyPrefix;
 
         public SystemVariablesUpdater(IWorld world,
                                       ITribeManager tribeManager,
@@ -62,7 +65,15 @@ namespace Game.Logic
             this.forestManager = forestManager;
             this.systemVariableManager = systemVariableManager;
 
-            hostname = Dns.GetHostName();
+            try
+            {
+                var hostname = Dns.GetHostEntry(Dns.GetHostName()).HostName;
+                graphiteKeyPrefix = string.Format("servers.{0}.tribalhero.", hostname.Replace('.', '_'));
+            }
+            catch(Exception e)
+            {
+                logger.Warn(e, "Failed to get FQDN. Won't put stats in Graphite.");
+            }
         }
 
         [Obsolete("Inject SystemVariablesUpdater instead")]
@@ -104,6 +115,7 @@ namespace Game.Logic
                     dbManager.Save(systemVariableManager["System.time"]);
 
                     #region 10 second updates
+
                     if (DateTime.UtcNow.Subtract(lastUpdateScheduler).TotalMilliseconds < 10000)
                     {
                         return;
@@ -142,35 +154,35 @@ namespace Game.Logic
 
                     var variables = new List<SystemVariable>
                     {
-                            new SystemVariable("System.uptime",
-                                               string.Format("{0} days {1:D2} hrs, {2:D2} mins, {3:D2} secs",
-                                                             (int)(uptime.TotalDays),
-                                                             uptime.Hours,
-                                                             uptime.Minutes,
-                                                             uptime.Seconds)),
-                            new SystemVariable("Scheduler.size", schedulerSize),
-                            new SystemVariable("Scheduler.size_change", schedulerDelta),
-                            new SystemVariable("Scheduler.actions_per_second",
-                                               (int)(actionsFired / now.Subtract(lastProbe).TotalSeconds)),
-                            new SystemVariable("Scheduler.next_fire", nextFire),
-                            new SystemVariable("ThreadPool.max_worker", workerThreads),
-                            new SystemVariable("ThreadPool.max_completion", completionThreads),
-                            new SystemVariable("ThreadPool.available_worker", availableWorkerThreads),
-                            new SystemVariable("ThreadPool.available_completion", availableCompletionThreads),
-                            new SystemVariable("ThreadPool.active_worker", workerThreads - availableWorkerThreads),
-                            new SystemVariable("ThreadPool.active_completion",
-                                               completionThreads - availableCompletionThreads),
-                            new SystemVariable("Process.memory_usage", Process.GetCurrentProcess().WorkingSet64),
-                            new SystemVariable("Process.peak_memory_usage", Process.GetCurrentProcess().PeakWorkingSet64),
-                            new SystemVariable("Database.queries_per_second",
-                                               (int)(queriesRan / now.Subtract(lastDbProbe).TotalSeconds)),
-                            new SystemVariable("Players.count", world.Players.Count),
-                            new SystemVariable("Players.logged_in", TcpWorker.GetSessionCount()),
-                            new SystemVariable("Cities.count", world.Cities.Count),
-                            new SystemVariable("Channel.subscriptions", Global.Current.Channel.SubscriptionCount()),
-                            new SystemVariable("Tribes.count", tribeManager.TribeCount),
-                            new SystemVariable("Strongholds.neutral", strongholdsNeutral),
-                            new SystemVariable("Strongholds.occupied", strongholdsOccupied),
+                        new SystemVariable("System.uptime",
+                                           string.Format("{0} days {1:D2} hrs, {2:D2} mins, {3:D2} secs",
+                                                         (int)(uptime.TotalDays),
+                                                         uptime.Hours,
+                                                         uptime.Minutes,
+                                                         uptime.Seconds)),
+                        new SystemVariable("Scheduler.size", schedulerSize),
+                        new SystemVariable("Scheduler.size_change", schedulerDelta),
+                        new SystemVariable("Scheduler.actions_per_second",
+                                           (int)(actionsFired / now.Subtract(lastProbe).TotalSeconds)),
+                        new SystemVariable("Scheduler.next_fire", nextFire),
+                        new SystemVariable("ThreadPool.max_worker", workerThreads),
+                        new SystemVariable("ThreadPool.max_completion", completionThreads),
+                        new SystemVariable("ThreadPool.available_worker", availableWorkerThreads),
+                        new SystemVariable("ThreadPool.available_completion", availableCompletionThreads),
+                        new SystemVariable("ThreadPool.active_worker", workerThreads - availableWorkerThreads),
+                        new SystemVariable("ThreadPool.active_completion",
+                                           completionThreads - availableCompletionThreads),
+                        new SystemVariable("Process.memory_usage", Process.GetCurrentProcess().WorkingSet64),
+                        new SystemVariable("Process.peak_memory_usage", Process.GetCurrentProcess().PeakWorkingSet64),
+                        new SystemVariable("Database.queries_per_second",
+                                           (int)(queriesRan / now.Subtract(lastDbProbe).TotalSeconds)),
+                        new SystemVariable("Players.count", world.Players.Count),
+                        new SystemVariable("Players.logged_in", TcpWorker.GetSessionCount()),
+                        new SystemVariable("Cities.count", world.Cities.Count),
+                        new SystemVariable("Channel.subscriptions", Global.Current.Channel.SubscriptionCount()),
+                        new SystemVariable("Tribes.count", tribeManager.TribeCount),
+                        new SystemVariable("Strongholds.neutral", strongholdsNeutral),
+                        new SystemVariable("Strongholds.occupied", strongholdsOccupied),
                     };
 
                     // Max player logged in ever
@@ -193,8 +205,8 @@ namespace Game.Logic
                             {
                                 variables.AddRange(new List<SystemVariable>
                                 {
-                                        new SystemVariable("Players.max_logged_in", currentlyLoggedIn),
-                                        new SystemVariable("Players.max_logged_in_date", DateTime.UtcNow),
+                                    new SystemVariable("Players.max_logged_in", currentlyLoggedIn),
+                                    new SystemVariable("Players.max_logged_in_date", DateTime.UtcNow),
                                 });
                             }
                         }
@@ -202,8 +214,8 @@ namespace Game.Logic
                         {
                             variables.AddRange(new List<SystemVariable>
                             {
-                                    new SystemVariable("Players.max_logged_in", 0),
-                                    new SystemVariable("Players.max_logged_in_date", DateTime.UtcNow),
+                                new SystemVariable("Players.max_logged_in", 0),
+                                new SystemVariable("Players.max_logged_in_date", DateTime.UtcNow),
                             });
                         }
                     }
@@ -211,8 +223,7 @@ namespace Game.Logic
                     // Forest cnt
                     variables.Add(new SystemVariable("Forests.count", forestManager.ForestCount));
 
-                    // Update vars
-                    var graphiteKeyPrefix = string.Format("servers.{0}.tribalhero.", hostname);
+                    // Update vars                    
                     foreach (var variable in variables)
                     {
                         if (!systemVariableManager.ContainsKey(variable.Key))
@@ -227,7 +238,7 @@ namespace Game.Logic
                         var actualVariable = systemVariableManager[variable.Key];
                         dbManager.Save(actualVariable);
 
-                        if (actualVariable.Value is int)
+                        if (!string.IsNullOrEmpty(graphiteKeyPrefix) && actualVariable.Value is int)
                         {
                             try
                             {
@@ -241,6 +252,7 @@ namespace Game.Logic
                             }
                         }
                     }
+
                     #endregion
                 }
             }

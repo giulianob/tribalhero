@@ -196,6 +196,7 @@ namespace Game
             Bind<CallbackProcedure>().ToSelf().InSingletonScope();
             Bind<Random>().ToSelf().InSingletonScope();
             Bind<ISystemVariableManager>().To<SystemVariableManager>().InSingletonScope();
+            Bind<SystemVariablesUpdater>().ToSelf().InSingletonScope();
 
             #endregion
 

@@ -56,8 +56,7 @@ namespace Game.Logic
                                       IScheduler scheduler,
                                       IStrongholdManager strongholdManager,
                                       IForestManager forestManager,
-                                      ISystemVariableManager systemVariableManager,
-                                      IGlobal global)
+                                      ISystemVariableManager systemVariableManager)
         {
             this.world = world;
             this.tribeManager = tribeManager;
@@ -67,35 +66,9 @@ namespace Game.Logic
             this.forestManager = forestManager;
             this.systemVariableManager = systemVariableManager;
 
-            try
+            if (!string.IsNullOrEmpty(Config.api_id))
             {
-                string hostname;
-
-                if (global.IsRunningOnMono())
-                {
-                    var domainName = new StringBuilder(256);
-                    Mono.Unix.Native.Syscall.getdomainname(domainName, (ulong)domainName.Capacity - 1);
-
-                    string hostOnly = Dns.GetHostName();
-                    if (domainName.Length > 0 && !hostOnly.Contains(domainName.ToString()))
-                    {
-                        hostname = hostOnly + "." + domainName;
-                    }
-                    else
-                    {
-                        hostname = hostOnly;
-                    }
-                }
-                else
-                {
-                    hostname = Dns.GetHostEntry(Dns.GetHostName()).HostName;
-                }
-
-                graphiteKeyPrefix = string.Format("servers.{0}.tribalhero.", hostname.Replace('.', '_'));
-            }
-            catch(Exception e)
-            {
-                logger.Warn(e, "Failed to get FQDN. Won't put stats in Graphite.");
+                graphiteKeyPrefix = string.Format("servers.{0}_tribalhero_com.tribalhero.", Config.api_id);
             }
         }
 

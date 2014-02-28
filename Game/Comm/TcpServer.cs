@@ -67,26 +67,28 @@ namespace Game.Comm
             Socket s;
             while (!isStopped)
             {
+                SocketSession session;
+
                 try
-                {
+                {                
                     s = listener.AcceptSocket();
+
+                    if (s.LocalEndPoint == null)
+                    {
+                        continue;
+                    }
+
+                    s.Blocking = false;
+                    s.NoDelay = true;
+                    s.SendTimeout = 1000;
+                    s.SendBufferSize = 16384;
+
+                    session = socketFactory.CreateSocketSession(s.RemoteEndPoint.ToString(), s);
                 }
                 catch(Exception)
                 {
                     continue;
                 }
-
-                if (s.LocalEndPoint == null)
-                {
-                    continue;
-                }
-
-                s.Blocking = false;
-                s.NoDelay = true;
-                s.SendTimeout = 1000;
-                s.SendBufferSize = 16384;
-
-                var session = socketFactory.CreateSocketSession(s.RemoteEndPoint.ToString(), s);
 
                 TcpWorker.Add(session);
             }

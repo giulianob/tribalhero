@@ -5,7 +5,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
+using System.Xml.Schema;
 using Game.Util;
 using Ninject.Extensions.Logging;
 
@@ -39,6 +41,60 @@ namespace Game.Comm
             {
                 return workerList.Sum(x => x.sessions.Count);
             }
+        }
+
+        public static string GetAllSocketStatus()
+        {
+            var socketStatus = new StringBuilder();
+            var total = 0;
+
+            lock (workerLock)
+            {
+                foreach (var worker in workerList)
+                {
+                    lock (worker.sockListLock)
+                    {
+                        foreach (var session in worker.sessions.Values)
+                        {
+                            var socket = session.Socket;
+                            try
+                            {
+                                socketStatus.AppendLine(string.Format("IP[{0}] Connected[{2}] Blocking[{1}]", session.Name, socket.Blocking, socket.Connected));
+                            }
+                            catch(Exception e)
+                            {
+                                socketStatus.AppendLine(string.Format("Failed to get socket status for {0}: {1}", session.Name, e.Message));
+                            }
+                        }
+
+                        total += worker.sessions.Count;
+                    }
+                }
+            }
+
+            socketStatus.Append(string.Format("{0} sockets total", total));
+
+            return socketStatus.ToString();
+        }
+
+        public static string DisconnectAll()
+        {
+            var socketStatus = new StringBuilder();
+            lock (workerLock)
+            {
+                foreach (var worker in workerList)
+                {
+                    lock (worker.sockListLock)
+                    {
+                        foreach (var session in worker.sessions.Values.ToList())
+                        {
+                            worker.SocketDisconnect(session.Socket);
+                        }
+                    }
+                }
+            }
+
+            return socketStatus.ToString();
         }
 
         public static void Add(SocketSession session)
@@ -159,7 +215,7 @@ namespace Game.Comm
                     }
                     catch(SocketException) {}
 
-                    s.Close();
+                    s.Close(1);
                 }
 
                 //create disconnect packet to send to processor

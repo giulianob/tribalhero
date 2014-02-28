@@ -136,7 +136,7 @@ namespace Game.Setup
 
             if (lastLvl == 0)
             {
-                logger.Info("WorkerID not found for [{0}][{1}]", type, lvl);
+                logger.Trace("WorkerID not found for [{0}][{1}]", type, lvl);
             }
 
             return dict[lastLvl];

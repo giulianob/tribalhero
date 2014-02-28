@@ -408,8 +408,9 @@ namespace Game.Map
             RegionChanges = regionChangesStream;
 
             regions = new List<IRegion>(RegionsCount);
+            
             for (int regionId = 0; regionId < RegionsCount; ++regionId)
-            {
+            {                
                 var data = new byte[RegionSize * Region.TILE_SIZE]; // 1 tile is 2 bytes
 
                 var mapDataOffset = (int)(RegionSize * Region.TILE_SIZE * regionId);

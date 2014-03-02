@@ -29,6 +29,8 @@ namespace Game.Logic
 
         private int actionsFired;
 
+        private int actionTotalMilliseconds;
+
         private DateTime lastProbe;
 
         private int lastScheduleSize;
@@ -62,7 +64,12 @@ namespace Game.Logic
 
         public bool Paused { get; private set; }
 
-        public void Probe(out DateTime outLastProbe, out int outActionsFired, out int schedulerSize, out int schedulerDelta, out DateTime outNextFire)
+        public void Probe(out DateTime outLastProbe, 
+            out int outActionsFired, 
+            out int schedulerSize, 
+            out int schedulerDelta, 
+            out DateTime outNextFire,
+            out int outActionTotalMilliseconds)
         {
             lock (schedulesLock)
             {
@@ -71,9 +78,11 @@ namespace Game.Logic
                 schedulerSize = schedules.Count;
                 schedulerDelta = schedulerSize - lastScheduleSize;
                 outNextFire = nextFire;
+                outActionTotalMilliseconds = actionTotalMilliseconds;
 
                 lastScheduleSize = schedulerSize;
                 lastProbe = SystemClock.Now;
+                actionTotalMilliseconds = 0;
                 actionsFired = 0;
             }
         }
@@ -194,9 +203,7 @@ namespace Game.Logic
                     logger.Debug("In DispatchAction but no schedules");
                     return;
                 }
-
-                actionsFired++;
-
+                
                 // Get the schedule that is supposed to fire
                 ISchedule next = schedules[0];
                 schedules.RemoveAt(0);
@@ -219,21 +226,49 @@ namespace Game.Logic
                 doneEvents.Add(job.Id, job.ResetEvent);
 
                 factory.StartNew(() =>
-                    {
-                        ExecuteAction(job);
-                    });                
+                {
+                    ExecuteAction(job);
+                });               
 
                 SetNextActionTime();
             }
         }
 
         private void ExecuteAction(object obj)
-        {
+        {           
             var job = (ScheduledJob)obj;
 
             actionExecuting = job.Schedule;
 
+            var startTicks = Environment.TickCount;
+
             job.Schedule.Callback(null);
+
+            var deltaTicks = Environment.TickCount - startTicks;
+            if (deltaTicks > 1000)
+            {
+                var gameAction = job.Schedule as GameAction;
+                if (gameAction == null)
+                {
+                    logger.Warn("Slow action took {0}ms to complete. ScheduleType[{1}] ScheduleTime[{2}]",
+                                deltaTicks,
+                                job.Schedule.GetType().FullName,
+                                job.Schedule.Time);
+                }
+                else
+                {
+                    logger.Warn("Slow action took {0}ms to complete. ScheduleType[{1}] ScheduleTime[{2}] LocationType[{3}] LocationId[{4}] ActionId[{5}]",
+                                deltaTicks,
+                                job.Schedule.GetType().FullName,
+                                job.Schedule.Time,
+                                gameAction.Location.LocationType.ToString(),
+                                gameAction.Location.LocationId,
+                                gameAction.ActionId);
+                }
+            }
+
+            Interlocked.Increment(ref actionsFired);
+            Interlocked.Add(ref actionTotalMilliseconds, deltaTicks);
 
             actionExecuting = null;
 

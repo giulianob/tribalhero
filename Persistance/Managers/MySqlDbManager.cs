@@ -872,7 +872,8 @@ namespace Persistance.Managers
 
         private int ExecuteNonQuery(MySqlCommand command)
         {
-            int affectedRows;
+            // ReSharper disable once RedundantAssignment
+            int affectedRows = 0;
 
             Interlocked.Increment(ref queriesRan);
 

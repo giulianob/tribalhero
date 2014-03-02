@@ -1,11 +1,15 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Ninject.Extensions.Logging;
 
 namespace Game.Util.Locking
 {
     public class CallbackLock : ICallbackLock
     {
+        private static readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+
         private readonly DefaultMultiObjectLock.Factory multiObjectLockFactory;
 
         private IMultiObjectLock currentLock;
@@ -32,8 +36,7 @@ namespace Game.Util.Locking
             {
                 if ((++count) % 10 == 0)
                 {
-                    LoggerFactory.Current.GetCurrentClassLogger()
-                                 .Warn(string.Format("CallbackLock has iterated {0} times", count));
+                    logger.Warn(string.Format("CallbackLock has iterated {0} times {1}", count, Environment.StackTrace));
                 }
 
                 if (count >= 10000)

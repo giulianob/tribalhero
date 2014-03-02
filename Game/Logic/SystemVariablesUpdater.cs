@@ -125,8 +125,9 @@ namespace Game.Logic
                     int actionsFired;
                     DateTime lastProbe;
                     DateTime nextFire;
+                    int actionTotalMilliseconds;
 
-                    scheduler.Probe(out lastProbe, out actionsFired, out schedulerSize, out schedulerDelta, out nextFire);
+                    scheduler.Probe(out lastProbe, out actionsFired, out schedulerSize, out schedulerDelta, out nextFire, out actionTotalMilliseconds);
 
                     int workerThreads;
                     int completionThreads;
@@ -147,6 +148,7 @@ namespace Game.Logic
                     strongholdManager.Probe(out strongholdsNeutral, out strongholdsOccupied);
 
                     var uptime = now.Subtract(systemStartTime);
+                    var averageActionTime = actionsFired == 0 ? 0 : actionTotalMilliseconds / actionsFired;
 
                     var variables = new List<SystemVariable>
                     {
@@ -157,6 +159,7 @@ namespace Game.Logic
                                                          uptime.Minutes,
                                                          uptime.Seconds)),
                         new SystemVariable("Scheduler.size", schedulerSize),
+                        new SystemVariable("Scheduler.average_action_time", averageActionTime),
                         new SystemVariable("Scheduler.size_change", schedulerDelta),
                         new SystemVariable("Scheduler.actions_per_second",
                                            (int)(actionsFired / now.Subtract(lastProbe).TotalSeconds)),

@@ -1,8 +1,11 @@
 #region
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using Game.Setup;
 
@@ -11,7 +14,11 @@ using Game.Setup;
 namespace Game.Comm
 {
     public class TcpServer : ITcpServer
-    {
+    {        
+        private readonly object workerLock = new object();
+
+        private readonly List<TcpWorker> workerList = new List<TcpWorker>();
+
         private readonly TcpListener listener;
 
         private readonly Thread listeningThread;
@@ -56,7 +63,7 @@ namespace Game.Comm
             isStopped = true;
             listener.Stop();
             listeningThread.Join();
-            TcpWorker.DeleteAll();
+            DeleteAll();
             return true;
         }
 
@@ -90,10 +97,128 @@ namespace Game.Comm
                     continue;
                 }
 
-                TcpWorker.Add(session);
+                Add(session);
             }
 
             listener.Stop();
+        }
+
+        public int GetSessionCount()
+        {
+            lock (workerLock)
+            {
+                return workerList.Sum(x => x.Sessions.Count());
+            }
+        }
+
+        public string GetAllSocketStatus()
+        {
+            var socketStatus = new StringBuilder();
+            var total = 0;
+
+            lock (workerLock)
+            {
+                foreach (var worker in workerList)
+                {
+                    lock (worker.SockListLock)
+                    {
+                        foreach (var session in worker.Sessions)
+                        {
+                            var socket = session.Socket;
+                            try
+                            {
+                                socketStatus.AppendLine(string.Format("IP[{0}] Connected[{2}] Blocking[{1}]", session.Name, socket.Blocking, socket.Connected));
+                            }
+                            catch(Exception e)
+                            {
+                                socketStatus.AppendLine(string.Format("Failed to get socket status for {0}: {1}", session.Name, e.Message));
+                            }
+
+                            total++;
+                        }
+                    }
+                }
+            }
+
+            socketStatus.Append(string.Format("{0} sockets total", total));
+
+            return socketStatus.ToString();
+        }
+
+        public string DisconnectAll()
+        {
+            var socketStatus = new StringBuilder();
+            lock (workerLock)
+            {
+                foreach (var worker in workerList)
+                {
+                    lock (worker.SockListLock)
+                    {
+                        foreach (var session in worker.Sessions.ToList())
+                        {
+                            worker.SocketDisconnect(session.Socket);
+                        }
+                    }
+                }
+            }
+
+            return socketStatus.ToString();
+        }
+
+        private void Add(SocketSession session)
+        {
+            lock (workerLock)
+            {
+                bool needNewWorker = true;
+                foreach (var worker in workerList)
+                {
+                    lock (worker.SockListLock)
+                    {
+                        // Worker full
+                        if (worker.Sessions.Count > 250)
+                        {
+                            continue;
+                        }
+
+                        // Socket already disconnected before we got here
+                        if (!session.Socket.Connected)
+                        {
+                            return;
+                        }
+
+                        session.OnClose += worker.OnClose;
+                        worker.Put(session);
+                    }
+
+                    needNewWorker = false;
+                    break;
+                }
+
+                if (needNewWorker)
+                {
+                    var newWorker = new TcpWorker();
+                    workerList.Add(newWorker);
+
+                    session.OnClose += newWorker.OnClose;
+
+                    newWorker.Put(session);
+                    newWorker.Start();
+                }
+
+                var packet = new Packet(Command.OnConnect);
+                ThreadPool.QueueUserWorkItem(session.ProcessEvent, packet);
+            }
+        }
+
+        private void DeleteAll()
+        {
+            lock (workerLock)
+            {
+                foreach (var worker in workerList)
+                {
+                    worker.Stop();
+                }
+            }
         }
     }
 }

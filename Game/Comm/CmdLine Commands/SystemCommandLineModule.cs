@@ -4,6 +4,13 @@ namespace Game.Comm
 {
     public class SystemCommandLineModule : CommandLineModule
     {
+        private readonly ITcpServer tcpServer;
+
+        public SystemCommandLineModule(ITcpServer tcpServer)
+        {
+            this.tcpServer = tcpServer;
+        }
+
         public override void RegisterCommands(CommandLineProcessor processor)
         {
             processor.RegisterCommand("socketstatus", SocketStatus, PlayerRights.Bureaucrat);            
@@ -12,12 +19,12 @@ namespace Game.Comm
 
         private string SocketStatus(Session session, string[] parms)
         {
-            return TcpWorker.GetAllSocketStatus();
+            return tcpServer.GetAllSocketStatus();
         }
 
         private string DisconnectAll(Session session, string[] parms)
         {
-            return TcpWorker.DisconnectAll();
+            return tcpServer.DisconnectAll();
         }
     }
 }

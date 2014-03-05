@@ -38,6 +38,8 @@ namespace Game.Logic
 
         private readonly ISystemVariableManager systemVariableManager;
 
+        private readonly ITcpServer tcpServer;
+
         private readonly ITribeManager tribeManager;
 
         private readonly IWorld world;
@@ -56,7 +58,8 @@ namespace Game.Logic
                                       IScheduler scheduler,
                                       IStrongholdManager strongholdManager,
                                       IForestManager forestManager,
-                                      ISystemVariableManager systemVariableManager)
+                                      ISystemVariableManager systemVariableManager,
+                                      ITcpServer tcpServer)
         {
             this.world = world;
             this.tribeManager = tribeManager;
@@ -65,6 +68,7 @@ namespace Game.Logic
             this.strongholdManager = strongholdManager;
             this.forestManager = forestManager;
             this.systemVariableManager = systemVariableManager;
+            this.tcpServer = tcpServer;
 
             if (!string.IsNullOrEmpty(Config.api_id))
             {
@@ -176,7 +180,7 @@ namespace Game.Logic
                         new SystemVariable("Database.queries_per_second",
                                            (int)(queriesRan / now.Subtract(lastDbProbe).TotalSeconds)),
                         new SystemVariable("Players.count", world.Players.Count),
-                        new SystemVariable("Players.logged_in", TcpWorker.GetSessionCount()),
+                        new SystemVariable("Players.logged_in", tcpServer.GetSessionCount()),
                         new SystemVariable("Cities.count", world.Cities.Count),
                         new SystemVariable("Channel.subscriptions", Global.Current.Channel.SubscriptionCount()),
                         new SystemVariable("Tribes.count", tribeManager.TribeCount),
@@ -199,7 +203,7 @@ namespace Game.Logic
                             int maxLoggedIn =
                                     (int)
                                     DataTypeSerializer.Deserialize((string)reader["value"], (byte)reader["datatype"]);
-                            int currentlyLoggedIn = TcpWorker.GetSessionCount();
+                            int currentlyLoggedIn = tcpServer.GetSessionCount();
                             if (currentlyLoggedIn > maxLoggedIn)
                             {
                                 variables.AddRange(new List<SystemVariable>

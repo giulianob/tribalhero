@@ -3,11 +3,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
-using System.Xml.Schema;
 using Game.Util;
 using Ninject.Extensions.Logging;
 
@@ -15,13 +12,9 @@ using Ninject.Extensions.Logging;
 
 namespace Game.Comm
 {
-    class TcpWorker
+    internal class TcpWorker
     {
         private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
-
-        private static readonly object workerLock = new object();
-
-        private static readonly List<TcpWorker> workerList = new List<TcpWorker>();
 
         private readonly Dictionary<Socket, SocketSession> sessions = new Dictionary<Socket, SocketSession>();
 
@@ -35,135 +28,19 @@ namespace Game.Comm
 
         private Thread workerThread;
 
-        public static int GetSessionCount()
+        public object SockListLock
         {
-            lock (workerLock)
+            get
             {
-                return workerList.Sum(x => x.sessions.Count);
+                return sockListLock;
             }
         }
 
-        public static string GetAllSocketStatus()
+        public ICollection<SocketSession> Sessions
         {
-            var socketStatus = new StringBuilder();
-            var total = 0;
-
-            lock (workerLock)
+            get
             {
-                foreach (var worker in workerList)
-                {
-                    lock (worker.sockListLock)
-                    {
-                        foreach (var session in worker.sessions.Values)
-                        {
-                            var socket = session.Socket;
-                            try
-                            {
-                                socketStatus.AppendLine(string.Format("IP[{0}] Connected[{2}] Blocking[{1}]", session.Name, socket.Blocking, socket.Connected));
-                            }
-                            catch(Exception e)
-                            {
-                                socketStatus.AppendLine(string.Format("Failed to get socket status for {0}: {1}", session.Name, e.Message));
-                            }
-                        }
-
-                        total += worker.sessions.Count;
-                    }
-                }
-            }
-
-            socketStatus.Append(string.Format("{0} sockets total", total));
-
-            return socketStatus.ToString();
-        }
-
-        public static string DisconnectAll()
-        {
-            var socketStatus = new StringBuilder();
-            lock (workerLock)
-            {
-                foreach (var worker in workerList)
-                {
-                    lock (worker.sockListLock)
-                    {
-                        foreach (var session in worker.sessions.Values.ToList())
-                        {
-                            worker.SocketDisconnect(session.Socket);
-                        }
-                    }
-                }
-            }
-
-            return socketStatus.ToString();
-        }
-
-        public static void Add(SocketSession session)
-        {
-            lock (workerLock)
-            {
-                bool needNewWorker = true;
-                foreach (var worker in workerList)
-                {
-                    lock (worker.sockListLock)
-                    {
-                        // Worker full
-                        if (worker.sessions.Count > 250)
-                        {
-                            continue;
-                        }
-
-                        // Socket already disconnected before we got here
-                        if (!session.Socket.Connected)
-                        {
-                            return;
-                        }
-
-                        session.OnClose += worker.OnClose;
-                        worker.Put(session);
-                    }
-
-                    needNewWorker = false;
-                    break;
-                }
-
-                if (needNewWorker)
-                {
-                    var newWorker = new TcpWorker();
-                    workerList.Add(newWorker);
-
-                    session.OnClose += newWorker.OnClose;
-
-                    newWorker.Put(session);
-                    newWorker.Start();
-                }
-
-                var packet = new Packet(Command.OnConnect);
-                ThreadPool.QueueUserWorkItem(session.ProcessEvent, packet);
-            }
-        }
-
-        public static void DeleteAll()
-        {
-            lock (workerLock)
-            {
-                foreach (var worker in workerList)
-                {
-                    worker.Stop();
-                }
-            }
-        }
-
-        public static void Delete(SocketSession session)
-        {
-            lock (workerLock)
-            {
-                foreach (var worker in workerList)
-                {
-                    if (worker.sockList.Contains(session.Socket))
-                    {
-                        worker.sockList.Remove(session.Socket);
-                    }
-                }
+                return sessions.Values;
             }
         }
 
@@ -198,14 +75,14 @@ namespace Game.Comm
             workerThread.Join();
         }
 
-        private void OnClose(Session sender)
+        public void OnClose(Session sender)
         {
             SocketDisconnect(((SocketSession)sender).Socket);
         }
 
-        private void SocketDisconnect(Socket s)
+        public void SocketDisconnect(Socket s)
         {
-            lock (sockListLock)
+            lock (SockListLock)
             {
                 if (s.Connected)
                 {
@@ -251,7 +128,7 @@ namespace Game.Comm
 
                     try
                     {
-                        lock (sockListLock)
+                        lock (SockListLock)
                         {
                             copyList = new ArrayList(sockList);
                         }
@@ -331,6 +208,14 @@ namespace Game.Comm
             }
             catch(ThreadAbortException)
             {
+            }
+        }
+
+        public void TryDelete(SocketSession session)
+        {
+            if (sockList.Contains(session.Socket))
+            {
+                sockList.Remove(session.Socket);
             }
         }
     }

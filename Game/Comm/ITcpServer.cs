@@ -5,5 +5,11 @@ namespace Game.Comm
         bool Start();
 
         bool Stop();
+
+        int GetSessionCount();
+
+        string GetAllSocketStatus();
+
+        string DisconnectAll();
     }
 }

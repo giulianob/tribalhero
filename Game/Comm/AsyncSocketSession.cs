@@ -67,7 +67,6 @@ namespace Game.Comm
             int totalBytesSent = 0;
             
             var socketAwaitable = socketAwaitablePool.Take();
-            socketAwaitable.ShouldCaptureContext = true;
 
             var sendBuffer = bufferManager.GetBuffer();
             var sendBufferMaxSize = sendBuffer.Count;

@@ -15,10 +15,13 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly ILocker locker;
 
-        public EventCommandsModule(IDbManager dbManager, ILocker locker)
+        private readonly IChannel channel;
+
+        public EventCommandsModule(IDbManager dbManager, ILocker locker, IChannel channel)
         {
             this.dbManager = dbManager;
             this.locker = locker;
+            this.channel = channel;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -40,7 +43,7 @@ namespace Game.Comm.ProcessorCommands
 
             locker.Lock(session.Player).Do(() =>
             {
-                Global.Current.Channel.Unsubscribe(session);
+                channel.Unsubscribe(session);
 
                 // If player is logged in under new session already, then don't bother changing their session info
                 if (session.Player.Session != session)

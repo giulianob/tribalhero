@@ -65,18 +65,14 @@ namespace Game.Comm
         {
             listener.Listen(int.MaxValue);
 
-            // From docs: The amount of the buffer used internally varies based on the address family of the socket. The minimum buffer size required is 288 bytes.
-            // If buffer is larger then we may lose data sent during login but 288 is minimum to establish a connection
-            var buffer = new byte[288];            
-
             while (!isStopped)
             {
                 AsyncSocketSession session;
                 var socketAwaitable = socketAwaitablePool.Take();
 
-                //socketAwaitable.Buffer = new ArraySegment<byte>(buffer, 0, buffer.Length);
-                socketAwaitable.ShouldCaptureContext = true;
-                
+                var buffer = bufferManager.GetBuffer();
+                socketAwaitable.Buffer = buffer;
+
                 try
                 {
                     var result = await listener.AcceptAsync(socketAwaitable);
@@ -92,15 +88,27 @@ namespace Game.Comm
                     socket.SendTimeout = 1000;
 
                     session = socketSessionFactory.CreateAsyncSocketSession(socket.RemoteEndPoint.ToString(), socket);
+
+                    session.PacketMaker.Append(socketAwaitable.Transferred);
+                }
+                catch(SocketException e)
+                {
+                    logger.Debug(e, "SocketException in ListenerHandler. Ignoring...");
+
+                    continue;
                 }
                 catch(Exception e)
                 {
-                    continue;
+                    logger.Debug(e, "Exception in ListenerHandler");
+
+                    throw;
                 }
                 finally
                 {
                     socketAwaitable.Clear();
                     socketAwaitablePool.Add(socketAwaitable);
+
+                    bufferManager.ReleaseBuffer(buffer);
                 }
 
                 Add(session);
@@ -184,7 +192,6 @@ namespace Game.Comm
             session.ProcessEvent(new Packet(Command.OnConnect));
 
             var socketAwaitable = socketAwaitablePool.Take();
-            socketAwaitable.ShouldCaptureContext = true;
 
             var buffer = bufferManager.GetBuffer();
             socketAwaitable.Buffer = buffer;    
@@ -193,14 +200,6 @@ namespace Game.Comm
             {
                 do
                 {
-                    var result = await session.Socket.ReceiveAsync(socketAwaitable);
-                    if (result != SocketError.Success || socketAwaitable.Transferred.Count == 0)
-                    {
-                        break;
-                    }
-
-                    session.PacketMaker.Append(socketAwaitable.Transferred);
-
                     // Keep processing as many packets as we can
                     do
                     {
@@ -221,6 +220,15 @@ namespace Game.Comm
                         Task.Run(() => session.Process(packet));
                     }
                     while (true);
+
+                    // Read more data
+                    var result = await session.Socket.ReceiveAsync(socketAwaitable);
+                    if (result != SocketError.Success || socketAwaitable.Transferred.Count == 0)
+                    {
+                        break;
+                    }
+
+                    session.PacketMaker.Append(socketAwaitable.Transferred);
                 }
                 while (true);
 
@@ -270,8 +278,8 @@ namespace Game.Comm
 
                 logger.Info("Player disconnect {0}(1) IP: {2}", session.Player.Name, session.Player.PlayerId, session.Name);
             }
-            
-            Task.Run(() => session.ProcessEvent(new Packet(Command.OnDisconnect)));
+
+            session.ProcessEvent(new Packet(Command.OnDisconnect));
         }
 
         private void OnClose(Session session)

@@ -2,7 +2,9 @@
 {
     import flash.display.*;
 
-    import src.Constants;
+import org.aswing.AsWingConstants;
+
+import src.Constants;
 
     import src.Map.ScreenPosition;
 
@@ -27,12 +29,20 @@
             this.extraProps = extraProps;
 		}
 
-        public function setIcon(sprite: DisplayObject): void {
+        public function setIcon(sprite: *): void {
+            var hitArea: Sprite = new MINIMAP_HIT_AREA();
+            this.addChild(hitArea);
+            hitArea.visible = false;
+            sprite.hitArea = hitArea;
+            sprite.mouseEnabled = false;
+            sprite.mouseChildren = false;
+
             this.x = int(position.x - sprite.width/2 + (size-1) * Constants.miniMapTileW/2);
             this.y = int(position.y - sprite.height/4 + (size-1) * Constants.miniMapTileH/4);
 
             addChild(sprite);
         }
+
 
         public function removeSprite(): void {
             if (numChildren > 0) {

@@ -26,7 +26,7 @@ namespace Game.Comm.ProcessorCommands
             this.structureCsvFactory = structureCsvFactory;
         }
 
-        public override void RegisterCommands(Processor processor)
+        public override void RegisterCommands(IProcessor processor)
         {
             processor.RegisterCommand(Command.MarketBuy, MarketBuy);
             processor.RegisterCommand(Command.MarketSell, MarketSell);

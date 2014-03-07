@@ -209,6 +209,7 @@
     <Compile Include="Comm\CommandLineProcessor.cs" />
     <Compile Include="Comm\Commands.cs" />
     <Compile Include="Comm\CommandLineModule.cs" />
+    <Compile Include="Comm\IProcessor.cs" />
     <Compile Include="Comm\ISessionFactory.cs" />
     <Compile Include="Comm\ITcpServer.cs" />
     <Compile Include="Comm\PacketMaker.cs" />

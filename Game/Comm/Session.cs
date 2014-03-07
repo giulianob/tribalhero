@@ -20,9 +20,9 @@ namespace Game.Comm
 
         #endregion
 
-        private readonly Processor processor;
+        private readonly IProcessor processor;
 
-        protected Session(string name, Processor processor)
+        protected Session(string name, IProcessor processor)
         {
             Name = name;
             this.processor = processor;

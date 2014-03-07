@@ -228,7 +228,7 @@ _________ _______ _________ ______   _______  _
             Market.Init();
 
             // Start command processor
-            server.Start();
+            server.Start(Config.server_listen_address, Config.server_port);
 
             // Start policy server
             policyServer.Start();

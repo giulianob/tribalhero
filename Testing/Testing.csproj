@@ -70,6 +70,10 @@
     <Reference Include="Castle.Core">
       <HintPath>..\packages\Castle.Core.3.1.0\lib\net40-client\Castle.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Dawn.SocketAwaitable, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\dawn.socketawaitable\Dawn.SocketAwaitable.dll</HintPath>
+    </Reference>
     <Reference Include="FluentAssertions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\FluentAssertions.2.2.0.0\lib\net40\FluentAssertions.dll</HintPath>
@@ -143,6 +147,9 @@
     <Compile Include="BattleTests\CityCombatObjectTest.cs" />
     <Compile Include="ChannelTests\ChannelTest.cs" />
     <Compile Include="CityTests\CityTest.cs" />
+    <Compile Include="CommTests\AsyncSocketConnectionHelper.cs" />
+    <Compile Include="CommTests\AsyncSocketSessionTests.cs" />
+    <Compile Include="CommTests\AsyncTcpServerTests.cs" />
     <Compile Include="DatabaseTests\DbLoaderActionFactoryTest.cs" />
     <Compile Include="FixtureHelper.cs" />
     <Compile Include="FormulaTests\BarbarianTribeFormulaTest.cs" />

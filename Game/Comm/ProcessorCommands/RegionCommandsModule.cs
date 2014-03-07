@@ -41,7 +41,7 @@ namespace Game.Comm.ProcessorCommands
             this.channel = channel;
         }
 
-        public override void RegisterCommands(Processor processor)
+        public override void RegisterCommands(IProcessor processor)
         {
             processor.RegisterCommand(Command.RegionRoadBuild, RoadCreate);
             processor.RegisterCommand(Command.RegionRoadDestroy, RoadDestroy);

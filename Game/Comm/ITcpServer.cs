@@ -2,7 +2,7 @@ namespace Game.Comm
 {
     public interface ITcpServer
     {
-        bool Start();
+        bool Start(string listenAddress, int port);
 
         bool Stop();
 

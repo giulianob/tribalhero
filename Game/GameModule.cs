@@ -166,7 +166,7 @@ namespace Game
                                                                                 c.Kernel.Get<SystemCommandLineModule>()))
                                         .InSingletonScope();
 
-            Bind<Processor>().ToMethod(c => new Processor(c.Kernel.Get<AssignmentCommandsModule>(),
+            Bind<IProcessor>().ToMethod(c => new Processor(c.Kernel.Get<AssignmentCommandsModule>(),
                                                           c.Kernel.Get<BattleCommandsModule>(),
                                                           c.Kernel.Get<EventCommandsModule>(),
                                                           c.Kernel.Get<ChatCommandsModule>(),

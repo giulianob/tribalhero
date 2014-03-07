@@ -1,22 +1,18 @@
 #region
 
 using System.Collections.Generic;
-using Game.Util;
-using Ninject.Extensions.Logging;
 
 #endregion
 
 namespace Game.Comm
 {
-    public class Processor
+    public class Processor : IProcessor
     {
         #region Delegates
 
         public delegate void DoWork(Session session, Packet packet);
 
         #endregion
-
-        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
 
         private readonly Dictionary<Command, ProcessorCommand> commands = new Dictionary<Command, ProcessorCommand>();
 

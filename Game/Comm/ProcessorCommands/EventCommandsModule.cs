@@ -24,7 +24,7 @@ namespace Game.Comm.ProcessorCommands
             this.channel = channel;
         }
 
-        public override void RegisterCommands(Processor processor)
+        public override void RegisterCommands(IProcessor processor)
         {
             processor.RegisterEvent(Command.OnDisconnect, EventOnDisconnect);
             processor.RegisterEvent(Command.OnConnect, EventOnConnect);

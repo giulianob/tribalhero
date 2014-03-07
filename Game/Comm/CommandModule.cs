@@ -4,7 +4,7 @@ namespace Game.Comm
 {
     public abstract class CommandModule
     {
-        public abstract void RegisterCommands(Processor processor);
+        public abstract void RegisterCommands(IProcessor processor);
 
         protected void ReplySuccess(Session session, Packet packet)
         {

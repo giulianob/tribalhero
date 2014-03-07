@@ -77,7 +77,7 @@ namespace Game.Comm.ProcessorCommands
             this.barbarianTribeManager = barbarianTribeManager;
         }
 
-        public override void RegisterCommands(Processor processor)
+        public override void RegisterCommands(IProcessor processor)
         {
             processor.RegisterCommand(Command.Login, Login);
             processor.RegisterCommand(Command.QueryXml, QueryXml);

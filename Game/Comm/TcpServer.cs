@@ -7,7 +7,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using Game.Setup;
 
 #endregion
 
@@ -19,11 +18,9 @@ namespace Game.Comm
 
         private readonly List<TcpWorker> workerList = new List<TcpWorker>();
 
-        private readonly TcpListener listener;
+        private TcpListener listener;
 
         private readonly Thread listeningThread;
-
-        private readonly int port = Config.server_port;
 
         private readonly ISocketSessionFactory socketFactory;
 
@@ -32,23 +29,24 @@ namespace Game.Comm
         public TcpServer(ISocketSessionFactory socketFactory)
         {
             this.socketFactory = socketFactory;
-            IPAddress localAddr = IPAddress.Parse(Config.server_listen_address);
-            if (localAddr == null)
-            {
-                throw new Exception("Could not bind to listen address");
-            }
-
-            listener = new TcpListener(localAddr, port);
             listeningThread = new Thread(ListenerHandler);
         }
 
-        public bool Start()
+        public bool Start(string listenAddress, int port)
         {
             if (!isStopped)
             {
                 return false;
             }
             isStopped = false;
+
+            var localAddr = IPAddress.Parse(listenAddress);
+            if (localAddr == null)
+            {
+                throw new Exception("Could not bind to listen address");
+            }
+
+            listener = new TcpListener(localAddr, port);
             listeningThread.Start();
             return true;
         }
@@ -88,7 +86,6 @@ namespace Game.Comm
                     s.Blocking = false;
                     s.NoDelay = true;
                     s.SendTimeout = 1000;
-                    s.SendBufferSize = 16384;
 
                     session = socketFactory.CreateSocketSession(s.RemoteEndPoint.ToString(), s);
                 }

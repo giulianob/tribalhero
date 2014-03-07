@@ -21,7 +21,7 @@ namespace Game.Comm
 
         private int writerCount;
 
-        public AsyncSocketSession(string name, Socket socket, Processor processor, SocketAwaitablePool socketAwaitablePool, BlockingBufferManager bufferManager)
+        public AsyncSocketSession(string name, Socket socket, IProcessor processor, SocketAwaitablePool socketAwaitablePool, BlockingBufferManager bufferManager)
                 : base(name, processor)
         {
             this.socketAwaitablePool = socketAwaitablePool;
@@ -30,7 +30,7 @@ namespace Game.Comm
         }
 
         public Socket Socket { get; private set; }
-
+        
         public override void Write(Packet packet)
         {
             sendQueue.Enqueue(packet);
@@ -42,7 +42,7 @@ namespace Game.Comm
             }
         }
 
-        private async Task ProcessQueue()
+        private async void ProcessQueue()
         {
             try
             {

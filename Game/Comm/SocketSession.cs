@@ -11,7 +11,7 @@ namespace Game.Comm
     {
         private readonly object writeLock = new object();
 
-        public SocketSession(string name, Socket socket, Processor processor)
+        public SocketSession(string name, Socket socket, IProcessor processor)
                 : base(name, processor)
         {
             Socket = socket;

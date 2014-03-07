@@ -6,7 +6,6 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using Dawn.Net.Sockets;
-using Game.Setup;
 using Game.Util;
 using Ninject.Extensions.Logging;
 using SocketAwaitablePool = Dawn.Net.Sockets.SocketAwaitablePool;
@@ -31,6 +30,14 @@ namespace Game.Comm
 
         private Task listeningTask;
 
+        public IPEndPoint LocalEndPoint
+        {
+            get
+            {
+                return listener != null ? (IPEndPoint)listener.LocalEndPoint : null;
+            }
+        }
+
         public AsyncTcpServer(ISocketSessionFactory socketSessionFactory, SocketAwaitablePool socketAwaitablePool, BlockingBufferManager bufferManager)
         {
             this.socketSessionFactory = socketSessionFactory;
@@ -38,7 +45,7 @@ namespace Game.Comm
             this.bufferManager = bufferManager;
         }
 
-        public bool Start()
+        public bool Start(string listenAddress, int port)
         {
             if (!isStopped)
             {
@@ -47,16 +54,16 @@ namespace Game.Comm
 
             isStopped = false;
             
-            IPAddress localAddr = IPAddress.Parse(Config.server_listen_address);
+            IPAddress localAddr = IPAddress.Parse(listenAddress);
             if (localAddr == null)
             {
                 throw new Exception("Could not bind to listen address");
             }
 
             listener = new Socket(localAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            listener.Bind(new IPEndPoint(localAddr, Config.server_port));
+            listener.Bind(new IPEndPoint(localAddr, port));
 
-            listeningTask = ListenerHandler();            
+            listeningTask = ListenerHandler();
             
             return true;
         }
@@ -194,7 +201,7 @@ namespace Game.Comm
             var socketAwaitable = socketAwaitablePool.Take();
 
             var buffer = bufferManager.GetBuffer();
-            socketAwaitable.Buffer = buffer;    
+            socketAwaitable.Buffer = buffer;
 
             try
             {
@@ -211,12 +218,14 @@ namespace Game.Comm
                             // This probably means the player is spamming the server with an invalid client
                             if (session.PacketMaker.Length > 1048576)
                             {
-                                HandleSessionDisconnect(session);
+                                DisconnectSession(session);
+                                return;
                             }
 
                             break;
                         }
 
+                        // ReSharper disable once CSharpWarnings::CS4014
                         Task.Run(() => session.Process(packet));
                     }
                     while (true);
@@ -232,11 +241,11 @@ namespace Game.Comm
                 }
                 while (true);
 
-                HandleSessionDisconnect(session);
+                DisconnectSession(session);
             }
             catch(SocketException)
             {
-                HandleSessionDisconnect(session);                
+                DisconnectSession(session);
             }
             catch(ObjectDisposedException)
             {
@@ -250,27 +259,24 @@ namespace Game.Comm
             }
         }
 
-        private void HandleSessionDisconnect(AsyncSocketSession session)
+        private void DisconnectSession(AsyncSocketSession session)
         {
-            if (session.Socket.Connected)
-            {
-                try
-                {
-                    session.Socket.Shutdown(SocketShutdown.Both);
-                }
-                catch(SocketException)
-                {
-                }
-
-                session.Socket.Close();
-            }
-
-            // Socket already gone, probably happening because the socket handler saw it wasn't connected 
+            // Socket already gone, someone else already cleaned it up
             Task removedSocket;
             if (!sessions.TryRemove(session, out removedSocket))
             {
                 return;
             }
+
+            try
+            {
+                session.Socket.Shutdown(SocketShutdown.Both);
+            }
+            catch(Exception)
+            {
+            }
+
+            session.Socket.Close();
 
             if (session.Player != null)
             {
@@ -279,12 +285,12 @@ namespace Game.Comm
                 logger.Info("Player disconnect {0}(1) IP: {2}", session.Player.Name, session.Player.PlayerId, session.Name);
             }
 
-            session.ProcessEvent(new Packet(Command.OnDisconnect));
+            Task.Run(() => session.ProcessEvent(new Packet(Command.OnDisconnect)));
         }
 
         private void OnClose(Session session)
         {
-            HandleSessionDisconnect((AsyncSocketSession) session);
+            DisconnectSession((AsyncSocketSession) session);
         }
     }
 }

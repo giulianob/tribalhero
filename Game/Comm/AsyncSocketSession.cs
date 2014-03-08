@@ -21,8 +21,8 @@ namespace Game.Comm
 
         private int writerCount;
 
-        public AsyncSocketSession(string name, Socket socket, IProcessor processor, SocketAwaitablePool socketAwaitablePool, BlockingBufferManager bufferManager)
-                : base(name, processor)
+        public AsyncSocketSession(string remoteIp, Socket socket, IProcessor processor, SocketAwaitablePool socketAwaitablePool, BlockingBufferManager bufferManager)
+                : base(remoteIp, processor)
         {
             this.socketAwaitablePool = socketAwaitablePool;
             this.bufferManager = bufferManager;
@@ -34,6 +34,12 @@ namespace Game.Comm
         public override void Write(Packet packet)
         {
             sendQueue.Enqueue(packet);
+
+            if (sendQueue.Count > 50)
+            {
+                Logger.Warn("Large send queue in socket session IP[{0}] sendQueueLength[{1}]", RemoteIP, sendQueue.Count);
+            }
+
             if (Interlocked.CompareExchange(ref writerCount, 1, 0) == 0)
             {
                 // **We** are the writer
@@ -63,6 +69,11 @@ namespace Game.Comm
 
         private async Task SendAsync(Packet packet)
         {
+            if (Logger.IsDebugEnabled)
+            {
+                Logger.Debug("Sending IP[{0}] {1}", RemoteIP, packet.ToString());
+            }
+
             var packetBytes = packet.GetBytes();
             int totalBytesSent = 0;
             
@@ -80,11 +91,16 @@ namespace Game.Comm
                     Buffer.BlockCopy(packetBytes, totalBytesSent, sendBuffer.Array, sendBuffer.Offset, writeCount);
 
                     socketAwaitable.Buffer = new ArraySegment<byte>(sendBuffer.Array, sendBuffer.Offset, writeCount);
-                    
+
                     var result = await Socket.SendAsync(socketAwaitable);
 
                     if (result != SocketError.Success || socketAwaitable.Transferred.Count == 0)
                     {
+                        if (Logger.IsDebugEnabled && result != SocketError.Success)
+                        {
+                            Logger.Debug("Socket did not succeed when sending a packet socketError[{0}] IP[{1}]", result, RemoteIP);
+                        }
+
                         return;
                     }
 
@@ -93,6 +109,10 @@ namespace Game.Comm
             }
             // Ignore cases where we accidentally send to the socket after its been disposed
             catch (ObjectDisposedException) { }
+            catch(Exception e)
+            {
+                Logger.Warn(e, "Unexpected exception in send IP[{0}]", RemoteIP);
+            }
             finally
             {
                 socketAwaitable.Clear();

@@ -1,6 +1,6 @@
 namespace Game.Comm
 {
-    public interface ITcpServer
+    public interface INetworkServer
     {
         bool Start(string listenAddress, int port);
 
@@ -8,7 +8,7 @@ namespace Game.Comm
 
         int GetSessionCount();
 
-        string GetAllSocketStatus();
+        string GetAllSessionStatus();
 
         string DisconnectAll();
     }

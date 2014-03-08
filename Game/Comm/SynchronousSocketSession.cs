@@ -7,12 +7,12 @@ using System.Net.Sockets;
 
 namespace Game.Comm
 {
-    public class SocketSession : Session
+    public class SynchronousSocketSession : Session
     {
         private readonly object writeLock = new object();
 
-        public SocketSession(string name, Socket socket, IProcessor processor)
-                : base(name, processor)
+        public SynchronousSocketSession(string remoteIp, Socket socket, IProcessor processor)
+                : base(remoteIp, processor)
         {
             Socket = socket;
         }
@@ -25,7 +25,7 @@ namespace Game.Comm
             {
                 if (Logger.IsDebugEnabled)
                 {
-                    Logger.Debug("Sending IP[{0}] {1}", Name, packet.ToString());
+                    Logger.Debug("Sending IP[{0}] {1}", RemoteIP, packet.ToString());
                 }
 
                 byte[] packetBytes = packet.GetBytes();
@@ -55,10 +55,10 @@ namespace Game.Comm
                             {
                                 try
                                 {
-                                    //if (Logger.IsDebugEnabled)
-                                    //{
-                                    Logger.Info(e, "Socket send buffer full. Setting it to blocking and trying again {0}", Name);
-                                    //}
+                                    if (Logger.IsDebugEnabled)
+                                    {
+                                        Logger.Info(e, "Socket send buffer full. Setting it to blocking and trying again {0}", RemoteIP);
+                                    }
 
                                     Socket.Blocking = true;
                                 }
@@ -80,13 +80,13 @@ namespace Game.Comm
                                 case SocketError.ConnectionReset:
                                 case SocketError.TimedOut:
                                 case SocketError.Shutdown:
-                                    //if (Logger.IsDebugEnabled)
-                                    //{
-                                        Logger.Info(e, "Socket timeout/reset/shutdown handled packetLength[{0}] socketErrorCode[{1}] IP[{2}", packetBytes.Length, e.SocketErrorCode, Name);
-                                    //}
+                                    if (Logger.IsDebugEnabled)
+                                    {
+                                        Logger.Info(e, "Socket timeout/reset/shutdown handled packetLength[{0}] socketErrorCode[{1}] IP[{2}", packetBytes.Length, e.SocketErrorCode, RemoteIP);
+                                    }
                                     break;
                                 default:
-                                    Logger.Warn(e, "Socket exception with unhandled error {0} {1} {2}", e.SocketErrorCode, e.Message, Name);
+                                    Logger.Warn(e, "Socket exception with unhandled error {0} {1} {2}", e.SocketErrorCode, e.Message, RemoteIP);
                                     break;
                             }
 
@@ -124,7 +124,7 @@ namespace Game.Comm
                     var delta = Environment.TickCount - startTime;
                     if (delta > 200)
                     {
-                        Logger.Info("Took {2}ms to send {1} bytes to {0}", Name, packetBytes.Length, delta);
+                        Logger.Info("Took {2}ms to send {1} bytes to {0}", RemoteIP, packetBytes.Length, delta);
                     }
                 }
             }

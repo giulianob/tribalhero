@@ -209,9 +209,10 @@
     <Compile Include="Comm\CommandLineProcessor.cs" />
     <Compile Include="Comm\Commands.cs" />
     <Compile Include="Comm\CommandLineModule.cs" />
+    <Compile Include="Comm\IPolicyServer.cs" />
     <Compile Include="Comm\IProcessor.cs" />
     <Compile Include="Comm\ISessionFactory.cs" />
-    <Compile Include="Comm\ITcpServer.cs" />
+    <Compile Include="Comm\INetworkServer.cs" />
     <Compile Include="Comm\PacketMaker.cs" />
     <Compile Include="Comm\PolicyServer.cs" />
     <Compile Include="Comm\Packet.cs" />
@@ -238,8 +239,8 @@
     <Compile Include="Comm\Protocol\IProtocolFactory.cs" />
     <Compile Include="Comm\Session.cs" />
     <Compile Include="Comm\AsyncSocketSession.cs" />
-    <Compile Include="Comm\SocketSession.cs" />
-    <Compile Include="Comm\TcpServer.cs" />
+    <Compile Include="Comm\SynchronousSocketSession.cs" />
+    <Compile Include="Comm\SynchronousTcpServer.cs" />
     <Compile Include="Comm\TcpWorker.cs" />
     <Compile Include="Comm\Thrift\NotificationHandler.cs" />
     <Compile Include="Comm\Thrift\Notification.cs" />

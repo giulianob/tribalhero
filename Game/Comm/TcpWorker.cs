@@ -16,7 +16,7 @@ namespace Game.Comm
     {
         private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
 
-        private readonly Dictionary<Socket, SocketSession> sessions = new Dictionary<Socket, SocketSession>();
+        private readonly Dictionary<Socket, SynchronousSocketSession> sessions = new Dictionary<Socket, SynchronousSocketSession>();
 
         private readonly ArrayList sockList = new ArrayList();
 
@@ -36,7 +36,7 @@ namespace Game.Comm
             }
         }
 
-        public ICollection<SocketSession> Sessions
+        public ICollection<SynchronousSocketSession> Sessions
         {
             get
             {
@@ -44,7 +44,7 @@ namespace Game.Comm
             }
         }
 
-        public void Put(SocketSession session)
+        public void Put(SynchronousSocketSession session)
         {
             // Already locked here btw from the Add call
 
@@ -77,7 +77,7 @@ namespace Game.Comm
 
         public void OnClose(Session sender)
         {
-            SocketDisconnect(((SocketSession)sender).Socket);
+            SocketDisconnect(((SynchronousSocketSession)sender).Socket);
         }
 
         public void SocketDisconnect(Socket s)
@@ -96,7 +96,7 @@ namespace Game.Comm
                 }
 
                 //create disconnect packet to send to processor
-                SocketSession dcSession;
+                SynchronousSocketSession dcSession;
                 if (!sessions.TryGetValue(s, out dcSession))
                 {
                     // Socket already gone, probably happening because the socket handler saw it wasn't connected 
@@ -107,7 +107,7 @@ namespace Game.Comm
                 {
                     dcSession.Player.HasTwoFactorAuthenticated = null;
 
-                    logger.Info("Player disconnect {0}(1) IP: {2}", dcSession.Player.Name, dcSession.Player.PlayerId, dcSession.Name);
+                    logger.Info("Player disconnect {0}(1) IP: {2}", dcSession.Player.Name, dcSession.Player.PlayerId, dcSession.RemoteIP);
                 }
 
                 sessions.Remove(s);
@@ -190,7 +190,7 @@ namespace Game.Comm
                                         break;
                                     }
 
-                                    ThreadPool.UnsafeQueueUserWorkItem(session.Process, packet);
+                                    ThreadPool.UnsafeQueueUserWorkItem(state => session.Process((Packet)state), packet);
                                 }
                                 while (true);
                             }
@@ -211,7 +211,7 @@ namespace Game.Comm
             }
         }
 
-        public void TryDelete(SocketSession session)
+        public void TryDelete(SynchronousSocketSession session)
         {
             if (sockList.Contains(session.Socket))
             {

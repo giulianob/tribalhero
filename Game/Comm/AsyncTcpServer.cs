@@ -12,7 +12,7 @@ using SocketAwaitablePool = Dawn.Net.Sockets.SocketAwaitablePool;
 
 namespace Game.Comm
 {
-    public class AsyncTcpServer : ITcpServer
+    public class AsyncTcpServer : INetworkServer
     {
         private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
 
@@ -144,7 +144,7 @@ namespace Game.Comm
             return sessions.Count;
         }
 
-        public string GetAllSocketStatus()
+        public string GetAllSessionStatus()
         {
             var socketStatus = new StringBuilder();
             var total = 0;
@@ -156,11 +156,11 @@ namespace Game.Comm
 
                 try
                 {
-                    socketStatus.AppendLine(string.Format("IP[{0}] Connected[{2}] Blocking[{1}]", session.Name, socket.Blocking, socket.Connected));
+                    socketStatus.AppendLine(string.Format("IP[{0}] Connected[{2}] Blocking[{1}]", session.RemoteIP, socket.Blocking, socket.Connected));
                 }
                 catch(Exception e)
                 {
-                    socketStatus.AppendLine(string.Format("Failed to get socket status for {0}: {1}", session.Name, e.Message));
+                    socketStatus.AppendLine(string.Format("Failed to get socket status for {0}: {1}", session.RemoteIP, e.Message));
                 }
 
                 total++;
@@ -243,8 +243,13 @@ namespace Game.Comm
 
                 DisconnectSession(session);
             }
-            catch(SocketException)
+            catch(SocketException e)
             {
+                if (logger.IsDebugEnabled)
+                {
+                    logger.Debug(e, "Handled socket exception while receiving socket data IP[{0}]", session.RemoteIP);
+                }
+
                 DisconnectSession(session);
             }
             catch(ObjectDisposedException)
@@ -282,7 +287,11 @@ namespace Game.Comm
             {
                 session.Player.HasTwoFactorAuthenticated = null;
 
-                logger.Info("Player disconnect {0}(1) IP: {2}", session.Player.Name, session.Player.PlayerId, session.Name);
+                logger.Info("Player disconnect {0}(1) IP: {2}", session.Player.Name, session.Player.PlayerId, session.RemoteIP);
+            }
+            else
+            {
+                logger.Info("Socket disconnect without logged in player IP[{0}]", session.RemoteIP);
             }
 
             Task.Run(() => session.ProcessEvent(new Packet(Command.OnDisconnect)));

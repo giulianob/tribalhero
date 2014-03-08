@@ -4,27 +4,27 @@ namespace Game.Comm
 {
     public class SystemCommandLineModule : CommandLineModule
     {
-        private readonly ITcpServer tcpServer;
+        private readonly INetworkServer networkServer;
 
-        public SystemCommandLineModule(ITcpServer tcpServer)
+        public SystemCommandLineModule(INetworkServer networkServer)
         {
-            this.tcpServer = tcpServer;
+            this.networkServer = networkServer;
         }
 
         public override void RegisterCommands(CommandLineProcessor processor)
         {
-            processor.RegisterCommand("socketstatus", SocketStatus, PlayerRights.Bureaucrat);            
+            processor.RegisterCommand("sessionstatus", SessionStatus, PlayerRights.Bureaucrat);            
             processor.RegisterCommand("disconnectall", DisconnectAll, PlayerRights.Bureaucrat);            
         }
 
-        private string SocketStatus(Session session, string[] parms)
+        private string SessionStatus(Session session, string[] parms)
         {
-            return tcpServer.GetAllSocketStatus();
+            return networkServer.GetAllSessionStatus();
         }
 
         private string DisconnectAll(Session session, string[] parms)
         {
-            return tcpServer.DisconnectAll();
+            return networkServer.DisconnectAll();
         }
     }
 }

@@ -12,7 +12,7 @@ using System.Threading;
 
 namespace Game.Comm
 {
-    public class TcpServer : ITcpServer
+    public class SynchronousTcpServer : INetworkServer
     {        
         private readonly object workerLock = new object();
 
@@ -26,7 +26,7 @@ namespace Game.Comm
 
         private bool isStopped = true;
 
-        public TcpServer(ISocketSessionFactory socketFactory)
+        public SynchronousTcpServer(ISocketSessionFactory socketFactory)
         {
             this.socketFactory = socketFactory;
             listeningThread = new Thread(ListenerHandler);
@@ -72,7 +72,7 @@ namespace Game.Comm
             Socket s;
             while (!isStopped)
             {
-                SocketSession session;
+                SynchronousSocketSession session;
 
                 try
                 {                
@@ -108,7 +108,7 @@ namespace Game.Comm
             }
         }
 
-        public string GetAllSocketStatus()
+        public string GetAllSessionStatus()
         {
             var socketStatus = new StringBuilder();
             var total = 0;
@@ -124,11 +124,11 @@ namespace Game.Comm
                             var socket = session.Socket;
                             try
                             {
-                                socketStatus.AppendLine(string.Format("IP[{0}] Connected[{2}] Blocking[{1}]", session.Name, socket.Blocking, socket.Connected));
+                                socketStatus.AppendLine(string.Format("IP[{0}] Connected[{2}] Blocking[{1}]", session.RemoteIP, socket.Blocking, socket.Connected));
                             }
                             catch(Exception e)
                             {
-                                socketStatus.AppendLine(string.Format("Failed to get socket status for {0}: {1}", session.Name, e.Message));
+                                socketStatus.AppendLine(string.Format("Failed to get socket status for {0}: {1}", session.RemoteIP, e.Message));
                             }
 
                             total++;
@@ -162,7 +162,7 @@ namespace Game.Comm
             return socketStatus.ToString();
         }
 
-        private void Add(SocketSession session)
+        private void Add(SynchronousSocketSession session)
         {
             lock (workerLock)
             {

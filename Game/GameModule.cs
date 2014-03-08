@@ -65,7 +65,7 @@ namespace Game
             Bind<SocketAwaitablePool>().ToMethod(c => new SocketAwaitablePool(100)).InSingletonScope();
             Bind<IChannel>().To<Channel>().InSingletonScope();
             Bind<IPolicyServer>().To<PolicyServer>().InSingletonScope();
-            Bind<ITcpServer>().To<AsyncTcpServer>().InSingletonScope();
+            Bind<INetworkServer>().To<AsyncTcpServer>().InSingletonScope();
             Bind<TServer>().ToMethod(c =>
             {
                 var logger = LoggerFactory.Current.GetLogger(typeof(TSimpleServer));

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="FlexCompilerConfiguration">
+    <option name="VM_OPTIONS" value="-Djava.net.preferIPv4Stack=true" />
+  </component>
+  <component name="FlexIdeProjectLevelCompilerOptionsHolder">
+    <compiler-options />
+  </component>
+</project>
+

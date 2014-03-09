@@ -57,7 +57,12 @@ namespace Game.Comm
                     Packet packet;
                     if (sendQueue.TryDequeue(out packet))
                     {
-                        await SendAsync(packet);
+                        if (Logger.IsDebugEnabled)
+                        {
+                            Logger.Debug("Sending IP[{0}] {1}", RemoteIP, packet.ToString());
+                        }
+
+                        await SendAsyncImmediatelly(packet.GetBytes());
                     }
                 }
             }
@@ -67,14 +72,8 @@ namespace Game.Comm
             }
         }
 
-        private async Task SendAsync(Packet packet)
+        public async Task SendAsyncImmediatelly(byte[] packetBytes)
         {
-            if (Logger.IsDebugEnabled)
-            {
-                Logger.Debug("Sending IP[{0}] {1}", RemoteIP, packet.ToString());
-            }
-
-            var packetBytes = packet.GetBytes();
             int totalBytesSent = 0;
             
             var socketAwaitable = socketAwaitablePool.Take();

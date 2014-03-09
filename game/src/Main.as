@@ -153,7 +153,7 @@
 					onDisconnected();
 					showConnectionError(true);
 				});
-				loader.load(new URLRequest("http://" + Constants.hostname + ":8085/data.xml?m=" + new Date().getTime().toString() + "&v=" + siteVersion));
+				loader.load(new URLRequest("http://" + Constants.hostname + "/data.xml?m=" + new Date().getTime().toString() + "&v=" + siteVersion));
 			} 
 			else
 				loadLanguages();
@@ -168,7 +168,7 @@
 				}
 				else doConnect();
 			});
-			Locale.addXMLPath(Constants.defLang, "http://" + Constants.hostname + ":8085/Game_" + Constants.defLang + ".xml?m=" + new Date().getTime().toString() + "&v=" + siteVersion);
+			Locale.addXMLPath(Constants.defLang, "http://" + Constants.hostname + "/Game_" + Constants.defLang + ".xml?m=" + new Date().getTime().toString() + "&v=" + siteVersion);
 			Locale.setDefaultLang(Constants.defLang);				
 			Locale.loadLanguageXML(Constants.defLang);
 		}
@@ -235,7 +235,7 @@
 		}
 		
 		public function showConnectionError(wasStillLoading: Boolean) : void {
-			var unableToConnectMsg: String = "Unable to connect to server.\nIf you continue to have problems, try the following:\n\n1. Clear your browser cache.\n2. Make sure your firewall allows access to ports 48888 and 8085. You may be unable to connect if you are behind a shared connection such as an office or school.\n3. Update to the latest version of Flash player.\n4. Check our main page to see if a server maintenance is in progress.\n\nIf none of these solved your problem, contact us by using the contact link on our website for more help.";
+			var unableToConnectMsg: String = "Unable to connect to server.\nIf you continue to have problems, try the following:\n\n1. Clear your browser cache.\n2. Make sure your firewall and/or antivirus programs allow access to ports 843 and 443. You may be unable to connect if you are behind a shared connection such as an office or school.\n3. Update to the latest version of Flash player.\n4. Check our main page to see if a server maintenance is in progress.\n\nIf none of these solved your problem, contact us at feedback@tribalhero.com for individual help.";
 			
 			if (parms.hostname) InfoDialog.showMessageDialog("Connection Lost", (wasStillLoading ? unableToConnectMsg : "Connection to Server Lost") + ". Refresh the page to rejoin the battle.", null, null, true, false, 1, true);
 			else InfoDialog.showMessageDialog("Connection Lost", (wasStillLoading ? unableToConnectMsg : "Connection to Server Lost."), function(result: int):void { showLoginDialog(); }, null, true, false, 1, true);			

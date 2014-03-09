@@ -105,7 +105,7 @@
 		
 		public function connect(hostname: String):void
 		{			
-			socket.connect(hostname,48888);
+			socket.connect(hostname, Constants.serverPort);
 		}
 		
 		public function logout():void 

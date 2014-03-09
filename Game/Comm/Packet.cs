@@ -45,9 +45,11 @@ namespace Game.Comm
 
         #region Members
 
+        private readonly object getBytesLock = new object();
+
         private readonly MemoryStream sendBuffer = new MemoryStream();
 
-        private byte[] readBuffer;
+        private volatile byte[] readBuffer;
 
         private ushort readOffset;
 
@@ -311,53 +313,60 @@ namespace Game.Comm
 
         public byte[] GetBytes()
         {
-            byte[] ret;
-
             if (readBuffer != null)
             {
                 return readBuffer;
             }
 
-            using (var memory = new MemoryStream())
+            lock (getBytesLock)
             {
-                //write header
-                var binaryWriter = new BinaryWriter(memory);
-                binaryWriter.Write(seq);
-                binaryWriter.Write(option);
-                binaryWriter.Write((ushort)cmd);
-                binaryWriter.Write(UInt16.MinValue); //place holder for length
-
-                if ((option & (int)Options.Compressed) == (int)Options.Compressed)
+                if (readBuffer != null)
                 {
-                    using (var compressed = new MemoryStream())
+                    return readBuffer;
+                }
+
+                byte[] ret;
+                using (var memory = new MemoryStream())
+                {
+                    //write header
+                    var binaryWriter = new BinaryWriter(memory);
+                    binaryWriter.Write(seq);
+                    binaryWriter.Write(option);
+                    binaryWriter.Write((ushort)cmd);
+                    binaryWriter.Write(UInt16.MinValue); //place holder for length
+
+                    if ((option & (int)Options.Compressed) == (int)Options.Compressed)
                     {
-                        using (var ds = new ZOutputStream(compressed, 3))
+                        using (var compressed = new MemoryStream())
                         {
-                            sendBuffer.Position = 0;
-                            ds.Write(sendBuffer.ToArray(), 0, (int)sendBuffer.Length);
-                            ds.finish();
-                            compressed.Position = 0;
-                            compressed.WriteTo(memory);
+                            using (var ds = new ZOutputStream(compressed, 3))
+                            {
+                                sendBuffer.Position = 0;
+                                ds.Write(sendBuffer.ToArray(), 0, (int)sendBuffer.Length);
+                                ds.finish();
+                                compressed.Position = 0;
+                                compressed.WriteTo(memory);
+                            }
                         }
                     }
-                }
-                else
-                {
-                    binaryWriter.Write(sendBuffer.ToArray());
+                    else
+                    {
+                        binaryWriter.Write(sendBuffer.ToArray());
+                    }
+
+                    var len = (ushort)(memory.Length - HEADER_SIZE);
+                    binaryWriter.Seek(LENGTH_OFFSET, SeekOrigin.Begin);
+                    binaryWriter.Write(len);
+
+                    ret = new byte[memory.Length];
+                    memory.Position = 0;
+                    memory.Read(ret, 0, (int)memory.Length);
                 }
 
-                var len = (ushort)(memory.Length - HEADER_SIZE);
-                binaryWriter.Seek(LENGTH_OFFSET, SeekOrigin.Begin);
-                binaryWriter.Write(len);
+                readBuffer = ret;
 
-                ret = new byte[memory.Length];
-                memory.Position = 0;
-                memory.Read(ret, 0, (int)memory.Length);
+                return ret;
             }
-
-            readBuffer = ret;
-
-            return ret;
         }
 
         public string ToString(int maxLength = -1)

@@ -25,7 +25,7 @@ namespace Game.Comm.ProcessorCommands
             this.locker = locker;
         }
 
-        public override void RegisterCommands(Processor processor)
+        public override void RegisterCommands(IProcessor processor)
         {
             processor.RegisterCommand(Command.CityCreate, CreateCity);
             processor.RegisterCommand(Command.ResourceGather, GatherResource);

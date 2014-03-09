@@ -14,18 +14,11 @@ using Ninject.Extensions.Logging;
 
 namespace Game.Comm
 {
-    public interface IPolicyServer
-    {
-        bool Start();
-
-        bool Stop();
-    }
-
     public class PolicyServer : IPolicyServer
     {
         private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
 
-        private readonly TcpListener listener;
+        private TcpListener listener;
 
         private readonly Thread listeningThread;
 
@@ -37,12 +30,6 @@ namespace Game.Comm
 
         public PolicyServer()
         {
-            IPAddress localAddr = IPAddress.Parse(Config.server_listen_address);
-            if (localAddr == null)
-            {
-                throw new Exception("Could not bind to listen address");
-            }
-
             policy =
                     @"<?xml version=""1.0""?><!DOCTYPE cross-domain-policy SYSTEM ""/xml/dtds/cross-domain-policy.dtd""><cross-domain-policy><site-control permitted-cross-domain-policies=""master-only""/><allow-access-from domain=""" +
                     Config.flash_domain + @""" to-ports=""80,8085," + Config.server_port +
@@ -50,16 +37,25 @@ namespace Game.Comm
 
             xmlBytes = Encoding.UTF8.GetBytes(policy);
 
-            listener = new TcpListener(localAddr, 843);
             listeningThread = new Thread(ListenerHandler);
         }
 
-        public bool Start()
+        public bool Start(string listenAddress, int port)
         {
             if (!isStopped)
             {
                 return false;
             }
+
+            IPAddress localAddr = IPAddress.Parse(listenAddress);
+            listener = new TcpListener(localAddr, port);
+
+            if (localAddr == null)
+            {
+                throw new Exception("Could not bind to listen address");
+            }
+
+
             isStopped = false;
             listeningThread.Start();
             return true;

@@ -73,11 +73,11 @@ namespace Game
 
         private readonly IPolicyServer policyServer;
 
-        private readonly ITcpServer server;
+        private readonly INetworkServer server;
 
         private readonly TServer thriftServer;
 
-        public Engine(ITcpServer server,
+        public Engine(INetworkServer server,
                       IPolicyServer policyServer,
                       TServer thriftServer,
                       DbLoader dbLoader,
@@ -228,10 +228,10 @@ _________ _______ _________ ______   _______  _
             Market.Init();
 
             // Start command processor
-            server.Start();
+            server.Start(Config.server_listen_address, Config.server_port);
 
             // Start policy server
-            policyServer.Start();
+            policyServer.Start(Config.server_listen_address, 843);
 
             // Start thrift server
             ThreadPool.QueueUserWorkItem(o => thriftServer.Serve());

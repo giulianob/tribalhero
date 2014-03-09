@@ -20,18 +20,18 @@ namespace Game.Comm
 
         #endregion
 
-        private readonly Processor processor;
+        private readonly IProcessor processor;
 
-        protected Session(string name, Processor processor)
+        protected Session(string remoteIp, IProcessor processor)
         {
-            Name = name;
+            RemoteIP = remoteIp;
             this.processor = processor;
             PacketMaker = new PacketMaker();
         }
 
         public PacketMaker PacketMaker { get; private set; }
 
-        public string Name { get; private set; }
+        public string RemoteIP { get; private set; }
 
         private bool IsLoggedIn
         {
@@ -62,9 +62,12 @@ namespace Game.Comm
             }
         }
 
-        public void Process(object obj)
+        public void Process(Packet packet)
         {
-            var packet = (Packet)obj;
+            if (Logger.IsDebugEnabled)
+            {
+                Logger.Debug("Processing IP[{0}] {1}", RemoteIP, packet.ToString());
+            }
 
             if (!IsLoggedIn && packet.Cmd != Command.Login)
             {
@@ -86,11 +89,6 @@ namespace Game.Comm
 
             if (processor != null)
             {
-                if (Logger.IsDebugEnabled)
-                {
-                    Logger.Debug("Processing IP[{0}] {1}", Name, packet.ToString());
-                }
-
                 processor.Execute(this, packet);
             }
         }

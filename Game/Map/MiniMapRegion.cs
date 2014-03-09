@@ -71,9 +71,9 @@ namespace Game.Map
                 MarkAsDirty();
             }
 
-            if (global.FireEvents)
+            if (logger.IsTraceEnabled)
             {
-                logger.Debug("Added city region obj: {0}", obj.ToString());
+                logger.Trace("Added city region obj: {0}", obj.ToString());
             }
 
             return true;
@@ -91,7 +91,7 @@ namespace Game.Map
                     throw new Exception("Tried to remove obj from wrong region");
                 }
                 
-                logger.Debug("Removed city region obj: {0}", obj.ToString());
+                logger.Trace("Removed city region obj: {0}", obj.ToString());
                 
                 MarkAsDirty();
             }

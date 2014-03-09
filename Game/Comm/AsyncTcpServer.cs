@@ -245,11 +245,8 @@ namespace Game.Comm
             }
             catch(SocketException e)
             {
-                if (logger.IsDebugEnabled)
-                {
-                    logger.Debug(e, "Handled socket exception while receiving socket data IP[{0}]", session.RemoteIP);
-                }
-
+                logger.Info(e, "Handled socket exception while receiving socket data IP[{0}]", session.RemoteIP);
+                
                 DisconnectSession(session);
             }
             catch(ObjectDisposedException)

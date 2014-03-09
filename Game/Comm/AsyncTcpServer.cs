@@ -111,9 +111,23 @@ namespace Game.Comm
                         Encoding.UTF8.GetString(socketAwaitable.Transferred.Array, 0, 22) == "<policy-file-request/>")
                     {
                         logger.Debug("Serving policy file through game server to {0}", session.RemoteIP);
+                        Task.Run(async () =>
+                        {
+                            try
+                            {
+                                await session.SendAsyncImmediatelly(policyFile);
+                                session.Socket.Shutdown(SocketShutdown.Both);
+                                session.Socket.Close(1);
+                            }
+                            catch(Exception e)
+                            {
+                                if (logger.IsDebugEnabled)
+                                {
+                                    logger.Debug(e, "Handled exception while serving policy file on main game port");
+                                }
+                            }
+                        });
 
-                        await session.SendAsyncImmediatelly(policyFile);
-                        session.Socket.Close();
                         continue;
                     }
 

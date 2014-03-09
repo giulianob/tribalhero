@@ -47,7 +47,7 @@ namespace Game.Comm.ProcessorCommands
             this.troopObjectInitializerFactory = troopObjectInitializerFactory;
         }
 
-        public override void RegisterCommands(Processor processor)
+        public override void RegisterCommands(IProcessor processor)
         {
             processor.RegisterCommand(Command.UnitTrain, TrainUnit);
             processor.RegisterCommand(Command.UnitUpgrade, UnitUpgrade);

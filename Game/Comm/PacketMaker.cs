@@ -20,6 +20,11 @@ namespace Game.Comm
             ms.Write(data, 0, data.Length);
         }
 
+        public void Append(ArraySegment<byte> data)
+        {
+            ms.Write(data.Array, data.Offset, data.Count);
+        }
+
         public Packet GetNextPacket()
         {
             if (ms.Length < Packet.HEADER_SIZE)

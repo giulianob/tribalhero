@@ -32,7 +32,7 @@ namespace Game.Comm.ProcessorCommands
             this.actionFactory = actionFactory;
         }
 
-        public override void RegisterCommands(Processor processor)
+        public override void RegisterCommands(IProcessor processor)
         {
             processor.RegisterCommand(Command.PlayerProfile, ViewProfile);
             processor.RegisterCommand(Command.PlayerDescriptionSet, SetDescription);

@@ -77,7 +77,7 @@ namespace Game.Comm.ProcessorCommands
             this.barbarianTribeManager = barbarianTribeManager;
         }
 
-        public override void RegisterCommands(Processor processor)
+        public override void RegisterCommands(IProcessor processor)
         {
             processor.RegisterCommand(Command.Login, Login);
             processor.RegisterCommand(Command.QueryXml, QueryXml);
@@ -229,7 +229,7 @@ namespace Game.Comm.ProcessorCommands
                 //If it's a new player then add him to our session
                 if (newPlayer)
                 {
-                    logger.Info(string.Format("Creating new player {0}({1}) IP: {2}", playerName, playerId, session.Name));
+                    logger.Info(string.Format("Creating new player {0}({1}) IP: {2}", playerName, playerId, session.RemoteIP));
 
                     player = new Player(playerId, SystemClock.Now, SystemClock.Now, playerName, string.Empty, playerRights, sessionId);
 
@@ -245,7 +245,7 @@ namespace Game.Comm.ProcessorCommands
                     player.Name = playerName;
                 }
 
-                logger.Info(string.Format("Player login in {0}({1}) IP: {2}", player.Name, player.PlayerId, session.Name));
+                logger.Info(string.Format("Player login in {0}({1}) IP: {2}", player.Name, player.PlayerId, session.RemoteIP));
             }
 
             locker.Lock(args =>

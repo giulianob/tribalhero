@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using Dawn.Net.Sockets;
 using Game.Battle;
 using Game.Battle.CombatObjects;
 using Game.Battle.Reporting;
@@ -60,9 +61,11 @@ namespace Game
 
             #region General Comms
 
+            Bind<BlockingBufferManager>().ToMethod(c => new BlockingBufferManager(2048, 7500)).InSingletonScope();
+            Bind<SocketAwaitablePool>().ToMethod(c => new SocketAwaitablePool(100)).InSingletonScope();
             Bind<IChannel>().To<Channel>().InSingletonScope();
             Bind<IPolicyServer>().To<PolicyServer>().InSingletonScope();
-            Bind<ITcpServer>().To<TcpServer>().InSingletonScope();
+            Bind<INetworkServer>().To<AsyncTcpServer>().InSingletonScope();
             Bind<TServer>().ToMethod(c =>
             {
                 var logger = LoggerFactory.Current.GetLogger(typeof(TSimpleServer));
@@ -163,7 +166,7 @@ namespace Game
                                                                                 c.Kernel.Get<SystemCommandLineModule>()))
                                         .InSingletonScope();
 
-            Bind<Processor>().ToMethod(c => new Processor(c.Kernel.Get<AssignmentCommandsModule>(),
+            Bind<IProcessor>().ToMethod(c => new Processor(c.Kernel.Get<AssignmentCommandsModule>(),
                                                           c.Kernel.Get<BattleCommandsModule>(),
                                                           c.Kernel.Get<EventCommandsModule>(),
                                                           c.Kernel.Get<ChatCommandsModule>(),

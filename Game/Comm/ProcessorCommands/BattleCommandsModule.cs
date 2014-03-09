@@ -26,7 +26,7 @@ namespace Game.Comm.ProcessorCommands
             this.world = world;
         }
 
-        public override void RegisterCommands(Processor processor)
+        public override void RegisterCommands(IProcessor processor)
         {
             processor.RegisterCommand(Command.BattleSubscribe, Subscribe);
             processor.RegisterCommand(Command.BattleUnsubscribe, Unsubscribe);

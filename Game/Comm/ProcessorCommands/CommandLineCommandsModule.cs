@@ -16,7 +16,7 @@ namespace Game.Comm.ProcessorCommands
             this.commandLineProcessor = commandLineProcessor;
         }
 
-        public override void RegisterCommands(Processor processor)
+        public override void RegisterCommands(IProcessor processor)
         {
             processor.RegisterCommand(Command.CmdLine, CommandLine);
         }

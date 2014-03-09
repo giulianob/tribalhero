@@ -42,7 +42,7 @@ namespace Game.Comm.ProcessorCommands
             this.cityManager = cityManager;
         }
 
-        public override void RegisterCommands(Processor processor)
+        public override void RegisterCommands(IProcessor processor)
         {
             processor.RegisterCommand(Command.TribeCityAssignmentCreate, CreateCityAssignment);
             processor.RegisterCommand(Command.TribeStrongholdAssignmentCreate, CreateStrongholdAssignment);

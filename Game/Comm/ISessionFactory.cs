@@ -4,6 +4,8 @@ namespace Game.Comm
 {
     public interface ISocketSessionFactory
     {
-        SocketSession CreateSocketSession(string name, Socket socket);
+        SynchronousSocketSession CreateSocketSession(string remoteIp, Socket socket);
+        
+        AsyncSocketSession CreateAsyncSocketSession(string remoteIp, Socket socket);
     }
 }

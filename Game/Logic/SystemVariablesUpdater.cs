@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Text;
 using System.Threading;
+using Dawn.Net.Sockets;
 using Game.Comm;
 using Game.Data;
 using Game.Data.Forest;
@@ -38,6 +39,14 @@ namespace Game.Logic
 
         private readonly ISystemVariableManager systemVariableManager;
 
+        private readonly INetworkServer networkServer;
+
+        private readonly IChannel channel;
+
+        private readonly BlockingBufferManager bufferManager;
+
+        private readonly SocketAwaitablePool socketAwaitablePool;
+
         private readonly ITribeManager tribeManager;
 
         private readonly IWorld world;
@@ -56,7 +65,11 @@ namespace Game.Logic
                                       IScheduler scheduler,
                                       IStrongholdManager strongholdManager,
                                       IForestManager forestManager,
-                                      ISystemVariableManager systemVariableManager)
+                                      ISystemVariableManager systemVariableManager,
+                                      INetworkServer networkServer,
+                                      IChannel channel,
+                                      BlockingBufferManager bufferManager,
+                                      SocketAwaitablePool socketAwaitablePool)
         {
             this.world = world;
             this.tribeManager = tribeManager;
@@ -65,6 +78,10 @@ namespace Game.Logic
             this.strongholdManager = strongholdManager;
             this.forestManager = forestManager;
             this.systemVariableManager = systemVariableManager;
+            this.networkServer = networkServer;
+            this.channel = channel;
+            this.bufferManager = bufferManager;
+            this.socketAwaitablePool = socketAwaitablePool;
 
             if (!string.IsNullOrEmpty(Config.api_id))
             {
@@ -152,36 +169,34 @@ namespace Game.Logic
 
                     var variables = new List<SystemVariable>
                     {
-                        new SystemVariable("System.uptime",
-                                           string.Format("{0} days {1:D2} hrs, {2:D2} mins, {3:D2} secs",
-                                                         (int)(uptime.TotalDays),
-                                                         uptime.Hours,
-                                                         uptime.Minutes,
-                                                         uptime.Seconds)),
+                        new SystemVariable("System.uptime", string.Format("{0} days {1:D2} hrs, {2:D2} mins, {3:D2} secs",
+                                                                          (int)(uptime.TotalDays),
+                                                                          uptime.Hours,
+                                                                          uptime.Minutes,
+                                                                          uptime.Seconds)),
                         new SystemVariable("Scheduler.size", schedulerSize),
                         new SystemVariable("Scheduler.average_action_time", averageActionTime),
                         new SystemVariable("Scheduler.size_change", schedulerDelta),
-                        new SystemVariable("Scheduler.actions_per_second",
-                                           (int)(actionsFired / now.Subtract(lastProbe).TotalSeconds)),
+                        new SystemVariable("Scheduler.actions_per_second", (int)(actionsFired / now.Subtract(lastProbe).TotalSeconds)),
                         new SystemVariable("Scheduler.next_fire", nextFire),
                         new SystemVariable("ThreadPool.max_worker", workerThreads),
                         new SystemVariable("ThreadPool.max_completion", completionThreads),
                         new SystemVariable("ThreadPool.available_worker", availableWorkerThreads),
                         new SystemVariable("ThreadPool.available_completion", availableCompletionThreads),
                         new SystemVariable("ThreadPool.active_worker", workerThreads - availableWorkerThreads),
-                        new SystemVariable("ThreadPool.active_completion",
-                                           completionThreads - availableCompletionThreads),
-                        new SystemVariable("Process.memory_usage", Process.GetCurrentProcess().WorkingSet64),
-                        new SystemVariable("Process.peak_memory_usage", Process.GetCurrentProcess().PeakWorkingSet64),
-                        new SystemVariable("Database.queries_per_second",
-                                           (int)(queriesRan / now.Subtract(lastDbProbe).TotalSeconds)),
+                        new SystemVariable("ThreadPool.active_completion", completionThreads - availableCompletionThreads),
+                        new SystemVariable("Process.memory_usage", (int)(Process.GetCurrentProcess().WorkingSet64 / 1048576)),
+                        new SystemVariable("Process.peak_memory_usage", (int)(Process.GetCurrentProcess().PeakWorkingSet64 / 1048576)),
+                        new SystemVariable("Database.queries_per_second", (int)(queriesRan / now.Subtract(lastDbProbe).TotalSeconds)),
                         new SystemVariable("Players.count", world.Players.Count),
-                        new SystemVariable("Players.logged_in", TcpWorker.GetSessionCount()),
+                        new SystemVariable("Players.logged_in", networkServer.GetSessionCount()),
                         new SystemVariable("Cities.count", world.Cities.Count),
-                        new SystemVariable("Channel.subscriptions", Global.Current.Channel.SubscriptionCount()),
+                        new SystemVariable("Channel.subscriptions", channel.SubscriptionCount()),
+                        new SystemVariable("Socket.buffer_manager_available", bufferManager.AvailableBuffers),
+                        new SystemVariable("Socket.awaitable_pool_length", socketAwaitablePool.Count),
                         new SystemVariable("Tribes.count", tribeManager.TribeCount),
                         new SystemVariable("Strongholds.neutral", strongholdsNeutral),
-                        new SystemVariable("Strongholds.occupied", strongholdsOccupied),
+                        new SystemVariable("Strongholds.occupied", strongholdsOccupied)
                     };
 
                     // Max player logged in ever
@@ -199,7 +214,7 @@ namespace Game.Logic
                             int maxLoggedIn =
                                     (int)
                                     DataTypeSerializer.Deserialize((string)reader["value"], (byte)reader["datatype"]);
-                            int currentlyLoggedIn = TcpWorker.GetSessionCount();
+                            int currentlyLoggedIn = networkServer.GetSessionCount();
                             if (currentlyLoggedIn > maxLoggedIn)
                             {
                                 variables.AddRange(new List<SystemVariable>

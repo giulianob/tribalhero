@@ -1103,7 +1103,22 @@ package src.UI.LookAndFeel
 				//"Button.DefaultButton.defaultImage", Chat_tab_defaultImage,
 				"Button.bg", SkinButtonBackground,
 				"Button.margin", new InsetsUIResource(5, 8, 5, 8), //modify this to fit the image border margin
-				"Button.textShiftOffset", 0
+				"Button.textShiftOffset", 0,
+
+                "ToggleButton.background", new ASColorUIResource(0x839DAD), //this is just for calculate disabled color
+                "ToggleButton.foreground", new ASColorUIResource(0xffffff),
+                "ToggleButton.textFilters", new ArrayUIResource([]),
+                "ToggleButton.opaque", false,
+                "ToggleButton.defaultImage", ToggleButton_defaultImage,
+                "ToggleButton.pressedImage", ToggleButton_pressedImage,
+                "ToggleButton.disabledImage", ToggleButton_disabledImage,
+                "ToggleButton.selectedImage", ToggleButton_selectedImage,
+                "ToggleButton.disabledSelectedImage", ToggleButton_disabledSelectedImage,
+                "ToggleButton.rolloverImage", ToggleButton_rolloverImage,
+                "ToggleButton.rolloverSelectedImage", ToggleButton_rolloverSelectedImage,
+                "ToggleButton.bg", SkinToggleButtonBackground,
+                "ToggleButton.margin", new InsetsUIResource(5, 8, 5, 8) //modify this to fit the image border margin
+
 			]];
 			table.putDefaults(comDefaults);
 
@@ -1142,7 +1157,26 @@ package src.UI.LookAndFeel
 				"ToggleButton.bg", SkinToggleButtonBackground,
 				"ToggleButton.margin", new InsetsUIResource(5, 5, 5, 5)
 			]];
-			table.putDefaults(comDefaults);			
+			table.putDefaults(comDefaults);
+
+			// *** Map Filter Tabs Toggle Button
+			comDefaults = [
+			"Class.MapFilter", [
+				"ToggleButton.background", new ASColorUIResource(0x839DAD),
+				"ToggleButton.foreground", new ASColorUIResource(0xffffff),
+				"ToggleButton.textFilters", new ArrayUIResource([]),
+				"ToggleButton.opaque", false,
+				"ToggleButton.defaultImage", Chat_tab_defaultImage,
+				"ToggleButton.pressedImage", Chat_tab_rolloverImage,
+				"ToggleButton.disabledImage", Chat_tab_selectedImage,
+				"ToggleButton.selectedImage", Chat_tab_defaultImage,
+				"ToggleButton.disabledSelectedImage", Chat_tab_selectedImage,
+				"ToggleButton.rolloverImage", Chat_tab_selectedImage,
+				"ToggleButton.rolloverSelectedImage", Chat_tab_selectedImage,
+				"ToggleButton.bg", SkinToggleButtonBackground,
+				"ToggleButton.margin", new InsetsUIResource(5, 5, 5, 5)
+			]];
+			table.putDefaults(comDefaults);
 
 			// *** RadioButton
 			comDefaults = [

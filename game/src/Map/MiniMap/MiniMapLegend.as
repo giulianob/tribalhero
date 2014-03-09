@@ -1,81 +1,74 @@
 package src.Map.MiniMap
 {
-    import flash.display.DisplayObject;
+import org.aswing.Insets;
+import org.aswing.JPanel;
+import org.aswing.SoftBoxLayout;
+import org.aswing.border.EmptyBorder;
 
-    import org.aswing.AsWingConstants;
-    import org.aswing.AssetIcon;
-    import org.aswing.Insets;
-    import org.aswing.JButton;
-    import org.aswing.JLabel;
-    import org.aswing.JPanel;
-    import org.aswing.SoftBoxLayout;
-    import org.aswing.border.EmptyBorder;
+import src.UI.GameJBoxBackground;
+import src.UI.GameJFrame;
 
-    import src.UI.GameJBox;
-    import src.UI.LookAndFeel.GameLookAndFeel;
-
-	public class MiniMapLegend
+public class MiniMapLegend
 	{
 		public static const LEGEND_WIDTH :int = 140;
-		private var ui: GameJBox = new GameJBox();
-		private var button: JButton = new JButton("Default");
+		private var ui: JPanel = new JPanel();
 		private var legendPanel: JPanel = new JPanel();
-		
+        private var frame: GameJFrame;
+
 		public function MiniMapLegend()
 		{
-			ui.setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));			
-			ui.setBorder(new EmptyBorder(null, new Insets(10, 10, 10, 10)));
+			ui.setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
 			ui.setPreferredWidth( -1);
 			
 			legendPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
-			GameLookAndFeel.changeClass(button, "GameJBoxButton");
-						
-			ui.append(button);
 			ui.append(legendPanel);
 		}
-		
-		public function setLegendTitle(title : String) : void
+
+        public function show(x: int, y: int) : void
 		{
-			button.setText(title);
-		}
-		
-		public function addOnClickListener(func : Function) : void
-		{
-			button.addActionListener(func, 0, true);
-		}
-		
-		public function show(x: int, y: int) : void
-		{
-			ui.show();
-			
-			ui.getFrame().pack();
+            frame = new GameJFrame(null, "", false);
+
+            frame.setContentPane(ui);
+
+            frame.setBackgroundDecorator(null);
+            frame.setTitleBar(null);
+            frame.setDragable(false);
+            frame.setClosable(false);
+            frame.setResizable(false);
+            frame.show();
+			frame.pack();
             align(x, y);
 		}
         
         public function align(x: int, y: int): void {
-            if (!ui.getFrame()) { return; }
-            ui.getFrame().setLocationXY(x, y);
-			ui.getFrame().repaintAndRevalidate();
+            if (!frame) { return; }
+            frame.setLocationXY(x, y);
+            frame.repaintAndRevalidate();
         }
 		
 		public function hide() : void {
-			if (ui.getFrame()) {
-				ui.getFrame().dispose();
+			if (frame) {
+                frame.dispose();
 			}
 		}
 		
 		public function removeAll(): void {
 			legendPanel.removeAll();
-		}
 
-		public function add(icon: DisplayObject, desc: String) : void
-		{
-			var legendLabel: JLabel = new JLabel(desc, new AssetIcon(icon), AsWingConstants.LEFT);
-			legendLabel.mouseEnabled = false;
-			legendLabel.mouseEnabled = false;
-			GameLookAndFeel.changeClass(legendLabel, "Tooltip.text Label.small");
-			legendPanel.appendAll(legendLabel);
-		}
+        }
+        public function addPanel(pnl: JPanel) : void
+        {
+            pnl.setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
+            pnl.setBorder(new EmptyBorder(null, new Insets(5, 5, 5, 5)));
+
+            var outerPnl: JPanel = new JPanel();
+            outerPnl.setBackgroundDecorator(new GameJBoxBackground());
+            outerPnl.setOpaque(true);
+            outerPnl.append(pnl);
+
+            legendPanel.append(outerPnl);
+        }
+
 	}
 
 }

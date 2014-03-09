@@ -26,6 +26,10 @@ public class MiniMapLegend
 
         public function show(x: int, y: int) : void
 		{
+            if (frame) {
+                frame.dispose();
+            }
+
             frame = new GameJFrame(null, "", false);
 
             frame.setContentPane(ui);
@@ -51,11 +55,7 @@ public class MiniMapLegend
                 frame.dispose();
 			}
 		}
-		
-		public function removeAll(): void {
-			legendPanel.removeAll();
 
-        }
         public function addPanel(pnl: JPanel) : void
         {
             pnl.setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));

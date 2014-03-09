@@ -24,7 +24,7 @@ namespace Game.Setup
 
         public static int client_min_version = 0;
         public static int client_min_revision = 0;
-        public static int server_port = 48888;
+        public static int server_port = 443;
         public static string server_listen_address = "0.0.0.0";
         public static bool server_admin_only;
         public static bool server_admin_always;

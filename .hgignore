@@ -21,3 +21,5 @@ vendors/ruckusing/logs/development.log
 nbproject/
 app/webroot/tmp/Game.swf
 .idea/workspace.xml
+app/webroot/data.xml
+app/webroot/Game_en.xml

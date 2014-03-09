@@ -14,7 +14,7 @@
 
     import src.Constants;
     import src.Global;
-    import src.Map.MiniMapFilters.*;
+    import src.Map.MiniMapDrawers.*;
     import src.Objects.ObjectContainer;
     import src.UI.Components.MiniMapPointer;
     import src.Util.Util;
@@ -25,9 +25,11 @@
 
 		private var regionSpace: Sprite;
 		private var regions: MiniMapRegionList;
-		private var filter: MiniMapRegionFilter = new MiniMapRegionFilter();
+		private var filter: MiniMapDrawer = new MiniMapDrawer();
 		private var legend: MiniMapLegend = new MiniMapLegend();
 		private var pendingRegions: Array = [];
+
+
 
 		public var objContainer: ObjectContainer;
 
@@ -77,8 +79,9 @@
 
 			resize(width, height);
 			
-			legend.addOnClickListener(onChangeFilter);
-			
+            filter.addOnChangeListener(onFilterChange);
+            filter.applyLegend(legend);
+
 			addEventListener(Event.REMOVED_FROM_STAGE, function(e: Event): void {
 				legend.hide();
 			});
@@ -111,45 +114,15 @@
             alignLegend();
 		}
 		
-		public function setFilter(name:String) : Boolean {
-			if (name == "Default") {
-				filter = new MiniMapRegionFilter();
-			} else if (name == "Alignment") {
-				filter = new MiniMapFilterAlignment();
-			} else if (name == "Distance") {
-				filter = new MiniMapRegionFilterDistance();
-			} else if (name == "Tribe") {
-				filter = new MiniMapRegionFilterTribe();
-			} else if (name == "Newbie") {
-				filter = new MiniMapRegionFilterNewbie();
-			} else {
-				return false;
-			}
-			for each(var region:MiniMapRegion in regions) {
-				region.setFilter(filter);
-			}
-			showLegend();
-			return true;
-		}
-		
-		public function onChangeFilter(e:Event): void {
-			if (filter.getName() == "Default") {
-				setFilter("Alignment");
-			} else if (filter.getName() == "Alignment") {
-				setFilter("Distance");
-			} else if (filter.getName() == "Distance") {
-				setFilter("Tribe");
-			} else if (filter.getName() == "Tribe") {
-				setFilter("Newbie");
-			} else if (filter.getName() == "Newbie") {
-				setFilter("Default");
-			}
-			redraw();
-		}
+        public function onFilterChange():void {
+            for each(var region:MiniMapRegion in regions) {
+                region.setFilter(filter);
+            }
+            showLegend();
+            redraw();
+        }
 		
 		public function showLegend() : void {
-			legend.removeAll();
-			filter.applyLegend(legend);
 			legend.show(this.x + this.miniMapWidth, this.y);
 		}
         

@@ -5,7 +5,7 @@
 
     import src.*;
     import src.Map.*;
-    import src.Map.MiniMapFilters.MiniMapRegionFilter;
+    import src.Map.MiniMap.MiniMapDrawer;
     import src.UI.Tooltips.*;
 
     public class MiniMapRegion extends Sprite
@@ -14,16 +14,16 @@
 		private var globalX: int;
 		private var globalY: int;
 		private var objects: Array = [];
-		private var filter: MiniMapRegionFilter;
+		private var filter: MiniMapDrawer;
 
-		public function MiniMapRegion(id: int, filter: MiniMapRegionFilter)
+		public function MiniMapRegion(id: int, filter: MiniMapDrawer)
 		{
 			this.id = id;
 			this.filter = filter;
 
 			globalX = (id % Constants.miniMapRegionRatioW) * Constants.miniMapRegionW;
 			globalY = int(id / Constants.miniMapRegionRatioW) * (Constants.miniMapRegionH / 2);
-			
+
 			if (Constants.debug >= 4)
 			{
 				/* adds an outline to this region */
@@ -33,8 +33,8 @@
 				graphics.endFill();
 			}
 		}
-		
-		public function setFilter(filter:MiniMapRegionFilter): void
+
+		public function setFilter(filter:MiniMapDrawer): void
 		{
 			this.filter = filter;
 			for each(var obj: * in objects)
@@ -43,12 +43,12 @@
 
 		public function disposeData():void
 		{
-			for each(var obj: * in objects)			
+			for each(var obj: * in objects)
 				Global.gameContainer.miniMap.objContainer.removeObject(obj);
 
 			objects = [];
 		}
-		
+
 		public function addRegionObject(type: int, groupId: int, objectId: int, size: int, position: ScreenPosition, extraProps: *) : MiniMapRegionObject {
 			var regionObject: MiniMapRegionObject = new MiniMapRegionObject(type, groupId, objectId, size, position, extraProps);
 
@@ -63,12 +63,12 @@
 		public function onObjectMouseOver(e: MouseEvent) : void {
 			new MinimapInfoTooltip(e.target is MiniMapRegionObject ? e.target as MiniMapRegionObject : e.target.parent);
 		}
-		
+
 		public function moveWithCamera(camera: Camera):void
 		{
 			x = globalX - camera.miniMapX - int(Constants.miniMapTileW / 2);
 			y = globalY - camera.miniMapY - int(Constants.miniMapTileH / 2);
-		}		
+		}
 
         public static function sortOnId(a:MiniMapRegion, b:MiniMapRegion):Number
 		{

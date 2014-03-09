@@ -140,7 +140,7 @@ package src {
                 var width: int = Math.min(Constants.screenW - 60, Constants.miniMapLargeScreenW);
                 var height: int = Math.min(Constants.screenH - 75, Constants.miniMapLargeScreenH);
                 gameContainer.miniMap.resize(width, height);
-                gameContainer.miniMap.x = Constants.miniMapLargeScreenX(width);
+                gameContainer.miniMap.x = Constants.miniMapLargeScreenX(width)-30;
                 gameContainer.miniMap.y = Constants.miniMapLargeScreenY(height);
                 minimapZoomTooltip.setText("Minimize map");
                 gameContainer.miniMap.setScreenRectHidden(true);

@@ -12,6 +12,7 @@
     import flash.display.*;
     import flash.events.*;
     import flash.net.*;
+    import flash.system.Security;
     import flash.ui.*;
 
     import org.aswing.*;
@@ -51,6 +52,8 @@
 		
 		public function Main()
 		{
+            Security.loadPolicyFile(Constants.mainWebsite + "crossdomain.xml?m=" + Constants.version + "." + Constants.revision);
+
 			name = "Main";
 			trace("TribalHero v" + Constants.version + "." + Constants.revision);
 			

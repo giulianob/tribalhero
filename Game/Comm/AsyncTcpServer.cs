@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using Dawn.Net.Sockets;
+using Game.Setup;
 using Game.Util;
 using Ninject.Extensions.Logging;
 using SocketAwaitablePool = Dawn.Net.Sockets.SocketAwaitablePool;
@@ -29,6 +30,8 @@ namespace Game.Comm
         private bool isStopped = true;
 
         private Task listeningTask;
+
+        private byte[] policyFile;
 
         public IPEndPoint LocalEndPoint
         {
@@ -54,6 +57,13 @@ namespace Game.Comm
 
             isStopped = false;
             
+            var policy =
+                    @"<?xml version=""1.0""?><!DOCTYPE cross-domain-policy SYSTEM ""/xml/dtds/cross-domain-policy.dtd""><cross-domain-policy><site-control permitted-cross-domain-policies=""master-only""/><allow-access-from domain=""" +
+                    Config.flash_domain + @""" to-ports=""80,8085," + Config.server_port +
+                    @""" /></cross-domain-policy>";
+
+            policyFile = Encoding.UTF8.GetBytes(policy);
+
             IPAddress localAddr = IPAddress.Parse(listenAddress);
             if (localAddr == null)
             {
@@ -198,6 +208,8 @@ namespace Game.Comm
         {
             session.ProcessEvent(new Packet(Command.OnConnect));
 
+            var hasCheckedForPolicyFile = false;
+
             var socketAwaitable = socketAwaitablePool.Take();
 
             var buffer = bufferManager.GetBuffer();
@@ -207,6 +219,32 @@ namespace Game.Comm
             {
                 do
                 {
+                    // Check if it's a policy file request
+                    if (!hasCheckedForPolicyFile && session.PacketMaker.Length > 22)
+                    {
+                        hasCheckedForPolicyFile = true;
+
+                        if (Encoding.UTF8.GetString(session.PacketMaker.GetBytes(), 0, 22) == "<policy-file-request/>")
+                        {
+                            logger.Debug("Serving policy file through game server to {0}", session.RemoteIP);
+                            try
+                            {
+                                await session.SendAsyncImmediatelly(policyFile);
+                                session.Socket.Shutdown(SocketShutdown.Both);
+                                session.Socket.Close(1);
+                            }
+                            catch(Exception e)
+                            {
+                                if (logger.IsDebugEnabled)
+                                {
+                                    logger.Debug(e, "Handled exception while serving policy file on main game port");
+                                }
+                            }
+
+                            return;
+                        }
+                    }
+
                     // Keep processing as many packets as we can
                     do
                     {
@@ -288,7 +326,7 @@ namespace Game.Comm
             }
             else
             {
-                logger.Info("Socket disconnect without logged in player IP[{0}]", session.RemoteIP);
+                logger.Debug("Socket disconnect without logged in player IP[{0}]", session.RemoteIP);
             }
 
             Task.Run(() => session.ProcessEvent(new Packet(Command.OnDisconnect)));

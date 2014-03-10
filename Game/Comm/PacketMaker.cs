@@ -15,6 +15,11 @@ namespace Game.Comm
             }
         }
 
+        public byte[] GetBytes()
+        {
+            return ms.ToArray();
+        }
+
         public void Append(byte[] data)
         {
             ms.Write(data, 0, data.Length);

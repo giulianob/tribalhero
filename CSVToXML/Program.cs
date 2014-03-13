@@ -9,8 +9,8 @@ using Common;
 using Game.Data;
 using Game.Logic;
 using Game.Setup;
+using Game.Setup.DependencyInjection;
 using Game.Util;
-using Ninject;
 
 #endregion
 

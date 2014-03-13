@@ -20,34 +20,35 @@ namespace Game.Logic.Actions
 
         private readonly Procedure procedure;
 
-        private readonly uint cityId;
+        private uint cityId;
 
-        private readonly bool cityToStructure;
+        private bool cityToStructure;
 
-        private readonly uint structureId;
+        private uint structureId;
 
         private readonly ILocker locker;
 
         private readonly IGameObjectLocator gameObjectLocator;
 
+        public LaborMoveActiveAction(Formula formula, Procedure procedure, ILocker locker, IGameObjectLocator gameObjectLocator)
+        {
+            this.formula = formula;
+            this.procedure = procedure;
+            this.locker = locker;
+            this.gameObjectLocator = gameObjectLocator;
+        }
+
         public LaborMoveActiveAction(uint cityId, uint structureId, bool cityToStructure, ushort count, Formula formula, Procedure procedure, ILocker locker, IGameObjectLocator gameObjectLocator)
+            : this(formula, procedure, locker, gameObjectLocator)
         {
             this.cityId = cityId;
             this.structureId = structureId;
             this.cityToStructure = cityToStructure;
-            this.formula = formula;
-            this.procedure = procedure;
-            this.locker = locker;
-            this.gameObjectLocator = gameObjectLocator;
             ActionCount = count;
         }
 
-        public LaborMoveActiveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType, byte workerIndex, ushort actionCount, IDictionary<string, string> properties, Formula formula, Procedure procedure, ILocker locker, IGameObjectLocator gameObjectLocator) : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
+        public override void LoadProperties(IDictionary<string, string> properties)
         {
-            this.formula = formula;
-            this.procedure = procedure;
-            this.locker = locker;
-            this.gameObjectLocator = gameObjectLocator;
             cityToStructure = bool.Parse(properties["city_to_structure"]);
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);

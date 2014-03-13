@@ -3,7 +3,7 @@
 using Game.Data;
 using Game.Data.Stats;
 using Game.Setup;
-using Ninject;
+using Game.Setup.DependencyInjection;
 using Xunit;
 
 #endregion

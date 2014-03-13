@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using Common;
 using Game.Data;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
@@ -9,7 +10,6 @@ using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -25,7 +25,7 @@ namespace Game.Logic.Actions
 
         private readonly Procedure procedure;
 
-        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+        private readonly ILogger logger = LoggerFactory.Current.GetLogger<StructureChangePassiveAction>();
 
         private uint cityId;
 
@@ -66,42 +66,18 @@ namespace Game.Logic.Actions
                                             ILocker locker,
                                             Procedure procedure,
                                             CallbackProcedure callbackProcedure,
-                                            IStructureCsvFactory structureCsvFactory)
+                                            IStructureCsvFactory structureCsvFactory) :
+            this(formula, world, locker, procedure, callbackProcedure, structureCsvFactory)
         {
             this.cityId = cityId;
             this.objectId = objectId;
             ts = TimeSpan.FromSeconds(seconds);
             type = newType;
             lvl = newLvl;
-            this.formula = formula;
-            this.world = world;
-            this.locker = locker;
-            this.procedure = procedure;
-            this.callbackProcedure = callbackProcedure;
-            this.structureCsvFactory = structureCsvFactory;
         }
 
-        public StructureChangePassiveAction(uint id,
-                                            DateTime beginTime,
-                                            DateTime nextTime,
-                                            DateTime endTime,
-                                            bool isVisible,
-                                            string nlsDescription,
-                                            Dictionary<string, string> properties,
-                                            Formula formula,
-                                            IWorld world,
-                                            ILocker locker,
-                                            Procedure procedure,
-                                            CallbackProcedure callbackProcedure,
-                                            IStructureCsvFactory structureCsvFactory)
-                : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
+        public override void LoadProperties(IDictionary<string, string> properties)
         {
-            this.formula = formula;
-            this.world = world;
-            this.locker = locker;
-            this.procedure = procedure;
-            this.callbackProcedure = callbackProcedure;
-            this.structureCsvFactory = structureCsvFactory;
             cityId = uint.Parse(properties["city_id"]);
             objectId = uint.Parse(properties["object_id"]);
             type = ushort.Parse(properties["type"]);

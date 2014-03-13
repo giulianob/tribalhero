@@ -5,8 +5,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading;
+using Common;
 using Game.Util;
-using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -14,7 +14,7 @@ namespace Game.Comm
 {
     internal class TcpWorker
     {
-        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+        private readonly ILogger logger = LoggerFactory.Current.GetLogger<TcpWorker>();
 
         private readonly Dictionary<Socket, SynchronousSocketSession> sessions = new Dictionary<Socket, SynchronousSocketSession>();
 

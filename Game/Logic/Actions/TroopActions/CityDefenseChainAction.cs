@@ -29,14 +29,25 @@ namespace Game.Logic.Actions
 
         private readonly Procedure procedure;
 
-        private readonly uint cityId;
+        private uint cityId;
         
         private uint troopObjectId;
 
-        private readonly Formula formula;
+        private uint targetCityId;
         
-        private readonly uint targetCityId;
-        
+        public CityDefenseChainAction(BattleProcedure battleProcedure,
+                                      IActionFactory actionFactory,
+                                      ILocker locker,
+                                      IWorld world,
+                                      Procedure procedure)
+        {
+            this.battleProcedure = battleProcedure;
+            this.actionFactory = actionFactory;
+            this.locker = locker;
+            this.world = world;
+            this.procedure = procedure;
+        }
+
         public CityDefenseChainAction(uint cityId,
                                       ITroopObjectInitializer troopObjectInitializer,
                                       uint targetCityId,
@@ -44,40 +55,16 @@ namespace Game.Logic.Actions
                                       IActionFactory actionFactory,
                                       ILocker locker,
                                       IWorld world,
-                                      Formula formula,
                                       Procedure procedure)
+            : this(battleProcedure, actionFactory, locker, world, procedure)
         {
             this.cityId = cityId;
             this.troopObjectInitializer = troopObjectInitializer;
             this.targetCityId = targetCityId;
-            this.battleProcedure = battleProcedure;
-            this.actionFactory = actionFactory;
-            this.locker = locker;
-            this.world = world;
-            this.formula = formula;
-            this.procedure = procedure;
         }
 
-        public CityDefenseChainAction(uint id,
-                                      string chainCallback,
-                                      PassiveAction current,
-                                      ActionState chainState,
-                                      bool isVisible,
-                                      Dictionary<string, string> properties,
-                                      BattleProcedure battleProcedure,
-                                      IActionFactory actionFactory,
-                                      ILocker locker,
-                                      IWorld world,
-                                      Formula formula,
-                                      Procedure procedure)
-                : base(id, chainCallback, current, chainState, isVisible)
+        public override void LoadProperties(IDictionary<string, string> properties)
         {
-            this.battleProcedure = battleProcedure;
-            this.actionFactory = actionFactory;
-            this.locker = locker;
-            this.world = world;
-            this.formula = formula;
-            this.procedure = procedure;
             cityId = uint.Parse(properties["city_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);
             targetCityId = uint.Parse(properties["target_city_id"]);

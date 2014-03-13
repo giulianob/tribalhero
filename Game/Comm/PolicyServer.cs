@@ -6,9 +6,9 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using Common;
 using Game.Setup;
 using Game.Util;
-using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -16,7 +16,7 @@ namespace Game.Comm
 {
     public class PolicyServer : IPolicyServer
     {
-        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+        private readonly ILogger logger = LoggerFactory.Current.GetLogger<PolicyServer>();
 
         private TcpListener listener;
 

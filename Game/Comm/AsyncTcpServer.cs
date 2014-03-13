@@ -5,17 +5,17 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using Common;
 using Dawn.Net.Sockets;
 using Game.Setup;
 using Game.Util;
-using Ninject.Extensions.Logging;
 using SocketAwaitablePool = Dawn.Net.Sockets.SocketAwaitablePool;
 
 namespace Game.Comm
 {
     public class AsyncTcpServer : INetworkServer
     {
-        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+        private readonly ILogger logger = LoggerFactory.Current.GetLogger<AsyncTcpServer>();
 
         private readonly ConcurrentDictionary<AsyncSocketSession, Task> sessions = new ConcurrentDictionary<AsyncSocketSession, Task>();
 

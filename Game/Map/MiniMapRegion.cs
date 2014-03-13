@@ -4,11 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Common;
 using Game.Data;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -16,7 +16,7 @@ namespace Game.Map
 {
     public class MiniMapRegion
     {
-        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+        private readonly ILogger logger = LoggerFactory.Current.GetLogger<MiniMapRegion>();
 
         private readonly DefaultMultiObjectLock.Factory lockerFactory;
 

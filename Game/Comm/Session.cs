@@ -1,8 +1,8 @@
 #region
 
+using Common;
 using Game.Data;
 using Game.Util;
-using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -10,7 +10,7 @@ namespace Game.Comm
 {
     public abstract class Session : IChannelListener
     {
-        protected readonly ILogger Logger = LoggerFactory.Current.GetCurrentClassLogger();
+        protected readonly ILogger Logger = LoggerFactory.Current.GetLogger<Session>();
 
         #region Delegates
 

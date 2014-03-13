@@ -16,13 +16,13 @@ namespace Game.Logic.Actions
 {
     public class StructureChangeActiveAction : ScheduledActiveAction
     {
-        private readonly uint cityId;
+        private uint cityId;
 
-        private readonly byte lvl;
+        private byte lvl;
 
-        private readonly uint structureId;
+        private uint structureId;
 
-        private readonly uint type;
+        private uint type;
 
         private Resource cost;
 
@@ -38,6 +38,21 @@ namespace Game.Logic.Actions
 
         private readonly CallbackProcedure callbackProcedure;
 
+        public StructureChangeActiveAction(IStructureCsvFactory structureCsvFactory,
+                                           Formula formula,
+                                           IWorld world,
+                                           Procedure procedure,
+                                           ILocker locker,
+                                           CallbackProcedure callbackProcedure)
+        {
+            this.structureCsvFactory = structureCsvFactory;
+            this.formula = formula;
+            this.world = world;
+            this.procedure = procedure;
+            this.locker = locker;
+            this.callbackProcedure = callbackProcedure;
+        }
+
         public StructureChangeActiveAction(uint cityId,
                                            uint structureId,
                                            uint type,
@@ -48,41 +63,16 @@ namespace Game.Logic.Actions
                                            Procedure procedure,
                                            ILocker locker,
                                            CallbackProcedure callbackProcedure)
+            : this(structureCsvFactory, formula, world, procedure, locker, callbackProcedure)
         {
             this.cityId = cityId;
             this.structureId = structureId;
             this.type = type;
             this.lvl = lvl;
-            this.structureCsvFactory = structureCsvFactory;
-            this.formula = formula;
-            this.world = world;
-            this.procedure = procedure;
-            this.locker = locker;
-            this.callbackProcedure = callbackProcedure;
         }
 
-        public StructureChangeActiveAction(uint id,
-                                           DateTime beginTime,
-                                           DateTime nextTime,
-                                           DateTime endTime,
-                                           int workerType,
-                                           byte workerIndex,
-                                           ushort actionCount,
-                                           IDictionary<string, string> properties,
-                                           IStructureCsvFactory structureCsvFactory,
-                                           Formula formula,
-                                           IWorld world,
-                                           Procedure procedure,
-                                           ILocker locker,
-                                           CallbackProcedure callbackProcedure)
-                : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
+        public override void LoadProperties(IDictionary<string, string> properties)
         {
-            this.structureCsvFactory = structureCsvFactory;
-            this.formula = formula;
-            this.world = world;
-            this.procedure = procedure;
-            this.locker = locker;
-            this.callbackProcedure = callbackProcedure;
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
             lvl = byte.Parse(properties["lvl"]);

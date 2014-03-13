@@ -8,7 +8,6 @@ using Game.Setup;
 using Mono.Unix;
 using Mono.Unix.Native;
 using NDesk.Options;
-using Ninject;
 using log4net;
 using Mono.Posix;
 

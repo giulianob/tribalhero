@@ -1,11 +1,11 @@
 ﻿using System.IO;
-using Ninject.Extensions.Logging;
+using Common;
 
 namespace Game.Util
 {
     public static class FileExtension
     {
-        private static ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+        private static ILogger logger = LoggerFactory.Current.GetLogger<Engine>();
 
         public static FileStream OverwriteLockedFile(string path)
         {

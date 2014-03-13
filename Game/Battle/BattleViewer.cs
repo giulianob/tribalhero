@@ -3,9 +3,9 @@
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Setup;
+using Game.Setup.DependencyInjection;
 using Game.Util;
-using Ninject;
-using Ninject.Extensions.Logging;
+using ILogger = Common.ILogger;
 
 #endregion
 
@@ -13,7 +13,7 @@ namespace Game.Battle
 {
     public class BattleViewer
     {
-        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+        private readonly ILogger logger = LoggerFactory.Current.GetLogger<BattleViewer>();
         private readonly IBattleManager battleManager;
         private uint currentRound = 0;
 

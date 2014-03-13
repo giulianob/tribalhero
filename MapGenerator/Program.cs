@@ -3,8 +3,8 @@
 using System;
 using Game;
 using Game.Setup;
+using Game.Setup.DependencyInjection;
 using NDesk.Options;
-using Ninject;
 
 #endregion
 

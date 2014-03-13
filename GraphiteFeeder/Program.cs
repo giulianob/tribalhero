@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using Ninject.Extensions.Logging.Log4net.Infrastructure;
+using Common;
 using Persistance;
 using Persistance.Managers;
 
@@ -18,7 +18,7 @@ namespace GraphiteFeeder
 
         private static void Main(string[] args)
         {
-            var dbManager = new MySqlDbManager(new Log4NetLoggerFactory().GetLogger(typeof(IDbManager)),
+            var dbManager = new MySqlDbManager(new Log4NetLogger(typeof(Program)),
                                                HOSTNAME,
                                                USERNAME,
                                                PASSWORD,

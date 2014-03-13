@@ -23,7 +23,7 @@ namespace Game.Logic.Actions
     {
         private readonly IBattleFormulas battleFormula;
 
-        private readonly uint cityId;
+        private uint cityId;
 
         private readonly IDbManager dbManager;
 
@@ -35,13 +35,28 @@ namespace Game.Logic.Actions
 
         private readonly Formula formula;
 
-        private readonly uint targetObjectId;
+        private uint targetObjectId;
 
-        private readonly uint troopObjectId;
+        private uint troopObjectId;
 
         private uint groupId;
 
         private int originalUnitCount;
+
+        public BarbarianTribeEngageAttackPassiveAction(IBattleFormulas battleFormula,
+                                                       IGameObjectLocator gameObjectLocator,
+                                                       BarbarianTribeBattleProcedure barbarianTribeBattleProcedure,
+                                                       Formula formula,
+                                                       IDbManager dbManager,
+                                                       IStaminaMonitorFactory staminaMonitorFactory)
+        {
+            this.battleFormula = battleFormula;
+            this.gameObjectLocator = gameObjectLocator;
+            this.barbarianTribeBattleProcedure = barbarianTribeBattleProcedure;
+            this.formula = formula;
+            this.dbManager = dbManager;
+            this.staminaMonitorFactory = staminaMonitorFactory;
+        }
 
         public BarbarianTribeEngageAttackPassiveAction(uint cityId,
                                                        uint troopObjectId,
@@ -52,36 +67,15 @@ namespace Game.Logic.Actions
                                                        Formula formula,
                                                        IDbManager dbManager,
                                                        IStaminaMonitorFactory staminaMonitorFactory)
+            : this(battleFormula, gameObjectLocator, barbarianTribeBattleProcedure, formula, dbManager, staminaMonitorFactory)
         {
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
             this.targetObjectId = targetObjectId;
-            this.battleFormula = battleFormula;
-            this.gameObjectLocator = gameObjectLocator;
-            this.barbarianTribeBattleProcedure = barbarianTribeBattleProcedure;
-            this.formula = formula;
-            this.dbManager = dbManager;
-            this.staminaMonitorFactory = staminaMonitorFactory;
         }
 
-        public BarbarianTribeEngageAttackPassiveAction(uint id,
-                                                       bool isVisible,
-                                                       IDictionary<string, string> properties,
-                                                       IBattleFormulas battleFormula,
-                                                       IGameObjectLocator gameObjectLocator,
-                                                       BarbarianTribeBattleProcedure barbarianTribeBattleProcedure,
-                                                       Formula formula,
-                                                       IDbManager dbManager,
-                                                       IStaminaMonitorFactory staminaMonitorFactory)
-                : base(id, isVisible)
+        public override void LoadProperties(IDictionary<string, string> properties)
         {
-            this.battleFormula = battleFormula;
-            this.gameObjectLocator = gameObjectLocator;
-            this.barbarianTribeBattleProcedure = barbarianTribeBattleProcedure;
-            this.formula = formula;
-            this.dbManager = dbManager;
-            this.staminaMonitorFactory = staminaMonitorFactory;
-
             cityId = uint.Parse(properties["troop_city_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);
             groupId = uint.Parse(properties["group_id"]);

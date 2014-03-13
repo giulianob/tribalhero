@@ -20,41 +20,39 @@ namespace Game.Logic.Actions
     {
         private readonly StrongholdBattleProcedure strongholdBattleProcedure;
 
-        private readonly uint cityId;
+        private uint cityId;
 
         private readonly IGameObjectLocator gameObjectLocator;
 
-        private readonly uint targetStrongholdId;
+        private uint targetStrongholdId;
 
-        private readonly uint troopObjectId;
+        private uint troopObjectId;
 
         private uint groupId;
 
         private int originalUnitCount;
+
+        public StrongholdEngageMainAttackPassiveAction(IGameObjectLocator gameObjectLocator,
+                                                       StrongholdBattleProcedure strongholdBattleProcedure)
+        {
+            this.gameObjectLocator = gameObjectLocator;
+            this.strongholdBattleProcedure = strongholdBattleProcedure;
+        }
 
         public StrongholdEngageMainAttackPassiveAction(uint cityId,
                                                        uint troopObjectId,
                                                        uint targetStrongholdId,
                                                        IGameObjectLocator gameObjectLocator,
                                                        StrongholdBattleProcedure strongholdBattleProcedure)
+            : this(gameObjectLocator, strongholdBattleProcedure)
         {
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
             this.targetStrongholdId = targetStrongholdId;
-            this.gameObjectLocator = gameObjectLocator;
-            this.strongholdBattleProcedure = strongholdBattleProcedure;
         }
 
-        public StrongholdEngageMainAttackPassiveAction(uint id,
-                                                       bool isVisible,
-                                                       IDictionary<string, string> properties,
-                                                       IGameObjectLocator gameObjectLocator,
-                                                       StrongholdBattleProcedure strongholdBattleProcedure)
-                : base(id, isVisible)
+        public override void LoadProperties(IDictionary<string, string> properties)
         {
-            this.gameObjectLocator = gameObjectLocator;
-            this.strongholdBattleProcedure = strongholdBattleProcedure;
-
             cityId = uint.Parse(properties["troop_city_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);
             groupId = uint.Parse(properties["group_id"]);

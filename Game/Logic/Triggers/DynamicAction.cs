@@ -1,6 +1,7 @@
 ﻿using System;
 using Game.Data;
-using Ninject;
+using Game.Setup;
+using Game.Setup.DependencyInjection;
 
 namespace Game.Logic.Triggers
 {

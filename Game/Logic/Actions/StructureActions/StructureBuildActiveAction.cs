@@ -17,7 +17,7 @@ namespace Game.Logic.Actions
 {
     public class StructureBuildActiveAction : ScheduledActiveAction
     {
-        private readonly uint cityId;
+        private uint cityId;
 
         private readonly ILocker concurrency;
 
@@ -37,11 +37,11 @@ namespace Game.Logic.Actions
 
         private readonly CallbackProcedure callbackProcedure;
 
-        private readonly ushort type;
+        private ushort type;
 
         private readonly IWorld world;
 
-        private readonly byte level;
+        private byte level;
 
         public uint X { get; private set; }
 
@@ -52,6 +52,29 @@ namespace Game.Logic.Actions
         private uint structureId;
 
         private string tileRequirement;
+
+        public StructureBuildActiveAction(IObjectTypeFactory objectTypeFactory,
+                                          IWorld world,
+                                          Formula formula,
+                                          IRequirementCsvFactory requirementCsvFactory,
+                                          IStructureCsvFactory structureCsvFactory,
+                                          ILocker concurrency,
+                                          Procedure procedure,
+                                          IRoadPathFinder roadPathFinder,
+                                          ITileLocator tileLocator, 
+                                          CallbackProcedure callbackProcedure)  
+        {
+            this.objectTypeFactory = objectTypeFactory;
+            this.world = world;
+            this.formula = formula;
+            this.requirementCsvFactory = requirementCsvFactory;
+            this.structureCsvFactory = structureCsvFactory;
+            this.concurrency = concurrency;
+            this.procedure = procedure;
+            this.roadPathFinder = roadPathFinder;
+            this.tileLocator = tileLocator;
+            this.callbackProcedure = callbackProcedure;
+        }
 
         public StructureBuildActiveAction(uint cityId,
                                           ushort type,
@@ -68,53 +91,17 @@ namespace Game.Logic.Actions
                                           IRoadPathFinder roadPathFinder,
                                           ITileLocator tileLocator, 
                                           CallbackProcedure callbackProcedure)  
+            : this(objectTypeFactory, world, formula, requirementCsvFactory, structureCsvFactory, concurrency, procedure, roadPathFinder, tileLocator, callbackProcedure)
         {
             this.cityId = cityId;
             this.type = type;
             this.X = x;
             this.Y = y;
             this.level = level;
-            this.objectTypeFactory = objectTypeFactory;
-            this.world = world;
-            this.formula = formula;
-            this.requirementCsvFactory = requirementCsvFactory;
-            this.structureCsvFactory = structureCsvFactory;
-            this.concurrency = concurrency;
-            this.procedure = procedure;
-            this.roadPathFinder = roadPathFinder;
-            this.tileLocator = tileLocator;
-            this.callbackProcedure = callbackProcedure;
         }
 
-        public StructureBuildActiveAction(uint id,
-                                          DateTime beginTime,
-                                          DateTime nextTime,
-                                          DateTime endTime,
-                                          int workerType,
-                                          byte workerIndex,
-                                          ushort actionCount,
-                                          Dictionary<string, string> properties,
-                                          IObjectTypeFactory objectTypeFactory,
-                                          IWorld world,
-                                          Formula formula,
-                                          IRequirementCsvFactory requirementCsvFactory,
-                                          IStructureCsvFactory structureCsvFactory,
-                                          ILocker concurrency,
-                                          Procedure procedure,
-                                          ITileLocator tileLocator, 
-                                          CallbackProcedure callbackProcedure)
-                : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
+        public override void LoadProperties(IDictionary<string, string> properties)
         {
-            this.objectTypeFactory = objectTypeFactory;
-            this.world = world;
-            this.formula = formula;
-            this.requirementCsvFactory = requirementCsvFactory;
-            this.structureCsvFactory = structureCsvFactory;
-            this.concurrency = concurrency;
-            this.procedure = procedure;
-            this.tileLocator = tileLocator;
-            this.callbackProcedure = callbackProcedure;
-
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
             X = uint.Parse(properties["x"]);

@@ -30,25 +30,15 @@ namespace Game.Logic.Actions
             this.locker = locker;
         }
 
-        public StructureSelfDestroyPassiveAction(uint cityId, uint objectId, IWorld world, ILocker locker)
+        public StructureSelfDestroyPassiveAction(uint cityId, uint objectId, IWorld world, ILocker locker) 
+            : this(world, locker)
         {
             this.cityId = cityId;
             this.objectId = objectId;
-            this.world = world;
-            this.locker = locker;
         }
 
-        public StructureSelfDestroyPassiveAction(uint id,
-                                                 DateTime beginTime,
-                                                 DateTime nextTime,
-                                                 DateTime endTime,
-                                                 bool isVisible,
-                                                 string nlsDescription,
-                                                 Dictionary<string, string> properties, IWorld world, ILocker locker)
-                : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
+        public override void LoadProperties(IDictionary<string, string> properties)
         {
-            this.world = world;
-            this.locker = locker;
             cityId = uint.Parse(properties["city_id"]);
             objectId = uint.Parse(properties["object_id"]);
         }

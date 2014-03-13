@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
 using Game.Data;
 using Game.Setup;
 
@@ -28,6 +29,10 @@ namespace Game.Logic.Actions
             {
                 return string.Empty;
             }
+        }
+
+        public override void LoadProperties(IDictionary<string, string> properties)
+        {
         }
 
         #region IScriptable Members

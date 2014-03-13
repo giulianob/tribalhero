@@ -1,14 +1,11 @@
 using System;
 using System.IO;
-using System.Linq;
 using Dawn.Net.Sockets;
 using Game.Battle;
 using Game.Battle.CombatObjects;
 using Game.Battle.Reporting;
 using Game.Comm;
 using Game.Comm.Channel;
-using Game.Comm.CmdLine_Commands;
-using Game.Comm.ProcessorCommands;
 using Game.Comm.Protocol;
 using Game.Comm.Thrift;
 using Game.Data;
@@ -17,7 +14,6 @@ using Game.Data.Forest;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Data.Troop;
-using Game.Database;
 using Game.Logic;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
@@ -25,245 +21,211 @@ using Game.Logic.Triggers;
 using Game.Map;
 using Game.Module;
 using Game.Setup;
+using Game.Setup.DependencyInjection;
 using Game.Util;
 using Game.Util.Locking;
-using Game.Util.Ninject;
-using Ninject;
-using Ninject.Extensions.Conventions;
-using Ninject.Extensions.Factory;
-using Ninject.Modules;
 using Persistance;
+using Persistance.Managers;
+using SimpleInjector;
 using Thrift.Server;
 using Thrift.Transport;
 
 namespace Game
 {
-    public class GameModule : NinjectModule
+    public class GameModule : IKernelModule
     {
-        public override void Load()
+        public void Load(Container container)
         {
+            container.Options.ConstructorResolutionBehavior = new MostResolvableConstructorBehavior(container);
+
             #region World/Map
 
-            Bind<IGlobal>().To<Global>().InSingletonScope();
-            Bind<IWorld, IGameObjectLocator>().To<World>().InSingletonScope();
-            Bind<IRegion>().To<Region>();
-            Bind<IRegionManager>().To<RegionManager>().InSingletonScope();
-            Bind<IRegionLocator>().To<RegionLocator>().InSingletonScope();
-            Bind<RegionObjectList>().ToSelf();
-            Bind<ICityManager>().To<CityManager>().InSingletonScope();
-            Bind<IMiniMapRegionManager>().To<MiniMapRegionManager>().InSingletonScope();            
-            Bind<IForestManager>().To<ForestManager>().InSingletonScope();
-            Bind<IForest>().To<Forest>();
-            Bind<IRoadManager>().To<RoadManager>().InSingletonScope();
-            Bind<IRoadPathFinder>().To<RoadPathFinder>();
+            var worldRegistration = Lifestyle.Singleton.CreateRegistration<World>(container);
+            container.AddRegistration(typeof(IWorld), worldRegistration);
+            container.AddRegistration(typeof(IGameObjectLocator), worldRegistration);
+
+            container.Register<IGlobal, Global>(Lifestyle.Singleton);
+            container.Register<IRegion, Region>();
+            container.Register<IRegionManager, RegionManager>(Lifestyle.Singleton);
+            container.Register<IRegionLocator, RegionLocator>(Lifestyle.Singleton);
+            container.Register<RegionObjectList>();
+            container.Register<ICityManager, CityManager>(Lifestyle.Singleton);
+            container.Register<IMiniMapRegionManager, MiniMapRegionManager>(Lifestyle.Singleton);            
+            container.Register<IForestManager, ForestManager>(Lifestyle.Singleton);
+            container.Register<IForest, Forest>();
+            container.Register<IRoadManager, RoadManager>(Lifestyle.Singleton);
+            container.Register<IRoadPathFinder, RoadPathFinder>();
 
             #endregion
 
             #region General Comms
 
-            Bind<BlockingBufferManager>().ToMethod(c => new BlockingBufferManager(2048, 7500)).InSingletonScope();
-            Bind<SocketAwaitablePool>().ToMethod(c => new SocketAwaitablePool(100)).InSingletonScope();
-            Bind<IChannel>().To<Channel>().InSingletonScope();
-            Bind<IPolicyServer>().To<PolicyServer>().InSingletonScope();
-            Bind<INetworkServer>().To<AsyncTcpServer>().InSingletonScope();
-            Bind<TServer>().ToMethod(c =>
+            container.Register<BlockingBufferManager>(() => new BlockingBufferManager(2048, 7500), Lifestyle.Singleton);
+            container.Register<SocketAwaitablePool>(() => new SocketAwaitablePool(100), Lifestyle.Singleton);
+            container.Register<IChannel, Channel>(Lifestyle.Singleton);
+            container.Register<IPolicyServer, PolicyServer>(Lifestyle.Singleton);
+            container.Register<INetworkServer, AsyncTcpServer>(Lifestyle.Singleton);
+            container.Register<TServer>(() =>
             {
-                var logger = LoggerFactory.Current.GetLogger(typeof(TSimpleServer));
-                return new TSimpleServer(new Notification.Processor(c.Kernel.Get<NotificationHandler>()), new TServerSocket(46000), logger.Warn);
-            }).InSingletonScope();
+                var logger = LoggerFactory.Current.GetLogger<TSimpleServer>();
+                return new TSimpleServer(new Notification.Processor(container.GetInstance<NotificationHandler>()), new TServerSocket(46000), logger.Warn);
+            }, Lifestyle.Singleton);
 
-            Bind<IProtocol>().To<PacketProtocol>();
+            container.Register<IProtocol, PacketProtocol>();
 
-            Bind<Chat>().ToSelf().InSingletonScope();
-            Bind<IDynamicAction>().To<DynamicAction>();
-            Bind<ICityTriggerManager>().To<CityTriggerManager>().InSingletonScope();
+            container.Register<Chat>(Lifestyle.Singleton);
+            container.Register<IDynamicAction, DynamicAction>();
+            container.Register<ICityTriggerManager, CityTriggerManager>(Lifestyle.Singleton);
 
             #endregion
             
             #region Tribes
 
-            Bind<ITribeManager>().To<TribeManager>().InSingletonScope();
-            Bind<ITribe>().To<Tribe>();
-            Bind<ITribeLogger>().To<TribeLogger>();
+            container.Register<ITribeManager, TribeManager>(Lifestyle.Singleton);
+            container.Register<ITribe, Tribe>();
+            container.Register<ITribeLogger, TribeLogger>();
 
             #endregion
 
             #region Locking
 
-            Bind<DefaultMultiObjectLock.Factory>().ToMethod(c => () => new DefaultMultiObjectLock(c.Kernel.Get<IDbManager>()))
-                                                  .InSingletonScope();
+            container.Register<DefaultMultiObjectLock.Factory>(() => () => new DefaultMultiObjectLock(container.GetInstance<IDbManager>()), Lifestyle.Singleton);
 
-            Bind<ILocker>().ToMethod(c =>
+            container.Register<ILocker>(() =>
             {
-                DefaultMultiObjectLock.Factory multiObjectLockFactory = () => new DefaultMultiObjectLock(c.Kernel.Get<IDbManager>());
+                DefaultMultiObjectLock.Factory multiObjectLockFactory = () => new DefaultMultiObjectLock(container.GetInstance<IDbManager>());
 
                 return new DefaultLocker(multiObjectLockFactory,
                                          () => new CallbackLock(multiObjectLockFactory),
-                                         c.Kernel.Get<IGameObjectLocator>());
-            }).InSingletonScope();
+                                         container.GetInstance<IGameObjectLocator>());
+            }, Lifestyle.Singleton);
 
             #endregion
 
             #region Formulas
 
-            Bind<Formula>().ToSelf().InSingletonScope();
+            container.Register<Formula>(Lifestyle.Singleton);
 
             #endregion
 
             #region CSV Factories
 
-            Bind<FactoriesInitializer>().ToSelf().InSingletonScope();
-            Bind<ActionRequirementFactory>().ToSelf().InSingletonScope();
-            Bind<IStructureCsvFactory>().To<StructureCsvFactory>().InSingletonScope();
-            Bind<EffectRequirementFactory>().ToSelf().InSingletonScope();
-            Bind<InitFactory>().ToSelf().InSingletonScope();            
-            Bind<PropertyFactory>().ToSelf().InSingletonScope();
-            Bind<IRequirementCsvFactory>().To<RequirementCsvFactory>().InSingletonScope();
-            Bind<TechnologyFactory>().ToSelf().InSingletonScope();
-            Bind<UnitFactory>().ToSelf().InSingletonScope();
-            Bind<IObjectTypeFactory>().To<ObjectTypeFactory>().InSingletonScope();
-            Bind<UnitModFactory>().ToSelf().InSingletonScope();
-            Bind<MapFactory>().ToSelf().InSingletonScope();
-            Bind<NameGenerator>()
-                    .ToMethod(c => new NameGenerator(Path.Combine(Config.maps_folder, "strongholdnames.txt")))
-                    .WhenInjectedExactlyInto<StrongholdConfigurator>()
-                    .InSingletonScope();
+            container.Register<FactoriesInitializer>(Lifestyle.Singleton);
+            container.Register<ActionRequirementFactory>(Lifestyle.Singleton);
+            container.Register<IStructureCsvFactory, StructureCsvFactory>(Lifestyle.Singleton);
+            container.Register<EffectRequirementFactory>(Lifestyle.Singleton);
+            container.Register<InitFactory>(Lifestyle.Singleton);            
+            container.Register<PropertyFactory>(Lifestyle.Singleton);
+            container.Register<IRequirementCsvFactory, RequirementCsvFactory>(Lifestyle.Singleton);
+            container.Register<TechnologyFactory>(Lifestyle.Singleton);
+            container.Register<UnitFactory>(Lifestyle.Singleton);
+            container.Register<IObjectTypeFactory, ObjectTypeFactory>(Lifestyle.Singleton);
+            container.Register<UnitModFactory>(Lifestyle.Singleton);
+            container.Register<MapFactory>(Lifestyle.Singleton);
 
             #endregion
 
             #region Database
 
-            Bind<IDbManager>().ToProvider(new DbManagerProvider()).InSingletonScope();
+            container.Register<IDbManager>(() => new MySqlDbManager(LoggerFactory.Current.GetLogger<IDbManager>(),
+                                      Config.database_host,
+                                      Config.database_username,
+                                      Config.database_password,
+                                      Config.database_database,
+                                      Config.database_timeout,
+                                      Config.database_max_connections,
+                                      Config.database_verbose), Lifestyle.Singleton);
 
             #endregion
 
             #region Battle
 
-            Bind<IBattleReport>().To<BattleReport>();
+            container.Register<IBattleReport, BattleReport>();
 
-            Bind<IBattleManagerFactory>().To<BattleManagerFactory>();
+            container.Register<IBattleManagerFactory, BattleManagerFactory>();
 
-            Bind<IBattleReportWriter>().To<SqlBattleReportWriter>();
+            container.Register<IBattleReportWriter, SqlBattleReportWriter>();
 
-            Bind<ICombatUnitFactory>().To<CombatUnitFactory>().InSingletonScope();
-
-            Bind<ICombatList>().To<CombatList>().NamedLikeFactoryMethod((ICombatListFactory p) => p.GetCombatList());
-
-            Bind<IBattleFormulas>().To<BattleFormulas>().InSingletonScope();
+            container.Register<ICombatUnitFactory, CombatUnitFactory>(Lifestyle.Singleton);
+            
+            container.Register<IBattleFormulas, BattleFormulas>(Lifestyle.Singleton);
 
             #endregion
 
             #region Processor
 
-            Bind<CommandLineProcessor>().ToMethod(c => new CommandLineProcessor(c.Kernel.Get<AssignmentCommandLineModule>(),
-                                                                                c.Kernel.Get<PlayerCommandLineModule>(),
-                                                                                c.Kernel.Get<CityCommandLineModule>(),
-                                                                                c.Kernel.Get<ResourcesCommandLineModule>(),
-                                                                                c.Kernel.Get<TribeCommandLineModule>(),
-                                                                                c.Kernel.Get<StrongholdCommandLineModule>(),
-                                                                                c.Kernel.Get<RegionCommandsLineModule>(),
-                                                                                c.Kernel.Get<BarbarianTribeCommandsLineModule>(),
-                                                                                c.Kernel.Get<SystemCommandLineModule>()))
-                                        .InSingletonScope();
+            container.Register<CommandLineProcessor, CommandLineProcessor>(Lifestyle.Singleton);
 
-            Bind<IProcessor>().ToMethod(c => new Processor(c.Kernel.Get<AssignmentCommandsModule>(),
-                                                          c.Kernel.Get<BattleCommandsModule>(),
-                                                          c.Kernel.Get<EventCommandsModule>(),
-                                                          c.Kernel.Get<ChatCommandsModule>(),
-                                                          c.Kernel.Get<CommandLineCommandsModule>(),
-                                                          c.Kernel.Get<LoginCommandsModule>(),
-                                                          c.Kernel.Get<MarketCommandsModule>(),
-                                                          c.Kernel.Get<MiscCommandsModule>(),
-                                                          c.Kernel.Get<PlayerCommandsModule>(),
-                                                          c.Kernel.Get<RegionCommandsModule>(),
-                                                          c.Kernel.Get<StructureCommandsModule>(),
-                                                          c.Kernel.Get<TribeCommandsModule>(),
-                                                          c.Kernel.Get<TribesmanCommandsModule>(),
-                                                          c.Kernel.Get<StrongholdCommandsModule>(),
-                                                          c.Kernel.Get<ProfileCommandsModule>(),
-                                                          c.Kernel.Get<TroopCommandsModule>()))
-                             .InSingletonScope();
+            container.Register<IProcessor, Processor>(Lifestyle.Singleton);
 
             #endregion
             
             #region Utils
 
-            Bind<IScheduler>().To<ThreadedScheduler>().InSingletonScope();
-            Bind<ITileLocator>().To<TileLocator>();
-            Bind<GetRandom>().ToMethod(c => new Random().Next);
-            Bind<Procedure>().ToSelf().InSingletonScope();
-            Bind<BattleProcedure>().ToSelf().InSingletonScope();
-            Bind<StrongholdBattleProcedure>().ToSelf().InSingletonScope();
-            Bind<CityBattleProcedure>().ToSelf().InSingletonScope();
-            Bind<BarbarianTribeBattleProcedure>().ToSelf().InSingletonScope();
-            Bind<CallbackProcedure>().ToSelf().InSingletonScope();
-            Bind<Random>().ToSelf().InSingletonScope();
-            Bind<ISystemVariableManager>().To<SystemVariableManager>().InSingletonScope();
-            Bind<SystemVariablesUpdater>().ToSelf().InSingletonScope();
+            container.Register<IScheduler, ThreadedScheduler>(Lifestyle.Singleton);
+            container.Register<ITileLocator, TileLocator>();
+            container.Register<GetRandom>(() => new Random().Next);
+            container.Register<Procedure>(Lifestyle.Singleton);
+            container.Register<BattleProcedure>(Lifestyle.Singleton);
+            container.Register<StrongholdBattleProcedure>(Lifestyle.Singleton);
+            container.Register<CityBattleProcedure>(Lifestyle.Singleton);
+            container.Register<BarbarianTribeBattleProcedure>(Lifestyle.Singleton);
+            container.Register<CallbackProcedure>(Lifestyle.Singleton);
+            container.Register<Random>(Lifestyle.Singleton);
+            container.Register<ISystemVariableManager, SystemVariableManager>(Lifestyle.Singleton);
+            container.Register<SystemVariablesUpdater>(Lifestyle.Singleton);
 
             #endregion
 
             #region Stronghold
 
-            Bind<IStrongholdManager>().To<StrongholdManager>().InSingletonScope();
-
-            Bind<IStrongholdConfigurator>().To<StrongholdConfigurator>().InSingletonScope();
-            Bind<IStronghold>().To<Stronghold>();
+            container.Register<IStrongholdManager, StrongholdManager>(Lifestyle.Singleton);
+            
+            container.Register<IStrongholdConfigurator>(() => new StrongholdConfigurator(
+                                                                      new NameGenerator(Path.Combine(Config.maps_folder, "strongholdnames.txt")),
+                                                                      container.GetInstance<MapFactory>(),
+                                                                      container.GetInstance<ITileLocator>(),
+                                                                      container.GetInstance<IRegionManager>()), Lifestyle.Singleton);            
+            container.Register<IStronghold, Stronghold>();
             if (Config.stronghold_bypass_activation)
             {
-                Bind<IStrongholdActivationCondition>().To<DummyActivationCondition>();
+                container.Register<IStrongholdActivationCondition, DummyActivationCondition>();
             }
             else
             {
-                Bind<IStrongholdActivationCondition>().To<StrongholdActivationCondition>();
+                container.Register<IStrongholdActivationCondition, StrongholdActivationCondition>();
             }
-            Bind<StrongholdActivationChecker>().ToSelf().InSingletonScope();
-            Bind<StrongholdChecker>().ToSelf().InSingletonScope();
+            container.Register<StrongholdActivationChecker>(Lifestyle.Singleton);
+            container.Register<StrongholdChecker>(Lifestyle.Singleton);
 
-            Bind<IStrongholdFactory>().To<StrongholdFactory>();
-            Bind<IStrongholdManagerLogger>().To<StrongholdManagerLogger>();
+            container.Register<IStrongholdFactory, StrongholdFactory>();
+            container.Register<IStrongholdManagerLogger, StrongholdManagerLogger>();
 
             #endregion
 
             #region Barbarian Tribe
 
-            Bind<IBarbarianTribeManager>().To<BarbarianTribeManager>().InSingletonScope();
-            Bind<IBarbarianTribeConfigurator>().To<BarbarianTribeConfigurator>().InSingletonScope();
-            Bind<IBarbarianTribe>().To<BarbarianTribe>();
-            Bind<IBarbarianTribeFactory>().To<BarbarianTribeFactory>();
-            Bind<BarbarianTribeChecker>().ToSelf().InSingletonScope();
+            container.Register<IBarbarianTribeManager, BarbarianTribeManager>(Lifestyle.Singleton);
+            container.Register<IBarbarianTribeConfigurator, BarbarianTribeConfigurator>(Lifestyle.Singleton);
+            container.Register<IBarbarianTribe, BarbarianTribe>();
+            container.Register<IBarbarianTribeFactory, BarbarianTribeFactory>();
+            container.Register<BarbarianTribeChecker>(Lifestyle.Singleton);
 
             #endregion
 
             #region City
 
-            Bind<IReferenceManager>().To<ReferenceManager>();
-            Bind<ICityChannel>().To<CityChannel>().InSingletonScope();
-            Bind<ICityFactory>().To<CityFactory>().InSingletonScope();
-            Bind<IGameObjectFactory>().To<GameObjectFactory>().InSingletonScope();
+            container.Register<IReferenceManager, ReferenceManager>();
+            container.Register<ICityChannel, CityChannel>(Lifestyle.Singleton);
+            container.Register<ICityFactory, CityFactory>(Lifestyle.Singleton);
+            container.Register<IGameObjectFactory, GameObjectFactory>(Lifestyle.Singleton);
 
-            Bind<ICity>().To<City>();
-            Bind<ITroopManager>().To<TroopManager>();
-            Bind<IActionWorker>().To<ActionWorker>();
-            Bind<ITechnologyManager>().To<TechnologyManager>();
-            Bind<IUnitTemplate>().To<UnitTemplate>();
-            Bind<IStructure>().To<Structure>();            
-
-            #endregion
-
-            #region Conventions
-
-            // Binds any interface that ends with Factory to auto factory if it doesn't have any implementations
-            var explicitFactoryBindings =
-                    Bindings.Where(t => t.Service.Name.EndsWith("Factory"))
-                            .ToLookup(k => k.Service.AssemblyQualifiedName, v => v.Service);
-            this.Bind(
-                      x =>
-                      x.FromThisAssembly()
-                       .SelectAllInterfaces()
-                       .EndingWith("Factory")
-                       .Where(t => !explicitFactoryBindings.Contains(t.AssemblyQualifiedName))
-                       .BindToFactory(() => new FactoryMethodNameProvider()));
+            container.Register<ICity, City>();
+            container.Register<ITroopManager, TroopManager>();
+            container.Register<IActionWorker, ActionWorker>();
+            container.Register<ITechnologyManager, TechnologyManager>();
+            container.Register<IUnitTemplate, UnitTemplate>();
+            container.Register<IStructure, Structure>();            
 
             #endregion
         }

@@ -5,7 +5,8 @@ using Game.Data;
 using Game.Data.BarbarianTribe;
 using Game.Data.Stronghold;
 using Game.Map;
-using Ninject;
+using Game.Setup;
+using Game.Setup.DependencyInjection;
 using Persistance;
 
 namespace Game.Battle

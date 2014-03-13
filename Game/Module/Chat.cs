@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
+using Common;
 using Game.Comm;
 using Game.Data;
 using Game.Util;
-using Ninject.Extensions.Logging;
 
 namespace Game.Module
 {
@@ -21,7 +21,7 @@ namespace Game.Module
 
         private readonly IChannel channel;
 
-        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+        private readonly ILogger logger = LoggerFactory.Current.GetLogger<Chat>();
 
         public Chat(IChannel channel)
         {

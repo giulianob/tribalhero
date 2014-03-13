@@ -21,7 +21,7 @@ namespace Game.Logic.Actions
 
         private readonly BattleProcedure battleProcedure;
 
-        private readonly uint cityId;
+        private uint cityId;
 
         private uint troopObjectId;
 
@@ -31,9 +31,24 @@ namespace Game.Logic.Actions
 
         private readonly Procedure procedure;
 
-        private readonly uint targetObjectId;
+        private uint targetObjectId;
 
         private readonly ITroopObjectInitializer troopObjectInitializer;
+
+        public BarbarianTribeAttackChainAction(ITroopObjectInitializer troopObjectInitializer,
+                                               IActionFactory actionFactory,
+                                               Procedure procedure,
+                                               ILocker locker,
+                                               IGameObjectLocator gameObjectLocator,
+                                               BattleProcedure battleProcedure)
+        {
+            this.troopObjectInitializer = troopObjectInitializer;
+            this.actionFactory = actionFactory;
+            this.procedure = procedure;
+            this.locker = locker;
+            this.gameObjectLocator = gameObjectLocator;
+            this.battleProcedure = battleProcedure;
+        }
 
         public BarbarianTribeAttackChainAction(uint cityId,
                                                uint targetObjectId,
@@ -43,35 +58,14 @@ namespace Game.Logic.Actions
                                                ILocker locker,
                                                IGameObjectLocator gameObjectLocator,
                                                BattleProcedure battleProcedure)
+            : this(troopObjectInitializer, actionFactory, procedure, locker, gameObjectLocator, battleProcedure)
         {
             this.cityId = cityId;
             this.targetObjectId = targetObjectId;
-            this.troopObjectInitializer = troopObjectInitializer;
-            this.actionFactory = actionFactory;
-            this.procedure = procedure;
-            this.locker = locker;
-            this.gameObjectLocator = gameObjectLocator;
-            this.battleProcedure = battleProcedure;
         }
 
-        public BarbarianTribeAttackChainAction(uint id,
-                                               string chainCallback,
-                                               PassiveAction current,
-                                               ActionState chainState,
-                                               bool isVisible,
-                                               IDictionary<string, string> properties,
-                                               IActionFactory actionFactory,
-                                               Procedure procedure,
-                                               ILocker locker,
-                                               IGameObjectLocator gameObjectLocator,
-                                               BattleProcedure battleProcedure)
-                : base(id, chainCallback, current, chainState, isVisible)
+        public override void LoadProperties(IDictionary<string, string> properties)
         {
-            this.actionFactory = actionFactory;
-            this.procedure = procedure;
-            this.locker = locker;
-            this.gameObjectLocator = gameObjectLocator;
-            this.battleProcedure = battleProcedure;
             cityId = uint.Parse(properties["city_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);
             targetObjectId = uint.Parse(properties["target_object_id"]);

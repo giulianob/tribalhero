@@ -1,6 +1,5 @@
 ﻿using Game.Data;
 using Game.Setup;
-using Ninject;
 
 namespace Game.Logic.Procedures
 {

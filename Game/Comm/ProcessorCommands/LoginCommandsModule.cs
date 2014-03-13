@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using Common;
 using Game.Data;
 using Game.Data.BarbarianTribe;
 using Game.Logic;
@@ -17,7 +18,6 @@ using Game.Map.LocationStrategies;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject.Extensions.Logging;
 using Persistance;
 
 #endregion
@@ -26,7 +26,7 @@ namespace Game.Comm.ProcessorCommands
 {
     class LoginCommandsModule : CommandModule
     {
-        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+        private readonly ILogger logger = LoggerFactory.Current.GetLogger<LoginCommandsModule>();
 
         private readonly IActionFactory actionFactory;
 

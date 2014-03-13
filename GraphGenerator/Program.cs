@@ -11,8 +11,8 @@ using Game.Data;
 using Game.Data.Stats;
 using Game.Logic;
 using Game.Setup;
+using Game.Setup.DependencyInjection;
 using NDesk.Options;
-using Ninject;
 
 #endregion
 

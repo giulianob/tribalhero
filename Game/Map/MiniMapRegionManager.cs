@@ -1,13 +1,13 @@
 using System;
+using Common;
 using Game.Data;
 using Game.Util;
-using Ninject.Extensions.Logging;
 
 namespace Game.Map
 {
     public class MiniMapRegionManager : IMiniMapRegionManager
     {
-        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+        private readonly ILogger logger = LoggerFactory.Current.GetLogger<MiniMapRegionManager>();
 
         private readonly MiniMapRegion[] miniMapRegions;
 

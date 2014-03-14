@@ -22,38 +22,35 @@ namespace Game.Logic.Actions
 
         private readonly IActionFactory actionFactory;
 
-        private readonly uint cityId;
+        private uint cityId;
 
-        private readonly uint objectId;
+        private uint objectId;
 
-        public ResourceGatherActiveAction(uint cityId, uint objectId, ILocker locker, IObjectTypeFactory objectTypeFactory, IWorld world, IActionFactory actionFactory)
+        public ResourceGatherActiveAction(ILocker locker,
+                                          IObjectTypeFactory objectTypeFactory,
+                                          IWorld world,
+                                          IActionFactory actionFactory)
         {
-            this.cityId = cityId;
-            this.objectId = objectId;
             this.locker = locker;
             this.objectTypeFactory = objectTypeFactory;
             this.world = world;
             this.actionFactory = actionFactory;
         }
 
-        public ResourceGatherActiveAction(uint id,
-                                          DateTime beginTime,
-                                          DateTime nextTime,
-                                          DateTime endTime,
-                                          int workerType,
-                                          byte workerIndex,
-                                          ushort actionCount,
-                                          Dictionary<string, string> properties,
+        public ResourceGatherActiveAction(uint cityId,
+                                          uint objectId,
                                           ILocker locker,
                                           IObjectTypeFactory objectTypeFactory,
-                                          IWorld world, 
+                                          IWorld world,
                                           IActionFactory actionFactory)
-                : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
+            :this(locker, objectTypeFactory, world, actionFactory)
         {
-            this.locker = locker;
-            this.objectTypeFactory = objectTypeFactory;
-            this.world = world;
-            this.actionFactory = actionFactory;
+            this.cityId = cityId;
+            this.objectId = objectId;
+        }
+
+        public override void LoadProperties(IDictionary<string, string> properties)
+        {
             cityId = uint.Parse(properties["city_id"]);
             objectId = uint.Parse(properties["object_id"]);
         }

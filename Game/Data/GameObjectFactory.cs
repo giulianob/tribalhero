@@ -1,7 +1,7 @@
 using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Setup;
-using Ninject;
+using Game.Setup.DependencyInjection;
 using Persistance;
 
 namespace Game.Data

@@ -6,8 +6,8 @@ using Game.Data;
 using Game.Logic.Actions;
 using Game.Map;
 using Game.Setup;
+using Game.Setup.DependencyInjection;
 using Game.Util.Locking;
-using Ninject;
 using Persistance;
 
 #endregion

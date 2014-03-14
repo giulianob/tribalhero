@@ -26,7 +26,7 @@ namespace Game.Logic.Actions
 
         private readonly IGameObjectLocator locator;
 
-        private readonly uint cityId;
+        private uint cityId;
 
         private readonly Formula formula;
 
@@ -40,16 +40,14 @@ namespace Game.Logic.Actions
 
         private readonly IBattleFormulas battleFormulas;
 
-        public CityPassiveAction(uint cityId,
-                                 IObjectTypeFactory objectTypeFactory,
+        public CityPassiveAction(IObjectTypeFactory objectTypeFactory,
                                  ILocker locker,
                                  Formula formula,
                                  IActionFactory actionFactory,
                                  Procedure procedure,
-                                 IGameObjectLocator locator, 
-            IBattleFormulas battleFormulas)
+                                 IGameObjectLocator locator,
+                                 IBattleFormulas battleFormulas)
         {
-            this.cityId = cityId;
             this.objectTypeFactory = objectTypeFactory;
             this.locker = locker;
             this.formula = formula;
@@ -61,33 +59,23 @@ namespace Game.Logic.Actions
             CreateSubscriptions();
         }
 
-        public CityPassiveAction(uint id,
-                                 DateTime beginTime,
-                                 DateTime nextTime,
-                                 DateTime endTime,
-                                 bool isVisible,
-                                 string nlsDescription,
-                                 Dictionary<string, string> properties,
+        public CityPassiveAction(uint cityId,
                                  IObjectTypeFactory objectTypeFactory,
                                  ILocker locker,
                                  Formula formula,
                                  IActionFactory actionFactory,
                                  Procedure procedure,
-                                 IGameObjectLocator locator, 
-            IBattleFormulas battleFormulas)
-                : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
+                                 IGameObjectLocator locator,
+                                 IBattleFormulas battleFormulas)
+            : this(objectTypeFactory, locker, formula, actionFactory, procedure, locator, battleFormulas)
         {
-            this.objectTypeFactory = objectTypeFactory;
-            this.locker = locker;
-            this.formula = formula;
-            this.actionFactory = actionFactory;
-            this.procedure = procedure;
-            this.locator = locator;
-            this.battleFormulas = battleFormulas;
+            this.cityId = cityId;
+        }
+
+        public override void LoadProperties(IDictionary<string, string> properties)
+        {
             cityId = uint.Parse(properties["city_id"]);
             laborTimeRemains = int.Parse(properties["labor_time_remains"]);
-
-            CreateSubscriptions();
         }
 
         public override ActionType Type

@@ -33,13 +33,28 @@ namespace Game.Logic.Actions
 
         private readonly ILocker locker;
 
-        private readonly uint strongholdId;
+        private uint strongholdId;
 
-        private readonly Dictionary<uint, decimal> tribeDamageDealt = new Dictionary<uint, decimal>();
+        private Dictionary<uint, decimal> tribeDamageDealt = new Dictionary<uint, decimal>();
 
         private readonly IWorld world;
 
         private uint localGroupId;
+
+        public StrongholdGateBattlePassiveAction(StrongholdBattleProcedure strongholdBattleProcedure,
+                                                 ILocker locker,
+                                                 IGameObjectLocator gameObjectLocator,
+                                                 IDbManager dbManager,
+                                                 Formula formula,
+                                                 IWorld world)
+        {
+            this.strongholdBattleProcedure = strongholdBattleProcedure;
+            this.locker = locker;
+            this.gameObjectLocator = gameObjectLocator;
+            this.dbManager = dbManager;
+            this.formula = formula;
+            this.world = world;
+        }
 
         public StrongholdGateBattlePassiveAction(uint strongholdId,
                                                  StrongholdBattleProcedure strongholdBattleProcedure,
@@ -48,14 +63,9 @@ namespace Game.Logic.Actions
                                                  IDbManager dbManager,
                                                  Formula formula,
                                                  IWorld world)
+            : this(strongholdBattleProcedure, locker, gameObjectLocator, dbManager, formula, world)
         {
             this.strongholdId = strongholdId;
-            this.strongholdBattleProcedure = strongholdBattleProcedure;
-            this.locker = locker;
-            this.gameObjectLocator = gameObjectLocator;
-            this.dbManager = dbManager;
-            this.formula = formula;
-            this.world = world;
 
             IStronghold stronghold;
             if (!gameObjectLocator.TryGetObjects(strongholdId, out stronghold))
@@ -67,40 +77,19 @@ namespace Game.Logic.Actions
             stronghold.GateBattle.ActionAttacked += BattleOnActionAttacked;
         }
 
-        public StrongholdGateBattlePassiveAction(uint id,
-                                                 DateTime beginTime,
-                                                 DateTime nextTime,
-                                                 DateTime endTime,
-                                                 bool isVisible,
-                                                 string nlsDescription,
-                                                 IDictionary<string, string> properties,
-                                                 StrongholdBattleProcedure strongholdBattleProcedure,
-                                                 ILocker locker,
-                                                 IGameObjectLocator gameObjectLocator,
-                                                 IDbManager dbManager,
-                                                 Formula formula,
-                                                 IWorld world)
-                : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
+        public override void LoadProperties(IDictionary<string, string> properties)
         {
-            this.strongholdBattleProcedure = strongholdBattleProcedure;
-            this.locker = locker;
-            this.gameObjectLocator = gameObjectLocator;
-            this.dbManager = dbManager;
-            this.formula = formula;
-            this.world = world;
-
             localGroupId = uint.Parse(properties["local_group_id"]);
 
-            tribeDamageDealt = 
-                    new JsonReader().Read<Dictionary<string, decimal>>(properties["tribe_damage_dealt"])
-                                    .ToDictionary(k => uint.Parse(k.Key), v => v.Value);
+            tribeDamageDealt = new JsonReader().Read<Dictionary<string, decimal>>(properties["tribe_damage_dealt"])
+                                               .ToDictionary(k => uint.Parse(k.Key), v => v.Value);
 
             strongholdId = uint.Parse(properties["stronghold_id"]);
 
             IStronghold stronghold;
             if (!gameObjectLocator.TryGetObjects(strongholdId, out stronghold))
             {
-                throw new Exception();
+                throw new Exception("Did not find stronghold that was supposed to be having a battle");
             }
 
             stronghold.GateBattle.GroupKilled += BattleOnGroupKilled;

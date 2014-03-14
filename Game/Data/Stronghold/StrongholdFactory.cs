@@ -2,7 +2,8 @@ using Game.Data.Troop;
 using Game.Logic;
 using Game.Logic.Formulas;
 using Game.Logic.Notifications;
-using Ninject;
+using Game.Setup;
+using Game.Setup.DependencyInjection;
 using Persistance;
 
 namespace Game.Data.Stronghold

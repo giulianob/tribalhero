@@ -25,15 +25,26 @@ namespace Game.Logic.Actions
 
         private readonly Formula formula;
 
-        private readonly uint cityId;
+        private uint cityId;
 
-        private readonly ushort count;
+        private ushort count;
 
-        private readonly uint structureId;
+        private uint structureId;
 
-        private readonly ushort type;
+        private ushort type;
 
         private Resource cost;
+
+        public UnitTrainActiveAction(UnitFactory unitFactory,
+                                     ILocker locker,
+                                     IWorld world,
+                                     Formula formula)
+        {
+            this.unitFactory = unitFactory;
+            this.locker = locker;
+            this.world = world;
+            this.formula = formula;
+        }
 
         public UnitTrainActiveAction(uint cityId,
                                      uint structureId,
@@ -43,36 +54,16 @@ namespace Game.Logic.Actions
                                      ILocker locker,
                                      IWorld world,
                                      Formula formula)
+            : this(unitFactory, locker, world, formula)
         {
             this.cityId = cityId;
             this.structureId = structureId;
             this.type = type;
             this.count = count;
-            this.unitFactory = unitFactory;
-            this.locker = locker;
-            this.world = world;
-            this.formula = formula;
         }
 
-        public UnitTrainActiveAction(uint id,
-                                     DateTime beginTime,
-                                     DateTime nextTime,
-                                     DateTime endTime,
-                                     int workerType,
-                                     byte workerIndex,
-                                     ushort actionCount,
-                                     Dictionary<string, string> properties,
-                                     UnitFactory unitFactory,
-                                     ILocker locker,
-                                     IWorld world,
-                                     Formula formula)
-                : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
+        public override void LoadProperties(IDictionary<string, string> properties)
         {
-            this.unitFactory = unitFactory;
-            this.locker = locker;
-            this.world = world;
-            this.formula = formula;
-
             type = ushort.Parse(properties["type"]);
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);

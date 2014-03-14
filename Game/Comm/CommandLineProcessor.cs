@@ -3,10 +3,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Common;
 using Game.Data;
 using Game.Setup;
 using Game.Util;
-using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -14,7 +14,7 @@ namespace Game.Comm
 {
     public class CommandLineProcessor
     {
-        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+        private readonly ILogger logger = LoggerFactory.Current.GetLogger<CommandLineProcessor>();
 
         public delegate string DoWork(Session session, string[] parms);
 

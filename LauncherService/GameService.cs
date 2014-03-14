@@ -7,7 +7,6 @@ using CSVToXML;
 using Game;
 using Game.Setup;
 using NDesk.Options;
-using Ninject;
 using log4net;
 using log4net.Config;
 

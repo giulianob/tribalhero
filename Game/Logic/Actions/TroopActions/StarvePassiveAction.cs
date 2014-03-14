@@ -14,32 +14,26 @@ namespace Game.Logic.Actions
 {
     public class StarvePassiveAction : ScheduledPassiveAction
     {
-        private readonly uint cityId;
+        private uint cityId;
 
         private readonly IGameObjectLocator gameObjectLocator;
 
         private readonly ILocker locker;
 
-        public StarvePassiveAction(uint cityId, IGameObjectLocator gameObjectLocator, ILocker locker)
+        public StarvePassiveAction(IGameObjectLocator gameObjectLocator, ILocker locker)
         {
-            this.cityId = cityId;
             this.gameObjectLocator = gameObjectLocator;
             this.locker = locker;
         }
 
-        public StarvePassiveAction(uint id,
-                                   DateTime beginTime,
-                                   DateTime nextTime,
-                                   DateTime endTime,
-                                   bool isVisible,
-                                   string nlsDescription,
-                                   Dictionary<string, string> properties, 
-                                   IGameObjectLocator gameObjectLocator, 
-                                   ILocker locker)
-                : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
+        public StarvePassiveAction(uint cityId, IGameObjectLocator gameObjectLocator, ILocker locker)
+            : this(gameObjectLocator, locker)
         {
-            this.gameObjectLocator = gameObjectLocator;
-            this.locker = locker;
+            this.cityId = cityId;
+        }
+
+        public override void LoadProperties(IDictionary<string, string> properties)
+        {
             cityId = uint.Parse(properties["city_id"]);
         }
 

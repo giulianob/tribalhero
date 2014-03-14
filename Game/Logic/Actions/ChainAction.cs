@@ -28,11 +28,11 @@ namespace Game.Logic.Actions
         {
         }
 
-        protected ChainAction(uint id,
-                              string chainCallback,
-                              PassiveAction current,
-                              ActionState chainState,
-                              bool isVisible)
+        public void LoadFromDatabase(uint id,
+                                     string chainCallback,
+                                     PassiveAction current,
+                                     ActionState chainState,
+                                     bool isVisible)
         {
             ActionId = id;
             this.chainState = chainState;

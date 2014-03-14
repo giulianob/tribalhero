@@ -19,7 +19,7 @@ namespace Game.Data
 
         public void Print()
         {
-            LoggerFactory.Current.GetCurrentClassLogger().Info(string.Format("Effect[{0} isPrivate[{1}] Location[{2}]", Id, IsPrivate, Location));
+            LoggerFactory.Current.GetLogger<Effect>().Info(string.Format("Effect[{0} isPrivate[{1}] Location[{2}]", Id, IsPrivate, Location));
         }
     }
 

@@ -27,7 +27,7 @@ namespace Game.Logic.Actions
 
         private readonly BattleProcedure battleProcedure;
 
-        private readonly uint cityId;
+        private uint cityId;
 
         private readonly IDbManager dbManager;
 
@@ -45,6 +45,27 @@ namespace Game.Logic.Actions
 
         private readonly ITroopObjectInitializerFactory troopInitializerFactory;
 
+        public CityBattlePassiveAction(IActionFactory actionFactory,
+                                       BattleProcedure battleProcedure,
+                                       ILocker locker,
+                                       IGameObjectLocator gameObjectLocator,
+                                       IDbManager dbManager,
+                                       Formula formula,
+                                       CityBattleProcedure cityBattleProcedure,
+                                       IWorld world,
+                                       ITroopObjectInitializerFactory troopInitializerFactory)
+        {
+            this.actionFactory = actionFactory;
+            this.battleProcedure = battleProcedure;
+            this.locker = locker;
+            this.gameObjectLocator = gameObjectLocator;
+            this.dbManager = dbManager;
+            this.formula = formula;
+            this.cityBattleProcedure = cityBattleProcedure;
+            this.world = world;
+            this.troopInitializerFactory = troopInitializerFactory;
+        }
+
         public CityBattlePassiveAction(uint cityId,
                                        IActionFactory actionFactory,
                                        BattleProcedure battleProcedure,
@@ -55,64 +76,27 @@ namespace Game.Logic.Actions
                                        CityBattleProcedure cityBattleProcedure,
                                        IWorld world,
                                        ITroopObjectInitializerFactory troopInitializerFactory)
+            : this(actionFactory, battleProcedure, locker, gameObjectLocator, dbManager, formula, cityBattleProcedure, world, troopInitializerFactory)
         {
             this.cityId = cityId;
-            this.actionFactory = actionFactory;
-            this.battleProcedure = battleProcedure;
-            this.locker = locker;
-            this.gameObjectLocator = gameObjectLocator;
-            this.dbManager = dbManager;
-            this.formula = formula;
-            this.cityBattleProcedure = cityBattleProcedure;
-            this.world = world;
-            this.troopInitializerFactory = troopInitializerFactory;
 
+            RegisterCityBattleEvents();
+        }
+
+        public override void LoadProperties(IDictionary<string, string> properties)
+        {
+            cityId = uint.Parse(properties["city_id"]);
+            destroyedHp = uint.Parse(properties["destroyed_hp"]);
+
+            RegisterCityBattleEvents();
+        }
+
+        private void RegisterCityBattleEvents()
+        {
             ICity city;
             if (!gameObjectLocator.TryGetObjects(cityId, out city))
             {
                 throw new Exception("Did not find city that was supposed to be having a battle");
-            }
-
-            city.Battle.EnterRound += BattleEnterRound;
-            city.Battle.ActionAttacked += BattleActionAttacked;
-            city.Battle.UnitKilled += BattleUnitKilled;
-        }
-
-        public CityBattlePassiveAction(uint id,
-                                       DateTime beginTime,
-                                       DateTime nextTime,
-                                       DateTime endTime,
-                                       bool isVisible,
-                                       string nlsDescription,
-                                       IDictionary<string, string> properties,
-                                       IActionFactory actionFactory,
-                                       BattleProcedure battleProcedure,
-                                       ILocker locker,
-                                       IGameObjectLocator gameObjectLocator,
-                                       IDbManager dbManager,
-                                       Formula formula,
-                                       CityBattleProcedure cityBattleProcedure,
-                                       IWorld world,
-                                       ITroopObjectInitializerFactory troopInitializerFactory)
-                : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
-        {
-            this.actionFactory = actionFactory;
-            this.battleProcedure = battleProcedure;
-            this.locker = locker;
-            this.gameObjectLocator = gameObjectLocator;
-            this.dbManager = dbManager;
-            this.formula = formula;
-            this.cityBattleProcedure = cityBattleProcedure;
-            this.world = world;
-            this.troopInitializerFactory = troopInitializerFactory;
-
-            cityId = uint.Parse(properties["city_id"]);
-            destroyedHp = uint.Parse(properties["destroyed_hp"]);
-
-            ICity city;
-            if (!gameObjectLocator.TryGetObjects(cityId, out city))
-            {
-                throw new Exception();
             }
 
             city.Battle.EnterRound += BattleEnterRound;

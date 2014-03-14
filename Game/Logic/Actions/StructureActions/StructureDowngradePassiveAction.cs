@@ -14,9 +14,9 @@ namespace Game.Logic.Actions
 {
     public class StructureDowngradePassiveAction : ScheduledPassiveAction
     {
-        private readonly uint cityId;
+        private uint cityId;
 
-        private readonly uint structureId;
+        private uint structureId;
 
         private readonly IStructureCsvFactory structureCsvFactory;
 
@@ -26,38 +26,31 @@ namespace Game.Logic.Actions
 
         private readonly ILocker locker;
 
-        public StructureDowngradePassiveAction(uint cityId,
-                                               uint structureId,
-                                               ILocker locker,
+        public StructureDowngradePassiveAction(ILocker locker,
                                                IStructureCsvFactory structureCsvFactory,
                                                Procedure procedure,
 											   CallbackProcedure callbackProcedure)
         {
-            this.cityId = cityId;
-            this.structureId = structureId;
             this.callbackProcedure = callbackProcedure;
             this.locker = locker;
             this.structureCsvFactory = structureCsvFactory;
             this.procedure = procedure;
         }
 
-        public StructureDowngradePassiveAction(uint id,
-                                               DateTime beginTime,
-                                               DateTime nextTime,
-                                               DateTime endTime,
-                                               bool isVisible,
-                                               string nlsDescription,
-                                               IDictionary<string, string> properties,
-                                               CallbackProcedure callbackProcedure,
+        public StructureDowngradePassiveAction(uint cityId,
+                                               uint structureId,
                                                ILocker locker,
                                                IStructureCsvFactory structureCsvFactory,
-                                               Procedure procedure)
-                : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
+                                               Procedure procedure,
+											   CallbackProcedure callbackProcedure)
+            : this(locker, structureCsvFactory, procedure, callbackProcedure)
         {
-            this.callbackProcedure = callbackProcedure;
-            this.locker = locker;
-            this.structureCsvFactory = structureCsvFactory;
-            this.procedure = procedure;
+            this.cityId = cityId;
+            this.structureId = structureId;
+        }
+
+        public override void LoadProperties(IDictionary<string, string> properties)
+        {
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
         }

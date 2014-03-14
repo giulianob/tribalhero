@@ -6,9 +6,9 @@ using System.Linq;
 using System.Threading;
 using Game.Data;
 using Game.Setup;
+using Game.Setup.DependencyInjection;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject;
 using Persistance;
 
 #endregion

@@ -17,11 +17,11 @@ namespace Game.Logic.Actions
 {
     public class TechnologyUpgradeActiveAction : ScheduledActiveAction
     {
-        private readonly uint cityId;
+        private uint cityId;
 
-        private readonly uint structureId;
+        private uint structureId;
 
-        private readonly uint techId;
+        private uint techId;
 
         private readonly IWorld world;
 
@@ -33,9 +33,18 @@ namespace Game.Logic.Actions
 
         private readonly CallbackProcedure callbackProcedure;
 
-        private readonly ICityTriggerManager cityTriggerManager;
-
-        private readonly ICityEventFactory cityEventFactory;
+        public TechnologyUpgradeActiveAction(IWorld world,
+                                             Formula formula,
+                                             ILocker locker,
+                                             TechnologyFactory technologyFactory,
+                                             CallbackProcedure callbackProcedure)
+        {
+            this.world = world;
+            this.formula = formula;
+            this.locker = locker;
+            this.technologyFactory = technologyFactory;
+            this.callbackProcedure = callbackProcedure;
+        }
 
         public TechnologyUpgradeActiveAction(uint cityId,
                                              uint structureId,
@@ -44,46 +53,16 @@ namespace Game.Logic.Actions
                                              Formula formula,
                                              ILocker locker,
                                              TechnologyFactory technologyFactory,
-                                             CallbackProcedure callbackProcedure,
-                                             ICityTriggerManager cityTriggerManager,
-                                             ICityEventFactory cityEventFactory)
+                                             CallbackProcedure callbackProcedure)
+            : this(world, formula, locker, technologyFactory, callbackProcedure)
         {
             this.cityId = cityId;
             this.structureId = structureId;
             this.techId = techId;
-            this.world = world;
-            this.formula = formula;
-            this.locker = locker;
-            this.technologyFactory = technologyFactory;
-            this.callbackProcedure = callbackProcedure;
-            this.cityTriggerManager = cityTriggerManager;
-            this.cityEventFactory = cityEventFactory;
         }
 
-        public TechnologyUpgradeActiveAction(uint id,
-                                             DateTime beginTime,
-                                             DateTime nextTime,
-                                             DateTime endTime,
-                                             int workerType,
-                                             byte workerIndex,
-                                             ushort actionCount,
-                                             Dictionary<string, string> properties,
-                                             IWorld world,
-                                             Formula formula,
-                                             ILocker locker,
-                                             TechnologyFactory technologyFactory,
-                                             CallbackProcedure callbackProcedure,
-                                             ICityTriggerManager cityTriggerManager,
-                                             ICityEventFactory cityEventFactory)
-                : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
+        public override void LoadProperties(IDictionary<string, string> properties)
         {
-            this.world = world;
-            this.formula = formula;
-            this.locker = locker;
-            this.technologyFactory = technologyFactory;
-            this.callbackProcedure = callbackProcedure;
-            this.cityTriggerManager = cityTriggerManager;
-            this.cityEventFactory = cityEventFactory;
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
             techId = uint.Parse(properties["tech_id"]);

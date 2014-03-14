@@ -263,8 +263,7 @@ namespace Game.Comm
                             break;
                         }
 
-                        // ReSharper disable once CSharpWarnings::CS4014
-                        Task.Run(() => session.Process(packet));
+                        session.Process(packet);
                     }
                     while (true);
 

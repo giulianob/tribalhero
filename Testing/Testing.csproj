@@ -67,9 +67,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core">
-      <HintPath>..\packages\Castle.Core.3.1.0\lib\net40-client\Castle.Core.dll</HintPath>
-    </Reference>
     <Reference Include="Dawn.SocketAwaitable, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\dawn.socketawaitable\Dawn.SocketAwaitable.dll</HintPath>
@@ -79,29 +76,30 @@
       <HintPath>..\packages\FluentAssertions.2.2.0.0\lib\net40\FluentAssertions.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="Moq, Version=4.1.1309.1617, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+    <Reference Include="Moq, Version=4.2.1402.2112, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Moq.4.1.1309.1617\lib\net40\Moq.dll</HintPath>
-    </Reference>
-    <Reference Include="Ninject, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\ninject.mono\Ninject.dll</HintPath>
-    </Reference>
-    <Reference Include="Ninject.Extensions.Factory, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\ninject.mono\Ninject.Extensions.Factory.dll</HintPath>
+      <HintPath>..\packages\Moq.4.2.1402.2112\lib\net40\Moq.dll</HintPath>
     </Reference>
     <Reference Include="NSubstitute">
       <HintPath>..\packages\NSubstitute.1.7.2.0\lib\NET45\NSubstitute.dll</HintPath>
     </Reference>
-    <Reference Include="Ploeh.AutoFixture">
-      <HintPath>..\packages\AutoFixture.3.16.6\lib\net40\Ploeh.AutoFixture.dll</HintPath>
+    <Reference Include="Ploeh.AutoFixture, Version=3.16.10.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AutoFixture.3.16.10\lib\net40\Ploeh.AutoFixture.dll</HintPath>
     </Reference>
-    <Reference Include="Ploeh.AutoFixture.AutoNSubstitute">
-      <HintPath>..\packages\AutoFixture.AutoNSubstitute.3.16.6\lib\net40\Ploeh.AutoFixture.AutoNSubstitute.dll</HintPath>
+    <Reference Include="Ploeh.AutoFixture.AutoNSubstitute, Version=3.16.10.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AutoFixture.AutoNSubstitute.3.16.10\lib\net40\Ploeh.AutoFixture.AutoNSubstitute.dll</HintPath>
     </Reference>
-    <Reference Include="Ploeh.AutoFixture.Xunit">
-      <HintPath>..\packages\AutoFixture.Xunit.3.16.6\lib\net40\Ploeh.AutoFixture.Xunit.dll</HintPath>
+    <Reference Include="Ploeh.AutoFixture.Xunit, Version=3.16.10.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AutoFixture.Xunit.3.16.10\lib\net40\Ploeh.AutoFixture.Xunit.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleInjector">
+      <HintPath>..\packages\SimpleInjector.2.5.0\lib\net45\SimpleInjector.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleInjector.Diagnostics">
+      <HintPath>..\packages\SimpleInjector.2.5.0\lib\net45\SimpleInjector.Diagnostics.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -150,7 +148,6 @@
     <Compile Include="CommTests\AsyncSocketConnectionHelper.cs" />
     <Compile Include="CommTests\AsyncSocketSessionTests.cs" />
     <Compile Include="CommTests\AsyncTcpServerTests.cs" />
-    <Compile Include="DatabaseTests\DbLoaderActionFactoryTest.cs" />
     <Compile Include="FixtureHelper.cs" />
     <Compile Include="FormulaTests\BarbarianTribeFormulaTest.cs" />
     <Compile Include="FormulaTests\CityValueTest.cs" />
@@ -176,7 +173,6 @@
     <Compile Include="MapTests\PositionTests.cs" />
     <Compile Include="MapTests\RegionManagerTests.cs" />
     <Compile Include="MiniMapRegionTests\MiniMapRegionTest.cs" />
-    <Compile Include="NinjectTests\FactoryMethodNameProviderTests.cs" />
     <Compile Include="PlayerTests\AchievementListTest.cs" />
     <Compile Include="TribeTests\TribeManagerTests.cs" />
     <Compile Include="TroopTests\StationedPartialTroopObjectInitializerTests.cs" />

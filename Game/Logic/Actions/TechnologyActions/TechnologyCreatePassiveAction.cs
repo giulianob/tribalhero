@@ -1,11 +1,11 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using Game.Data;
 using Game.Logic.Procedures;
 using Game.Logic.Triggers;
 using Game.Setup;
-using Ninject;
 
 #endregion
 
@@ -45,7 +45,9 @@ namespace Game.Logic.Actions
             this.callbackProcedure = callbackProcedure;
         }
 
-        #region IScriptable Members
+        public override void LoadProperties(IDictionary<string, string> properties)
+        {
+        }
 
         public void ScriptInit(IGameObject obj, string[] parms)
         {
@@ -59,8 +61,6 @@ namespace Game.Logic.Actions
             lvl = byte.Parse(parms[1]);
             Execute();
         }
-
-        #endregion
 
         public override Error Validate(string[] parms)
         {

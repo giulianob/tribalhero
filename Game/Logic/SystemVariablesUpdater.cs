@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Text;
 using System.Threading;
+using Common;
 using Dawn.Net.Sockets;
 using Game.Comm;
 using Game.Data;
@@ -16,7 +17,6 @@ using Game.Map;
 using Game.Module;
 using Game.Setup;
 using Game.Util;
-using Ninject.Extensions.Logging;
 using Persistance;
 
 #endregion
@@ -25,7 +25,7 @@ namespace Game.Logic
 {
     public class SystemVariablesUpdater : IGameTask
     {
-        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+        private readonly ILogger logger = LoggerFactory.Current.GetLogger<SystemVariablesUpdater>();
 
         private readonly IDbManager dbManager;
 

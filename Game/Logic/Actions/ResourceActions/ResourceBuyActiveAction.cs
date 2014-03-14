@@ -19,21 +19,30 @@ namespace Game.Logic.Actions
     {
         private const int TRADE_SIZE = 100;
 
-        private readonly uint cityId;
+        private uint cityId;
 
-        private readonly ushort price;
+        private ushort price;
 
-        private readonly ushort quantity;
+        private ushort quantity;
 
-        private readonly ResourceType resourceType;
+        private ResourceType resourceType;
 
-        private readonly uint structureId;
+        private uint structureId;
 
         private readonly ILocker locker;
 
         private readonly IWorld world;
 
         private readonly Formula formula;
+
+        public ResourceBuyActiveAction(ILocker locker,
+                                       IWorld world,
+                                       Formula formula)
+        {
+            this.locker = locker;
+            this.world = world;
+            this.formula = formula;
+        }
 
         public ResourceBuyActiveAction(uint cityId,
                                        uint structureId,
@@ -43,33 +52,17 @@ namespace Game.Logic.Actions
                                        ILocker locker,
                                        IWorld world,
                                        Formula formula)
+            : this(locker, world, formula)
         {
             this.cityId = cityId;
             this.structureId = structureId;
             this.price = price;
             this.quantity = quantity;
             this.resourceType = resourceType;
-            this.locker = locker;
-            this.world = world;
-            this.formula = formula;
         }
 
-        public ResourceBuyActiveAction(uint id,
-                                       DateTime beginTime,
-                                       DateTime nextTime,
-                                       DateTime endTime,
-                                       int workerType,
-                                       byte workerIndex,
-                                       ushort actionCount,
-                                       Dictionary<string, string> properties,
-                                       ILocker locker,
-                                       IWorld world,
-                                       Formula formula)
-                : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
+        public override void LoadProperties(IDictionary<string, string> properties)
         {
-            this.locker = locker;
-            this.world = world;
-            this.formula = formula;
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
             quantity = ushort.Parse(properties["quantity"]);

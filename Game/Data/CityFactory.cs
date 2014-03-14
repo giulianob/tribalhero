@@ -4,7 +4,8 @@ using Game.Logic.Actions;
 using Game.Logic.Notifications;
 using Game.Logic.Procedures;
 using Game.Map;
-using Ninject;
+using Game.Setup;
+using Game.Setup.DependencyInjection;
 using Persistance;
 
 namespace Game.Data

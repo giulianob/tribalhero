@@ -3,9 +3,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Common;
 using Game.Data;
 using Game.Util;
-using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -24,7 +24,7 @@ namespace Game.Map
 
         private readonly Dictionary<int, List<ISimpleGameObject>> objects = new Dictionary<int, List<ISimpleGameObject>>();
 
-        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+        private readonly ILogger logger = LoggerFactory.Current.GetLogger<RegionObjectList>();
 
         #endregion
 

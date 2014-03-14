@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
 using Game.Data;
 using Game.Logic.Procedures;
 using Game.Setup;
@@ -20,10 +21,8 @@ namespace Game.Logic.Actions
             this.procedure = procedure;
         }
 
-        public CityResourceCapUpdatePassiveAction(uint id, bool isVisible, Procedure procedure)
-                : base(id, isVisible)
+        public override void LoadProperties(IDictionary<string, string> properties)
         {
-            this.procedure = procedure;
         }
 
         public override ActionType Type
@@ -42,8 +41,6 @@ namespace Game.Logic.Actions
             }
         }
 
-        #region IScriptable Members
-
         public void ScriptInit(IGameObject gameObject, string[] parms)
         {
             if ((obj = gameObject as IStructure) == null)
@@ -52,8 +49,6 @@ namespace Game.Logic.Actions
             }
             Execute();
         }
-
-        #endregion
 
         public override Error Validate(string[] parms)
         {

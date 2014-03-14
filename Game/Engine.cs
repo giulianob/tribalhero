@@ -6,6 +6,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading;
+using Common;
 using Game.Comm;
 using Game.Comm.Channel;
 using Game.Data;
@@ -17,11 +18,10 @@ using Game.Map;
 using Game.Module;
 using Game.Module.Remover;
 using Game.Setup;
+using Game.Setup.DependencyInjection;
 using Game.Util;
-using Ninject;
-using Ninject.Extensions.Logging;
-using Ninject.Modules;
 using Persistance;
+using SimpleInjector;
 using Thrift.Server;
 
 #endregion
@@ -43,7 +43,7 @@ namespace Game
     {
         private readonly DbLoader dbLoader;
 
-        private static readonly ILogger Logger = LoggerFactory.Current.GetCurrentClassLogger();
+        private static readonly ILogger Logger = LoggerFactory.Current.GetLogger<Engine>();
 
         private readonly IPlayerSelectorFactory playerSelector;
 
@@ -256,23 +256,28 @@ _________ _______ _________ ______   _______  _
             State = EngineState.Started;
         }
 
-        public static IKernel CreateDefaultKernel(params INinjectModule[] extraModules)
+        public static IKernel CreateDefaultKernel(params IKernelModule[] extraModules)
         {
-            var ninjectModules = new[] {new GameModule()}.Concat(extraModules).ToArray();
-            var kernel = new StandardKernel(new NinjectSettings {LoadExtensions = true}, ninjectModules);
+            var container = new Container();
+            new GameModule().Load(container);
+            foreach (var module in extraModules)
+            {
+                module.Load(container);
+            }
+            container.Verify();
 
             // Instantiate singletons here for now until all classes are properly being injected
-            Ioc.Kernel = kernel;
+            Ioc.Kernel = new Ioc(container);
 
-            PacketHelper.RegionLocator = kernel.Get<IRegionLocator>();
-            Global.Current = kernel.Get<Global>();
-            SystemVariablesUpdater.Current = kernel.Get<SystemVariablesUpdater>();
-            TileLocator.Current = kernel.Get<TileLocator>();
-            World.Current = kernel.Get<IWorld>();
-            Scheduler.Current = kernel.Get<IScheduler>();
-            DbPersistance.Current = kernel.Get<IDbManager>();
+            PacketHelper.RegionLocator = Ioc.Kernel.Get<IRegionLocator>();
+            Global.Current = Ioc.Kernel.Get<Global>();
+            SystemVariablesUpdater.Current = Ioc.Kernel.Get<SystemVariablesUpdater>();
+            TileLocator.Current = Ioc.Kernel.Get<TileLocator>();
+            World.Current = Ioc.Kernel.Get<IWorld>();
+            Scheduler.Current = Ioc.Kernel.Get<IScheduler>();
+            DbPersistance.Current = Ioc.Kernel.Get<IDbManager>();
 
-            return kernel;
+            return Ioc.Kernel;
         }
 
         public void Stop()

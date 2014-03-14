@@ -51,6 +51,31 @@ namespace Game.Logic.Actions
 
         private readonly CallbackProcedure callbackProcedure;
 
+        public CityCreatePassiveAction(IActionFactory actionFactory,
+                                       ICityRemoverFactory cityRemoverFactory,
+                                       Formula formula,
+                                       IWorld world,
+                                       ILocker locker,
+                                       IObjectTypeFactory objectTypeFactory,
+                                       IStructureCsvFactory structureCsvFactory,
+                                       ICityFactory cityFactory,
+                                       Procedure procedure,
+                                       IBarbarianTribeManager barbarianTribeManager,
+                                       CallbackProcedure callbackProcedure)
+        {
+            this.actionFactory = actionFactory;
+            this.cityRemoverFactory = cityRemoverFactory;
+            this.formula = formula;
+            this.world = world;
+            this.locker = locker;
+            this.objectTypeFactory = objectTypeFactory;
+            this.structureCsvFactory = structureCsvFactory;
+            this.cityFactory = cityFactory;
+            this.procedure = procedure;
+            this.barbarianTribeManager = barbarianTribeManager;
+            this.callbackProcedure = callbackProcedure;
+        }
+
         public CityCreatePassiveAction(uint cityId,
                                        uint x,
                                        uint y,
@@ -66,53 +91,16 @@ namespace Game.Logic.Actions
                                        Procedure procedure,
                                        IBarbarianTribeManager barbarianTribeManager,
                                        CallbackProcedure callbackProcedure)
+                : this(actionFactory, cityRemoverFactory, formula, world, locker, objectTypeFactory, structureCsvFactory, cityFactory, procedure, barbarianTribeManager, callbackProcedure)
         {
             this.cityId = cityId;
             this.x = x;
             this.y = y;
             this.cityName = cityName;
-            this.actionFactory = actionFactory;
-            this.cityRemoverFactory = cityRemoverFactory;
-            this.formula = formula;
-            this.world = world;
-            this.locker = locker;
-            this.objectTypeFactory = objectTypeFactory;
-            this.structureCsvFactory = structureCsvFactory;
-            this.cityFactory = cityFactory;
-            this.procedure = procedure;
-            this.barbarianTribeManager = barbarianTribeManager;
-            this.callbackProcedure = callbackProcedure;
         }
 
-        public CityCreatePassiveAction(uint id,
-                                       DateTime beginTime,
-                                       DateTime nextTime,
-                                       DateTime endTime,
-                                       bool isVisible,
-                                       string nlsDescription,
-                                       Dictionary<string, string> properties,
-                                       IActionFactory actionFactory,
-                                       ICityRemoverFactory cityRemoverFactory,
-                                       Formula formula,
-                                       IWorld world,
-                                       ILocker locker,
-                                       IObjectTypeFactory objectTypeFactory,
-                                       IStructureCsvFactory structureCsvFactory,
-                                       Procedure procedure,
-                                       IBarbarianTribeManager barbarianTribeManager,
-                                       CallbackProcedure callbackProcedure)
-                : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
+        public override void LoadProperties(IDictionary<string, string> properties)
         {
-            this.actionFactory = actionFactory;
-            this.cityRemoverFactory = cityRemoverFactory;
-            this.formula = formula;
-            this.world = world;
-            this.locker = locker;
-            this.objectTypeFactory = objectTypeFactory;
-            this.structureCsvFactory = structureCsvFactory;
-            this.procedure = procedure;
-            this.barbarianTribeManager = barbarianTribeManager;
-            this.callbackProcedure = callbackProcedure;
             newCityId = uint.Parse(properties["new_city_id"]);
             newStructureId = uint.Parse(properties["new_structure_id"]);
         }

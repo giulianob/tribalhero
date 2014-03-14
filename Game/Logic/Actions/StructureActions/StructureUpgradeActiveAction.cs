@@ -16,9 +16,9 @@ namespace Game.Logic.Actions
 {
     public class StructureUpgradeActiveAction : ScheduledActiveAction
     {
-        private readonly uint cityId;
+        private uint cityId;
 
-        private readonly uint structureId;
+        private uint structureId;
 
         private Resource cost;
 
@@ -40,9 +40,7 @@ namespace Game.Logic.Actions
 
         private readonly CallbackProcedure callbackProcedure;
 
-        public StructureUpgradeActiveAction(uint cityId,
-                                            uint structureId,
-                                            IStructureCsvFactory structureCsvFactory,
+        public StructureUpgradeActiveAction(IStructureCsvFactory structureCsvFactory,
                                             Formula formula,
                                             IWorld world,
                                             Procedure procedure,
@@ -51,8 +49,6 @@ namespace Game.Logic.Actions
                                             IObjectTypeFactory objectTypeFactory,
                                             CallbackProcedure callbackProcedure)
         {
-            this.cityId = cityId;
-            this.structureId = structureId;
             this.structureCsvFactory = structureCsvFactory;
             this.formula = formula;
             this.world = world;
@@ -63,14 +59,8 @@ namespace Game.Logic.Actions
             this.callbackProcedure = callbackProcedure;
         }
 
-        public StructureUpgradeActiveAction(uint id,
-                                            DateTime beginTime,
-                                            DateTime nextTime,
-                                            DateTime endTime,
-                                            int workerType,
-                                            byte workerIndex,
-                                            ushort actionCount,
-                                            Dictionary<string, string> properties,
+        public StructureUpgradeActiveAction(uint cityId,
+                                            uint structureId,
                                             IStructureCsvFactory structureCsvFactory,
                                             Formula formula,
                                             IWorld world,
@@ -79,17 +69,14 @@ namespace Game.Logic.Actions
                                             IRequirementCsvFactory requirementCsvFactory,
                                             IObjectTypeFactory objectTypeFactory,
                                             CallbackProcedure callbackProcedure)
-                : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
+            : this(structureCsvFactory, formula, world, procedure, locker, requirementCsvFactory, objectTypeFactory, callbackProcedure)
         {
-            this.structureCsvFactory = structureCsvFactory;
-            this.formula = formula;
-            this.world = world;
-            this.procedure = procedure;
-            this.locker = locker;
-            this.requirementCsvFactory = requirementCsvFactory;
-            this.objectTypeFactory = objectTypeFactory;
-            this.callbackProcedure = callbackProcedure;
+            this.cityId = cityId;
+            this.structureId = structureId;
+        }
 
+        public override void LoadProperties(IDictionary<string, string> properties)
+        {
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
             cost = new Resource(int.Parse(properties["crop"]),

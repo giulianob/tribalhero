@@ -5,12 +5,12 @@ using Game.Data;
 using Game.Data.BarbarianTribe;
 using Game.Data.Stronghold;
 using Game.Map;
-using Ninject;
+using Game.Setup.DependencyInjection;
 using Persistance;
 
 namespace Game.Battle
 {
-    class BattleManagerFactory : IBattleManagerFactory
+    public class BattleManagerFactory : IBattleManagerFactory
     {
         private readonly IKernel kernel;
 

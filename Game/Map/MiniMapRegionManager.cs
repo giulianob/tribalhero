@@ -43,14 +43,17 @@ namespace Game.Map
             var simpleObj = obj as ISimpleGameObject;
             if (simpleObj != null && !simpleObj.InWorld)
             {
-                logger.Debug("Removed update for obj that is not in world: groupId[{0}] objectId[{1}] type[{2}] currentX[{3}] currentY[{4}] origX[{5}] origY[{6}]",
-                         obj.MiniMapGroupId,
-                         obj.MiniMapObjectId,
-                         obj.MiniMapObjectType,
-                         obj.PrimaryPosition.X,
-                         obj.PrimaryPosition.Y,
-                         origX,
-                         origY);
+                if (logger.IsTraceEnabled)
+                {
+                    logger.Trace("Removed update for obj that is not in world: groupId[{0}] objectId[{1}] type[{2}] currentX[{3}] currentY[{4}] origX[{5}] origY[{6}]",
+                                 obj.MiniMapGroupId,
+                                 obj.MiniMapObjectId,
+                                 obj.MiniMapObjectType,
+                                 obj.PrimaryPosition.X,
+                                 obj.PrimaryPosition.Y,
+                                 origX,
+                                 origY);
+                }
 
                 throw new Exception("Received unexpected city region update for obj that is not in world");
             }
@@ -60,30 +63,36 @@ namespace Game.Map
 
             if (oldMiniMapRegionId == newMiniMapRegionId)
             {
-                logger.Debug("Updated city region obj: groupId[{0}] objectId[{1}] type[{2}] regionId[{3}] currentX[{4}] currentY[{5}] origX[{6}] origY[{7}]",
-                         obj.MiniMapGroupId,
-                         obj.MiniMapObjectId,
-                         obj.MiniMapObjectType,
-                         oldMiniMapRegionId,
-                         obj.PrimaryPosition.X,
-                         obj.PrimaryPosition.Y,
-                         origX,
-                         origY);
+                if (logger.IsTraceEnabled)
+                {
+                    logger.Trace("Updated city region obj: groupId[{0}] objectId[{1}] type[{2}] regionId[{3}] currentX[{4}] currentY[{5}] origX[{6}] origY[{7}]",
+                                 obj.MiniMapGroupId,
+                                 obj.MiniMapObjectId,
+                                 obj.MiniMapObjectType,
+                                 oldMiniMapRegionId,
+                                 obj.PrimaryPosition.X,
+                                 obj.PrimaryPosition.Y,
+                                 origX,
+                                 origY);
+                }
 
                 miniMapRegions[oldMiniMapRegionId].Update(obj, origX, origY);
             }
             else
             {
-                logger.Debug("Moved city region obj: groupId[{0}] objectId[{1}] type[{2}] oldRegionId[{3}] newRegionId[{4}] currentX[{5}] currentY[{6}] origX[{7}] origY[{8}]",
-                         obj.MiniMapGroupId,
-                         obj.MiniMapObjectId,
-                         obj.MiniMapObjectType,
-                         oldMiniMapRegionId,
-                         newMiniMapRegionId,
-                         obj.PrimaryPosition.X,
-                         obj.PrimaryPosition.Y,
-                         origX,
-                         origY);
+                if (logger.IsTraceEnabled)
+                {
+                    logger.Trace("Moved city region obj: groupId[{0}] objectId[{1}] type[{2}] oldRegionId[{3}] newRegionId[{4}] currentX[{5}] currentY[{6}] origX[{7}] origY[{8}]",
+                                 obj.MiniMapGroupId,
+                                 obj.MiniMapObjectId,
+                                 obj.MiniMapObjectType,
+                                 oldMiniMapRegionId,
+                                 newMiniMapRegionId,
+                                 obj.PrimaryPosition.X,
+                                 obj.PrimaryPosition.Y,
+                                 origX,
+                                 origY);
+                }
 
                 miniMapRegions[oldMiniMapRegionId].Remove(obj);
                 miniMapRegions[newMiniMapRegionId].Add(obj);

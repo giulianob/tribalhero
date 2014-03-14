@@ -7,7 +7,5 @@ namespace Game.Data
         IChannel Channel { get; }
 
         bool FireEvents { get; set; }
-
-        bool IsRunningOnMono();
     }
 }

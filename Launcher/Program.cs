@@ -70,10 +70,9 @@ namespace Launcher
             engine.Start();
 
             // Loop and exit app if needed
-            var global = kernel.Get<IGlobal>();
             while (true)
             {
-                if (global.IsRunningOnMono())
+                if (Global.IsRunningOnMono())
                 {
                     var unixExitSignals = new[]
                     {

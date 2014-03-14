@@ -26,12 +26,19 @@ namespace Game.Setup.DependencyInjection
         public ConstructorInfo GetConstructor(Type serviceType,
                                               Type implementationType)
         {
-            return (from ctor in implementationType.GetConstructors()
-                    let parameters = ctor.GetParameters()
-                    orderby parameters.Length descending
-                    where this.IsCalledDuringRegistrationPhase || parameters.All(this.CanBeResolved)
-                    select ctor)
-                    .First();
+            try
+            {
+                return (from ctor in implementationType.GetConstructors()
+                        let parameters = ctor.GetParameters()
+                        orderby parameters.Length descending
+                        where this.IsCalledDuringRegistrationPhase || parameters.All(this.CanBeResolved)
+                        select ctor)
+                        .First();
+            }
+            catch(Exception e)
+            {
+                throw new Exception(string.Format("Failed to resolve constructor for type {0}", implementationType.Name), e);
+            }
         }
 
         private bool CanBeResolved(ParameterInfo p)

@@ -33,8 +33,7 @@ namespace Game.Util
 
         private readonly ReaderWriterLockSlim channelLock = new ReaderWriterLockSlim();
 
-        private readonly Dictionary<string, List<Subscriber>> subscribersByChannel =
-                new Dictionary<string, List<Subscriber>>();
+        private readonly Dictionary<string, List<Subscriber>> subscribersByChannel = new Dictionary<string, List<Subscriber>>();
 
         private readonly Dictionary<IChannelListener, Subscriber> subscribersBySession = new Dictionary<IChannelListener, Subscriber>();
 

@@ -35,14 +35,12 @@ namespace Game.Logic.Actions
 
         private readonly ITroopObjectInitializer troopObjectInitializer;
 
-        public BarbarianTribeAttackChainAction(ITroopObjectInitializer troopObjectInitializer,
-                                               IActionFactory actionFactory,
+        public BarbarianTribeAttackChainAction(IActionFactory actionFactory,
                                                Procedure procedure,
                                                ILocker locker,
                                                IGameObjectLocator gameObjectLocator,
                                                BattleProcedure battleProcedure)
         {
-            this.troopObjectInitializer = troopObjectInitializer;
             this.actionFactory = actionFactory;
             this.procedure = procedure;
             this.locker = locker;
@@ -58,8 +56,9 @@ namespace Game.Logic.Actions
                                                ILocker locker,
                                                IGameObjectLocator gameObjectLocator,
                                                BattleProcedure battleProcedure)
-            : this(troopObjectInitializer, actionFactory, procedure, locker, gameObjectLocator, battleProcedure)
+            : this(actionFactory, procedure, locker, gameObjectLocator, battleProcedure)
         {
+            this.troopObjectInitializer = troopObjectInitializer;
             this.cityId = cityId;
             this.targetObjectId = targetObjectId;
         }

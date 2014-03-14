@@ -1,19 +1,20 @@
 using System;
 using System.IO;
+using System.Linq;
 using Dawn.Net.Sockets;
 using Game.Battle;
 using Game.Battle.CombatObjects;
 using Game.Battle.Reporting;
 using Game.Comm;
 using Game.Comm.Channel;
-using Game.Comm.Protocol;
+using Game.Comm.CmdLine_Commands;
+using Game.Comm.ProcessorCommands;
 using Game.Comm.Thrift;
 using Game.Data;
 using Game.Data.BarbarianTribe;
 using Game.Data.Forest;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
-using Game.Data.Troop;
 using Game.Logic;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
@@ -38,6 +39,8 @@ namespace Game
         {
             container.Options.ConstructorResolutionBehavior = new MostResolvableConstructorBehavior(container);
 
+            container.Register<IKernel>(() => new Ioc(container), Lifestyle.Singleton);
+
             #region World/Map
 
             var worldRegistration = Lifestyle.Singleton.CreateRegistration<World>(container);
@@ -45,13 +48,11 @@ namespace Game
             container.AddRegistration(typeof(IGameObjectLocator), worldRegistration);
 
             container.Register<IGlobal, Global>(Lifestyle.Singleton);
-            container.Register<IRegion, Region>();
             container.Register<IRegionManager, RegionManager>(Lifestyle.Singleton);
             container.Register<IRegionLocator, RegionLocator>(Lifestyle.Singleton);
             container.Register<RegionObjectList>();
             container.Register<ICityManager, CityManager>(Lifestyle.Singleton);
             container.Register<IForestManager, ForestManager>(Lifestyle.Singleton);
-            container.Register<IForest, Forest>();
             container.Register<IRoadManager, RoadManager>(Lifestyle.Singleton);
             container.Register<IRoadPathFinder, RoadPathFinder>();
 
@@ -70,10 +71,7 @@ namespace Game
                 return new TSimpleServer(new Notification.Processor(container.GetInstance<NotificationHandler>()), new TServerSocket(46000), logger.Warn);
             }, Lifestyle.Singleton);
 
-            container.Register<IProtocol, PacketProtocol>();
-
             container.Register<Chat>(Lifestyle.Singleton);
-            container.Register<IDynamicAction, DynamicAction>();
             container.Register<ICityTriggerManager, CityTriggerManager>(Lifestyle.Singleton);
 
             #endregion
@@ -81,7 +79,6 @@ namespace Game
             #region Tribes
 
             container.Register<ITribeManager, TribeManager>(Lifestyle.Singleton);
-            container.Register<ITribe, Tribe>();
             container.Register<ITribeLogger, TribeLogger>();
 
             #endregion
@@ -153,9 +150,34 @@ namespace Game
 
             #region Processor
 
-            container.Register<CommandLineProcessor, CommandLineProcessor>(Lifestyle.Singleton);
+            container.Register<CommandLineProcessor>(() => new CommandLineProcessor(container.GetInstance<AssignmentCommandLineModule>(),
+                                                                                    container.GetInstance<PlayerCommandLineModule>(),
+                                                                                    container.GetInstance<CityCommandLineModule>(),
+                                                                                    container.GetInstance<ResourcesCommandLineModule>(),
+                                                                                    container.GetInstance<TribeCommandLineModule>(),
+                                                                                    container.GetInstance<StrongholdCommandLineModule>(),
+                                                                                    container.GetInstance<RegionCommandsLineModule>(),
+                                                                                    container.GetInstance<BarbarianTribeCommandsLineModule>(),
+                                                                                    container.GetInstance<SystemCommandLineModule>()),
+                                                     Lifestyle.Singleton);
 
-            container.Register<IProcessor, Processor>(Lifestyle.Singleton);
+            container.Register<IProcessor>(() => new Processor(container.GetInstance<AssignmentCommandsModule>(),
+                                                               container.GetInstance<BattleCommandsModule>(),
+                                                               container.GetInstance<EventCommandsModule>(),
+                                                               container.GetInstance<ChatCommandsModule>(),
+                                                               container.GetInstance<CommandLineCommandsModule>(),
+                                                               container.GetInstance<LoginCommandsModule>(),
+                                                               container.GetInstance<MarketCommandsModule>(),
+                                                               container.GetInstance<MiscCommandsModule>(),
+                                                               container.GetInstance<PlayerCommandsModule>(),
+                                                               container.GetInstance<RegionCommandsModule>(),
+                                                               container.GetInstance<StructureCommandsModule>(),
+                                                               container.GetInstance<TribeCommandsModule>(),
+                                                               container.GetInstance<TribesmanCommandsModule>(),
+                                                               container.GetInstance<StrongholdCommandsModule>(),
+                                                               container.GetInstance<ProfileCommandsModule>(),
+                                                               container.GetInstance<TroopCommandsModule>()),
+                                           Lifestyle.Singleton);
 
             #endregion
             
@@ -170,7 +192,7 @@ namespace Game
             container.Register<CityBattleProcedure>(Lifestyle.Singleton);
             container.Register<BarbarianTribeBattleProcedure>(Lifestyle.Singleton);
             container.Register<CallbackProcedure>(Lifestyle.Singleton);
-            container.Register<Random>(Lifestyle.Singleton);
+            container.Register<Random>(() => new Random());
             container.Register<ISystemVariableManager, SystemVariableManager>(Lifestyle.Singleton);
             container.Register<SystemVariablesUpdater>(Lifestyle.Singleton);
 
@@ -185,7 +207,6 @@ namespace Game
                                                                       container.GetInstance<MapFactory>(),
                                                                       container.GetInstance<ITileLocator>(),
                                                                       container.GetInstance<IRegionManager>()), Lifestyle.Singleton);            
-            container.Register<IStronghold, Stronghold>();
             if (Config.stronghold_bypass_activation)
             {
                 container.Register<IStrongholdActivationCondition, DummyActivationCondition>();
@@ -206,7 +227,6 @@ namespace Game
 
             container.Register<IBarbarianTribeManager, BarbarianTribeManager>(Lifestyle.Singleton);
             container.Register<IBarbarianTribeConfigurator, BarbarianTribeConfigurator>(Lifestyle.Singleton);
-            container.Register<IBarbarianTribe, BarbarianTribe>();
             container.Register<IBarbarianTribeFactory, BarbarianTribeFactory>();
             container.Register<BarbarianTribeChecker>(Lifestyle.Singleton);
 
@@ -214,19 +234,42 @@ namespace Game
 
             #region City
 
-            container.Register<IReferenceManager, ReferenceManager>();
             container.Register<ICityChannel, CityChannel>(Lifestyle.Singleton);
             container.Register<ICityFactory, CityFactory>(Lifestyle.Singleton);
             container.Register<IGameObjectFactory, GameObjectFactory>(Lifestyle.Singleton);
 
-            container.Register<ICity, City>();
-            container.Register<ITroopManager, TroopManager>();
-            container.Register<IActionWorker, ActionWorker>();
-            container.Register<ITechnologyManager, TechnologyManager>();
-            container.Register<IUnitTemplate, UnitTemplate>();
-            container.Register<IStructure, Structure>();            
-
             #endregion
+
+            var allTypes = this.GetType().Assembly.GetTypes();
+            var allRegistrations = container.GetCurrentRegistrations().ToDictionary(p => p.ServiceType, p => p.Registration);
+            foreach (var factoryInterfaceType in allTypes.Where(type => type.IsInterface && type.Name.EndsWith("Factory")))
+            {
+                var implementingTypes = allTypes.Where(type => type.IsInterface == false &&
+                                                               type.IsAbstract == false &&
+                                                               type.IsGenericTypeDefinition == false &&
+                                                               factoryInterfaceType.IsAssignableFrom(type))
+                                                .ToArray();
+
+                if (implementingTypes.Length == 0)
+                {
+                    throw new Exception(string.Format("Factory without any implementations. Implement type {0}", factoryInterfaceType.Name));
+                }
+
+                // Check if already registered
+                if (allRegistrations.ContainsKey(factoryInterfaceType))
+                {
+                    continue;
+                }
+
+                if (implementingTypes.Length > 1)
+                {
+                    throw new Exception(string.Format("Found interface factory that has more than 1 implementation and was not registered {0}", factoryInterfaceType.Name));
+                }
+
+                container.Register(factoryInterfaceType, implementingTypes.First(), Lifestyle.Singleton);
+
+                // Console.Out.WriteLine("Registering {0} to {1}", factoryInterfaceType.Name, implementingTypes.First().Name);
+            }                
         }
     }
 }

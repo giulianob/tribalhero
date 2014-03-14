@@ -4,6 +4,7 @@ using Game.Battle;
 using Game.Data;
 using Game.Data.BarbarianTribe;
 using Game.Data.Forest;
+using Game.Data.Stronghold;
 using Game.Data.Troop;
 using Game.Logic.Actions.ResourceActions;
 using Game.Logic.Formulas;
@@ -193,57 +194,57 @@ namespace Game.Logic.Actions
 
         public CityPassiveAction CreateCityPassiveAction(uint cityId)
         {
-            throw new NotImplementedException();
+            return new CityPassiveAction(cityId, kernel.Get<IObjectTypeFactory>(), kernel.Get<ILocker>(), kernel.Get<Formula>(), kernel.Get<IActionFactory>(), kernel.Get<Procedure>(), kernel.Get<IGameObjectLocator>(), kernel.Get<IBattleFormulas>());
         }
 
         public RetreatChainAction CreateRetreatChainAction(uint cityId, ITroopObjectInitializer troopObjectInitializer)
         {
-            throw new NotImplementedException();
+            return new RetreatChainAction(cityId, troopObjectInitializer, kernel.Get<IActionFactory>(), kernel.Get<IWorld>(), kernel.Get<Procedure>(), kernel.Get<ILocker>());
         }
 
         public TribeContributeActiveAction CreateTribeContributeActiveAction(uint cityId, uint structureId, Resource resource)
         {
-            throw new NotImplementedException();
+            return new TribeContributeActiveAction(cityId, structureId, resource, kernel.Get<IGameObjectLocator>(), kernel.Get<Formula>(), kernel.Get<ILocker>());
         }
 
         public StrongholdEngageGateAttackPassiveAction CreateStrongholdEngageGateAttackPassiveAction(uint cityId, uint troopObjectId, uint targetStrongholdId)
         {
-            throw new NotImplementedException();
+            return new StrongholdEngageGateAttackPassiveAction(cityId, troopObjectId, targetStrongholdId, kernel.Get<IBattleFormulas>(), kernel.Get<IGameObjectLocator>(), kernel.Get<StrongholdBattleProcedure>(), kernel.Get<IDbManager>(), kernel.Get<IStaminaMonitorFactory>());
         }
 
         public StrongholdEngageMainAttackPassiveAction CreateStrongholdEngageMainAttackPassiveAction(uint cityId, uint troopObjectId, uint targetStrongholdId)
         {
-            throw new NotImplementedException();
+            return new StrongholdEngageMainAttackPassiveAction(cityId, troopObjectId, targetStrongholdId, kernel.Get<IGameObjectLocator>(), kernel.Get<StrongholdBattleProcedure>());
         }
 
         public StrongholdGateBattlePassiveAction CreateStrongholdGateBattlePassiveAction(uint strongholdId)
         {
-            throw new NotImplementedException();
+            return new StrongholdGateBattlePassiveAction(strongholdId, kernel.Get<StrongholdBattleProcedure>(), kernel.Get<ILocker>(), kernel.Get<IGameObjectLocator>(), kernel.Get<IDbManager>(), kernel.Get<Formula>(), kernel.Get<IWorld>());
         }
 
         public StrongholdMainBattlePassiveAction CreateStrongholdMainBattlePassiveAction(uint strongholdId)
         {
-            throw new NotImplementedException();
+            return new StrongholdMainBattlePassiveAction(strongholdId, kernel.Get<BattleProcedure>(), kernel.Get<StrongholdBattleProcedure>(), kernel.Get<ILocker>(), kernel.Get<IGameObjectLocator>(), kernel.Get<IDbManager>(), kernel.Get<Formula>(), kernel.Get<IWorld>(), kernel.Get<IStrongholdManager>(), kernel.Get<IActionFactory>(), kernel.Get<ITroopObjectInitializerFactory>());
         }
 
         public StrongholdAttackChainAction CreateStrongholdAttackChainAction(uint cityId, ITroopObjectInitializer troopObjectInitializer, uint targetStrongholdId, bool forceAttack)
         {
-            throw new NotImplementedException();
+            return new StrongholdAttackChainAction(cityId, troopObjectInitializer, targetStrongholdId, forceAttack, kernel.Get<IActionFactory>(), kernel.Get<Procedure>(), kernel.Get<ILocker>(), kernel.Get<IGameObjectLocator>(), kernel.Get<BattleProcedure>(), kernel.Get<StrongholdBattleProcedure>());
         }
 
         public BarbarianTribeEngageAttackPassiveAction CreateBarbarianTribeEngageAttackPassiveAction(uint cityId, uint troopObjectId, uint targetObjectId)
         {
-            throw new NotImplementedException();
+            return new BarbarianTribeEngageAttackPassiveAction(cityId, troopObjectId, targetObjectId, kernel.Get<IBattleFormulas>(), kernel.Get<IGameObjectLocator>(), kernel.Get<BarbarianTribeBattleProcedure>(), kernel.Get<Formula>(), kernel.Get<IDbManager>(), kernel.Get<IStaminaMonitorFactory>());
         }
 
         public BarbarianTribeAttackChainAction CreateBarbarianTribeAttackChainAction(uint cityId, uint targetObjectId, ITroopObjectInitializer troopObjectInitializer)
         {
-            throw new NotImplementedException();
+            return new BarbarianTribeAttackChainAction(cityId, targetObjectId, troopObjectInitializer, kernel.Get<IActionFactory>(), kernel.Get<Procedure>(), kernel.Get<ILocker>(), kernel.Get<IGameObjectLocator>(), kernel.Get<BattleProcedure>());
         }
 
         public BarbarianTribeBattlePassiveAction CreateBarbarianTribeBattlePassiveAction(uint barbarianTribeId)
         {
-            throw new NotImplementedException();
+            return new BarbarianTribeBattlePassiveAction(barbarianTribeId, kernel.Get<ILocker>(), kernel.Get<IGameObjectLocator>(), kernel.Get<IDbManager>(), kernel.Get<Formula>(), kernel.Get<BarbarianTribeBattleProcedure>(), kernel.Get<IWorld>(), kernel.Get<ISimpleStubGeneratorFactory>());
         }
     }
 }

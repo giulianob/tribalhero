@@ -50,7 +50,6 @@ namespace Game
             container.Register<IRegionLocator, RegionLocator>(Lifestyle.Singleton);
             container.Register<RegionObjectList>();
             container.Register<ICityManager, CityManager>(Lifestyle.Singleton);
-            container.Register<IMiniMapRegionManager, MiniMapRegionManager>(Lifestyle.Singleton);            
             container.Register<IForestManager, ForestManager>(Lifestyle.Singleton);
             container.Register<IForest, Forest>();
             container.Register<IRoadManager, RoadManager>(Lifestyle.Singleton);

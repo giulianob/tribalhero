@@ -133,6 +133,12 @@ namespace Game
 
         public void Start()
         {
+            if (Global.IsRunningOnMono())
+            {
+                ThreadPool.SetMaxThreads(200, 30);
+                ThreadPool.SetMinThreads(100, 20);
+            }
+
             Logger.Info(@"
 _________ _______ _________ ______   _______  _       
 \__   __/(  ____ )\__   __/(  ___ \ (  ___  )( \      

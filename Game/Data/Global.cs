@@ -26,7 +26,7 @@ namespace Game.Data
 
         public bool FireEvents { get; set; }
 
-        public bool IsRunningOnMono()
+        public static bool IsRunningOnMono()
         {
             return Type.GetType("Mono.Runtime") != null;
         }

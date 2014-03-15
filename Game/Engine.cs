@@ -135,8 +135,8 @@ namespace Game
         {
             if (Global.IsRunningOnMono())
             {
-                ThreadPool.SetMaxThreads(200, 30);
-                ThreadPool.SetMinThreads(100, 20);
+                ThreadPool.SetMaxThreads(200, 50);
+                ThreadPool.SetMinThreads(100, 50);
             }
 
             Logger.Info(@"

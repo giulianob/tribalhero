@@ -6,6 +6,7 @@ using Game.Data.BarbarianTribe;
 using Game.Data.Stronghold;
 using Game.Map;
 using Game.Setup.DependencyInjection;
+using Game.Util;
 using Persistance;
 
 namespace Game.Battle
@@ -39,7 +40,7 @@ namespace Game.Battle
                                        battleRandom);
 
             // ReSharper disable once ObjectCreationAsStatement
-            new BattleChannel(bm);
+            new BattleChannel(bm, kernel.Get<IChannel>());
 
             bm.BattleReport.Battle = bm;
             return bm;
@@ -71,7 +72,7 @@ namespace Game.Battle
                                              battleRandom);
 
             // ReSharper disable once ObjectCreationAsStatement
-            new BattleChannel(bm);
+            new BattleChannel(bm, kernel.Get<IChannel>());
 
             bm.BattleReport.Battle = bm;
             return bm;
@@ -118,7 +119,7 @@ namespace Game.Battle
                                              battleRandom);
 
             // ReSharper disable once ObjectCreationAsStatement
-            new BattleChannel(bm);
+            new BattleChannel(bm, kernel.Get<IChannel>());
 
             bm.BattleReport.Battle = bm;
             return bm;
@@ -145,7 +146,7 @@ namespace Game.Battle
                                            battleRandom);
 
             // ReSharper disable once ObjectCreationAsStatement
-            new BattleChannel(bm);
+            new BattleChannel(bm, kernel.Get<IChannel>());
 
             bm.BattleReport.Battle = bm;
             return bm;

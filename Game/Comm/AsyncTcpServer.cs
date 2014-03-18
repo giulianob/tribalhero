@@ -151,7 +151,14 @@ namespace Game.Comm
             isStopped = true;
             listener.Close();
 
-            listeningTask.Wait();
+            try
+            {
+                listeningTask.Wait();
+            }
+            // Incase task was already completed
+            catch(Exception)
+            {                
+            }
 
             DisconnectAll();
 
@@ -195,7 +202,15 @@ namespace Game.Comm
             foreach (var sessionAndTask in sessions.ToList())
             {
                 sessionAndTask.Key.CloseSession();
-                sessionAndTask.Value.Wait();
+
+                try
+                {
+                    sessionAndTask.Value.Wait();
+                }
+                catch(Exception)
+                {               
+                    // Incase task was already finished
+                }
             }
 
             return string.Empty;

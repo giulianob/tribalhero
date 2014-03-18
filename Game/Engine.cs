@@ -6,6 +6,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Common;
 using Game.Comm;
 using Game.Comm.Channel;
@@ -118,16 +119,31 @@ namespace Game
 
         public static void AttachExceptionHandler()
         {
-            AppDomain.CurrentDomain.UnhandledException += (sender, e) => UnhandledExceptionHandler(e);
+            AppDomain.CurrentDomain.UnhandledException += (sender, e) => UnhandledExceptionHandler(e.ExceptionObject as Exception);
+            TaskScheduler.UnobservedTaskException += (sender, e) => UnhandledExceptionHandler(e.Exception);
         }
 
-        public static void UnhandledExceptionHandler(UnhandledExceptionEventArgs e)
+        public static void UnhandledExceptionHandler(Exception ex)
         {
-            var ex = (Exception)e.ExceptionObject;
-            Logger.ErrorException("Unhandled exception", ex);
-            if (!Debugger.IsAttached)
+            try
             {
-                Environment.Exit(1);
+                if (ex == null)
+                {
+                    var stackTrace = Environment.StackTrace;
+                    Logger.Error("Unhandled exception but did not have exception object. Stack trace:", stackTrace);
+                }
+                else
+                {
+                    Logger.ErrorException("Unhandled exception", ex);
+                }
+
+            }
+            finally
+            {
+                if (!Debugger.IsAttached)
+                {
+                    Environment.Exit(1);
+                }
             }
         }
 

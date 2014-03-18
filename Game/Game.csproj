@@ -576,6 +576,7 @@
     <Compile Include="Util\NameGenerator.cs" />
     <Compile Include="Util\NumberExtensions.cs" />
     <Compile Include="Util\ResharperAnnotations.cs" />
+    <Compile Include="Util\TaskExtension.cs" />
     <Compile Include="Util\TwoFactor\Base32Encoding.cs" />
     <Compile Include="Util\TwoFactor\HOTP.cs" />
     <Compile Include="Util\TwoFactor\OTP.cs" />

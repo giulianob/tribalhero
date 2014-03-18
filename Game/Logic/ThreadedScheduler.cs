@@ -225,10 +225,7 @@ namespace Game.Logic
 
                 doneEvents.Add(job.Id, job.ResetEvent);
 
-                factory.StartNew(() =>
-                {
-                    ExecuteAction(job);
-                });               
+                factory.StartNew(() => ExecuteAction(job));
 
                 SetNextActionTime();
             }
@@ -357,7 +354,7 @@ namespace Game.Logic
                 lock (_tasks)
                 {
                     task.ContinueWith(continuation => 
-                        Engine.UnhandledExceptionHandler(new UnhandledExceptionEventArgs(continuation.Exception, true)), 
+                        Engine.UnhandledExceptionHandler(continuation.Exception), 
                         TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.OnlyOnFaulted);
 
                     _tasks.AddLast(task);

@@ -37,7 +37,12 @@ namespace Game.Comm
 
             if (sendQueue.Count > 50)
             {
-                Logger.Warn("Large send queue in socket session IP[{0}] sendQueueLength[{1}]", RemoteIP, sendQueue.Count);
+                Logger.Info("Large send queue in socket session IP[{0}] sendQueueLength[{1}]", RemoteIP, sendQueue.Count);
+            }
+
+            if (sendQueue.Count > 300)
+            {
+                Logger.Info("Disconnecting {0} {1} due to high send queue", RemoteIP, Player != null ? Player.Name : string.Empty);
             }
 
             if (Interlocked.CompareExchange(ref writerCount, 1, 0) == 0)

@@ -73,7 +73,7 @@ namespace Game.Comm
             listener = new Socket(localAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             listener.Bind(new IPEndPoint(localAddr, port));
 
-            listeningTask = ListenerHandler();
+            listeningTask = ListenerHandler().CatchUnhandledException();
             
             return true;
         }
@@ -84,8 +84,8 @@ namespace Game.Comm
 
             while (!isStopped)
             {
-                AsyncSocketSession session;
                 var socketAwaitable = socketAwaitablePool.Take();
+                socketAwaitable.Clear();
 
                 var buffer = bufferManager.GetBuffer();
                 socketAwaitable.Buffer = buffer;
@@ -96,27 +96,36 @@ namespace Game.Comm
 
                     if (result != SocketError.Success || socketAwaitable.AcceptSocket == null)
                     {
+                        if (logger.IsDebugEnabled)
+                        {
+                            logger.Debug("Received error when accepting connection result[{0}]", result);
+                        }
+
                         continue;
                     }
 
                     var socket = socketAwaitable.AcceptSocket;
 
+                    logger.Info("Received connection from {0}", socket.RemoteEndPoint.ToString());
+
                     socket.NoDelay = true;
                     socket.SendTimeout = 1000;
 
-                    session = socketSessionFactory.CreateAsyncSocketSession(socket.RemoteEndPoint.ToString(), socket);
+                    var session = socketSessionFactory.CreateAsyncSocketSession(socket.RemoteEndPoint.ToString(), socket);
 
                     session.PacketMaker.Append(socketAwaitable.Transferred);
+
+                    Add(session);
                 }
                 catch(SocketException e)
                 {
-                    logger.Debug(e, "SocketException in ListenerHandler. Ignoring...");
+                    logger.Info(e, "SocketException in ListenerHandler. Ignoring...");
 
                     continue;
                 }
                 catch(Exception e)
                 {
-                    logger.Debug(e, "Exception in ListenerHandler");
+                    logger.Warn(e, "Exception in ListenerHandler");
 
                     throw;
                 }
@@ -126,9 +135,7 @@ namespace Game.Comm
                     socketAwaitablePool.Add(socketAwaitable);
 
                     bufferManager.ReleaseBuffer(buffer);
-                }
-
-                Add(session);
+                }                
             }
         }
 
@@ -138,6 +145,8 @@ namespace Game.Comm
             {
                 return false;
             }
+
+            logger.Info("Stopping async tcp server");
 
             isStopped = true;
             listener.Close();
@@ -199,7 +208,7 @@ namespace Game.Comm
             var readTask = Task.Run(async () =>
             {
                 await ReadLoop(session);
-            });
+            }).CatchUnhandledException();
 
             sessions.TryAdd(session, readTask);
         }
@@ -283,11 +292,17 @@ namespace Game.Comm
             catch(SocketException e)
             {
                 logger.Info(e, "Handled socket exception while receiving socket data IP[{0}]", session.RemoteIP);
-                
+
                 DisconnectSession(session);
             }
             catch(ObjectDisposedException)
             {
+            }
+            catch(Exception e)
+            {
+                logger.ErrorException("Unhandled exception in readloop", e);
+
+                throw;
             }
             finally
             {
@@ -328,7 +343,7 @@ namespace Game.Comm
                 logger.Debug("Socket disconnect without logged in player IP[{0}]", session.RemoteIP);
             }
 
-            Task.Run(() => session.ProcessEvent(new Packet(Command.OnDisconnect)));
+            Task.Run(() => session.ProcessEvent(new Packet(Command.OnDisconnect))).CatchUnhandledException();
         }
 
         private void OnClose(Session session)

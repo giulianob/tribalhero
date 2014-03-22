@@ -2,7 +2,7 @@
 
 class AddSoundMutedOption extends Ruckusing_BaseMigration {
 
-	public function up() {
+	public function strtoupper() {
 		$this->add_column("players", "sound_muted", "boolean", array('default' => 0));
 	}
 	

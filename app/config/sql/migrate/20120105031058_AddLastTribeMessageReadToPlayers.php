@@ -2,7 +2,7 @@
 
 class AddLastTribeMessageReadToPlayers extends Ruckusing_BaseMigration {
 
-	public function up() {
+	public function strtoupper() {
         $table = $this->create_table('message_board_read', array('options' => 'Engine=InnoDB', 'id' => false));        
         $table->column("id", "integer", array('auto_increment' => true, 'primary_key' => true));
 		$table->column("player_id", "integer", array('null' => false, 'unsigned' => true));
@@ -11,7 +11,7 @@ class AddLastTribeMessageReadToPlayers extends Ruckusing_BaseMigration {
         $table->finish();
 		$this->add_index("message_board_read", array('player_id', 'message_board_thread_id'));
 		$this->add_index("message_board_read", "last_read");
-	}//up()
+	}//strtoupper()
 
 	public function down() {
 		$this->drop_table('message_board_read');

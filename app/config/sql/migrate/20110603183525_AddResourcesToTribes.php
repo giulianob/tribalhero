@@ -2,7 +2,7 @@
 
 class AddResourcesToTribes extends Ruckusing_BaseMigration {
 
-    public function up() {
+    public function strtoupper() {
         $this->add_column("tribes", "crop", "integer", array('null' => false));
         $this->add_column("tribes", "gold", "integer", array('null' => false));
         $this->add_column("tribes", "iron", "integer", array('null' => false));

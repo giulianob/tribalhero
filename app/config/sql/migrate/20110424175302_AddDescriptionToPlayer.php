@@ -2,7 +2,7 @@
 
 class AddDescriptionToPlayer extends Ruckusing_BaseMigration {
 
-	public function up() {
+	public function strtoupper() {
 		$this->add_column('players', 'description', 'text', array('null' => false, 'default' => ''));
 	}
 

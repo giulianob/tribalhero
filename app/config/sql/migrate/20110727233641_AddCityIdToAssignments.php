@@ -2,7 +2,7 @@
 
 class AddCityIdToAssignments extends Ruckusing_BaseMigration {
 
-	public function up() {
+	public function strtoupper() {
 		$this->add_column("assignments", "city_id", "integer", array('auto_increment' => false, 'unsigned' => true));
 		$this->add_index("assignments", "city_id", array('name' => 'idx_city_id'));
 	}

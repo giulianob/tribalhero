@@ -2,7 +2,7 @@
 
 class RenameTribeColumns extends Ruckusing_BaseMigration {
 
-    public function up() {
+    public function strtoupper() {
         $this->rename_column('tribes', 'id', 'player_id');
         $this->remove_column('tribes', 'owner_id');
     }

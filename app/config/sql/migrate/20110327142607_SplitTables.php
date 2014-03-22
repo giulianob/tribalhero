@@ -2,7 +2,7 @@
 
 class SplitTables extends Ruckusing_BaseMigration {
 
-    public function up() {
+    public function strtoupper() {
 
         $this->execute("
             ALTER TABLE `cities`

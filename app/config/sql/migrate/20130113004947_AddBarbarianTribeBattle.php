@@ -2,7 +2,7 @@
 
 class AddBarbarianTribeBattle extends Ruckusing_BaseMigration {
 
-	public function up() {
+	public function strtoupper() {
         $table = $this->create_table('barbarian_tribe_combat_groups', array('options' => 'Engine=InnoDB', 'id' => false));
         $table->column("id", "integer", array('unsigned' => true, 'primary_key' => true));
         $table->column("battle_id", "integer", array('unsigned' => true, 'primary_key' => true));

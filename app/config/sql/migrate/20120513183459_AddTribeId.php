@@ -2,7 +2,7 @@
 
 class AddTribeId extends Ruckusing_BaseMigration {
 
-	public function up() {
+	public function strtoupper() {
         $this->remove_index('tribes', 'player_id', array('name' => 'PRIMARY'));
         $this->rename_column('tribes', 'player_id', 'owner_player_id');
 

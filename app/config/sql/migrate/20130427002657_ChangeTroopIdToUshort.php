@@ -2,7 +2,7 @@
 
 class ChangeTroopIdToUshort extends Ruckusing_BaseMigration {
 
-	public function up() {
+	public function strtoupper() {
         $this->change_column("assignments_list", "stub_id", "smallinteger", array('null' => false, 'unsigned' => true, 'limit' => 5));
         $this->change_column("troop_stubs", "id", "smallinteger", array('null' => false, 'unsigned' => true, 'limit' => 5));
         $this->change_column("troop_stubs_list", "id", "smallinteger", array('null' => false, 'unsigned' => true, 'limit' => 5));

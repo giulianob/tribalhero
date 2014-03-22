@@ -85,23 +85,21 @@ class MessagesController extends AppController {
         $message = $this->request->data['message'];
         $to = $this->request->data['to'];
 
-        // Only allow 1 message every x seconds
-        $lastMessage = $this->Message->find('first', array(
+        // Only allow 2 message every 30 seconds
+        $messagesInLastMinute = $this->Message->find('count', array(
                     'contain' => array(),
                     'fields' => array('Message.created'),
                     'conditions' => array(
-                        'Message.sender_player_id' => $playerId
-                    ),
-                    'order' => 'Message.created DESC'
+                        'Message.sender_player_id' => $playerId,
+                        'Message.created >= DATE_SUB(UTC_TIMESTAMP(), INTERVAL 30 SECOND)',
+                    )
                 ));
 
-        if (!empty($lastMessage) && time() - strtotime($lastMessage['Message']['created']) < 10) {
+        if ($messagesInLastMinute >= 2) {
             $data = array('error' => 'You are sending messages too fast. Please wait a few more seconds and try again.');
         } else {
-            $Recipient =& ClassRegistry::init('Recipient');
-            
             // Find recipient
-            $recipient = $Recipient->findByName($to);
+            $recipient = $this->Message->Recipient->findByName($to);
 
             if (empty($recipient)) {
                 $data = array('error' => 'Recipient not found.');

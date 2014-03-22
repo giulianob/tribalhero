@@ -23,3 +23,5 @@ app/webroot/tmp/Game.swf
 .idea/workspace.xml
 app/webroot/data.xml
 app/webroot/Game_en.xml
+app/tmp/cache/persistent/tribalheroserver_*
+app/tmp/cache/models/tribalheroserver_*

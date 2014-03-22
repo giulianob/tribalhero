@@ -2,12 +2,12 @@
 
 class ChangeBaseAtkHpToDecimal extends Ruckusing_BaseMigration {
 
-	public function up() {
+	public function strtoupper() {
 		$this->change_column("structures", "hp", "decimal", array('scale' => 2, 'precision' =>10, 'null' => false) );
 		$this->change_column("battle_report_objects", "hp", "decimal", array('scale' => 2, 'precision' =>10, 'null' => false) );
 		$this->change_column("battle_report_objects", "damage_taken", "decimal", array('scale' => 2, 'precision' =>10, 'null' => false) );
 		$this->change_column("battle_report_objects", "damage_dealt", "decimal", array('scale' => 2, 'precision' =>10, 'null' => false) );
-	}//up()
+	}//strtoupper()
 
 	public function down() {
 		$this->change_column("structures", "hp", 'smallinteger', array('length' => 5, 'unsigned' => true) );

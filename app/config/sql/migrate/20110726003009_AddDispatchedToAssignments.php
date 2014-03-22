@@ -2,7 +2,7 @@
 
 class AddDispatchedToAssignments extends Ruckusing_BaseMigration {
 
-	public function up() {
+	public function strtoupper() {
 		$this->add_column("assignments_list", "dispatched", "boolean", array('null' => false, 'unsigned' => true));
 	}
 

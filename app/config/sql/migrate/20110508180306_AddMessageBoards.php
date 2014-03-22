@@ -2,7 +2,7 @@
 
 class AddMessageBoards extends Ruckusing_BaseMigration {
 
-    public function up() {
+    public function strtoupper() {
         $table = $this->create_table('message_board_threads', array('options' => 'Engine=InnoDB', 'id' => false));
         $table->column("id", "integer", array('auto_increment' => true, 'primary_key' => true));
         $table->column("tribe_id", "integer", array('null' => false, 'unsigned' => true));

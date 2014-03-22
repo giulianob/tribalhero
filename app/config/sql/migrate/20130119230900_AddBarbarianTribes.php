@@ -2,7 +2,7 @@
 
 class AddBarbarianTribes extends Ruckusing_BaseMigration {
 
-	public function up() {
+	public function strtoupper() {
         $this->execute("
         CREATE TABLE IF NOT EXISTS `barbarian_tribes` (
             `id` int(11) unsigned NOT NULL,

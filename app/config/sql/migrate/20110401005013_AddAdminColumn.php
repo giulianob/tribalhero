@@ -2,7 +2,7 @@
 
 class AddAdminColumn extends Ruckusing_BaseMigration {
 
-    public function up() {
+    public function strtoupper() {
         $this->add_column('players', 'admin', 'boolean', array('default' => 0));
     }
 

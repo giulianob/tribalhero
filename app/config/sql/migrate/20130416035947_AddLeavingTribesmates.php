@@ -2,7 +2,7 @@
 
 class AddLeavingTribesmates extends Ruckusing_BaseMigration {
 
-	public function up() {
+	public function strtoupper() {
         $this->add_column("tribes", "leaving_tribesmates", "mediumtext");
         $this->query("UPDATE `tribes` SET leaving_tribesmates = '[]'");
 	}

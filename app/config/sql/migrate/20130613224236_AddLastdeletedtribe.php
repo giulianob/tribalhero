@@ -2,7 +2,7 @@
 
 class AddLastdeletedtribe extends Ruckusing_BaseMigration {
 
-	public function up() {
+	public function strtoupper() {
 		$this->add_column("players", "last_deleted_tribe", "datetime", array('null' => false, 'default' => '0001-01-01 00:00:00'));
 	}
 

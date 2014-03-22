@@ -2,9 +2,9 @@
 
 class AddDefensiveAssignment extends Ruckusing_BaseMigration {
 
-	public function up() {
+	public function strtoupper() {
 		$this->add_column("assignments", "is_attack", "boolean", array('null' => false, 'unsigned' => true, 'default' => 1));
-	}//up()
+	}//strtoupper()
 
 	public function down() {
 		$this->remove_column("assignments", "is_attack");

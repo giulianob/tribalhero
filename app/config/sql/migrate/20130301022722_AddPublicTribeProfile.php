@@ -2,7 +2,7 @@
 
 class AddPublicTribeProfile extends Ruckusing_BaseMigration {
 
-	public function up() {
+	public function strtoupper() {
         $this->add_column("tribes", "public_desc", "text", array('null' => false, 'default' => ''));
 	}
 

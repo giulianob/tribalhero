@@ -2,7 +2,7 @@
 
 class AddAchievements extends Ruckusing_BaseMigration {
 
-	public function up() {
+	public function strtoupper() {
         $table = $this->create_table('achievements', array('options' => 'Engine=InnoDB', 'id' => false));
         $table->column("player_id", "integer", array('null' => false, 'unsigned' => true, 'primary_key' => true));
         $table->finish();

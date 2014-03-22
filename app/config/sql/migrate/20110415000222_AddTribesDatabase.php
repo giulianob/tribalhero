@@ -2,7 +2,7 @@
 
 class AddTribesDatabase extends Ruckusing_BaseMigration {
 
-    public function up() {
+    public function strtoupper() {
         $table = $this->create_table('tribesmen', array('options' => 'Engine=InnoDB', 'id' => false));
         $table->column("player_id", "integer", array('auto_increment' => false, 'primary_key' => true, 'unsigned' => true));
         $table->column("tribe_id", "integer", array('null' => false, 'unsigned' => true));

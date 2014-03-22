@@ -2,7 +2,7 @@
 
 class AddStronghold extends Ruckusing_BaseMigration {
 
-	public function up() {
+	public function strtoupper() {
         $table = $this->create_table('strongholds', array('options' => 'Engine=InnoDB', 'id' => false));
         $table->column("id", "integer", array('auto_increment' => false, 'primary_key' => true, 'unsigned' => true));
         $table->column("name", "string", array('length' => 20));
@@ -13,7 +13,7 @@ class AddStronghold extends Ruckusing_BaseMigration {
         $table->column("x", "integer", array('null' => false, 'unsigned' => true));
         $table->column("y", "integer", array('null' => false, 'unsigned' => true));
         $table->finish();
-	}//up()
+	}//strtoupper()
 
 	public function down() {
         $this->drop_table('strongholds');

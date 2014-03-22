@@ -2,7 +2,7 @@
 
 class FixGateHp extends Ruckusing_BaseMigration {
 
-	public function up() {
+	public function strtoupper() {
         $gateHps = array(10000, 13500, 17300, 21500, 26200, 31300, 37100, 43400, 50300, 58000, 66500, 75800, 86300, 97800, 110500, 124600, 140100, 157200, 176200, 200000);
 
         for ($i = 0; $i < count($gateHps); $i++) {

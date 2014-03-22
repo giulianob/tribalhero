@@ -2,7 +2,7 @@
 
 class AddAssignment extends Ruckusing_BaseMigration {
 
-    public function up() {
+    public function strtoupper() {
         $table = $this->create_table('assignments', array('options' => 'Engine=InnoDB', 'id' => false));        
         $table->column("id", "integer", array('auto_increment' => false, 'primary_key' => true));
 		$table->column("tribe_id", "integer", array('null' => false, 'unsigned' => true));

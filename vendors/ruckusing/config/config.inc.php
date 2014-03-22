@@ -26,12 +26,12 @@ if(!defined('RUCKUSING_TS_SCHEMA_TBL_NAME')) {
 //Parent of migrations directory.
 //Where schema.txt will be placed when 'db:schema' is executed
 if(!defined('RUCKUSING_DB_DIR')) {
-	define('RUCKUSING_DB_DIR', APP_DIR . DS . 'config' . DS . 'sql');
+	define('RUCKUSING_DB_DIR', APP_DIR . DS . 'Config' . DS . 'sql');
 }
 
 //Where the actual migrations reside
 if(!defined('RUCKUSING_MIGRATION_DIR')) {
-	define('RUCKUSING_MIGRATION_DIR', APP_DIR . DS . 'config' . DS . 'sql' . DS . 'migrate');
+	define('RUCKUSING_MIGRATION_DIR', APP_DIR . DS . 'Config' . DS . 'sql' . DS . 'migrate');
 }
 
 ?>

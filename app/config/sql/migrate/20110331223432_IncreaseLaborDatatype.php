@@ -2,7 +2,7 @@
 
 class IncreaseLaborDatatype extends Ruckusing_BaseMigration {
 
-    public function up() {
+    public function strtoupper() {
         $this->change_column('structures', 'labor', 'smallinteger', array('length' => 5, 'unsigned' => true));
     }
 

@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using Common;
 using Game.Setup;
-using Ninject.Extensions.Logging;
 using Persistance;
 
 #endregion
@@ -15,7 +15,7 @@ namespace Game.Util.Locking
 {
     public class DefaultMultiObjectLock : IMultiObjectLock
     {
-        private static readonly ILogger Logger = LoggerFactory.Current.GetCurrentClassLogger();
+        private static readonly ILogger Logger = LoggerFactory.Current.GetLogger<DefaultMultiObjectLock>();
 
         private readonly Action<object> lockEnter;
 

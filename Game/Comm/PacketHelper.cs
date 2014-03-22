@@ -17,8 +17,8 @@ using Game.Database;
 using Game.Logic;
 using Game.Map;
 using Game.Setup;
+using Game.Setup.DependencyInjection;
 using Game.Util;
-using Ninject;
 using Persistance;
 
 #endregion

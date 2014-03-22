@@ -1,7 +1,8 @@
 using System;
 using Game.Battle;
 using Game.Logic.Formulas;
-using Ninject;
+using Game.Setup;
+using Game.Setup.DependencyInjection;
 using Persistance;
 
 namespace Game.Data.Troop

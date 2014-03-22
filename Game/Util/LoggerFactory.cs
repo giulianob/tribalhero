@@ -1,18 +1,22 @@
-﻿using Ninject.Extensions.Logging;
-using Ninject.Extensions.Logging.Log4net.Infrastructure;
+﻿using Common;
 
 namespace Game.Util
 {
     public class LoggerFactory
     {
-        private static ILoggerFactory loggerFactory;
+        private static LoggerFactory loggerFactory;
 
-        public static ILoggerFactory Current
+        public static LoggerFactory Current
         {
             get
             {
-                return loggerFactory ?? (loggerFactory = new Log4NetLoggerFactory());
+                return loggerFactory ?? (loggerFactory = new LoggerFactory());
             }
+        }
+
+        public ILogger GetLogger<T>()
+        {
+            return new Log4NetLogger(typeof(T));
         }
     }
 }

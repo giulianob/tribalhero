@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using Common;
 using Game.Data;
-using Ninject;
+using Game.Setup.DependencyInjection;
 
 #endregion
 

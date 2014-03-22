@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using Game.Data;
 using Game.Setup;
 using Game.Util;
@@ -19,14 +20,15 @@ namespace Game.Logic.Actions
 
         private object value;
 
-        private readonly IDbManager dbManager;
-
         private readonly ILocker locker;
 
-        public PropertyCreatePassiveAction(IDbManager dbManager, ILocker locker)
+        public PropertyCreatePassiveAction(ILocker locker)
         {
-            this.dbManager = dbManager;
             this.locker = locker;
+        }
+
+        public override void LoadProperties(IDictionary<string, string> properties)
+        {
         }
 
         public override ActionType Type

@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Common;
 using Game.Comm;
 using Game.Data;
 using Game.Data.Events;
 using Game.Setup;
 using Game.Util;
-using Ninject.Extensions.Logging;
 
 namespace Game.Map
 {
     public class RegionManager : IRegionManager
     {
-        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+        private readonly ILogger logger = LoggerFactory.Current.GetLogger<RegionManager>();
 
         public event EventHandler<ObjectEvent> ObjectAdded;
         

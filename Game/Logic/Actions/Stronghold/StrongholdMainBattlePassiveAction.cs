@@ -38,7 +38,7 @@ namespace Game.Logic.Actions
 
         private readonly ILocker locker;
 
-        private readonly uint strongholdId;
+        private uint strongholdId;
 
         private readonly IStrongholdManager strongholdManager;
 
@@ -50,6 +50,29 @@ namespace Game.Logic.Actions
 
         private readonly ITroopObjectInitializerFactory troopInitializerFactory;
 
+        public StrongholdMainBattlePassiveAction(BattleProcedure battleProcedure,
+                                                 StrongholdBattleProcedure strongholdBattleProcedure,
+                                                 ILocker locker,
+                                                 IGameObjectLocator gameObjectLocator,
+                                                 IDbManager dbManager,
+                                                 Formula formula,
+                                                 IWorld world,
+                                                 IStrongholdManager strongholdManager,
+                                                 IActionFactory actionFactory,
+                                                 ITroopObjectInitializerFactory troopInitializerFactory)
+        {
+            this.battleProcedure = battleProcedure;
+            this.strongholdBattleProcedure = strongholdBattleProcedure;
+            this.locker = locker;
+            this.gameObjectLocator = gameObjectLocator;
+            this.dbManager = dbManager;
+            this.formula = formula;
+            this.world = world;
+            this.strongholdManager = strongholdManager;
+            this.actionFactory = actionFactory;
+            this.troopInitializerFactory = troopInitializerFactory;
+        }
+
         public StrongholdMainBattlePassiveAction(uint strongholdId,
                                                  BattleProcedure battleProcedure,
                                                  StrongholdBattleProcedure strongholdBattleProcedure,
@@ -60,19 +83,10 @@ namespace Game.Logic.Actions
                                                  IWorld world,
                                                  IStrongholdManager strongholdManager,
                                                  IActionFactory actionFactory,
-                                                 ITroopObjectInitializerFactory troopInitializerFactory)
+                                                 ITroopObjectInitializerFactory troopInitializerFactory) 
+            : this(battleProcedure, strongholdBattleProcedure, locker, gameObjectLocator, dbManager, formula, world, strongholdManager, actionFactory, troopInitializerFactory)
         {
             this.strongholdId = strongholdId;
-            this.battleProcedure = battleProcedure;
-            this.strongholdBattleProcedure = strongholdBattleProcedure;
-            this.locker = locker;
-            this.gameObjectLocator = gameObjectLocator;
-            this.dbManager = dbManager;
-            this.formula = formula;
-            this.world = world;
-            this.strongholdManager = strongholdManager;
-            this.actionFactory = actionFactory;
-            this.troopInitializerFactory = troopInitializerFactory;
 
             IStronghold stronghold;
             if (!gameObjectLocator.TryGetObjects(strongholdId, out stronghold))
@@ -83,36 +97,8 @@ namespace Game.Logic.Actions
             RegisterBattleListeners(stronghold);
         }
 
-        public StrongholdMainBattlePassiveAction(uint id,
-                                                 DateTime beginTime,
-                                                 DateTime nextTime,
-                                                 DateTime endTime,
-                                                 bool isVisible,
-                                                 string nlsDescription,
-                                                 IDictionary<string, string> properties,
-                                                 BattleProcedure battleProcedure,
-                                                 StrongholdBattleProcedure strongholdBattleProcedure,
-                                                 ILocker locker,
-                                                 IGameObjectLocator gameObjectLocator,
-                                                 IDbManager dbManager,
-                                                 Formula formula,
-                                                 IWorld world,
-                                                 IStrongholdManager strongholdManager,
-                                                 IActionFactory actionFactory,
-                                                 ITroopObjectInitializerFactory troopInitializerFactory)
-                : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
+        public override void LoadProperties(IDictionary<string, string> properties)
         {
-            this.battleProcedure = battleProcedure;
-            this.strongholdBattleProcedure = strongholdBattleProcedure;
-            this.locker = locker;
-            this.gameObjectLocator = gameObjectLocator;
-            this.dbManager = dbManager;
-            this.formula = formula;
-            this.world = world;
-            this.strongholdManager = strongholdManager;
-            this.actionFactory = actionFactory;
-            this.troopInitializerFactory = troopInitializerFactory;
-
             strongholdId = uint.Parse(properties["stronghold_id"]);
             npcGroupId = uint.Parse(properties["npc_group_id"]);
             npcGroupKilled = bool.Parse(properties["npc_group_killed"]);

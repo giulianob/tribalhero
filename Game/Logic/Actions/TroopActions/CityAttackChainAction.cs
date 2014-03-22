@@ -21,7 +21,7 @@ namespace Game.Logic.Actions
 
         private readonly BattleProcedure battleProcedure;
 
-        private readonly uint cityId;
+        private uint cityId;
 
         private readonly ITroopObjectInitializer troopObjectInitializer;
 
@@ -33,11 +33,26 @@ namespace Game.Logic.Actions
 
         private readonly Procedure procedure;
 
-        private readonly uint targetCityId;
+        private uint targetCityId;
 
         private readonly Position tmpTarget;
 
         private uint troopObjectId;
+
+        public CityAttackChainAction(IActionFactory actionFactory,
+                                     Procedure procedure,
+                                     ILocker locker,
+                                     IGameObjectLocator gameObjectLocator,
+                                     CityBattleProcedure cityBattleProcedure,
+                                     BattleProcedure battleProcedure)
+        {
+            this.actionFactory = actionFactory;
+            this.procedure = procedure;
+            this.locker = locker;
+            this.gameObjectLocator = gameObjectLocator;
+            this.cityBattleProcedure = cityBattleProcedure;
+            this.battleProcedure = battleProcedure;
+        }
 
         public CityAttackChainAction(uint cityId,
                                      ITroopObjectInitializer troopObjectInitializer,
@@ -49,39 +64,16 @@ namespace Game.Logic.Actions
                                      IGameObjectLocator gameObjectLocator,
                                      CityBattleProcedure cityBattleProcedure,
                                      BattleProcedure battleProcedure)
+            : this(actionFactory, procedure, locker, gameObjectLocator, cityBattleProcedure, battleProcedure)
         {
             this.tmpTarget = target;
             this.cityId = cityId;
             this.troopObjectInitializer = troopObjectInitializer;
             this.targetCityId = targetCityId;
-            this.actionFactory = actionFactory;
-            this.procedure = procedure;
-            this.locker = locker;
-            this.gameObjectLocator = gameObjectLocator;
-            this.cityBattleProcedure = cityBattleProcedure;
-            this.battleProcedure = battleProcedure;
         }
 
-        public CityAttackChainAction(uint id,
-                                     string chainCallback,
-                                     PassiveAction current,
-                                     ActionState chainState,
-                                     bool isVisible,
-                                     IDictionary<string, string> properties,
-                                     IActionFactory actionFactory,
-                                     Procedure procedure,
-                                     ILocker locker,
-                                     IGameObjectLocator gameObjectLocator,
-                                     CityBattleProcedure cityBattleProcedure,
-                                     BattleProcedure battleProcedure)
-                : base(id, chainCallback, current, chainState, isVisible)
+        public override void LoadProperties(IDictionary<string, string> properties)
         {
-            this.actionFactory = actionFactory;
-            this.procedure = procedure;
-            this.locker = locker;
-            this.gameObjectLocator = gameObjectLocator;
-            this.cityBattleProcedure = cityBattleProcedure;
-            this.battleProcedure = battleProcedure;
             cityId = uint.Parse(properties["city_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);
             targetCityId = uint.Parse(properties["target_city_id"]);

@@ -24,7 +24,7 @@ namespace Game.Logic.Actions
 
         private readonly StrongholdBattleProcedure strongholdBattleProcedure;
 
-        private readonly uint cityId;
+        private uint cityId;
 
         private readonly IGameObjectLocator gameObjectLocator;
 
@@ -32,11 +32,26 @@ namespace Game.Logic.Actions
 
         private readonly Procedure procedure;
 
-        private readonly uint targetStrongholdId;
+        private uint targetStrongholdId;
 
         private readonly ITroopObjectInitializer troopObjectInitializer;
 
         private uint troopObjectId;
+
+        public StrongholdDefenseChainAction(IActionFactory actionFactory,
+                                            Procedure procedure,
+                                            ILocker locker,
+                                            IGameObjectLocator gameObjectLocator,
+                                            BattleProcedure battleProcedure,
+                                            StrongholdBattleProcedure strongholdBattleProcedure)
+        {
+            this.actionFactory = actionFactory;
+            this.procedure = procedure;
+            this.locker = locker;
+            this.gameObjectLocator = gameObjectLocator;
+            this.battleProcedure = battleProcedure;
+            this.strongholdBattleProcedure = strongholdBattleProcedure;
+        }
 
         public StrongholdDefenseChainAction(uint cityId,
                                             ITroopObjectInitializer troopObjectInitializer,
@@ -47,38 +62,15 @@ namespace Game.Logic.Actions
                                             IGameObjectLocator gameObjectLocator,
                                             BattleProcedure battleProcedure,
                                             StrongholdBattleProcedure strongholdBattleProcedure)
+            : this(actionFactory, procedure, locker, gameObjectLocator, battleProcedure, strongholdBattleProcedure)
         {
             this.cityId = cityId;
             this.targetStrongholdId = targetStrongholdId;
             this.troopObjectInitializer = troopObjectInitializer;
-            this.actionFactory = actionFactory;
-            this.procedure = procedure;
-            this.locker = locker;
-            this.gameObjectLocator = gameObjectLocator;
-            this.battleProcedure = battleProcedure;
-            this.strongholdBattleProcedure = strongholdBattleProcedure;
         }
 
-        public StrongholdDefenseChainAction(uint id,
-                                            string chainCallback,
-                                            PassiveAction current,
-                                            ActionState chainState,
-                                            bool isVisible,
-                                            IDictionary<string, string> properties,
-                                            IActionFactory actionFactory,
-                                            Procedure procedure,
-                                            ILocker locker,
-                                            IGameObjectLocator gameObjectLocator,
-                                            BattleProcedure battleProcedure,
-                                            StrongholdBattleProcedure strongholdBattleProcedure)
-                : base(id, chainCallback, current, chainState, isVisible)
+        public override void LoadProperties(IDictionary<string, string> properties)
         {
-            this.actionFactory = actionFactory;
-            this.procedure = procedure;
-            this.locker = locker;
-            this.gameObjectLocator = gameObjectLocator;
-            this.battleProcedure = battleProcedure;
-            this.strongholdBattleProcedure = strongholdBattleProcedure;
             cityId = uint.Parse(properties["city_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);            
             targetStrongholdId = uint.Parse(properties["target_stronghold_id"]);

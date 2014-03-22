@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
 using Game.Data;
 using Game.Logic.Procedures;
 using Game.Setup;
@@ -18,6 +19,10 @@ namespace Game.Logic.Actions
         public ResourceRateUpdatePassiveAction(Procedure procedure)
         {
             this.procedure = procedure;
+        }
+
+        public override void LoadProperties(IDictionary<string, string> properties)
+        {
         }
 
         public override ActionType Type

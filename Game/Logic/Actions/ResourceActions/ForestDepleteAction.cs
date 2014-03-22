@@ -2,12 +2,12 @@
 
 using System;
 using System.Collections.Generic;
+using Common;
 using Game.Data;
 using Game.Data.Forest;
 using Game.Map;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -21,7 +21,7 @@ namespace Game.Logic.Actions.ResourceActions
 
         private readonly ILocker locker;
 
-        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+        private readonly ILogger logger = LoggerFactory.Current.GetLogger<ForestDepleteAction>();
 
         public ForestDepleteAction(IForest forest,
                                    DateTime time,

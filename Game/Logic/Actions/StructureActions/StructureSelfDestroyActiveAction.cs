@@ -14,9 +14,9 @@ namespace Game.Logic.Actions
 {
     public class StructureSelfDestroyActiveAction : ScheduledActiveAction
     {
-        private readonly uint cityId;
+        private uint cityId;
 
-        private readonly uint objectId;
+        private uint objectId;
 
         private TimeSpan ts;
 
@@ -24,18 +24,21 @@ namespace Game.Logic.Actions
 
         private readonly IWorld world;
 
-        public StructureSelfDestroyActiveAction(uint cityId, uint objectId, ILocker locker, IWorld world)
+        public StructureSelfDestroyActiveAction(ILocker locker, IWorld world)
         {
-            this.cityId = cityId;
-            this.objectId = objectId;
             this.locker = locker;
             this.world = world;
         }
 
-        public StructureSelfDestroyActiveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType, byte workerIndex, ushort actionCount, Dictionary<string, string> properties, ILocker locker, IWorld world) : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
+        public StructureSelfDestroyActiveAction(uint cityId, uint objectId, ILocker locker, IWorld world)
+            : this(locker, world)
         {
-            this.locker = locker;
-            this.world = world;
+            this.cityId = cityId;
+            this.objectId = objectId;
+        }
+
+        public override void LoadProperties(IDictionary<string, string> properties)
+        {
             cityId = uint.Parse(properties["city_id"]);
             objectId = uint.Parse(properties["object_id"]);
         }

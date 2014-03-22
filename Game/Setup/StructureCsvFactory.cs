@@ -7,9 +7,8 @@ using System.Linq;
 using Common;
 using Game.Data;
 using Game.Data.Stats;
+using Game.Setup.DependencyInjection;
 using Game.Util;
-using Ninject;
-using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -17,7 +16,7 @@ namespace Game.Setup
 {
     public class StructureCsvFactory : IStructureCsvFactory
     {
-        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+        private readonly ILogger logger = LoggerFactory.Current.GetLogger<StructureCsvFactory>();
 
         private readonly Dictionary<int, StructureBaseStats> dict = new Dictionary<int, StructureBaseStats>();
         

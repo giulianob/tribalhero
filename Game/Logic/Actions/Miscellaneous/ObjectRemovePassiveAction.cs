@@ -19,7 +19,7 @@ namespace Game.Logic.Actions
 {
     public class ObjectRemovePassiveAction : ScheduledPassiveAction
     {
-        private readonly List<uint> cancelActions;
+        private List<uint> cancelActions;
 
         private readonly IGameObjectLocator gameObjectLocator;
 
@@ -31,11 +31,24 @@ namespace Game.Logic.Actions
 
         private readonly CallbackProcedure callbackProcedure;
 
-        private readonly uint cityId;
+        private uint cityId;
 
-        private readonly uint objectId;
+        private uint objectId;
 
-        private readonly bool wasKilled;
+        private bool wasKilled;
+
+        public ObjectRemovePassiveAction(IGameObjectLocator gameObjectLocator,
+                                         ILocker locker,
+                                         Procedure procedure,
+                                         CallbackProcedure callbackProcedure,
+                                         IDbManager dbmanager)
+        {
+            this.gameObjectLocator = gameObjectLocator;
+            this.locker = locker;
+            this.procedure = procedure;
+            this.callbackProcedure = callbackProcedure;
+            this.dbmanager = dbmanager;
+        }
 
         public ObjectRemovePassiveAction(uint cityId,
                                          uint objectId,
@@ -46,37 +59,16 @@ namespace Game.Logic.Actions
                                          Procedure procedure,
                                          CallbackProcedure callbackProcedure, 
                                          IDbManager dbmanager)
+            : this(gameObjectLocator, locker, procedure, callbackProcedure, dbmanager)
         {
             this.cityId = cityId;
             this.objectId = objectId;
             this.wasKilled = wasKilled;
             this.cancelActions = cancelActions;
-            this.gameObjectLocator = gameObjectLocator;
-            this.locker = locker;
-            this.procedure = procedure;
-            this.callbackProcedure = callbackProcedure;
-            this.dbmanager = dbmanager;
         }
 
-        public ObjectRemovePassiveAction(uint id,
-                                         DateTime beginTime,
-                                         DateTime nextTime,
-                                         DateTime endTime,
-                                         bool isVisible,
-                                         string nlsDescription,
-                                         Dictionary<string, string> properties,
-                                         IGameObjectLocator gameObjectLocator,
-                                         ILocker locker,
-                                         Procedure procedure,
-                                         CallbackProcedure callbackProcedure, 
-                                         IDbManager dbmanager)
-                : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
+        public override void LoadProperties(IDictionary<string, string> properties)
         {
-            this.gameObjectLocator = gameObjectLocator;
-            this.locker = locker;
-            this.procedure = procedure;
-            this.callbackProcedure = callbackProcedure;
-            this.dbmanager = dbmanager;
             cityId = uint.Parse(properties["city_id"]);
             objectId = uint.Parse(properties["object_id"]);
             wasKilled = bool.Parse(properties["was_killed"]);

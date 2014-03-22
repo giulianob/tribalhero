@@ -23,7 +23,7 @@ namespace Game.Logic.Actions
 
         private readonly StrongholdBattleProcedure strongholdBattleProcedure;
 
-        private readonly uint cityId;
+        private uint cityId;
 
         private readonly IDbManager dbManager;
 
@@ -31,11 +31,24 @@ namespace Game.Logic.Actions
 
         private readonly IGameObjectLocator gameObjectLocator;
 
-        private readonly uint targetStrongholdId;
+        private uint targetStrongholdId;
 
-        private readonly uint troopObjectId;
+        private uint troopObjectId;
 
         private uint groupId;
+
+        public StrongholdEngageGateAttackPassiveAction(IBattleFormulas battleFormula,
+                                                       IGameObjectLocator gameObjectLocator,
+                                                       StrongholdBattleProcedure strongholdBattleProcedure,
+                                                       IDbManager dbManager,
+                                                       IStaminaMonitorFactory staminaMonitorFactory)
+        {
+            this.battleFormula = battleFormula;
+            this.gameObjectLocator = gameObjectLocator;
+            this.strongholdBattleProcedure = strongholdBattleProcedure;
+            this.dbManager = dbManager;
+            this.staminaMonitorFactory = staminaMonitorFactory;
+        }
 
         public StrongholdEngageGateAttackPassiveAction(uint cityId,
                                                        uint troopObjectId,
@@ -45,33 +58,15 @@ namespace Game.Logic.Actions
                                                        StrongholdBattleProcedure strongholdBattleProcedure,
                                                        IDbManager dbManager,
                                                        IStaminaMonitorFactory staminaMonitorFactory)
+            : this(battleFormula, gameObjectLocator, strongholdBattleProcedure, dbManager, staminaMonitorFactory)
         {
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
             this.targetStrongholdId = targetStrongholdId;
-            this.battleFormula = battleFormula;
-            this.gameObjectLocator = gameObjectLocator;
-            this.strongholdBattleProcedure = strongholdBattleProcedure;
-            this.dbManager = dbManager;
-            this.staminaMonitorFactory = staminaMonitorFactory;
         }
 
-        public StrongholdEngageGateAttackPassiveAction(uint id,
-                                                       bool isVisible,
-                                                       IDictionary<string, string> properties,
-                                                       IBattleFormulas battleFormula,
-                                                       IGameObjectLocator gameObjectLocator,
-                                                       StrongholdBattleProcedure strongholdBattleProcedure,
-                                                       IDbManager dbManager,
-                                                       IStaminaMonitorFactory staminaMonitorFactory)
-                : base(id, isVisible)
+        public override void LoadProperties(IDictionary<string, string> properties)
         {
-            this.battleFormula = battleFormula;
-            this.gameObjectLocator = gameObjectLocator;
-            this.strongholdBattleProcedure = strongholdBattleProcedure;
-            this.dbManager = dbManager;
-            this.staminaMonitorFactory = staminaMonitorFactory;
-
             cityId = uint.Parse(properties["troop_city_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);
             groupId = uint.Parse(properties["group_id"]);

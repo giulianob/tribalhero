@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Common;
 using Game.Setup;
 using Game.Util;
-using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -15,7 +15,7 @@ namespace Game.Logic
 {
     public class ThreadedScheduler : IScheduler
     {
-        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+        private readonly ILogger logger = LoggerFactory.Current.GetLogger<ThreadedScheduler>();
 
         private readonly ScheduleComparer comparer = new ScheduleComparer();
 
@@ -225,10 +225,7 @@ namespace Game.Logic
 
                 doneEvents.Add(job.Id, job.ResetEvent);
 
-                factory.StartNew(() =>
-                {
-                    ExecuteAction(job);
-                });               
+                factory.StartNew(() => ExecuteAction(job));
 
                 SetNextActionTime();
             }
@@ -357,7 +354,7 @@ namespace Game.Logic
                 lock (_tasks)
                 {
                     task.ContinueWith(continuation => 
-                        Engine.UnhandledExceptionHandler(new UnhandledExceptionEventArgs(continuation.Exception, true)), 
+                        Engine.UnhandledExceptionHandler(continuation.Exception), 
                         TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.OnlyOnFaulted);
 
                     _tasks.AddLast(task);

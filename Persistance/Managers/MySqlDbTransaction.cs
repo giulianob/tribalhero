@@ -3,8 +3,8 @@
 using System;
 using System.Data.Common;
 using System.Threading;
+using Common;
 using MySql.Data.MySqlClient;
-using Ninject.Extensions.Logging;
 
 #endregion
 

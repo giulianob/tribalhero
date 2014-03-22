@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using Persistance;
 
@@ -21,15 +22,15 @@ namespace Game.Logic
             NlsDescription = string.Empty;
         }
 
-        protected ScheduledPassiveAction(uint id,
-                                         DateTime beginTime,
-                                         DateTime nextTime,
-                                         DateTime endTime,
-                                         bool isVisible,
-                                         string nlsDescription)
+        public void LoadFromDatabase(uint id,
+                                     DateTime beginTime,
+                                     DateTime nextTime,
+                                     DateTime endTime,
+                                     bool isVisible,
+                                     string nlsDescription)
         {
-            ActionId = id;
-            IsVisible = isVisible;
+            LoadFromDatabase(id, isVisible);
+            
             this.beginTime = beginTime;
             this.nextTime = nextTime;
             this.endTime = endTime;

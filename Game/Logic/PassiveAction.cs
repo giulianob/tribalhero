@@ -16,14 +16,10 @@ namespace Game.Logic
 
         private bool isVisible;
 
-        protected PassiveAction()
+        public void LoadFromDatabase(uint id, bool isVisible)
         {
-        }
-
-        protected PassiveAction(uint id, bool isVisible)
-        {
-            ActionId = id;
-            IsVisible = isVisible;
+            this.ActionId = id;
+            this.IsVisible = isVisible;
         }
 
         public LargeIdGenerator ActionIdGenerator { get; set; }

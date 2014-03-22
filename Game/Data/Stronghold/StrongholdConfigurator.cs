@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Common;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
-using Ninject.Extensions.Logging;
 
 namespace Game.Data.Stronghold
 {
     class StrongholdConfigurator : IStrongholdConfigurator
     {
-        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+        private readonly ILogger logger = LoggerFactory.Current.GetLogger<StrongholdConfigurator>();
 
         private static readonly int[] LevelProbability = {0, 8, 16, 23, 30, 37, 43, 49, 55, 60, 65, 70, 74, 78, 82, 85, 88, 91, 94, 97, 100};
 

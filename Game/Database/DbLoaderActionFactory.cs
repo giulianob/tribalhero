@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using Game.Logic;
 using Game.Logic.Actions;
-using Ninject;
-using Ninject.Parameters;
+using Game.Setup.DependencyInjection;
 
 namespace Game.Database
 {
@@ -25,16 +24,11 @@ namespace Game.Database
                                                                    string nlsDescription,
                                                                    Dictionary<string, string> properties)
         {
-            return
-                    (ScheduledPassiveAction)
-                    kernel.Get(type,
-                               new ConstructorArgument("id", id),
-                               new ConstructorArgument("beginTime", beginTime),
-                               new ConstructorArgument("nextTime", nextTime),
-                               new ConstructorArgument("endTime", endTime),
-                               new ConstructorArgument("isVisible", isVisible),
-                               new ConstructorArgument("nlsDescription", nlsDescription),
-                               new ConstructorArgument("properties", properties));
+            var action = (ScheduledPassiveAction) kernel.Get(type);
+            action.LoadFromDatabase(id, beginTime, nextTime, endTime, isVisible, nlsDescription);
+            action.LoadProperties(properties);
+
+            return action;
         }
 
         public ScheduledActiveAction CreateScheduledActiveAction(Type type,
@@ -47,17 +41,11 @@ namespace Game.Database
                                                                  ushort actionCount,
                                                                  Dictionary<string, string> properties)
         {
-            return
-                    (ScheduledActiveAction)
-                    kernel.Get(type,
-                               new ConstructorArgument("id", id),
-                               new ConstructorArgument("beginTime", beginTime),
-                               new ConstructorArgument("nextTime", nextTime),
-                               new ConstructorArgument("endTime", endTime),
-                               new ConstructorArgument("workerType", workerType),
-                               new ConstructorArgument("workerIndex", workerIndex),
-                               new ConstructorArgument("actionCount", actionCount),
-                               new ConstructorArgument("properties", properties));
+            var action = (ScheduledActiveAction)kernel.Get(type);
+            action.LoadFromDatabase(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount);
+            action.LoadProperties(properties);
+
+            return action;
         }
 
         public PassiveAction CreatePassiveAction(Type type,
@@ -65,12 +53,11 @@ namespace Game.Database
                                                  bool isVisible,
                                                  IDictionary<string, string> properties)
         {
-            return
-                    (PassiveAction)
-                    kernel.Get(type,
-                               new ConstructorArgument("id", id),
-                               new ConstructorArgument("isVisible", isVisible),
-                               new ConstructorArgument("properties", properties));
+            var action = (PassiveAction)kernel.Get(type);
+            action.LoadFromDatabase(id, isVisible);
+            action.LoadProperties(properties);
+
+            return action;
         }
 
         public ChainAction CreateChainAction(Type type,
@@ -81,15 +68,11 @@ namespace Game.Database
                                              bool isVisible,
                                              IDictionary<string, string> properties)
         {
-            return
-                    (ChainAction)
-                    kernel.Get(type,
-                               new ConstructorArgument("id", id),
-                               new ConstructorArgument("chainCallback", chainCallback),
-                               new ConstructorArgument("current", current),
-                               new ConstructorArgument("chainState", chainState),
-                               new ConstructorArgument("isVisible", isVisible),
-                               new ConstructorArgument("properties", properties));
+            var action = (ChainAction)kernel.Get(type);
+            action.LoadFromDatabase(id, chainCallback, current, chainState, isVisible);
+            action.LoadProperties(properties);
+
+            return action;
         }
     }
 }

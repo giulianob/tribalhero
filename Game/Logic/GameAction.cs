@@ -253,6 +253,8 @@ namespace Game.Logic
 
         public abstract void WorkerRemoved(bool wasKilled);
 
+        public abstract void LoadProperties(IDictionary<string, string> properties);
+
         protected bool IsValid()
         {
             return WorkerObject != null && !IsDone;

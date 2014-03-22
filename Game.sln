@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DE2FE5FA-D81A-4387-BFEF-5387EEA6F84A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Game", "Game\Game.csproj", "{93D46B65-B2E0-46C9-8BAA-518B3DB64DC0}"
@@ -196,6 +198,9 @@ Global
 		{A0FF1BCE-4D64-45DD-AB45-656A0C8439B0} = {8D9628A2-F0B3-45E1-AA6A-BA947E0B3C49}
 		{D1F46AEF-D56B-4744-A0DB-7AB2EA8CC729} = {DF621696-B4D1-4F10-A6F8-773F90418ECA}
 		{07693ED0-7EB9-4AE4-AF3B-F36EC85BE962} = {DF621696-B4D1-4F10-A6F8-773F90418ECA}
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Launcher\Launcher.csproj

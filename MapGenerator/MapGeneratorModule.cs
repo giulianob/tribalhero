@@ -1,12 +1,13 @@
-﻿using Ninject.Modules;
+﻿using Game.Setup.DependencyInjection;
+using SimpleInjector;
 
 namespace MapGenerator
 {
-    public class MapGeneratorModule : NinjectModule
+    public class MapGeneratorModule : IKernelModule
     {
-        public override void Load()
+        public void Load(Container container)
         {
-            Bind<MapGenerator>().ToSelf();
+            container.Register<MapGenerator>();
         }
     }
 }

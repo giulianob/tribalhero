@@ -1,9 +1,9 @@
 #region
 
 using System.IO;
+using Common;
 using Game.Data;
 using Game.Util;
-using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -33,7 +33,7 @@ namespace Game.Setup
 
         private readonly MapFactory mapFactory;
 
-        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+        private readonly ILogger logger = LoggerFactory.Current.GetLogger<FactoriesInitializer>();
 
         public FactoriesInitializer(ActionRequirementFactory actionRequirementFactory,
                                     IStructureCsvFactory structureCsvFactory,

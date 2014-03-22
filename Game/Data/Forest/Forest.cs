@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using Common;
 using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Actions.ResourceActions;
@@ -14,7 +15,6 @@ using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject.Extensions.Logging;
 using Persistance;
 
 #endregion
@@ -23,7 +23,7 @@ namespace Game.Data.Forest
 {
     public class Forest : SimpleGameObject, IForest
     {
-        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+        private readonly ILogger logger = LoggerFactory.Current.GetLogger<Forest>();
 
         public const string DB_TABLE = "forests";
 

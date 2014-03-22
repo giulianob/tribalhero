@@ -16,7 +16,7 @@ namespace Game.Logic.Actions
 {
     public class TroopMovePassiveAction : ScheduledPassiveAction
     {
-        private readonly uint cityId;
+        private uint cityId;
 
         private readonly Boolean isAttacking;
 
@@ -28,13 +28,13 @@ namespace Game.Logic.Actions
 
         private readonly ILocker locker;
 
-        private readonly Boolean isReturningHome;
+        private Boolean isReturningHome;
 
-        private readonly uint troopObjectId;
+        private uint troopObjectId;
 
-        private readonly uint x;
+        private uint x;
 
-        private readonly uint y;
+        private uint y;
 
         private int distanceRemaining;
 
@@ -43,6 +43,17 @@ namespace Game.Logic.Actions
         private uint nextX;
 
         private uint nextY;
+
+        public TroopMovePassiveAction(Formula formula,
+                                      ITileLocator tileLocator,
+                                      IGameObjectLocator world,
+                                      ILocker locker)
+        {
+            this.formula = formula;
+            this.tileLocator = tileLocator;
+            this.world = world;
+            this.locker = locker;
+        }
 
         public TroopMovePassiveAction(uint cityId,
                                       uint troopObjectId,
@@ -53,37 +64,18 @@ namespace Game.Logic.Actions
                                       Formula formula,
                                       ITileLocator tileLocator,
                                       IGameObjectLocator world,
-                                      ILocker locker)
+                                      ILocker locker) : this(formula, tileLocator, world, locker)
         {
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
             this.x = x;
             this.y = y;
             this.isReturningHome = isReturningHome;
-            this.isAttacking = isAttacking;
-            this.formula = formula;
-            this.tileLocator = tileLocator;
-            this.world = world;
-            this.locker = locker;
+            this.isAttacking = isAttacking;          
         }
 
-        public TroopMovePassiveAction(uint id,
-                                      DateTime beginTime,
-                                      DateTime nextTime,
-                                      DateTime endTime,
-                                      bool isVisible,
-                                      string nlsDescription,
-                                      Dictionary<string, string> properties,
-                                      Formula formula,
-                                      ITileLocator tileLocator,
-                                      IGameObjectLocator world,
-                                      ILocker locker)
-                : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
+        public override void LoadProperties(IDictionary<string, string> properties)
         {
-            this.formula = formula;
-            this.tileLocator = tileLocator;
-            this.world = world;
-            this.locker = locker;
             cityId = uint.Parse(properties["city_id"]);
             troopObjectId = uint.Parse(properties["troop_id"]);
             x = uint.Parse(properties["x"]);

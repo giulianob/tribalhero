@@ -157,10 +157,10 @@ namespace Game.Data
 
         public void Print()
         {
-            LoggerFactory.Current.GetCurrentClassLogger().Info(string.Format("Technology type[{0}] lvl[{1}] Location[{2}]",
-                                             TechBase.Techtype,
-                                             TechBase.Level,
-                                             OwnerLocation));
+            LoggerFactory.Current.GetLogger<Technology>().Info(string.Format("Technology type[{0}] lvl[{1}] Location[{2}]",
+                                                                             TechBase.Techtype,
+                                                                             TechBase.Level,
+                                                                             OwnerLocation));
 
             foreach (var effect in TechBase.Effects)
             {

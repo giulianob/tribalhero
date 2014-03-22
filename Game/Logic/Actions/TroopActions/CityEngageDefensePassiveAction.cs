@@ -21,15 +21,24 @@ namespace Game.Logic.Actions
 
         private readonly CityBattleProcedure cityBattleProcedure;
 
-        private readonly uint cityId;
+        private uint cityId;
 
         private readonly IGameObjectLocator gameObjectLocator;
 
-        private readonly uint troopObjectId;
+        private uint troopObjectId;
 
         private readonly FormationType formationType;
 
         private uint groupId;
+
+        public CityEngageDefensePassiveAction(BattleProcedure battleProcedure,
+                                              CityBattleProcedure cityBattleProcedure,
+                                              IGameObjectLocator gameObjectLocator)
+        {
+            this.battleProcedure = battleProcedure;
+            this.cityBattleProcedure = cityBattleProcedure;
+            this.gameObjectLocator = gameObjectLocator;
+        }
 
         public CityEngageDefensePassiveAction(uint cityId,
                                               uint troopObjectId,
@@ -37,26 +46,15 @@ namespace Game.Logic.Actions
                                               BattleProcedure battleProcedure,
                                               CityBattleProcedure cityBattleProcedure,
                                               IGameObjectLocator gameObjectLocator)
+            : this(battleProcedure, cityBattleProcedure, gameObjectLocator)
         {
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
             this.formationType = formationType;
-            this.battleProcedure = battleProcedure;
-            this.cityBattleProcedure = cityBattleProcedure;
-            this.gameObjectLocator = gameObjectLocator;
         }
 
-        public CityEngageDefensePassiveAction(uint id,
-                                              bool isVisible,
-                                              IDictionary<string, string> properties,
-                                              BattleProcedure battleProcedure,
-                                              CityBattleProcedure cityBattleProcedure,
-                                              IGameObjectLocator gameObjectLocator)
-                : base(id, isVisible)
+        public override void LoadProperties(IDictionary<string, string> properties)
         {
-            this.battleProcedure = battleProcedure;
-            this.cityBattleProcedure = cityBattleProcedure;
-            this.gameObjectLocator = gameObjectLocator;
             cityId = uint.Parse(properties["troop_city_id"]);
             groupId = uint.Parse(properties["group_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);

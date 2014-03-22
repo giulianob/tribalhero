@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using Common;
 using Game.Battle;
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
@@ -24,10 +25,9 @@ using Game.Map;
 using Game.Module;
 using Game.Module.Remover;
 using Game.Setup;
+using Game.Setup.DependencyInjection;
 using Game.Util;
 using Newtonsoft.Json;
-using Ninject;
-using Ninject.Extensions.Logging;
 using Persistance;
 using System.Linq;
 using DbTransaction = Persistance.DbTransaction;
@@ -39,61 +39,62 @@ namespace Game.Database
 {
     public class DbLoader
     {
-        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+        private readonly ILogger logger = LoggerFactory.Current.GetLogger<DbLoader>();
+        
+        private IKernel Kernel { get; set; }
 
-        [Inject]
-        public IKernel Kernel { get; set; }
+        private IWorld World { get; set; }
+        
+        private IDbManager DbManager { get; set; }
+        
+        private ITribeManager Tribes { get; set; }
+        
+        private DbLoaderActionFactory DbLoaderActionFactory { get; set; }
+        
+        private IActionFactory ActionFactory { get; set; }
+        
+        private IBarbarianTribeFactory BarbarianTribeFactory { get; set; }
+        
+        private IBattleManagerFactory BattleManagerFactory { get; set; }
+        
+        private IBarbarianTribeManager BarbarianTribeManager { get; set; }
+        
+        private ITribeFactory TribeFactory { get; set; }
+        
+        private ICombatUnitFactory CombatUnitFactory { get; set; }
+        
+        private IStrongholdManager StrongholdManager { get; set; }
+        
+        private IStrongholdFactory StrongholdFactory { get; set; }
+        
+        private Procedure Procedure { get; set; }
 
-        [Inject]
-        public IWorld World { get; set; }
-
-        [Inject]
-        public IDbManager DbManager { get; set; }
-
-        [Inject]
-        public ITribeManager Tribes { get; set; }
-
-        [Inject]
-        public DbLoaderActionFactory DbLoaderActionFactory { get; set; }
-
-        [Inject]
-        public IActionFactory ActionFactory { get; set; }
-
-        [Inject]
-        public IBarbarianTribeFactory BarbarianTribeFactory { get; set; }
-
-        [Inject]
-        public IBattleManagerFactory BattleManagerFactory { get; set; }
-
-        [Inject]
-        public IBarbarianTribeManager BarbarianTribeManager { get; set; }
-
-        [Inject]
-        public ITribeFactory TribeFactory { get; set; }
-
-        [Inject]
-        public ICombatUnitFactory CombatUnitFactory { get; set; }
-
-        [Inject]
-        public IStrongholdManager StrongholdManager { get; set; }
-
-        [Inject]
-        public IStrongholdFactory StrongholdFactory { get; set; }
-
-        [Inject]
-        public Procedure Procedure { get; set; }
-
-        [Inject]
-        public ICombatGroupFactory CombatGroupFactory { get; set; }
-
-        [Inject]
-        public IForestFactory ForestFactory { get; set; }
-
-        [Inject]
-        public ISystemVariableManager SystemVariableManager { get; set; }
+        private ICombatGroupFactory CombatGroupFactory { get; set; }
+        
+        private IForestFactory ForestFactory { get; set; }
+        
+        private ISystemVariableManager SystemVariableManager { get; set; }
 
         public void LoadFromDatabase()
         {
+            Kernel = Ioc.Kernel;
+            World = Kernel.Get<IWorld>();
+            DbManager = Kernel.Get<IDbManager>();
+            Tribes = Kernel.Get<ITribeManager>();
+            DbLoaderActionFactory = Kernel.Get<DbLoaderActionFactory>();
+            ActionFactory = Kernel.Get<IActionFactory>();
+            BarbarianTribeFactory = Kernel.Get<IBarbarianTribeFactory>();
+            BattleManagerFactory = Kernel.Get<IBattleManagerFactory>();
+            BarbarianTribeManager = Kernel.Get<IBarbarianTribeManager>();
+            TribeFactory = Kernel.Get<ITribeFactory>();
+            CombatUnitFactory = Kernel.Get<ICombatUnitFactory>();
+            StrongholdManager = Kernel.Get<IStrongholdManager>();
+            StrongholdFactory = Kernel.Get<IStrongholdFactory>();
+            Procedure = Kernel.Get<Procedure>();
+            CombatGroupFactory = Kernel.Get<ICombatGroupFactory>();
+            ForestFactory = Kernel.Get<IForestFactory>();
+            SystemVariableManager = Kernel.Get<ISystemVariableManager>();
+
             SystemVariablesUpdater.Current.Pause();
             Scheduler.Current.Pause();
             Global.Current.FireEvents = false;
@@ -945,7 +946,6 @@ namespace Game.Database
                         throw new Exception("City not found");
                     }
 
-                    
                     troopStubFactory.City = city;
                     var stub = troopStubFactory.CreateTroopStub(id);
                     stub.State = (TroopState)Enum.Parse(typeof(TroopState), reader["state"].ToString(), true);

@@ -1,7 +1,8 @@
 using Game.Logic;
 using Game.Logic.Formulas;
 using Game.Map;
-using Ninject;
+using Game.Setup;
+using Game.Setup.DependencyInjection;
 using Persistance;
 
 namespace Game.Data.BarbarianTribe

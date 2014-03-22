@@ -2,13 +2,13 @@
 
 using System;
 using System.Collections.Generic;
+using Common;
 using Game.Data;
 using Game.Data.Forest;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -16,11 +16,11 @@ namespace Game.Logic.Actions
 {
     public class ForestCampHarvestPassiveAction : ScheduledPassiveAction
     {
-        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+        private readonly ILogger logger = LoggerFactory.Current.GetLogger<ForestCampHarvestPassiveAction>();
 
-        private readonly uint cityId;
+        private uint cityId;
 
-        private readonly uint forestId;
+        private uint forestId;
 
         private readonly IScheduler scheduler;
 
@@ -30,40 +30,32 @@ namespace Game.Logic.Actions
 
         private readonly ILocker locker;
 
+        public ForestCampHarvestPassiveAction(IScheduler scheduler,
+                                              IWorld world,
+                                              IForestManager forestManager,
+                                              ILocker locker)
+        {
+            IsCancellable = true;
+            this.scheduler = scheduler;
+            this.world = world;
+            this.forestManager = forestManager;
+            this.locker = locker;
+        }
+
         public ForestCampHarvestPassiveAction(uint cityId,
                                               uint forestId,
                                               IScheduler scheduler,
                                               IWorld world,
                                               IForestManager forestManager,
-                                              ILocker locker)
+                                              ILocker locker) 
+            : this(scheduler, world, forestManager, locker)
         {
-            IsCancellable = true;
             this.forestId = forestId;
-            this.scheduler = scheduler;
-            this.world = world;
-            this.forestManager = forestManager;
-            this.locker = locker;
             this.cityId = cityId;
         }
 
-        public ForestCampHarvestPassiveAction(uint id,
-                                              DateTime beginTime,
-                                              DateTime nextTime,
-                                              DateTime endTime,
-                                              bool isVisible,
-                                              string nlsDescription,
-                                              Dictionary<string, string> properties,
-                                              IScheduler scheduler,
-                                              IWorld world,
-                                              IForestManager forestManager,
-                                              ILocker locker)
-                : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
+        public override void LoadProperties(IDictionary<string, string> properties)
         {
-            this.scheduler = scheduler;
-            this.world = world;
-            this.forestManager = forestManager;
-            this.locker = locker;
-            IsCancellable = true;
             forestId = uint.Parse(properties["forest_id"]);
             cityId = uint.Parse(properties["city_id"]);
         }

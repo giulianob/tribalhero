@@ -10,7 +10,7 @@ using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
-using Ninject;
+using Game.Setup.DependencyInjection;
 
 #endregion
 

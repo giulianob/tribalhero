@@ -22,9 +22,9 @@ namespace Game.Logic.Actions
     {
         private readonly IBattleFormulas battleFormula;
 
-        private readonly Resource bonus;
+        private Resource bonus;
 
-        private readonly uint cityId;
+        private uint cityId;
 
         private readonly IDbManager dbManager;
 
@@ -36,27 +36,21 @@ namespace Game.Logic.Actions
 
         private readonly IStructureCsvFactory structureCsvFactory;
 
-        private readonly uint targetCityId;
+        private uint targetCityId;
 
-        private readonly uint troopObjectId;
+        private uint troopObjectId;
 
         private uint groupId;
 
         private int originalUnitCount;
 
-        public CityEngageAttackPassiveAction(uint cityId,
-                                             uint troopObjectId,
-                                             uint targetCityId,
-                                             IBattleFormulas battleFormula,
+        public CityEngageAttackPassiveAction(IBattleFormulas battleFormula,
                                              IGameObjectLocator gameObjectLocator,
                                              CityBattleProcedure cityBattleProcedure,
                                              IStructureCsvFactory structureCsvFactory,
                                              IDbManager dbManager,
                                              IStaminaMonitorFactory staminaMonitorFactory)
         {
-            this.cityId = cityId;
-            this.troopObjectId = troopObjectId;
-            this.targetCityId = targetCityId;
             this.battleFormula = battleFormula;
             this.gameObjectLocator = gameObjectLocator;
             this.cityBattleProcedure = cityBattleProcedure;
@@ -67,24 +61,24 @@ namespace Game.Logic.Actions
             bonus = new Resource();
         }
 
-        public CityEngageAttackPassiveAction(uint id,
-                                             bool isVisible,
-                                             IDictionary<string, string> properties,
+        public CityEngageAttackPassiveAction(uint cityId,
+                                             uint troopObjectId,
+                                             uint targetCityId,
                                              IBattleFormulas battleFormula,
                                              IGameObjectLocator gameObjectLocator,
                                              CityBattleProcedure cityBattleProcedure,
                                              IStructureCsvFactory structureCsvFactory,
                                              IDbManager dbManager,
                                              IStaminaMonitorFactory staminaMonitorFactory)
-                : base(id, isVisible)
+            : this(battleFormula, gameObjectLocator, cityBattleProcedure, structureCsvFactory, dbManager, staminaMonitorFactory)
         {
-            this.battleFormula = battleFormula;
-            this.gameObjectLocator = gameObjectLocator;
-            this.cityBattleProcedure = cityBattleProcedure;
-            this.structureCsvFactory = structureCsvFactory;
-            this.dbManager = dbManager;
-            this.staminaMonitorFactory = staminaMonitorFactory;
+            this.cityId = cityId;
+            this.troopObjectId = troopObjectId;
+            this.targetCityId = targetCityId;
+        }
 
+        public override void LoadProperties(IDictionary<string, string> properties)
+        {
             cityId = uint.Parse(properties["troop_city_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);
             groupId = uint.Parse(properties["group_id"]);

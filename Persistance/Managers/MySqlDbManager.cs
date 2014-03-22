@@ -9,8 +9,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using Common;
 using MySql.Data.MySqlClient;
-using Ninject.Extensions.Logging;
 
 #endregion
 

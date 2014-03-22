@@ -18,13 +18,13 @@ namespace Game.Logic.Actions
 {
     public class ForestCampBuildActiveAction : ScheduledActiveAction
     {
-        private readonly ushort campType;
+        private ushort campType;
 
-        private readonly uint cityId;
+        private uint cityId;
 
-        private readonly uint forestId;
+        private uint forestId;
 
-        private readonly ushort labors;
+        private ushort labors;
 
         private readonly Formula formula;
 
@@ -38,7 +38,7 @@ namespace Game.Logic.Actions
 
         private readonly ILocker locker;
 
-        private readonly uint lumbermillId;
+        private uint lumbermillId;
 
         private uint campId;
 
@@ -46,6 +46,25 @@ namespace Game.Logic.Actions
 
         private readonly CallbackProcedure callbackProcedure;
 
+        public ForestCampBuildActiveAction(Formula formula,
+                                           IWorld world,
+                                           IObjectTypeFactory objectTypeFactory,
+                                           IStructureCsvFactory structureCsvFactory,
+                                           IForestManager forestManager,
+                                           ILocker locker, 
+                                           ITileLocator tileLocator, 
+                                           CallbackProcedure callbackProcedure)
+        {
+            this.formula = formula;
+            this.world = world;
+            this.objectTypeFactory = objectTypeFactory;
+            this.structureCsvFactory = structureCsvFactory;
+            this.forestManager = forestManager;
+            this.locker = locker;
+            this.tileLocator = tileLocator;
+            this.callbackProcedure = callbackProcedure;
+        }
+ 
         public ForestCampBuildActiveAction(uint cityId,
                                            uint lumbermillId,
                                            uint forestId,
@@ -59,48 +78,17 @@ namespace Game.Logic.Actions
                                            ILocker locker, 
                                            ITileLocator tileLocator, 
                                            CallbackProcedure callbackProcedure)
+            :this(formula, world, objectTypeFactory, structureCsvFactory, forestManager, locker, tileLocator, callbackProcedure)
         {
             this.cityId = cityId;
             this.lumbermillId = lumbermillId;
             this.forestId = forestId;
             this.labors = labors;
-            this.formula = formula;
-            this.world = world;
-            this.objectTypeFactory = objectTypeFactory;
-            this.structureCsvFactory = structureCsvFactory;
-            this.forestManager = forestManager;
-            this.locker = locker;
-            this.tileLocator = tileLocator;
-            this.callbackProcedure = callbackProcedure;
             this.campType = campType;
         }
 
-        public ForestCampBuildActiveAction(uint id,
-                                           DateTime beginTime,
-                                           DateTime nextTime,
-                                           DateTime endTime,
-                                           int workerType,
-                                           byte workerIndex,
-                                           ushort actionCount,
-                                           Dictionary<string, string> properties,
-                                           Formula formula,
-                                           IWorld world,
-                                           IObjectTypeFactory objectTypeFactory,
-                                           IStructureCsvFactory structureCsvFactory,
-                                           IForestManager forestManager,
-                                           ILocker locker, 
-                                           ITileLocator tileLocator, 
-                                           CallbackProcedure callbackProcedure)
-            : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
+        public override void LoadProperties(IDictionary<string, string> properties)
         {
-            this.formula = formula;
-            this.world = world;
-            this.objectTypeFactory = objectTypeFactory;
-            this.structureCsvFactory = structureCsvFactory;
-            this.forestManager = forestManager;
-            this.locker = locker;
-            this.tileLocator = tileLocator;
-            this.callbackProcedure = callbackProcedure;
             cityId = uint.Parse(properties["city_id"]);
             lumbermillId = uint.Parse(properties["lumbermill_id"]);
             campId = uint.Parse(properties["camp_id"]);

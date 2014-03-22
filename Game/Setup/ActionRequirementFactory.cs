@@ -9,7 +9,6 @@ using Common;
 using Game.Data;
 using Game.Logic;
 using Game.Util;
-using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -17,7 +16,7 @@ namespace Game.Setup
 {
     public class ActionRequirementFactory : IEnumerable<ActionRequirementFactory.ActionRecord>
     {
-        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+        private readonly ILogger logger = LoggerFactory.Current.GetLogger<ActionRequirementFactory>();
 
         private readonly Dictionary<int, ActionRecord> dict = new Dictionary<int, ActionRecord>();
         

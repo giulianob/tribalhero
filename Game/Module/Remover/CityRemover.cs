@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using Common;
 using Game.Data;
 using Game.Data.Tribe;
 using Game.Data.Troop;
@@ -11,14 +12,13 @@ using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject.Extensions.Logging;
 using Persistance;
 
 namespace Game.Module.Remover
 {
     public class CityRemover : ICityRemover, ISchedule
     {
-        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+        private readonly ILogger logger = LoggerFactory.Current.GetLogger<CityRemover>();
 
         private const double SHORT_RETRY = 5;
 

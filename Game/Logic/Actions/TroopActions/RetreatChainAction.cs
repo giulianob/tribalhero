@@ -18,7 +18,7 @@ namespace Game.Logic.Actions
     {
         private readonly IActionFactory actionFactory;
 
-        private readonly uint cityId;
+        private uint cityId;
 
         private readonly ITroopObjectInitializer troopObjectInitializer;
 
@@ -30,37 +30,31 @@ namespace Game.Logic.Actions
 
         private readonly ILocker locker;
 
-        public RetreatChainAction(uint cityId,
-                                  ITroopObjectInitializer troopObjectInitializer,
-                                  IActionFactory actionFactory,
+        public RetreatChainAction(IActionFactory actionFactory,
                                   IWorld world,
                                   Procedure procedure,
                                   ILocker locker)
         {
-            this.cityId = cityId;
-            this.troopObjectInitializer = troopObjectInitializer;
             this.actionFactory = actionFactory;
             this.world = world;
             this.procedure = procedure;
             this.locker = locker;
         }
 
-        public RetreatChainAction(uint id,
-                                  string chainCallback,
-                                  PassiveAction current,
-                                  ActionState chainState,
-                                  bool isVisible,
-                                  Dictionary<string, string> properties,
+        public RetreatChainAction(uint cityId,
+                                  ITroopObjectInitializer troopObjectInitializer,
                                   IActionFactory actionFactory,
                                   IWorld world,
                                   Procedure procedure,
                                   ILocker locker)
-                : base(id, chainCallback, current, chainState, isVisible)
+            : this(actionFactory, world, procedure, locker)
         {
-            this.actionFactory = actionFactory;
-            this.world = world;
-            this.procedure = procedure;
-            this.locker = locker;
+            this.cityId = cityId;
+            this.troopObjectInitializer = troopObjectInitializer;
+        }
+
+        public override void LoadProperties(IDictionary<string, string> properties)
+        {
             cityId = uint.Parse(properties["city_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);
         }

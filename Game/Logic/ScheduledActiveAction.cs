@@ -20,13 +20,13 @@ namespace Game.Logic
         {
         }
 
-        protected ScheduledActiveAction(uint id,
-                                        DateTime beginTime,
-                                        DateTime nextTime,
-                                        DateTime endTime,
-                                        int workerType,
-                                        byte workerIndex,
-                                        ushort actionCount)
+        public void LoadFromDatabase(uint id,
+                                     DateTime beginTime,
+                                     DateTime nextTime,
+                                     DateTime endTime,
+                                     int workerType,
+                                     byte workerIndex,
+                                     ushort actionCount)
         {
             ActionId = id;
             this.beginTime = beginTime;

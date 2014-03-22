@@ -17,9 +17,9 @@ namespace Game.Logic.Actions
 {
     public class UnitUpgradeActiveAction : ScheduledActiveAction
     {
-        private readonly uint cityId;
+        private uint cityId;
 
-        private readonly uint structureId;
+        private uint structureId;
 
         private readonly ILocker locker;
 
@@ -29,35 +29,33 @@ namespace Game.Logic.Actions
 
         private readonly UnitFactory unitFactory;
 
-        public UnitUpgradeActiveAction(uint cityId, uint structureId, ushort type, ILocker locker, IWorld world, Formula formula, UnitFactory unitFactory)
+        public UnitUpgradeActiveAction(ILocker locker,
+                                       IWorld world,
+                                       Formula formula,
+                                       UnitFactory unitFactory)
         {
-            this.cityId = cityId;
-            this.structureId = structureId;
-            UnitType = type;
             this.locker = locker;
             this.world = world;
             this.formula = formula;
             this.unitFactory = unitFactory;
         }
 
-        public UnitUpgradeActiveAction(uint id,
-                                       DateTime beginTime,
-                                       DateTime nextTime,
-                                       DateTime endTime,
-                                       int workerType,
-                                       byte workerIndex,
-                                       ushort actionCount,
-                                       Dictionary<string, string> properties,
+        public UnitUpgradeActiveAction(uint cityId,
+                                       uint structureId,
+                                       ushort type,
                                        ILocker locker,
                                        IWorld world,
                                        Formula formula,
                                        UnitFactory unitFactory)
-                : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
+            : this(locker, world, formula, unitFactory)
         {
-            this.locker = locker;
-            this.world = world;
-            this.formula = formula;
-            this.unitFactory = unitFactory;
+            this.cityId = cityId;
+            this.structureId = structureId;
+            UnitType = type;
+        }
+
+        public override void LoadProperties(IDictionary<string, string> properties)
+        {
             UnitType = ushort.Parse(properties["type"]);
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);

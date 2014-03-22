@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Ninject.Extensions.Logging;
+using Common;
 
 namespace Game.Util.Locking
 {
     public class CallbackLock : ICallbackLock
     {
-        private static readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+        private static readonly ILogger logger = LoggerFactory.Current.GetLogger<CallbackLock>();
 
         private readonly DefaultMultiObjectLock.Factory multiObjectLockFactory;
 

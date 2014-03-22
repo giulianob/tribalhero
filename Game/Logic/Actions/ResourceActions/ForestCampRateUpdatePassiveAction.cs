@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
 using Game.Data;
 using Game.Logic.Formulas;
 using Game.Setup;
@@ -20,6 +21,10 @@ namespace Game.Logic.Actions
         {
             this.formula = formula;
             this.objectTypeFactory = objectTypeFactory;
+        }
+
+        public override void LoadProperties(IDictionary<string, string> properties)
+        {
         }
 
         public override ActionType Type

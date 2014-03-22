@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
 using Game.Setup;
@@ -23,6 +24,10 @@ namespace Game.Logic.Actions
             {
                 return string.Empty;
             }
+        }
+
+        public override void LoadProperties(IDictionary<string, string> properties)
+        {
         }
 
         public override Error Validate(string[] parms)

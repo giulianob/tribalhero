@@ -67,7 +67,7 @@ namespace Game.Data
 
         public void Print()
         {
-            LoggerFactory.Current.GetCurrentClassLogger().Info("Printing TechnologyManager Location:" + OwnerLocation);
+            LoggerFactory.Current.GetLogger<TechnologyManager>().Info("Printing TechnologyManager Location:" + OwnerLocation);
             foreach (var tech in technologies)
             {
                 tech.Print();

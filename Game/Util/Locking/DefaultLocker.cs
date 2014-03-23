@@ -155,12 +155,6 @@ namespace Game.Util.Locking
             {
                 tribe = city.Owner.Tribesman.Tribe;
             }
-            else
-            {
-                city = null;
-                lck.UnlockAll();
-                return Lock();
-            }
 
             return lck;
         }

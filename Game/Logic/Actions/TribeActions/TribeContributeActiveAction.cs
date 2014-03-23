@@ -161,19 +161,18 @@ namespace Game.Logic.Actions
                 StateChange(ActionState.Failed);
             });
         }
-
+        
         public override void Callback(object custom)
         {
             ICity city;
+            ITribe tribe;
 
-            locker.Lock(cityId, out city).Do(() =>
+            locker.Lock(cityId, out city, out tribe).Do(() =>
             {
                 if (!IsValid())
                 {
                     return;
                 }
-
-                var tribe = city.Owner.IsInTribe ? city.Owner.Tribesman.Tribe : null;
 
                 if (tribe == null || city == null)
                 {

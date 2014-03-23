@@ -101,6 +101,7 @@ namespace Testing.ActionsTests
                 return true;
             });
             
+            fixture.PickGreedyConstructor<TribeContributeActiveAction>();
             var action = fixture.Create<TribeContributeActiveAction>();
             action.WorkerObject = canDo;
             action.IsDone = false;
@@ -140,7 +141,8 @@ namespace Testing.ActionsTests
                 callInfo[3] = structure;
                 return true;
             });
-            
+
+            fixture.PickGreedyConstructor<TribeContributeActiveAction>();
             var action = fixture.Create<TribeContributeActiveAction>();
             action.WorkerObject = canDo;
             action.IsDone = false;

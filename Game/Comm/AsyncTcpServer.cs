@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Common;
 using Dawn.Net.Sockets;
@@ -84,14 +85,17 @@ namespace Game.Comm
 
             while (!isStopped)
             {
-                var socketAwaitable = socketAwaitablePool.Take();
-                socketAwaitable.Clear();
-
-                var buffer = bufferManager.GetBuffer();
-                socketAwaitable.Buffer = buffer;
+                SocketAwaitable socketAwaitable = null;
+                ArraySegment<byte> buffer = new ArraySegment<byte>();
 
                 try
-                {
+                {                    
+                    socketAwaitable = socketAwaitablePool.Take();
+                    socketAwaitable.Clear();
+                    
+                    buffer = bufferManager.GetBuffer();
+                    socketAwaitable.Buffer = buffer;
+
                     var result = await listener.AcceptAsync(socketAwaitable);
 
                     if (result != SocketError.Success || socketAwaitable.AcceptSocket == null)
@@ -131,10 +135,16 @@ namespace Game.Comm
                 }
                 finally
                 {
-                    socketAwaitable.Clear();
-                    socketAwaitablePool.Add(socketAwaitable);
+                    if (socketAwaitable != null)
+                    {
+                        socketAwaitable.Clear();
+                        socketAwaitablePool.Add(socketAwaitable);
+                    }
 
-                    bufferManager.ReleaseBuffer(buffer);
+                    if (buffer.Array != null)
+                    {
+                        bufferManager.ReleaseBuffer(buffer);
+                    }
                 }                
             }
         }
@@ -220,12 +230,15 @@ namespace Game.Comm
         {
             session.OnClose += OnClose;
 
-            var readTask = Task.Run(async () =>
+            var readTask = new Task(async () =>
             {
                 await ReadLoop(session);
-            }).CatchUnhandledException();
+            });
 
             sessions.TryAdd(session, readTask);
+
+            readTask.Start();
+            readTask.CatchUnhandledException();
         }
 
         private async Task ReadLoop(AsyncSocketSession session)
@@ -358,7 +371,7 @@ namespace Game.Comm
                 logger.Debug("Socket disconnect without logged in player IP[{0}]", session.RemoteIP);
             }
 
-            Task.Run(() => session.ProcessEvent(new Packet(Command.OnDisconnect))).CatchUnhandledException();
+            ThreadPool.UnsafeQueueUserWorkItem(obj => session.ProcessEvent(new Packet(Command.OnDisconnect)), null);
         }
 
         private void OnClose(Session session)

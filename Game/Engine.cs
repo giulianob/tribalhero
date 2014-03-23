@@ -119,11 +119,21 @@ namespace Game
 
         public static void AttachExceptionHandler()
         {
-            AppDomain.CurrentDomain.UnhandledException += (sender, e) => UnhandledExceptionHandler(e.ExceptionObject as Exception);
-            TaskScheduler.UnobservedTaskException += (sender, e) => UnhandledExceptionHandler(e.Exception);
+            AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
+            {
+                Logger.Error("Unhandled exception in app domain. Sender: ", sender);
+
+                UnhandledExceptionHandler(e.ExceptionObject);
+            };
+            TaskScheduler.UnobservedTaskException += (sender, e) =>
+            {
+                Logger.Error("Unhandled exception in task. Sender: ", sender);
+
+                UnhandledExceptionHandler(e.Exception);
+            };
         }
 
-        public static void UnhandledExceptionHandler(Exception ex)
+        public static void UnhandledExceptionHandler(object ex)
         {
             try
             {
@@ -132,18 +142,19 @@ namespace Game
                     var stackTrace = Environment.StackTrace;
                     Logger.Error("Unhandled exception but did not have exception object. Stack trace:", stackTrace);
                 }
+                else if (!(ex is Exception))
+                {
+                    Logger.Error("Unhandled exception. Object was not exception. {0}", ex);
+                }
                 else
                 {
-                    Logger.ErrorException("Unhandled exception", ex);
+                    Logger.ErrorException("Unhandled exception", (Exception)ex);
                 }
 
             }
             finally
             {
-                if (!Debugger.IsAttached)
-                {
-                    Environment.Exit(1);
-                }
+                Environment.Exit(1);
             }
         }
 
@@ -261,12 +272,7 @@ _________ _______ _________ ______   _______  _
             // Schedule player deletions
             if (Config.players_remove_idle)
             {
-                ThreadPool.QueueUserWorkItem(
-                                             o =>
-                                             playersRemoverFactory.CreatePlayersRemover(
-                                                                                        playerSelector
-                                                                                                .CreateNewbieIdleSelector
-                                                                                                ()).Start());
+                playersRemoverFactory.CreatePlayersRemover(playerSelector.CreateNewbieIdleSelector()).Start();
             }
 
             State = EngineState.Started;

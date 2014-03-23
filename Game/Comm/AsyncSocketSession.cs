@@ -71,6 +71,10 @@ namespace Game.Comm
                     }
                 }
             }
+            catch(Exception e)
+            {
+                Logger.Warn(e, "Unexpected exception in process queue", RemoteIP);
+            }
             finally
             {
                 Interlocked.Exchange(ref writerCount, 0);

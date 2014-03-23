@@ -165,14 +165,15 @@ namespace Game.Logic.Actions
         public override void Callback(object custom)
         {
             ICity city;
-            ITribe tribe;
 
-            locker.Lock(cityId, out city, out tribe).Do(() =>
+            locker.Lock(cityId, out city).Do(() =>
             {
                 if (!IsValid())
                 {
                     return;
                 }
+
+                var tribe = city.Owner.IsInTribe ? city.Owner.Tribesman.Tribe : null;
 
                 if (tribe == null || city == null)
                 {

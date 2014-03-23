@@ -177,15 +177,15 @@ namespace Game.Logic
         {
             if (ms == Timeout.Infinite)
             {
-                logger.Debug(String.Format("Timer sleeping"));
+                logger.Trace(String.Format("Timer sleeping"));
                 nextFire = DateTime.MinValue;
             }
             else
             {
-                /*if (logger.IsDebugEnabled && ms > 0)
+                if (logger.IsTraceEnabled && ms > 0)
                 {
-                    logger.Debug(String.Format("Next schedule in {0} milliseconds.", ms));
-                }*/
+                    logger.Trace(String.Format("Next schedule in {0} milliseconds.", ms));
+                }
 
                 nextFire = SystemClock.Now.AddMilliseconds(ms);
             }
@@ -200,7 +200,7 @@ namespace Game.Logic
             {
                 if (schedules.Count == 0 || Paused)
                 {
-                    logger.Debug("In DispatchAction but no schedules");
+                    logger.Trace("In DispatchAction but no schedules");
                     return;
                 }
                 
@@ -238,7 +238,7 @@ namespace Game.Logic
             actionExecuting = job.Schedule;
 
             var startTicks = Environment.TickCount;
-
+            
             job.Schedule.Callback(null);
 
             var deltaTicks = Environment.TickCount - startTicks;
@@ -288,7 +288,7 @@ namespace Game.Logic
 
             if (schedules.Count == 0)
             {
-                logger.Debug("No actions available.");
+                logger.Trace("No actions available.");
                 SetTimer(Timeout.Infinite);
                 return;
             }

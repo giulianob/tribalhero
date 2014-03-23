@@ -74,11 +74,7 @@ namespace Game.Logic.Formulas
         {
             return radius +
                    effects.DefaultIfEmpty()
-                          .Min(
-                               x =>
-                               (x != null && x.Id == EffectCode.AwayFromStructureMod && (int)x.Value[0] == type)
-                                       ? (int)x.Value[1]
-                                       : 0);
+                          .Min(x => (x != null && x.Id == EffectCode.AwayFromStructureMod && (int)x.Value[0] == type) ? (int)x.Value[1] : 0);
         }
 
         /// <summary>

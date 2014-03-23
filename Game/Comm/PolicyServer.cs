@@ -124,8 +124,7 @@ namespace Game.Comm
                         catch
                         {
                         }
-                    },
-                                                   newSocket);
+                    }, newSocket);
             }
 
             listener.Stop();

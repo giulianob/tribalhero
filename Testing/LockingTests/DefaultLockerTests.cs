@@ -427,7 +427,6 @@ namespace Testing.LockingTests
         public void Lock_CityIdTribe_WhenPlayerIsNotInTribe_ShouldReturnEmptyLockAndNullCityAndTribe(
             [Frozen] IGameObjectLocator locator,
             [Frozen] ICallbackLock callbackLock,
-            [Frozen] IMultiObjectLock multiObjectLock,
             ICity city,
             DefaultLocker locker)
         {
@@ -454,11 +453,10 @@ namespace Testing.LockingTests
             ITribe lockedTribe;
             var multiObjLock = locker.Lock(1, out lockedCity, out lockedTribe);
 
-            callbackLockResult.Received(1).UnlockAll();
-            multiObjLock.Should().Be(multiObjectLock);
+            multiObjLock.Should().Be(callbackLockResult);
             lockedTribe.Should().BeNull();
-            ((object)lockedCity).Should().BeNull();
-            itemsLocked.Should().BeEmpty();
+            ((object)lockedCity).Should().Be(city);
+            itemsLocked.Should().Equal(city);
         }    
 
         #endregion

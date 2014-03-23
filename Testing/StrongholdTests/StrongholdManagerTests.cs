@@ -55,8 +55,8 @@ namespace Testing.StrongholdTests
         [Theory, AutoNSubstituteData]
         public void RetreatUnits_RetreatsStationedUnitsThatAreNotInATribe(
             IStronghold stronghold, 
-            [Frozen] IActionFactory actionFactory,
-            [Frozen] ITroopObjectInitializerFactory troopInitializerFactory,
+            [FrozenMock] IActionFactory actionFactory,
+            [FrozenMock] ITroopObjectInitializerFactory troopInitializerFactory,
             ITroopObjectInitializer troopInitializer,
             ITroopStub stub,
             RetreatChainAction retreatAction,
@@ -81,8 +81,8 @@ namespace Testing.StrongholdTests
         [Theory, AutoNSubstituteData]
         public void RetreatUnits_RetreatsStationedUnitsThatAreNotInTribeThatOwnsStronghold(
             IStronghold stronghold, 
-            [Frozen] IActionFactory actionFactory,
-            [Frozen] ITroopObjectInitializerFactory troopInitializerFactory,
+            [FrozenMock] IActionFactory actionFactory,
+            [FrozenMock] ITroopObjectInitializerFactory troopInitializerFactory,
             ITroopObjectInitializer troopInitializer,
             ITroopStub stub,
             ITribe tribe,

@@ -1,5 +1,6 @@
 ﻿using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.AutoNSubstitute;
+using Ploeh.AutoFixture.Kernel;
 using Ploeh.AutoFixture.Xunit;
 
 namespace Common.Testing

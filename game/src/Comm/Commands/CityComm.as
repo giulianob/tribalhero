@@ -242,7 +242,7 @@
 				}
 			}
 			
-			return new CityObject(city, obj.id, obj.type, obj.lvl, obj.state, obj.x, obj.y, obj.size, obj.labor);
+			return new CityObject(city, obj.id, "DEFAULT", obj.type, obj.lvl, obj.state, obj.x, obj.y, obj.size, obj.labor);
 		}
 		
 		public function setPlayerDescription(description:String):void

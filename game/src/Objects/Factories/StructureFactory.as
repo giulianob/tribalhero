@@ -88,36 +88,28 @@
 			return structPrototype;
 		}
 
-        public static function getSpriteName(type: int, level: int): String {
+        public static function getSpriteName(style: String, type: int, level: int): String {
             var strPrototype: StructurePrototype = getPrototype(type, level);
-            var typeName: String;
 
             if (strPrototype == null)
             {
-                Util.log("Missing obj prototype. type: " + type.toString() + " lvl: " + level.toString() + " Loading generic simple object");
-                typeName = "DEFAULT_STRUCTURE_SIMPLE";
+                throw new Error("Missing obj prototype. type: " + type.toString() + " lvl: " + level.toString() + " Loading generic simple object");
             }
-            else
+
+            var worker: Worker = WorkerFactory.getPrototype(strPrototype.workerid);
+
+            if (worker == null)
             {
-                var worker: Worker = WorkerFactory.getPrototype(strPrototype.workerid);
-
-                if (worker == null)
-                {
-                    typeName = "DEFAULT_STRUCTURE_SIMPLE";
-                }
-                else
-                {
-                    typeName = strPrototype.spriteClass;
-                }
+                throw new Error("Missing structure worker " + strPrototype.workerid);
             }
 
-            return typeName;
+            return style.toUpperCase() + "_" + strPrototype.spriteClass;
         }
 
-		public static function getSprite(type: int, level: int, withPosition: String = "", withShadow: Boolean = false): DisplayObjectContainer
+		public static function getSprite(style: String, type: int, level: int, withPosition: String = "", withShadow: Boolean = false): DisplayObjectContainer
 		{
 			var sprite: Sprite = new Sprite();
-            var typeName: String = getSpriteName(type, level);
+            var typeName: String = getSpriteName(style, type, level);
 
             if (withShadow && Assets.doesSpriteExist(typeName + "_SHADOW")) {
                 var shadow: Bitmap = Assets.getInstance(typeName + "_SHADOW", withPosition);
@@ -132,23 +124,23 @@
 			return sprite;
 		}
 
-		public static function getSimpleObject(type: int, level:int, x: int, y: int, size: int): SimpleObject
+		public static function getSimpleObject(style: String, type: int, level:int, x: int, y: int, size: int): SimpleObject
 		{
-			var sprite: DisplayObjectContainer = getSprite(type, level, "map") as DisplayObjectContainer;
+			var sprite: DisplayObjectContainer = getSprite(style, type, level, "map") as DisplayObjectContainer;
 			var simpleObject: SimpleObject = new SimpleObject(x, y, size);
 			
 			if (sprite != null) {
-				simpleObject.setSprite(sprite, Assets.getPosition(getSpriteName(type, level), "map"));
+				simpleObject.setSprite(sprite, Assets.getPosition(getSpriteName(style, type, level), "map"));
 			}
 
 			return simpleObject;
 		}
 
-		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, size: int, playerId: int, cityId: int, objectId: int, level: int, wallRadius: int): StructureObject
+		public static function getInstance(style: String, type: int, state: GameObjectState, objX: int, objY: int, size: int, playerId: int, cityId: int, objectId: int, level: int, wallRadius: int): StructureObject
 		{
-			var structureObj: StructureObject = new StructureObject(type, state, objX, objY, size, playerId, cityId, objectId, level, wallRadius);
+			var structureObj: StructureObject = new StructureObject(style, type, state, objX, objY, size, playerId, cityId, objectId, level, wallRadius);
 
-			structureObj.setSprite(getSprite(type, level, "map", true), Assets.getPosition(getSpriteName(type, level), "map"));
+			structureObj.setSprite(getSprite(style, type, level, "map", true), Assets.getPosition(getSpriteName(style, type, level), "map"));
 			
 			structureObj.setOnSelect(Global.map.selectObject);
 

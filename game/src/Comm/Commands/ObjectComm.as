@@ -105,7 +105,7 @@
 			
 			switch(ObjectFactory.getClassType(obj.type)) {
 				case ObjectFactory.TYPE_STRUCTURE:
-					return StructureFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.size, obj.playerId, obj.groupId, obj.id, obj.lvl, obj.wallRadius);
+					return StructureFactory.getInstance("DEFAULT", obj.type, obj.state, coord.x, coord.y, obj.size, obj.playerId, obj.groupId, obj.id, obj.lvl, obj.wallRadius);
 				case ObjectFactory.TYPE_FOREST:
 					return ForestFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.size, obj.groupId, obj.id);
 				case ObjectFactory.TYPE_TROOP_OBJ:

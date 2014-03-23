@@ -67,19 +67,27 @@
 				loader.load(request);
 			}
 			catch (e: Error) {
+                closeLoadingPanel();
+
                 Util.log("URLLoader error");
                 Util.log(e.message);
+                Util.log(request.url);
+                Util.log(request.data.toString());
                 
 				loader.dispatchEvent(new Event(Event.COMPLETE));
 			}
 		}
 		
 		private function onComplete(e: Event = null): void {
-			if (pnlLoading) {
-				pnlLoading.getFrame().dispose();				
-				pnlLoading = null;
-			}
-		}
+            closeLoadingPanel();
+        }
+
+        private function closeLoadingPanel(): void {
+            if (pnlLoading) {
+                pnlLoading.getFrame().dispose();
+                pnlLoading = null;
+            }
+        }
 		
 		public function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void{
 			loader.addEventListener(type, listener, useCapture, priority);

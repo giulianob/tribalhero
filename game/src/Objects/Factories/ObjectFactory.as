@@ -105,24 +105,17 @@
 			}
 		}
 
-		public static function getSpriteEx(type:int, level:int, forDarkBackground:Boolean = false): DisplayObjectContainer
+		public static function getSpriteEx(style: String, type:int, level:int, forDarkBackground:Boolean = false): DisplayObjectContainer
 		{
             var sprite: DisplayObjectContainer;
 			if (type >= 1000)
-				sprite = StructureFactory.getSprite(type, level);
+				sprite = StructureFactory.getSprite(style, type, level);
 			else if (type == 100)
 				sprite = TroopFactory.getSprite();
 			else
 				sprite = UnitFactory.getSprite(type, level, forDarkBackground);
 
             return sprite;
-		}
-		
-		public static function makeSpriteSmall(obj: DisplayObjectContainer, scale: Number = 0.5) : DisplayObjectContainer {
-			obj.scaleX = scale;
-			obj.scaleY = scale;
-
-			return obj;
 		}
 
 		public static function getIcon(name: String) : DisplayObject
@@ -144,8 +137,8 @@
 		{
 			var sprite: DisplayObjectContainer;
 			if (obj is StructureObject) {
-                var structure: StructureObject = (obj as StructureObject);
-				sprite = StructureFactory.getSprite(structure.type, structure.level, withPosition);
+                var structure: StructureObject = StructureObject(obj);
+				sprite = StructureFactory.getSprite(structure.style, structure.type, structure.level, withPosition);
             }
 			else if (obj is TroopObject)
 				sprite = TroopFactory.getSprite();

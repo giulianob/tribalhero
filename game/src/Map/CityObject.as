@@ -15,9 +15,11 @@
         public var size: int;
         public var primaryPosition: Position = new Position();
 		public var techManager: TechnologyManager;
+        public var style: String;
 
-		public function CityObject(city: City, objectId: int, type: int, level: int, state: GameObjectState, x: int, y: int, size: int, labor: int) {
+		public function CityObject(city: City, objectId: int, style: String, type: int, level: int, state: GameObjectState, x: int, y: int, size: int, labor: int) {
 			this.state = state;
+            this.style = style;
 			this.city = city;
 			this.objectId = objectId;
 			this.type = type;

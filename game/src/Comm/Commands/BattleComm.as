@@ -203,7 +203,7 @@
 				combatObj = new CombatUnit(combatObjId, type, level, hp, maxHp);
 			}
 			else if (classType == BattleManager.STRUCTURE) {
-				combatObj = new CombatStructure(combatObjId, type, level, hp, maxHp);
+				combatObj = new CombatStructure(combatObjId, "DEFAULT", type, level, hp, maxHp);
 			}
 			else {
 				throw new Error("Unknown class type " + classType);

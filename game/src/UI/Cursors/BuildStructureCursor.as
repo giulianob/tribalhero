@@ -38,7 +38,7 @@ package src.UI.Cursors {
 
         private var buildableTiles: BinaryList = new BinaryList(Position.sort, Position.compare);
 
-		public function BuildStructureCursor(type: int, level: int, tilerequirement: String, parentObject: SimpleGameObject):void
+		public function BuildStructureCursor(style: String, type: int, level: int, tilerequirement: String, parentObject: SimpleGameObject):void
 		{
 			doubleClickEnabled = true;
 
@@ -54,7 +54,7 @@ package src.UI.Cursors {
 
             requiresRoad = !ObjectFactory.isType("NoRoadRequired", type);
 			structPrototype = StructureFactory.getPrototype(type, level);
-			cursor = StructureFactory.getSimpleObject(type, level, 0, 0, structPrototype.size);
+			cursor = StructureFactory.getSimpleObject(style, type, level, 0, 0, structPrototype.size);
 
 			if (cursor == null)
 			{

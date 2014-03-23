@@ -24,7 +24,7 @@ package src.UI.Components.TableCells
 			this.value = data;
 
 			// Get Icon
-			var icon:DisplayObjectContainer = ObjectFactory.getSpriteEx(data.type, 1);
+			var icon:DisplayObjectContainer = ObjectFactory.getSpriteEx(data.style, data.type, 1);
             Util.resizeSprite(icon, 50, 50);
 
 			// Lay it out

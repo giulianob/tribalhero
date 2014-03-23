@@ -53,7 +53,8 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			if (isEnabled())
 			{
                 var buildAction: BuildAction = parentAction as BuildAction;
-				new BuildStructureCursor(buildAction.type, buildAction.level, buildAction.tilerequirement, parentObj);
+                // TODO: Get the default style for the city
+				new BuildStructureCursor("DEFAULT", buildAction.type, buildAction.level, buildAction.tilerequirement, parentObj);
 			}
 		}
 

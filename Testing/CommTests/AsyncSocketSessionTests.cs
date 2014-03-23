@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Common.Testing;
 using FluentAssertions;
 using Game.Comm;
@@ -93,7 +94,11 @@ namespace Testing.CommTests
 
                 connectionHelper.CloseSessionFromServerSide(session);
 
+                Thread.Sleep(500);
+
                 session.Write(packet1);
+
+                Thread.Sleep(500);
 
                 connectionHelper.BlockingBufferManager.AvailableBuffers.Should().Be(10);
                 connectionHelper.SocketAwaitablePool.Count.Should().Be(10);

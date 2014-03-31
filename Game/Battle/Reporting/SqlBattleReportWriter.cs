@@ -173,10 +173,14 @@ namespace Game.Battle.Reporting
                                     new DbColumn("object_id", co.Id, DbType.UInt32)
                             });
 
+            // TODO: This violates open/closed so we should refactor
+            // later at some point when we can have diff tables for diff obj types of have something else handle the serialization
+            var coStructure = co as CombatStructure;
+
             // Snap the combat object
             dbManager.Query(
                             string.Format(
-                                          @"INSERT INTO `{0}` VALUES ('', @object_id, @battle_report_troop_id, @type, @lvl, @hp, @count, @dmg_recv, @dmg_dealt, @hit_dealt, @hit_dealt_by_unit, @hit_recv)",
+                                          @"INSERT INTO `{0}` VALUES ('', @object_id, @battle_report_troop_id, @type, @lvl, @hp, @count, @dmg_recv, @dmg_dealt, @hit_dealt, @hit_dealt_by_unit, @hit_recv, @theme_id)",
                                           BATTLE_REPORT_OBJECTS_DB),
                             new[]
                             {
@@ -190,6 +194,7 @@ namespace Game.Battle.Reporting
                                     new DbColumn("hit_dealt", co.HitDealt, DbType.UInt16),
                                     new DbColumn("hit_dealt_by_unit", co.HitDealtByUnit, DbType.UInt32),
                                     new DbColumn("hit_recv", co.HitRecv, DbType.UInt16),
+                                    new DbColumn("theme_id", coStructure != null ? coStructure.Theme : null, DbType.String),
                             });
         }
 

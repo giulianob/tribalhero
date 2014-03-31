@@ -41,6 +41,12 @@ namespace Game.Data
 
         public string TwoFactorSecretKey { get; set; }
 
+        public bool HasPurchasedTheme(string theme)
+        {
+            // TODO
+            return true;
+        }
+
         public Player(uint playerid,
                       DateTime created,
                       DateTime lastLogin,

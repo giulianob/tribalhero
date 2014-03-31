@@ -3,7 +3,6 @@ using Game.Data.BarbarianTribe;
 using Game.Data.Troop;
 using Game.Logic.Actions;
 using Game.Map;
-using Game.Setup;
 
 namespace Game.Logic.Procedures
 {
@@ -20,7 +19,8 @@ namespace Game.Logic.Procedures
                             cityPosition,
                             formula.GetInitialCityResources(),
                             formula.GetInitialCityRadius(),
-                            formula.GetInitialAp());
+                            formula.GetInitialAp(),
+                            "DEFAULT");
 
             var mainBuildingPosition = cityPosition.Left();
             IStructure mainBuilding = city.CreateStructure(2000, level, mainBuildingPosition.X, mainBuildingPosition.Y);

@@ -131,6 +131,8 @@ namespace Game.Comm
         StructureDowngrade = 305,
 
         StructureSelfDestroy = 306,
+        
+        StructureSetTheme = 307,
 
         TechAdded = 311,
 

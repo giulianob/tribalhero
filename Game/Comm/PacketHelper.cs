@@ -104,9 +104,11 @@ namespace Game.Comm
             var structure = obj as IStructure;
             if (structure != null)
             {
+                packet.AddString(structure.Theme);
+
                 if (!forRegion)
                 {
-                    packet.AddUInt16(structure.Stats.Labor);
+                    packet.AddUInt16(structure.Stats.Labor);                    
                 }
 
                 if (structure.IsMainBuilding)
@@ -372,12 +374,7 @@ namespace Game.Comm
 
         internal static void AddToPacket(ICombatObject combatObject, Packet packet)
         {
-            packet.AddUInt32(combatObject.Id);
-            packet.AddByte((byte)combatObject.ClassType);
-            packet.AddUInt16(combatObject.Type);
-            packet.AddByte(combatObject.Lvl);
-            packet.AddFloat((float)combatObject.Hp);
-            packet.AddFloat((float)combatObject.Stats.MaxHp);
+            combatObject.AddPacketInfo(packet);
         }
 
         public static void AddLoginToPacket(Session session, Packet packet)
@@ -425,6 +422,7 @@ namespace Game.Comm
             packet.AddFloat((float)city.AlignmentPoint);
             packet.AddByte(city.Battle != null ? (byte)1 : (byte)0);
             packet.AddByte(city.HideNewUnits ? (byte)1 : (byte)0);
+            packet.AddString(city.DefaultTheme);
 
             //City Actions
             AddToPacket(new List<GameAction>(city.Worker.GetVisibleActions()), packet, true);

@@ -71,5 +71,7 @@ namespace Game.Data
         DateTime? HasTwoFactorAuthenticated { get; set; }
 
         string TwoFactorSecretKey { get; set; }
+
+        bool HasPurchasedTheme(string theme);
     }
 }

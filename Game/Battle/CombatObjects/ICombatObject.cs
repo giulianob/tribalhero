@@ -1,3 +1,4 @@
+using Game.Comm;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Map;
@@ -86,5 +87,7 @@ namespace Game.Battle.CombatObjects
         bool CanSee(ICombatObject obj, uint lowestSteath);
 
         void ParticipatedInRound(uint round);
+
+        void AddPacketInfo(Packet packet);
     }
 }

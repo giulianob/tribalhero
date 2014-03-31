@@ -25,7 +25,7 @@ namespace Game.Data
             dbManager = kernel.Get<IDbManager>();
         }
 
-        public IStructure CreateStructure(uint cityId, uint structureId, ushort type, byte level, uint x, uint y)
+        public IStructure CreateStructure(uint cityId, uint structureId, ushort type, byte level, uint x, uint y, string theme)
         {
             var baseStats = structureCsvFactory.GetBaseStats(type, level);
             var technologyManager = technologyManagerFactory.CreateTechnologyManager(EffectLocation.Object, cityId, structureId);
@@ -35,6 +35,7 @@ namespace Game.Data
                                           new StructureStats(baseStats),
                                           x,
                                           y,
+                                          theme,
                                           technologyManager,
                                           structureProperties,
                                           dbManager);

@@ -563,7 +563,8 @@ namespace Game.Database
                                                         new Position((uint)reader["x"], (uint) reader["y"]),
                                                         resource,
                                                         (byte)reader["radius"],
-                                                        (decimal)reader["alignment_point"]);
+                                                        (decimal)reader["alignment_point"],
+                                                        (string)reader["default_theme_id"]);
 
                     city.DbPersisted = true;
                     city.LootStolen = (uint)reader["loot_stolen"];
@@ -792,12 +793,13 @@ namespace Game.Database
                     }
                 }
 
-                IStructure structure = gameObjectFactory.CreateStructure((uint)reader["city_id"], 
-                    (uint)reader["id"], 
-                    (ushort)reader["type"],
-                    (byte)reader["level"],
-                    (uint)reader["x"],
-                    (uint)reader["y"]);
+                IStructure structure = gameObjectFactory.CreateStructure((uint)reader["city_id"],
+                                                                         (uint)reader["id"],
+                                                                         (ushort)reader["type"],
+                                                                         (byte)reader["level"],
+                                                                         (uint)reader["x"],
+                                                                         (uint)reader["y"],
+                                                                         (string)reader["theme_id"]);
                 structure.InWorld = (bool)reader["in_world"];
                 structure.Technologies.Parent = city.Technologies;
                 structure.Stats.Hp = (decimal)reader["hp"];
@@ -1329,6 +1331,7 @@ namespace Game.Database
                                                                   (decimal)listReader["hp"],
                                                                   (ushort)listReader["type"],
                                                                   (byte)listReader["level"],
+                                                                  (string)listReader["theme_id"],
                                                                   Kernel.Get<Formula>(),
                                                                   Kernel.Get<IActionFactory>(),
                                                                   Kernel.Get<IBattleFormulas>(),

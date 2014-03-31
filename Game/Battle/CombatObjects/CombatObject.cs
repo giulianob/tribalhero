@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using Game.Comm;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Database;
@@ -36,7 +37,7 @@ namespace Game.Battle.CombatObjects
         }
 
         #region Properties
-
+        
         public ushort MaxDmgRecv { get; set; }
 
         public ushort MinDmgRecv { get; set; }
@@ -165,6 +166,16 @@ namespace Game.Battle.CombatObjects
         {
             LastRound = round + 1;
             RoundsParticipated++;
+        }
+
+        public virtual void AddPacketInfo(Packet packet)
+        {
+            packet.AddUInt32(Id);
+            packet.AddByte((byte)ClassType);
+            packet.AddUInt16(Type);
+            packet.AddByte(Lvl);
+            packet.AddFloat((float)Hp);
+            packet.AddFloat((float)Stats.MaxHp);
         }
 
         #endregion

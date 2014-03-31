@@ -210,7 +210,8 @@ namespace Game.Battle.CombatObjects
                 {
                         new DbColumn("group_id", GroupId, DbType.UInt32),
                         new DbColumn("formation_type", (byte)formation, DbType.Byte),
-                        new DbColumn("level", lvl, DbType.Byte), new DbColumn("count", count, DbType.UInt16),
+                        new DbColumn("level", lvl, DbType.Byte), 
+                        new DbColumn("count", count, DbType.UInt16),
                         new DbColumn("type", type, DbType.UInt16),
                         new DbColumn("left_over_hp", LeftOverHp, DbType.Decimal),
                         new DbColumn("last_round", LastRound, DbType.UInt32),

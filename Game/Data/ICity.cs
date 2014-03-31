@@ -119,6 +119,11 @@ namespace Game.Data
         string Name { get; set; }
 
         /// <summary>
+        ///     Default theme for a city
+        /// </summary>
+        string DefaultTheme { get; set; }
+
+        /// <summary>
         ///     Player that owns this city
         /// </summary>
         IPlayer Owner { get; }

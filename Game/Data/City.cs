@@ -212,6 +212,8 @@ namespace Game.Data
         public ITechnologyManager Technologies { get; private set; }
 
         public Position PrimaryPosition { get; private set; }
+        
+        public string DefaultTheme { get; set; }
 
         /// <summary>
         ///     Returns the local troop
@@ -564,6 +566,7 @@ namespace Game.Data
                     ILazyResource resource,
                     byte radius,
                     decimal ap,
+                    string defaultTheme,
                     IActionWorker worker,
                     CityNotificationManager notifications,
                     IReferenceManager references,
@@ -588,6 +591,7 @@ namespace Game.Data
 
             PrimaryPosition = position;
             AlignmentPoint = ap;
+            DefaultTheme = defaultTheme;
             Resource = resource;
 
             Worker = worker;
@@ -755,7 +759,7 @@ namespace Game.Data
 
         public IStructure CreateStructure(ushort type, byte level, uint x, uint y)
         {
-            var structure = gameObjectFactory.CreateStructure(Id, objectIdGen.GetNext(), type, level, x, y);
+            var structure = gameObjectFactory.CreateStructure(Id, objectIdGen.GetNext(), type, level, x, y, DefaultTheme);
             Add(structure.ObjectId, structure, true);
             return structure;
         }
@@ -811,7 +815,8 @@ namespace Game.Data
                         new DbColumn("labor_production_rate", Resource.Labor.Rate, DbType.Int32),
                         new DbColumn("x", PrimaryPosition.X, DbType.UInt32), 
                         new DbColumn("y", PrimaryPosition.Y, DbType.UInt32),
-                        new DbColumn("deleted", Deleted, DbType.Int32)
+                        new DbColumn("deleted", Deleted, DbType.Int32),
+                        new DbColumn("default_theme_id", DefaultTheme, DbType.String),
                 };
             }
         }

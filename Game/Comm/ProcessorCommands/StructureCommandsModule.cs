@@ -62,6 +62,49 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.TechUpgrade, TechnologyUpgrade);
             processor.RegisterCommand(Command.CityUsernameGet, GetCityUsername);
             processor.RegisterCommand(Command.CityHasApBonus, GetCityHasApBonus);
+            processor.RegisterCommand(Command.StructureSetTheme, StructureSetTheme);
+        }
+
+        private void StructureSetTheme(Session session, Packet packet)
+        {
+            uint cityId;
+            uint structureId;
+            string theme;
+
+            try
+            {
+                cityId = packet.GetUInt32();
+                structureId = packet.GetUInt32();
+                theme = packet.GetString();
+            }
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            ICity city;
+            IStructure structure;
+            locker.Lock(cityId, structureId, out city, out structure).Do(() =>
+            {
+                if (city == null || structure == null)
+                {
+                    ReplyError(session, packet, Error.ObjectNotFound);
+                    return;
+                }
+
+                if (!session.Player.HasPurchasedTheme(theme))
+                {
+                    ReplyError(session, packet, Error.ThemeNotPurchased);
+                    return;
+                }
+                
+                structure.BeginUpdate();
+                structure.Theme = theme;
+                structure.EndUpdate();
+
+                ReplySuccess(session, packet);
+            });
         }
 
         private void GetCityHasApBonus(Session session, Packet packet)

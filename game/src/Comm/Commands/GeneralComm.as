@@ -167,19 +167,15 @@
 			);
 
 			var radius: int = packet.readUByte();
-
 			var attackPoint: int = packet.readInt();
 			var defensePoint: int = packet.readInt();
-			
 			var cityValue: int = packet.readUShort();
-			
 			var ap: Number = packet.readFloat();
-
 			var inBattle: Boolean = packet.readByte() == 1;
-			
 			var hideNewUnits: Boolean = packet.readByte() == 1;
+            var defaultTheme: String = packet.readString();
 
-			var city: City = new City(id, name, position, radius, resources, attackPoint, defensePoint, cityValue, inBattle, hideNewUnits, ap);
+			var city: City = new City(id, name, position, radius, resources, attackPoint, defensePoint, cityValue, inBattle, hideNewUnits, ap, defaultTheme);
 
 			// Add the name of this city to the list of city names
 			Global.map.usernames.cities.add(new Username(id, name));

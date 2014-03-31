@@ -25,7 +25,7 @@
 		{
 			// Get Icon
 			var prototype:* = ObjectFactory.getPrototype(data.type, data.level);
-			var icon:DisplayObject = ObjectFactory.getSpriteEx(data.style, prototype.type, prototype.level);
+			var icon:DisplayObject = ObjectFactory.getSpriteEx(data.theme, prototype.type, prototype.level);
             Util.resizeSprite(icon, 55, 35);
 			new SimpleTooltip(icon, prototype.getName());
 			

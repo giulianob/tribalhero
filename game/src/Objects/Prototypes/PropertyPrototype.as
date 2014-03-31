@@ -90,6 +90,10 @@ package src.Objects.Prototypes {
             
 			return (perHour && value > 0 ? "+" : "") + (int(value) != value ? value.toFixed(2) : value.toString()) + (perHour ? "/hour" : "");
 		}
+
+        public function getLocalizeKey() : String {
+            return "STRUCTURE_PROPERTY_" + name.toUpperCase().replace(' ','_');
+        }
 	}
 
 }

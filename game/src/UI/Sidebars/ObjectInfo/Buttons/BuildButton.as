@@ -52,9 +52,10 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			if (isEnabled())
 			{
+                var city: City = Global.map.cities.get(parentObj.groupId);
+
                 var buildAction: BuildAction = parentAction as BuildAction;
-                // TODO: Get the default style for the city
-				new BuildStructureCursor("DEFAULT", buildAction.type, buildAction.level, buildAction.tilerequirement, parentObj);
+				new BuildStructureCursor(city.defaultTheme, buildAction.type, buildAction.level, buildAction.tilerequirement, parentObj);
 			}
 		}
 

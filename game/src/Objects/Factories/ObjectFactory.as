@@ -105,11 +105,12 @@
 			}
 		}
 
-		public static function getSpriteEx(style: String, type:int, level:int, forDarkBackground:Boolean = false): DisplayObjectContainer
+        [Deprecated(message = "Use proper objects to get sprites")]
+		public static function getSpriteEx(theme: String, type:int, level:int, forDarkBackground:Boolean = false): DisplayObjectContainer
 		{
             var sprite: DisplayObjectContainer;
 			if (type >= 1000)
-				sprite = StructureFactory.getSprite(style, type, level);
+				sprite = StructureFactory.getSprite(theme, type, level);
 			else if (type == 100)
 				sprite = TroopFactory.getSprite();
 			else
@@ -138,7 +139,7 @@
 			var sprite: DisplayObjectContainer;
 			if (obj is StructureObject) {
                 var structure: StructureObject = StructureObject(obj);
-				sprite = StructureFactory.getSprite(structure.style, structure.type, structure.level, withPosition);
+				sprite = StructureFactory.getSprite(structure.theme, structure.type, structure.level, withPosition);
             }
 			else if (obj is TroopObject)
 				sprite = TroopFactory.getSprite();

@@ -62,6 +62,7 @@ package src.Comm {
 		public static const STRUCTURE_LABOR_MOVE: int = 304;
 		public static const STRUCTURE_DOWNGRADE: int = 305;
 		public static const STRUCTURE_SELF_DESTROY: int = 306;
+        public static const STRUCTURE_SET_THEME: int = 307;
 		
 		public static const TECHNOLOGY_ADDED: int = 311;
 		public static const TECHNOLOGY_UPGRADE: int = 312;

@@ -88,7 +88,7 @@
 			return structPrototype;
 		}
 
-        public static function getSpriteName(style: String, type: int, level: int): String {
+        public static function getSpriteName(theme: String, type: int, level: int): String {
             var strPrototype: StructurePrototype = getPrototype(type, level);
 
             if (strPrototype == null)
@@ -103,44 +103,49 @@
                 throw new Error("Missing structure worker " + strPrototype.workerid);
             }
 
-            return style.toUpperCase() + "_" + strPrototype.spriteClass;
+            return theme + "_" + strPrototype.spriteClass;
         }
 
-		public static function getSprite(style: String, type: int, level: int, withPosition: String = "", withShadow: Boolean = false): DisplayObjectContainer
+		public static function getSprite(theme: String, type: int, level: int, withPosition: String = "", withShadow: Boolean = false): DisplayObjectContainer
 		{
 			var sprite: Sprite = new Sprite();
-            var typeName: String = getSpriteName(style, type, level);
+            var typeName: String = getSpriteName(theme, type, level);
 
+            // Fall back to default theme if current theme does not have gfx
+            if (theme != "default" && !Assets.doesSpriteExist(typeName)) {
+                typeName = getSpriteName("DEFAULT", type, level);
+            }
+/*
             if (withShadow && Assets.doesSpriteExist(typeName + "_SHADOW")) {
                 var shadow: Bitmap = Assets.getInstance(typeName + "_SHADOW", withPosition);
                 shadow.alpha = Constants.shadowAlpha;
                 shadow.name = "shadow";
                 sprite.addChild(shadow);
             }
-
+*/
             var mainImage: DisplayObject = Assets.getInstance(typeName, withPosition);
             sprite.addChild(mainImage);
 
 			return sprite;
 		}
 
-		public static function getSimpleObject(style: String, type: int, level:int, x: int, y: int, size: int): SimpleObject
+		public static function getSimpleObject(theme: String, type: int, level:int, x: int, y: int, size: int): SimpleObject
 		{
-			var sprite: DisplayObjectContainer = getSprite(style, type, level, "map") as DisplayObjectContainer;
+			var sprite: DisplayObjectContainer = getSprite(theme, type, level, "map") as DisplayObjectContainer;
 			var simpleObject: SimpleObject = new SimpleObject(x, y, size);
 			
 			if (sprite != null) {
-				simpleObject.setSprite(sprite, Assets.getPosition(getSpriteName(style, type, level), "map"));
+				simpleObject.setSprite(sprite, Assets.getPosition(getSpriteName(theme, type, level), "map"));
 			}
 
 			return simpleObject;
 		}
 
-		public static function getInstance(style: String, type: int, state: GameObjectState, objX: int, objY: int, size: int, playerId: int, cityId: int, objectId: int, level: int, wallRadius: int): StructureObject
+		public static function getInstance(theme: String, type: int, state: GameObjectState, objX: int, objY: int, size: int, playerId: int, cityId: int, objectId: int, level: int, wallRadius: int): StructureObject
 		{
-			var structureObj: StructureObject = new StructureObject(style, type, state, objX, objY, size, playerId, cityId, objectId, level, wallRadius);
+			var structureObj: StructureObject = new StructureObject(theme, type, state, objX, objY, size, playerId, cityId, objectId, level, wallRadius);
 
-			structureObj.setSprite(getSprite(style, type, level, "map", true), Assets.getPosition(getSpriteName(style, type, level), "map"));
+			structureObj.setSprite(getSprite(theme, type, level, "map", true), Assets.getPosition(getSpriteName(theme, type, level), "map"));
 			
 			structureObj.setOnSelect(Global.map.selectObject);
 

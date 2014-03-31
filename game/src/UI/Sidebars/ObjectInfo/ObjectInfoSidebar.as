@@ -1,13 +1,17 @@
 ﻿
 package src.UI.Sidebars.ObjectInfo {
 
+    import flash.display.DisplayObject;
+    import flash.display.DisplayObjectContainer;
     import flash.events.*;
     import flash.utils.Timer;
 
     import org.aswing.*;
     import org.aswing.border.*;
+    import org.aswing.event.InteractiveEvent;
     import org.aswing.ext.*;
 
+    import src.Assets;
     import src.Constants;
     import src.Global;
     import src.Map.*;
@@ -19,14 +23,16 @@ package src.UI.Sidebars.ObjectInfo {
     import src.UI.Components.CityLabel;
     import src.UI.Components.PlayerLabel;
     import src.UI.Components.SimpleTooltip;
+    import src.UI.LookAndFeel.GameLookAndFeel;
+    import src.UI.LookAndFeel.GamePanelBackgroundDecorator;
     import src.UI.Sidebars.ObjectInfo.Buttons.*;
     import src.Util.BinaryList.*;
     import src.Util.DateUtil;
+    import src.Util.StringHelper;
     import src.Util.Util;
 
     public class ObjectInfoSidebar extends GameJSidebar
 	{
-		//UI
 		private var pnlStats:Form;
 
         private var pnlGroups:JPanel;
@@ -36,6 +42,8 @@ package src.UI.Sidebars.ObjectInfo {
 
 		public var buttons: Array = [];
 		private var t:Timer = new Timer(1000);
+        private var themeLink: JLabelButton;
+        private var themeDropdown: JPopupMenu;
 
 		public function ObjectInfoSidebar(obj: StructureObject)
 		{
@@ -45,6 +53,30 @@ package src.UI.Sidebars.ObjectInfo {
 
 			if (city != null)
 			{
+                themeDropdown = new JPopupMenu();
+
+                themeDropdown.append(createThemeMenuItem("DEFAULT"));
+
+                for each (var theme: String in Constants.themesPurchased) {
+                    var newSprite: String = StructureFactory.getSpriteName(theme, obj.type, obj.level);
+                    if (!Assets.doesSpriteExist(newSprite)) {
+                        continue;
+                    }
+
+                    themeDropdown.append(createThemeMenuItem(theme));
+                }
+
+                themeDropdown.append(new JSeparator());
+                themeDropdown.append;
+
+                themeLink = new JLabelButton(StringHelper.localize("THEME_" + obj.theme), null, AsWingConstants.LEFT);
+                themeLink.addActionListener(function (e: Event): void {
+                    themeDropdown.show(themeLink, 0, themeLink.getHeight());
+                });
+
+                var storeLink: JLabelButton = new JLabelButton(StringHelper.localize("OBJECT_INFO_SIDEBAR_BUY_MORE_THEMES"), null, AsWingConstants.LEFT);
+                themeDropdown.append(storeLink);
+
 				city.addEventListener(City.RESOURCES_UPDATE, onResourcesUpdate);
 				city.currentActions.addEventListener(BinaryListEvent.CHANGED, onObjectUpdate);
 				city.references.addEventListener(BinaryListEvent.CHANGED, onObjectUpdate);
@@ -60,6 +92,20 @@ package src.UI.Sidebars.ObjectInfo {
 			
 			Global.gameContainer.resizeManager.addEventListener(Event.RESIZE, onObjectUpdate);
 		}
+
+        private function createThemeMenuItem(theme: String): JMenuItem {
+            var sprite: DisplayObject = StructureFactory.getSprite(theme, gameObject.type, gameObject.level);
+            Util.resizeSprite(sprite, 85, 85);
+
+            var menuItem: JMenuItem = new JMenuItem(StringHelper.localize("THEME_" + theme), new AssetIcon(sprite));
+
+            var capturedTheme: String = theme;
+            menuItem.addActionListener(function(e: Event): void {
+                Global.mapComm.Objects.updateTheme(gameObject.groupId, gameObject.objectId, capturedTheme);
+            });
+
+            return menuItem
+        }
 
 		public function update():void
 		{			
@@ -78,11 +124,11 @@ package src.UI.Sidebars.ObjectInfo {
 
 			var structureObject: StructureObject = gameObject as StructureObject;
 
-			addStatRow("Player", new PlayerLabel(gameObject.playerId));
+			addStatRow("OBJECT_INFO_SIDEBAR_PLAYER_LABEL", new PlayerLabel(gameObject.playerId));
 			
-			addStatRow("City", new CityLabel(gameObject.cityId));
+			addStatRow("OBJECT_INFO_SIDEBAR_CITY_LABEL", new CityLabel(gameObject.cityId));
 
-			addStatRow("Level", gameObject.level.toString());
+			addStatRow("OBJECT_INFO_SIDEBAR_LEVEL_PLAYER", gameObject.level.toString());
 
 			var city: City = Global.map.cities.get(gameObject.cityId);
 
@@ -91,13 +137,15 @@ package src.UI.Sidebars.ObjectInfo {
 			if (city != null) {
 				// Only show stats if obj is attackable
 				if (!ObjectFactory.isType("Unattackable", structPrototype.type)) {
-					addStatRow("HP", gameObject.hp.toString() + "/" + structPrototype.hp.toString());
+					addStatRow("OBJECT_INFO_SIDEBAR_HP_LABEL", gameObject.hp.toString() + "/" + structPrototype.hp.toString());
 				}
 
+                addStatRow("OBJECT_INFO_SIDEBAR_THEME_LABEL", themeLink);
+
 				if (structPrototype.maxlabor > 0) {
-					addStatRow("Laborers", gameObject.labor + "/" + structPrototype.maxlabor, new AssetIcon(new ICON_LABOR()));
+					addStatRow("OBJECT_INFO_SIDEBAR_LABORERS_LABEL", gameObject.labor + "/" + structPrototype.maxlabor, new AssetIcon(new ICON_LABOR()));
 				} else if (gameObject.labor > 0) {
-					addStatRow("Laborers", gameObject.labor.toString(), new AssetIcon(new ICON_LABOR()));
+					addStatRow("OBJECT_INFO_SIDEBAR_LABORERS_LABEL", gameObject.labor.toString(), new AssetIcon(new ICON_LABOR()));
 				}
 
 				var propPrototype: Array = PropertyFactory.getAllProperties(gameObject.type);
@@ -105,7 +153,7 @@ package src.UI.Sidebars.ObjectInfo {
 				if (structureObject != null)
 				{
 					for (var i: int = 0; i < propPrototype.length; i++) {
-						var lbl: JLabel = addStatRow(propPrototype[i].name, propPrototype[i].toString(structureObject.properties[i]), propPrototype[i].getIcon());
+						var lbl: JLabel = addStatRow(propPrototype[i].getLocalizeKey(), propPrototype[i].toString(structureObject.properties[i]), propPrototype[i].getIcon());
 						if (propPrototype[i].tooltip != "") new SimpleTooltip(lbl, propPrototype[i].tooltip);
 					}
 
@@ -118,7 +166,7 @@ package src.UI.Sidebars.ObjectInfo {
 				if (structureObject != null)
 				{
 					for (i = 0; i < propPrototype.length; i++) {
-						lbl = addStatRow(propPrototype[i].name, propPrototype[i].toString(structureObject.properties[i]), propPrototype[i].getIcon());
+						lbl = addStatRow(propPrototype[i].getLocalizeKey(), propPrototype[i].toString(structureObject.properties[i]), propPrototype[i].getIcon());
 						if (propPrototype[i].tooltip != "") new SimpleTooltip(lbl, propPrototype[i].tooltip);
 					}
                     
@@ -156,14 +204,16 @@ package src.UI.Sidebars.ObjectInfo {
 						var aIndex: Number = (a.parentAction ? a.parentAction.index : 0);
 						var bIndex: Number = (b.parentAction ? b.parentAction.index : 0);
 
-						if (aIndex > bIndex)
-						return 1;
-						else if (aIndex < bIndex)
-						return -1;
-						else
-						return 0;
-					}
-					);
+						if (aIndex > bIndex) {
+						    return 1;
+                        }
+						else if (aIndex < bIndex) {
+						    return -1;
+                        }
+						else {
+						    return 0;
+                        }
+					});
 
 					groupedButtons = groupedButtons.concat(tmp);
 				}
@@ -202,8 +252,8 @@ package src.UI.Sidebars.ObjectInfo {
 			}							
 		}
 
-        private function addStatRow(title: String, textOrComponent: *, icon: Icon = null) : * {
-			var rowTitle: JLabel = new JLabel(title);
+        private function addStatRow(localizeKey: String, textOrComponent: *, icon: Icon = null) : * {
+			var rowTitle: JLabel = new JLabel(StringHelper.localize(localizeKey));
 			rowTitle.setHorizontalAlignment(AsWingConstants.LEFT);
 			rowTitle.setName("title");
 
@@ -216,8 +266,10 @@ package src.UI.Sidebars.ObjectInfo {
 				label.setIcon(icon);
 				rowValue = label;
 			} 
-			else			
-				rowValue = textOrComponent as Component;			
+			else
+            {
+				rowValue = textOrComponent as Component;
+            }
 
 			pnlStats.addRow(rowTitle, rowValue);
 

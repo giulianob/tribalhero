@@ -8,18 +8,18 @@
 	{		
 		private var structurePrototype: StructurePrototype;
 
-        public var style: String;
+        public var theme: String;
 		
-		public function CombatStructure(combatObjectId: int, style: String, type: int, level: int, hp: Number, maxHp: Number)
+		public function CombatStructure(combatObjectId: int, theme: String, type: int, level: int, hp: Number, maxHp: Number)
 		{
 			super(combatObjectId, type, level, hp, maxHp);
-            this.style = style;
+            this.theme = theme;
 
             structurePrototype = StructureFactory.getPrototype(type, level);
 		}
 
         override public function getIcon(): DisplayObjectContainer {
-            return StructureFactory.getSprite(style, type, level);
+            return StructureFactory.getSprite(theme, type, level);
         }
 
 		public override function get name(): String {

@@ -12,7 +12,7 @@
 
     public class BattleEventTroopGridCell extends JPanel implements GridListCell{
 
-		protected var value: * ;
+		protected var value: *;
 		
 		public function BattleEventTroopGridCell() 
 		{
@@ -24,7 +24,7 @@
 			this.value = data;
 
 			// Get Icon
-			var icon:DisplayObject = ObjectFactory.getSpriteEx(data.style, data.type, 1, true);
+			var icon:DisplayObject = ObjectFactory.getSpriteEx(data.theme, data.type, 1, true);
             Util.resizeSprite(icon, 55, 35);
 
 			// Lay it out

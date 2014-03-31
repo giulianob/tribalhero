@@ -15,13 +15,13 @@
 		
 		public var wallManager: WallManager;
 		public var radiusManager: RadiusManager;
-        public var style: String;
+        public var theme: String;
 		
-		public function StructureObject(style: String, type: int, state: GameObjectState, objX: int, objY: int, size: int, playerId: int, cityId: int, objectId: int, level: int, wallRadius: int) {
+		public function StructureObject(theme: String, type: int, state: GameObjectState, objX: int, objY: int, size: int, playerId: int, cityId: int, objectId: int, level: int, wallRadius: int) {
 			super(type, state, objX, objY, size, playerId, cityId, objectId);
 			
 			this.level = level;
-            this.style = style;
+            this.theme = theme;
 
             mapPriority = Constants.mapObjectPriority.structureObject;
 

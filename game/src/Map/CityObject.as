@@ -15,11 +15,11 @@
         public var size: int;
         public var primaryPosition: Position = new Position();
 		public var techManager: TechnologyManager;
-        public var style: String;
+        public var theme: String;
 
-		public function CityObject(city: City, objectId: int, style: String, type: int, level: int, state: GameObjectState, x: int, y: int, size: int, labor: int) {
+		public function CityObject(city: City, objectId: int, theme: String, type: int, level: int, state: GameObjectState, x: int, y: int, size: int, labor: int) {
 			this.state = state;
-            this.style = style;
+            this.theme = theme;
 			this.city = city;
 			this.objectId = objectId;
 			this.type = type;

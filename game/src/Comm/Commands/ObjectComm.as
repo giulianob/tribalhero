@@ -70,9 +70,10 @@
 			switch(ObjectFactory.getClassType(obj.type)) {
 				case ObjectFactory.TYPE_STRUCTURE:
 					obj.playerId = packet.readUInt();
-					obj.lvl = packet.readUByte();		
+					obj.lvl = packet.readUByte();
+                    obj.theme = packet.readString();
 					obj.labor = forRegion ? 0 : packet.readUShort();
-						
+
 					if (obj.id == 1) {
 						obj.wallRadius = packet.readUByte();
 					}
@@ -105,7 +106,7 @@
 			
 			switch(ObjectFactory.getClassType(obj.type)) {
 				case ObjectFactory.TYPE_STRUCTURE:
-					return StructureFactory.getInstance("DEFAULT", obj.type, obj.state, coord.x, coord.y, obj.size, obj.playerId, obj.groupId, obj.id, obj.lvl, obj.wallRadius);
+					return StructureFactory.getInstance(obj.theme, obj.type, obj.state, coord.x, coord.y, obj.size, obj.playerId, obj.groupId, obj.id, obj.lvl, obj.wallRadius);
 				case ObjectFactory.TYPE_FOREST:
 					return ForestFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.size, obj.groupId, obj.id);
 				case ObjectFactory.TYPE_TROOP_OBJ:
@@ -594,7 +595,16 @@
 			session.write(packet, mapComm.catchAllErrors, objectId);
 		}
 
-	}
+        public function updateTheme(cityId: int, objectId: int, theme: String): void {
+            var packet: Packet = new Packet();
+            packet.cmd = Commands.STRUCTURE_SET_THEME;
+            packet.writeUInt(cityId);
+            packet.writeUInt(objectId);
+            packet.writeString(theme);
+
+            session.write(packet, mapComm.catchAllErrors, objectId);
+        }
+    }
 
 }
 

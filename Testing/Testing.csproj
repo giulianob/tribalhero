@@ -124,6 +124,7 @@
     <Compile Include="ActionsTests\StructureBuildActiveActionExecuteBuilder.cs" />
     <Compile Include="ActionsTests\StructureBuildActiveActionTests.cs" />
     <Compile Include="ActionsTests\TribeContributeActiveActionTest.cs" />
+    <Compile Include="ActionsTests\UnitTrainActiveActionTests.cs" />
     <Compile Include="Balancing\TestSwordsman.cs" />
     <Compile Include="Balancing\TestUtility.cs" />
     <Compile Include="Balancing\TestCavalry.cs" />

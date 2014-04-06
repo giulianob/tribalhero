@@ -98,7 +98,7 @@ namespace Game.Battle
                 }
 
                 // Calculate dmg against each target as base score
-                int score = ((int)(battleFormulas.GetAttackerDmgToDefender(attacker, target.CombatObject, round) * 10));
+                int score = battleFormulas.GetAttackScore(attacker, target.CombatObject, round);
 
                 if (bestTarget == null || score > bestTargetScore)
                 {

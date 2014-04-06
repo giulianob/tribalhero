@@ -90,6 +90,14 @@ namespace Game.Battle
             return units[Math.Min(level, units.Length - 1)];
         }
 
+        public virtual int GetAttackScore(ICombatObject attacker, ICombatObject target, uint round)
+        {
+            decimal attackBonus = attacker.AttackBonus(target);
+            decimal modifier = (decimal)GetDmgModifier(attacker, target, round);
+
+            return (int)(modifier * (1 + attackBonus) * 10m);
+        }
+
         public virtual decimal GetAttackerDmgToDefender(ICombatObject attacker, ICombatObject target, uint round)
         {
             decimal atk = attacker.Stats.Atk;

@@ -3,20 +3,16 @@ using System.Linq;
 using Game.Battle.CombatObjects;
 using Game.Data;
 using Game.Data.Stronghold;
-using Game.Map;
 
 namespace Game.Battle.RewardStrategies
 {
     public class StrongholdRewardStrategy : IRewardStrategy
     {
-        private readonly IGameObjectLocator gameObjectLocator;
-
         private readonly IStronghold stronghold;
 
-        public StrongholdRewardStrategy(IStronghold stronghold, IGameObjectLocator gameObjectLocator)
+        public StrongholdRewardStrategy(IStronghold stronghold)
         {
             this.stronghold = stronghold;
-            this.gameObjectLocator = gameObjectLocator;
         }
 
         public void RemoveLoot(IBattleManager battleManager, int attackIndex, ICombatObject attacker, ICombatObject defender, out Resource actualLoot)

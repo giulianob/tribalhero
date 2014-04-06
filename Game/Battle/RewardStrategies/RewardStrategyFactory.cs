@@ -24,7 +24,7 @@ namespace Game.Battle.RewardStrategies
 
         public StrongholdRewardStrategy CreateStrongholdRewardStrategy(IStronghold stronghold)
         {
-            return new StrongholdRewardStrategy(stronghold, kernel.Get<IGameObjectLocator>());
+            return new StrongholdRewardStrategy(stronghold);
         }
 
         public BarbarianTribeRewardStrategy CreateBarbarianTribeRewardStrategy(IBarbarianTribe barbarianTribe)

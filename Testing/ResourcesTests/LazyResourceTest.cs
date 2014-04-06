@@ -261,5 +261,33 @@ namespace Testing.ResourcesTests
             var resource = new LazyValue(0, DateTime.MinValue, rate, upkeep);
             resource.GetAmountReceived(interval).Should().Be(expected);
         }
+
+        [Theory, 
+        InlineData(100, 100, 100),
+        InlineData(100, 101, 100),
+        InlineData(0, 100000, 99999)]
+        public void Add_WhenResourceGoesOverCap_ShouldLimitBasedOnCap(int limit, int valueToAdd, int expected)
+        {
+            var lazyValue = new LazyValue(0);
+            lazyValue.Limit = limit;
+            lazyValue.Add(valueToAdd);
+            lazyValue.Value.Should().Be(expected);
+        }
+
+        [Theory, 
+        InlineData(100, 50, 100),
+        InlineData(0, 99900, 99999)]
+        public void Value_WhenResourceGoesOverCap_ShouldLimitBasedOnCap(int limit, int initialValue, int expected)
+        {
+            SystemClock.SetClock(DateTime.UtcNow);
+
+            var lazyValue = new LazyValue(initialValue);
+            lazyValue.Limit = limit;
+            lazyValue.Rate = 1000;
+            lazyValue.Value.Should().Be(initialValue);
+            
+            SystemClock.SetClock(DateTime.UtcNow.AddDays(5));
+            lazyValue.Value.Should().Be(expected);
+        }
     }
 }

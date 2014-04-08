@@ -61,9 +61,16 @@ namespace Game.Data
                     delta = (int)(elapsed / calculatedRate);
                 }
 
-                if (limit > 0 && (RawValue + delta) > limit)
+                var value = RawValue + delta;
+
+                if (limit > 0 && value > limit)
                 {
                     return limit;
+                }
+
+                if (limit <= 0 && value > 99999)
+                {
+                    return 99999;
                 }
 
                 return Math.Max(0, RawValue + delta);
@@ -191,17 +198,15 @@ namespace Game.Data
             {
                 RawValue = limit;
             }
+            else if (limit <= 0 && RawValue > 99999)
+            {
+                RawValue = 99999;
+            }
 
             if (RawValue < 0)
             {
                 RawValue = 0;
-            }
-
-            // Cap to just limit something really bad from happening
-            if (RawValue > 99999)
-            {
-                RawValue = 99999;
-            }
+            }            
         }
 
         protected virtual decimal GetCalculatedRate()

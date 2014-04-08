@@ -48,5 +48,7 @@ namespace Game.Battle
         int GetNumberOfHits(ICombatObject currentAttacker, ICombatList defenderCombatList);
 
         decimal SplashReduction(CityCombatObject defender, decimal dmg, int attackIndex);
+
+        int GetAttackScore(ICombatObject attacker, ICombatObject target, uint round);
     }
 }

@@ -66,9 +66,9 @@ namespace Testing.BattleTests
             BattleManager.BattleSide foundInGroup;
             var attackerObject = CreateCombatObject(1);
             var attackerList = CreateList(0, CreateGroup(attackerObject));
-            attackerList.UpkeepNotParticipated(1).Returns(1);
+            attackerList.UpkeepNotParticipatedInRound(1).Returns(1);
             var defenderList = CreateList(0, CreateGroup(CreateCombatObject(1)));
-            defenderList.UpkeepNotParticipated(1).Returns(0);
+            defenderList.UpkeepNotParticipatedInRound(1).Returns(0);
 
             battleOrder.NextObject(0,
                                    attackerList,
@@ -78,7 +78,6 @@ namespace Testing.BattleTests
                                    out foundInGroup).Should().Be(false);
             foundInGroup.Should().Be(BattleManager.BattleSide.Attack);
             outCombatObject.Should().Be(attackerObject);
-
         }
 
         /* Hardcoded ratio to 1:1
@@ -94,6 +93,29 @@ namespace Testing.BattleTests
             var expectedObject = CreateCombatObject(0);
             var result = battleOrder.NextObject(0,
                                    CreateList(1, CreateGroup(CreateCombatObject(1), expectedObject, CreateCombatObject(0))),
+                                   CreateList(1, CreateGroup(CreateCombatObject(1))),
+                                   out outCombatObject,
+                                   out outCombatGroup,
+                                   out foundInGroup);
+            
+            result.Should().Be(true);
+            outCombatObject.Should().Be(expectedObject);
+            foundInGroup.Should().Be(BattleManager.BattleSide.Attack);
+        }
+
+        [Theory, AutoNSubstituteData]
+        public void NextObject_WhenNextObjectIsWaitingToJoinBattleIsTrue_ShouldNotChooseThatObject(BattleOrder battleOrder)
+        {
+            ICombatObject outCombatObject;
+            ICombatGroup outCombatGroup;
+            BattleManager.BattleSide foundInGroup;
+            var expectedObject = CreateCombatObject(0);
+
+            var isStillWaitingToJoinbattleCombatObject = CreateCombatObject(0);
+            isStillWaitingToJoinbattleCombatObject.IsWaitingToJoinBattle.Returns(true);
+
+            var result = battleOrder.NextObject(0,
+                                   CreateList(1, CreateGroup(isStillWaitingToJoinbattleCombatObject, expectedObject)),
                                    CreateList(1, CreateGroup(CreateCombatObject(1))),
                                    out outCombatObject,
                                    out outCombatGroup,
@@ -355,7 +377,8 @@ namespace Testing.BattleTests
         private static ICombatObject CreateCombatObject(uint round)
         {
             var combatObject = Substitute.For<ICombatObject>();
-            combatObject.LastRound.Returns(round);
+            combatObject.HasAttacked(Arg.Any<uint>()).Returns(true);
+            combatObject.HasAttacked(round).Returns(false);
             return combatObject;
         }
 
@@ -373,7 +396,7 @@ namespace Testing.BattleTests
             var combatList = Substitute.For<ICombatList>();                        
             combatList.Count.Returns(combatGroups.Count());
             combatList.GetEnumerator().Returns(args => combatGroups.ToList().GetEnumerator());
-            combatList.UpkeepNotParticipated(0).ReturnsForAnyArgs(upkeepNotParticipated);
+            combatList.UpkeepNotParticipatedInRound(0).ReturnsForAnyArgs(upkeepNotParticipated);
             combatList[Arg.Any<int>()].Returns(args => combatGroups[(int)args[0]]);
 
             return combatList;

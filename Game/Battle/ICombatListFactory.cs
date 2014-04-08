@@ -2,6 +2,8 @@
 {
     public interface ICombatListFactory
     {
-        ICombatList GetCombatList();
+        ICombatList GetDefenderCombatList();
+        
+        ICombatList GetAttackerCombatList();
     }
 }

@@ -184,7 +184,7 @@ namespace Game.Logic.Actions
             localGroupId = combatGroup.Id;
             
             beginTime = SystemClock.Now;
-            endTime = SystemClock.Now;
+            endTime = SystemClock.Now.AddMinutes(1);
 
             return Error.Ok;
         }

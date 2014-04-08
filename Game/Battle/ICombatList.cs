@@ -7,9 +7,9 @@ namespace Game.Battle
 {
     public interface ICombatList : IPersistableObjectList<ICombatGroup>
     {
-        int Upkeep { get; }
+        int UpkeepExcludingWaitingToJoinBattle { get; }
 
-        int UpkeepNotParticipated(uint round);
+        int UpkeepNotParticipatedInRound(uint round);
 
         bool HasInRange(ICombatObject attacker);
 

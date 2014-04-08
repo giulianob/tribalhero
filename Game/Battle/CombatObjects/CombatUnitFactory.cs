@@ -11,6 +11,7 @@ using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
 using Game.Setup.DependencyInjection;
+using Persistance;
 
 #endregion
 
@@ -20,15 +21,9 @@ namespace Game.Battle.CombatObjects
     {
         private readonly IKernel kernel;
 
-        private readonly IObjectTypeFactory objectTypeFactory;
-
-        private readonly UnitFactory unitFactory;
-
-        public CombatUnitFactory(IKernel kernel, IObjectTypeFactory objectTypeFactory, UnitFactory unitFactory)
+        public CombatUnitFactory(IKernel kernel)
         {
             this.kernel = kernel;
-            this.objectTypeFactory = objectTypeFactory;
-            this.unitFactory = unitFactory;
         }
 
         public CombatStructure CreateStructureCombatUnit(IBattleManager battleManager, IStructure structure)
@@ -41,7 +36,8 @@ namespace Game.Battle.CombatObjects
                                        kernel.Get<IActionFactory>(),
                                        kernel.Get<IBattleFormulas>(),
                                        kernel.Get<ITileLocator>(),
-                                       kernel.Get<IRegionManager>());
+                                       kernel.Get<IRegionManager>(),
+                                       kernel.Get<IDbManager>());
         }
 
         public AttackCombatUnit[] CreateAttackCombatUnit(IBattleManager battleManager,
@@ -68,7 +64,7 @@ namespace Game.Battle.CombatObjects
             do
             {
                 ushort size = (ushort)(groupSize > count ? count : groupSize);
-                
+
                 AttackCombatUnit newUnit = new AttackCombatUnit(battleManager.GetNextCombatObjectId(),
                                                                 battleManager.BattleId,
                                                                 troop,
@@ -77,9 +73,10 @@ namespace Game.Battle.CombatObjects
                                                                 template.Lvl,
                                                                 size,
                                                                 kernel.Get<UnitFactory>(),
-								battleFormulas,
+                                                                battleFormulas,
                                                                 kernel.Get<Formula>(),
-                                                                kernel.Get<ITileLocator>());
+                                                                kernel.Get<ITileLocator>(),
+                                                                kernel.Get<IDbManager>());
 
                 units[i++] = newUnit;
                 count -= size;
@@ -96,7 +93,9 @@ namespace Game.Battle.CombatObjects
                                                            ushort count)
         {
             var battleFormulas = kernel.Get<IBattleFormulas>();
-	    var formula = kernel.Get<Formula>();
+            var formula = kernel.Get<Formula>();
+            var unitFactory = kernel.Get<UnitFactory>();
+            var dbManager = kernel.Get<IDbManager>();
 
             IBaseUnitStats template = stub.City.Template[type];
             BattleStats stats = stub.Template[type];
@@ -104,8 +103,8 @@ namespace Game.Battle.CombatObjects
                              where
                                      ((string)effect.Value[0]).ToLower() == "groupsize" &&
                                      battleFormulas.UnitStatModCheck(stats.Base,
-                                                                             TroopBattleGroup.Defense,
-                                                                             (string)effect.Value[3])
+                                                                     TroopBattleGroup.Defense,
+                                                                     (string)effect.Value[3])
                              select (int)effect.Value[2]).DefaultIfEmpty().Max() + stats.Base.GroupSize;
 
             var units = new DefenseCombatUnit[(count - 1) / groupSize + 1];
@@ -113,7 +112,7 @@ namespace Game.Battle.CombatObjects
             do
             {
                 ushort size = (ushort)(groupSize > count ? count : groupSize);
-                
+
                 DefenseCombatUnit newUnit = new DefenseCombatUnit(battleManager.GetNextCombatObjectId(),
                                                                   battleManager.BattleId,
                                                                   stub,
@@ -123,7 +122,8 @@ namespace Game.Battle.CombatObjects
                                                                   size,
                                                                   battleFormulas,
                                                                   formula,
-                                                                  unitFactory);
+                                                                  unitFactory,
+                                                                  dbManager);
                 units[i++] = newUnit;
                 count -= size;
             }
@@ -152,7 +152,8 @@ namespace Game.Battle.CombatObjects
                                                                         stronghold,
                                                                         kernel.Get<UnitFactory>(),
                                                                         kernel.Get<IBattleFormulas>(),
-                                                                        kernel.Get<Formula>());
+                                                                        kernel.Get<Formula>(),
+                                                                        kernel.Get<IDbManager>());
 
                 units[i++] = newUnit;
                 count -= size;
@@ -195,6 +196,8 @@ namespace Game.Battle.CombatObjects
                                                                        ushort count,
                                                                        IBarbarianTribe barbarianTribe)
         {
+            var unitFactory = kernel.Get<UnitFactory>();
+
             return new BarbarianTribeCombatUnit(id,
                                                 battleId,
                                                 type,
@@ -203,13 +206,16 @@ namespace Game.Battle.CombatObjects
                                                 unitFactory.GetUnitStats(type, level),
                                                 barbarianTribe,
                                                 kernel.Get<IBattleFormulas>(),
-                                                kernel.Get<Formula>());
+                                                kernel.Get<Formula>(),
+                                                kernel.Get<IDbManager>());
         }
 
         public StrongholdCombatStructure CreateStrongholdGateStructure(IBattleManager battleManager,
                                                                        IStronghold stronghold,
                                                                        decimal hp)
         {
+            var objectTypeFactory = kernel.Get<ObjectTypeFactory>();
+
             return new StrongholdCombatGate(battleManager.GetNextCombatObjectId(),
                                             battleManager.BattleId,
                                             (ushort)objectTypeFactory.GetTypes("StrongholdGateStructureType")[0],
@@ -217,7 +223,8 @@ namespace Game.Battle.CombatObjects
                                             hp,
                                             stronghold,
                                             kernel.Get<IStructureCsvFactory>(),
-                                            kernel.Get<IBattleFormulas>());
+                                            kernel.Get<IBattleFormulas>(),
+                                            kernel.Get<IDbManager>());
         }
     }
 }

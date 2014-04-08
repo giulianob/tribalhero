@@ -131,9 +131,9 @@ namespace Game.Logic.Actions
 
             // Subtract the "In Battle" formation of the local troop since that's already
             // included in our defenders
-            decimal defUpkeep = defenders.Upkeep + city.Troops.Upkeep -
+            decimal defUpkeep = defenders.UpkeepExcludingWaitingToJoinBattle + city.Troops.Upkeep -
                                 city.DefaultTroop.UpkeepForFormation(FormationType.InBattle);
-            decimal atkUpkeep = attackers.Upkeep;
+            decimal atkUpkeep = attackers.UpkeepExcludingWaitingToJoinBattle;
 
             if (atkUpkeep == 0 || atkUpkeep <= defUpkeep)
             {
@@ -273,7 +273,7 @@ namespace Game.Logic.Actions
             }
 
             beginTime = SystemClock.Now;
-            endTime = SystemClock.Now;
+            endTime = SystemClock.Now.AddMinutes(1);
 
             return Error.Ok;
         }

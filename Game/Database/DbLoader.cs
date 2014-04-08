@@ -1204,9 +1204,8 @@ namespace Game.Database
             foreach (var battleManager in battleManagers)
             {
                 // Load combat groups
-                using (
-                        var listReader = DbManager.SelectList(CityOffensiveCombatGroup.DB_TABLE,
-                                                              new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
+                using (var listReader = DbManager.SelectList(CityOffensiveCombatGroup.DB_TABLE,
+                                                             new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
                 {
                     while (listReader.Read())
                     {
@@ -1229,9 +1228,8 @@ namespace Game.Database
                     }
                 }
 
-                using (
-                        var listReader = DbManager.SelectList(CityDefensiveCombatGroup.DB_TABLE,
-                                                              new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
+                using (var listReader = DbManager.SelectList(CityDefensiveCombatGroup.DB_TABLE,
+                                                             new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
                 {
                     while (listReader.Read())
                     {
@@ -1242,7 +1240,7 @@ namespace Game.Database
                         }
 
                         ITroopStub troopStub;
-                            if (!combatGroupCity.Troops.TryGetStub((ushort)listReader["troop_stub_id"], out troopStub))
+                        if (!combatGroupCity.Troops.TryGetStub((ushort)listReader["troop_stub_id"], out troopStub))
                         {
                             throw new Exception("Troop stub not found");
                         }
@@ -1255,9 +1253,8 @@ namespace Game.Database
                     }
                 }
 
-                using (
-                        var listReader = DbManager.SelectList(BarbarianTribeCombatGroup.DB_TABLE,
-                                                              new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
+                using (var listReader = DbManager.SelectList(BarbarianTribeCombatGroup.DB_TABLE,
+                                                             new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
                 {
                     while (listReader.Read())
                     {
@@ -1275,9 +1272,8 @@ namespace Game.Database
                     }
                 }
 
-                using (
-                        var listReader = DbManager.SelectList(StrongholdCombatGroup.DB_TABLE,
-                                                              new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
+                using (var listReader = DbManager.SelectList(StrongholdCombatGroup.DB_TABLE,
+                                                             new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
                 {
                     while (listReader.Read())
                     {
@@ -1296,9 +1292,8 @@ namespace Game.Database
                 }
 
                 // Load combat structures
-                using (
-                        var listReader = DbManager.SelectList(CombatStructure.DB_TABLE,
-                                                              new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
+                using (var listReader = DbManager.SelectList(CombatStructure.DB_TABLE,
+                                                             new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
                 {
                     while (listReader.Read())
                     {
@@ -1314,12 +1309,12 @@ namespace Game.Database
                         //The BattleStats constructor will copy the basic values then we have to manually apply the values from the db
                         var battleStats = new BattleStats(structure.Stats.Base.Battle)
                         {
-                                MaxHp = (decimal)listReader["max_hp"],
-                                Atk = (decimal)listReader["attack"],
-                                Splash = (byte)listReader["splash"],
-                                Rng = (byte)listReader["range"],
-                                Stl = (byte)listReader["stealth"],
-                                Spd = (byte)listReader["speed"],
+                            MaxHp = (decimal)listReader["max_hp"],
+                            Atk = (decimal)listReader["attack"],
+                            Splash = (byte)listReader["splash"],
+                            Rng = (byte)listReader["range"],
+                            Stl = (byte)listReader["stealth"],
+                            Spd = (byte)listReader["speed"],
                         };
 
                         var combatStructure = new CombatStructure((uint)listReader["id"],
@@ -1333,13 +1328,15 @@ namespace Game.Database
                                                                   Kernel.Get<IActionFactory>(),
                                                                   Kernel.Get<IBattleFormulas>(),
                                                                   Kernel.Get<ITileLocator>(),
-                                                                  Kernel.Get<IRegionManager>())
+                                                                  Kernel.Get<IRegionManager>(),
+                                                                  Kernel.Get<IDbManager>())
                         {
                             GroupId = (uint)listReader["group_id"],
                             DmgDealt = (decimal)listReader["damage_dealt"],
                             DmgRecv = (decimal)listReader["damage_received"],
                             LastRound = (uint)listReader["last_round"],
                             RoundsParticipated = (int)listReader["rounds_participated"],
+                            IsWaitingToJoinBattle = (bool)listReader["is_waiting_to_join_battle"],
                             DbPersisted = true
                         };
 
@@ -1348,9 +1345,8 @@ namespace Game.Database
                 }
 
                 // Load attack combat units
-                using (
-                        var listReader = DbManager.SelectList(AttackCombatUnit.DB_TABLE,
-                                                              new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
+                using (var listReader = DbManager.SelectList(AttackCombatUnit.DB_TABLE,
+                                                             new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
                 {
                     while (listReader.Read())
                     {
@@ -1377,7 +1373,8 @@ namespace Game.Database
                                                                        Kernel.Get<UnitFactory>(),
                                                                        Kernel.Get<IBattleFormulas>(),
                                                                        Kernel.Get<Formula>(),
-                                                                       Kernel.Get<ITileLocator>());
+                                                                       Kernel.Get<ITileLocator>(),
+                                                                       Kernel.Get<IDbManager>());
 
                         combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
                         combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];
@@ -1391,6 +1388,7 @@ namespace Game.Database
                         combatObj.DmgRecv = (decimal)listReader["damage_received"];
                         combatObj.LastRound = (uint)listReader["last_round"];
                         combatObj.RoundsParticipated = (int)listReader["rounds_participated"];
+                        combatObj.IsWaitingToJoinBattle = (bool)listReader["is_waiting_to_join_battle"];
                         combatObj.DbPersisted = true;
 
                         battleManager.GetCombatGroup((uint)listReader["group_id"]).Add(combatObj, false);
@@ -1398,9 +1396,8 @@ namespace Game.Database
                 }
 
                 // Load defense combat units
-                using (
-                        var listReader = DbManager.SelectList(DefenseCombatUnit.DB_TABLE,
-                                                              new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
+                using (var listReader = DbManager.SelectList(DefenseCombatUnit.DB_TABLE,
+                                                             new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
                 {
                     while (listReader.Read())
                     {
@@ -1410,7 +1407,7 @@ namespace Game.Database
                             throw new Exception("City not found");
                         }
 
-                            ITroopStub troopStub = troopStubCity.Troops[(ushort)listReader["troop_stub_id"]];
+                        ITroopStub troopStub = troopStubCity.Troops[(ushort)listReader["troop_stub_id"]];
 
                         ICombatObject combatObj = new DefenseCombatUnit((uint)listReader["id"],
                                                                         battleManager.BattleId,
@@ -1419,10 +1416,11 @@ namespace Game.Database
                                                                         (ushort)listReader["type"],
                                                                         (byte)listReader["level"],
                                                                         (ushort)listReader["count"],
-                                                                        (decimal)listReader["left_over_hp"],                                                                        
+                                                                        (decimal)listReader["left_over_hp"],
                                                                         Kernel.Get<IBattleFormulas>(),
                                                                         Kernel.Get<Formula>(),
-                                                                        Kernel.Get<UnitFactory>());
+                                                                        Kernel.Get<UnitFactory>(),
+                                                                        Kernel.Get<IDbManager>());
                         combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
                         combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];
                         combatObj.MinDmgRecv = (ushort)listReader["damage_min_received"];
@@ -1435,6 +1433,7 @@ namespace Game.Database
                         combatObj.DmgRecv = (decimal)listReader["damage_received"];
                         combatObj.LastRound = (uint)listReader["last_round"];
                         combatObj.RoundsParticipated = (int)listReader["rounds_participated"];
+                        combatObj.IsWaitingToJoinBattle = (bool)listReader["is_waiting_to_join_battle"];
                         combatObj.DbPersisted = true;
 
                         battleManager.GetCombatGroup((uint)listReader["group_id"]).Add(combatObj, false);
@@ -1442,9 +1441,8 @@ namespace Game.Database
                 }
 
                 // Load 
-                using (
-                        var listReader = DbManager.SelectList(BarbarianTribeCombatUnit.DB_TABLE,
-                                                              new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
+                using (var listReader = DbManager.SelectList(BarbarianTribeCombatUnit.DB_TABLE,
+                                                             new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
                 {
                     while (listReader.Read())
                     {
@@ -1474,6 +1472,7 @@ namespace Game.Database
                         combatObj.DmgRecv = (decimal)listReader["damage_received"];
                         combatObj.LastRound = (uint)listReader["last_round"];
                         combatObj.RoundsParticipated = (int)listReader["rounds_participated"];
+                        combatObj.IsWaitingToJoinBattle = (bool)listReader["is_waiting_to_join_battle"];
                         combatObj.DbPersisted = true;
 
                         battleManager.GetCombatGroup((uint)listReader["group_id"]).Add(combatObj, false);
@@ -1481,9 +1480,8 @@ namespace Game.Database
                 }
 
                 // Load stronghold combat units
-                using (
-                        var listReader = DbManager.SelectList(StrongholdCombatUnit.DB_TABLE,
-                                                              new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
+                using (var listReader = DbManager.SelectList(StrongholdCombatUnit.DB_TABLE,
+                                                             new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
                 {
                     while (listReader.Read())
                     {
@@ -1500,9 +1498,10 @@ namespace Game.Database
                                                                            (ushort)listReader["count"],
                                                                            stronghold,
                                                                            (decimal)listReader["left_over_hp"],
-                                                                               Kernel.Get<UnitFactory>(),
-                                                                               Kernel.Get<IBattleFormulas>(),
-                                                                               Kernel.Get<Formula>());
+                                                                           Kernel.Get<UnitFactory>(),
+                                                                           Kernel.Get<IBattleFormulas>(),
+                                                                           Kernel.Get<Formula>(),
+                                                                           Kernel.Get<IDbManager>());
 
                         combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
                         combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];
@@ -1516,15 +1515,15 @@ namespace Game.Database
                         combatObj.DmgRecv = (decimal)listReader["damage_received"];
                         combatObj.LastRound = (uint)listReader["last_round"];
                         combatObj.RoundsParticipated = (int)listReader["rounds_participated"];
+                        combatObj.IsWaitingToJoinBattle = (bool)listReader["is_waiting_to_join_battle"];
                         combatObj.DbPersisted = true;
 
                         battleManager.GetCombatGroup((uint)listReader["group_id"]).Add(combatObj, false);
                     }
                 }
 
-                using (
-                        var listReader = DbManager.SelectList(StrongholdCombatStructure.DB_TABLE,
-                                                              new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
+                using (var listReader = DbManager.SelectList(StrongholdCombatStructure.DB_TABLE,
+                                                             new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
                 {
                     while (listReader.Read())
                     {
@@ -1540,8 +1539,9 @@ namespace Game.Database
                                                                            (byte)listReader["level"],
                                                                            (decimal)listReader["hp"],
                                                                            stronghold,
-                                                                               Kernel.Get<IStructureCsvFactory>(),
-                                                                               Kernel.Get<IBattleFormulas>());
+                                                                           Kernel.Get<IStructureCsvFactory>(),
+                                                                           Kernel.Get<IBattleFormulas>(),
+                                                                           Kernel.Get<IDbManager>());
 
                         combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
                         combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];
@@ -1555,6 +1555,7 @@ namespace Game.Database
                         combatObj.DmgRecv = (decimal)listReader["damage_received"];
                         combatObj.LastRound = (uint)listReader["last_round"];
                         combatObj.RoundsParticipated = (int)listReader["rounds_participated"];
+                        combatObj.IsWaitingToJoinBattle = (bool)listReader["is_waiting_to_join_battle"];
                         combatObj.DbPersisted = true;
 
                         battleManager.GetCombatGroup((uint)listReader["group_id"]).Add(combatObj, false);

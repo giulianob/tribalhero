@@ -406,7 +406,7 @@ namespace Game.Battle
 
         public virtual int GetNumberOfHits(ICombatObject currentAttacker, ICombatList defenderCombatList)
         {
-            int splashEvery200 = objectTypeFactory.IsObjectType("SplashEvery200", currentAttacker.Type) ? (Math.Min(defenderCombatList.Upkeep, 4000) / 200) : 0;
+            int splashEvery200 = objectTypeFactory.IsObjectType("SplashEvery200", currentAttacker.Type) ? (Math.Min(defenderCombatList.UpkeepExcludingWaitingToJoinBattle, 4000) / 200) : 0;
             return currentAttacker.Stats.Splash == 0 ? 1 : currentAttacker.Stats.Splash + splashEvery200;
         }
 

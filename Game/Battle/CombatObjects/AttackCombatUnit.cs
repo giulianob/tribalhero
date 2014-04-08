@@ -50,8 +50,9 @@ namespace Game.Battle.CombatObjects
                                 UnitFactory unitFactory,
                                 IBattleFormulas battleFormulas,
                                 Formula formula,
-                                ITileLocator tileLocator)
-                : base(id, battleId, battleFormulas)
+                                ITileLocator tileLocator,
+                                IDbManager dbManager)
+                : base(id, battleId, battleFormulas, dbManager)
         {
             this.troopObject = troopObject;
             this.formation = formation;
@@ -81,8 +82,9 @@ namespace Game.Battle.CombatObjects
                                 UnitFactory unitFactory,
                                 IBattleFormulas battleFormulas,
                                 Formula formula,
-                                ITileLocator tileLocator)
-                : this(id, battleId, troopObject, formation, type, lvl, count, unitFactory, battleFormulas, formula, tileLocator)
+                                ITileLocator tileLocator,
+                                IDbManager dbManager)
+                : this(id, battleId, troopObject, formation, type, lvl, count, unitFactory, battleFormulas, formula, tileLocator, dbManager)
         {
             LeftOverHp = leftOverHp;
             this.loot = loot;
@@ -230,7 +232,8 @@ namespace Game.Battle.CombatObjects
                         new DbColumn("loot_wood", loot.Wood, DbType.UInt32),
                         new DbColumn("loot_iron", loot.Iron, DbType.UInt32),
                         new DbColumn("loot_gold", loot.Gold, DbType.UInt32),
-                        new DbColumn("loot_labor", loot.Labor, DbType.UInt32)
+                        new DbColumn("loot_labor", loot.Labor, DbType.UInt32),
+                        new DbColumn("is_waiting_to_join_battle", IsWaitingToJoinBattle, DbType.Boolean)
                 };
             }
         }
@@ -272,7 +275,7 @@ namespace Game.Battle.CombatObjects
                                                     out decimal actualDmg)
         {
             // Miss chance
-            actualDmg = BattleFormulas.GetDmgWithMissChance(attackers.Upkeep, defenders.Upkeep, baseDmg, random);
+            actualDmg = BattleFormulas.GetDmgWithMissChance(attackers.UpkeepExcludingWaitingToJoinBattle, defenders.UpkeepExcludingWaitingToJoinBattle, baseDmg, random);
 
             // Splash dmg reduction
             actualDmg = BattleFormulas.SplashReduction(this, actualDmg, attackIndex);

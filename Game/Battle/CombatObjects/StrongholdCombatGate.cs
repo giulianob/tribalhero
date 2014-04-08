@@ -1,6 +1,7 @@
 ﻿using Game.Data;
 using Game.Data.Stronghold;
 using Game.Setup;
+using Persistance;
 
 namespace Game.Battle.CombatObjects
 {
@@ -13,8 +14,9 @@ namespace Game.Battle.CombatObjects
                                     decimal hp,
                                     IStronghold stronghold,
                                     IStructureCsvFactory structureCsvFactory,
-                                    IBattleFormulas battleFormulas)
-                : base(id, battleId, type, lvl, hp, stronghold, structureCsvFactory, battleFormulas)
+                                    IBattleFormulas battleFormulas,
+                                    IDbManager dbManager)
+                : base(id, battleId, type, lvl, hp, stronghold, structureCsvFactory, battleFormulas, dbManager)
         {
         }
 

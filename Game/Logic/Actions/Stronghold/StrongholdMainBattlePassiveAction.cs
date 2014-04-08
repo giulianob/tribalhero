@@ -458,9 +458,7 @@ namespace Game.Logic.Actions
             stronghold.EndUpdate();
 
             beginTime = SystemClock.Now;
-            // We give sometime here so that the troops coming from the gate battle have time to join
-            // before this battle begins
-            endTime = SystemClock.Now.AddSeconds(3);
+            endTime = SystemClock.Now.AddMinutes(1);
 
             return Error.Ok;
         }

@@ -34,12 +34,12 @@ namespace Game.Battle
                                out ICombatGroup outCombatGroup,
                                out BattleManager.BattleSide foundInGroup)
         {
-            var attackerUpkeep = attacker.UpkeepNotParticipated(round);
-            var defenderUpkeep = defender.UpkeepNotParticipated(round);
+            var attackerUpkeep = attacker.UpkeepNotParticipatedInRound(round);
+            var defenderUpkeep = defender.UpkeepNotParticipatedInRound(round);
             if (attackerUpkeep == 0 && defenderUpkeep == 0)
             {
-                attackerUpkeep = attacker.UpkeepNotParticipated(round + 1);
-                defenderUpkeep = defender.UpkeepNotParticipated(round + 1);
+                attackerUpkeep = attacker.UpkeepNotParticipatedInRound(round + 1);
+                defenderUpkeep = defender.UpkeepNotParticipatedInRound(round + 1);
             }
 
             BattleManager.BattleSide sideAttack = random.Next(attackerUpkeep + defenderUpkeep) < attackerUpkeep
@@ -125,7 +125,7 @@ namespace Game.Battle
                 {
                     outObj = combatGroup[(startObjIdx + combatObjIdx) % combatGroup.Count];
 
-                    if (outObj.LastRound > round)
+                    if (outObj.IsWaitingToJoinBattle || outObj.HasAttacked(round))
                     {
                         continue;
                     }

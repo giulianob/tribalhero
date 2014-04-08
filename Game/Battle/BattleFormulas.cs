@@ -90,6 +90,14 @@ namespace Game.Battle
             return units[Math.Min(level, units.Length - 1)];
         }
 
+        public virtual int GetAttackScore(ICombatObject attacker, ICombatObject target, uint round)
+        {
+            decimal attackBonus = attacker.AttackBonus(target);
+            decimal modifier = (decimal)GetDmgModifier(attacker, target, round);
+
+            return (int)(modifier * (1 + attackBonus) * 10m);
+        }
+
         public virtual decimal GetAttackerDmgToDefender(ICombatObject attacker, ICombatObject target, uint round)
         {
             decimal atk = attacker.Stats.Atk;
@@ -398,7 +406,7 @@ namespace Game.Battle
 
         public virtual int GetNumberOfHits(ICombatObject currentAttacker, ICombatList defenderCombatList)
         {
-            int splashEvery200 = objectTypeFactory.IsObjectType("SplashEvery200", currentAttacker.Type) ? (Math.Min(defenderCombatList.Upkeep, 4000) / 200) : 0;
+            int splashEvery200 = objectTypeFactory.IsObjectType("SplashEvery200", currentAttacker.Type) ? (Math.Min(defenderCombatList.UpkeepExcludingWaitingToJoinBattle, 4000) / 200) : 0;
             return currentAttacker.Stats.Splash == 0 ? 1 : currentAttacker.Stats.Splash + splashEvery200;
         }
 

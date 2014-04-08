@@ -124,6 +124,7 @@
     <Compile Include="ActionsTests\StructureBuildActiveActionExecuteBuilder.cs" />
     <Compile Include="ActionsTests\StructureBuildActiveActionTests.cs" />
     <Compile Include="ActionsTests\TribeContributeActiveActionTest.cs" />
+    <Compile Include="ActionsTests\UnitTrainActiveActionTests.cs" />
     <Compile Include="Balancing\TestSwordsman.cs" />
     <Compile Include="Balancing\TestUtility.cs" />
     <Compile Include="Balancing\TestCavalry.cs" />
@@ -132,7 +133,6 @@
     <Compile Include="Balancing\UnitType.cs" />
     <Compile Include="BattleTests\BattleFormulaTest.cs" />
     <Compile Include="BattleTests\BattleManagerTest.cs" />
-    <Compile Include="BattleTests\BattleManagerTest2.cs" />
     <Compile Include="BattleTests\BattleOrderTest.cs" />
     <Compile Include="BattleTests\CombatGroupTest.cs" />
     <Compile Include="BattleTests\CombatListTest.cs" />

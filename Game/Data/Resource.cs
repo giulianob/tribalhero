@@ -19,7 +19,7 @@ namespace Game.Data
         Iron = 3
     }
 
-    public class Resource : BaseStats, IComparable
+    public class Resource : BaseStats, IComparable, IEquatable<Resource>
     {
         private int crop;
 
@@ -42,6 +42,49 @@ namespace Game.Data
             this.iron = Math.Max(0, iron);
             this.wood = Math.Max(0, wood);
             this.labor = Math.Max(0, labor);
+        }
+
+        public bool Equals(Resource other)
+        {
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+            return crop == other.crop && gold == other.gold && iron == other.iron && labor == other.labor && wood == other.wood;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+            if (obj.GetType() != typeof(Resource))
+            {
+                return false;
+            }
+            return Equals((Resource)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = crop;
+                hashCode = (hashCode * 397) ^ gold;
+                hashCode = (hashCode * 397) ^ iron;
+                hashCode = (hashCode * 397) ^ labor;
+                hashCode = (hashCode * 397) ^ wood;
+                return hashCode;
+            }
         }
 
         public Resource(Resource copy)

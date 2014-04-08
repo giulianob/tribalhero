@@ -256,7 +256,7 @@ namespace Game.Logic.Actions
             stronghold.EndUpdate();
 
             beginTime = SystemClock.Now;
-            endTime = SystemClock.Now;
+            endTime = SystemClock.Now.AddMinutes(1);
 
             return Error.Ok;
         }

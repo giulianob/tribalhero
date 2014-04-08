@@ -58,6 +58,8 @@ namespace Game.Battle.CombatObjects
 
         byte Size { get; }
 
+        bool IsWaitingToJoinBattle { get; set; }
+
         void ExitBattle();
 
         decimal AttackBonus(ICombatObject target);
@@ -86,5 +88,9 @@ namespace Game.Battle.CombatObjects
         bool CanSee(ICombatObject obj, uint lowestSteath);
 
         void ParticipatedInRound(uint round);
+
+        void JoinBattle(uint round);
+
+        bool HasAttacked(uint round);
     }
 }

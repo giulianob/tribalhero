@@ -70,8 +70,8 @@ namespace Game.Battle
             Location = location;
             Owner = owner;
             BattleReport = battleReport;
-            Attackers = combatListFactory.GetCombatList();
-            Defenders = combatListFactory.GetCombatList();
+            Attackers = combatListFactory.GetAttackerCombatList();
+            Defenders = combatListFactory.GetDefenderCombatList();
 
             this.rewardStrategy = rewardStrategy;
             this.dbManager = dbManager;
@@ -403,6 +403,8 @@ namespace Game.Battle
                         return false;
                     }
 
+                    BringWaitingTroopsIntoBattle();
+                    
                     BattleStarted = true;
                     BattleReport.CreateBattleReport();
                     EnterBattle(this, Attackers, Defenders);
@@ -437,6 +439,8 @@ namespace Game.Battle
                     {
                         ++Round;
                         Turn = 0;
+
+                        BringWaitingTroopsIntoBattle();
 
                         EnterRound(this, Attackers, Defenders, Round);
 
@@ -550,17 +554,28 @@ namespace Game.Battle
                 }
 
                 // Remove any attackers that don't have anyone in range
-                foreach (
-                        var group in
-                                Attackers.Where(
-                                                group =>
-                                                group.All(combatObjects => !Defenders.HasInRange(combatObjects)))
-                                         .ToList())
+                var groupsWithoutAnyoneInRange = Attackers.Where(attacker => attacker.All(combatObjects => !Defenders.HasInRange(combatObjects))).ToList();
+                foreach (var group in groupsWithoutAnyoneInRange)
                 {
                     Remove(group, BattleSide.Attack, ReportState.Exiting);
                 }
 
                 return true;
+            }
+        }
+
+        private void BringWaitingTroopsIntoBattle()
+        {
+            foreach (var defender in Defenders.AllCombatObjects().Where(co => co.IsWaitingToJoinBattle))
+            {
+                defender.JoinBattle(Round);
+                dbManager.Save(defender);
+            }
+
+            foreach (var attacker in Attackers.AllCombatObjects().Where(co => co.IsWaitingToJoinBattle))
+            {
+                attacker.JoinBattle(Round);
+                dbManager.Save(attacker);
             }
         }
 

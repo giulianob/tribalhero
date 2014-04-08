@@ -136,7 +136,7 @@ namespace Testing.BattleTests
 
             objectTypeFactory.IsObjectType(string.Empty, 0).ReturnsForAnyArgs(true);
             attacker.Stats.Splash.Returns((byte)2);
-            defenderCombatList.Upkeep.Returns(800);
+            defenderCombatList.UpkeepExcludingWaitingToJoinBattle.Returns(800);
             battleFormulas.GetNumberOfHits(attacker, defenderCombatList).Should().Be(6);
         }
 
@@ -150,7 +150,7 @@ namespace Testing.BattleTests
 
             objectTypeFactory.IsObjectType(string.Empty, 0).ReturnsForAnyArgs(false);
             attacker.Stats.Splash.Returns((byte)2);
-            defenderCombatList.Upkeep.Returns(800);
+            defenderCombatList.UpkeepExcludingWaitingToJoinBattle.Returns(800);
             battleFormulas.GetNumberOfHits(attacker, defenderCombatList).Should().Be(2);
         }
 
@@ -165,7 +165,7 @@ namespace Testing.BattleTests
 
             objectTypeFactory.IsObjectType(string.Empty, 0).ReturnsForAnyArgs(true);
             attacker.Stats.Splash.Returns((byte)2);
-            defenderCombatList.Upkeep.Returns(8000);
+            defenderCombatList.UpkeepExcludingWaitingToJoinBattle.Returns(8000);
             battleFormulas.GetNumberOfHits(attacker, defenderCombatList).Should().Be(22);
         }
 
@@ -180,9 +180,27 @@ namespace Testing.BattleTests
 
             objectTypeFactory.IsObjectType(string.Empty,0).ReturnsForAnyArgs(true);
             attacker.Stats.Splash.Returns((byte)2);
-            defenderCombatList.Upkeep.Returns(199);
+            defenderCombatList.UpkeepExcludingWaitingToJoinBattle.Returns(199);
             battleFormulas.GetNumberOfHits(attacker, defenderCombatList).Should().Be(2);
         }
 
+        [Theory, AutoNSubstituteData]
+        public void GetAttackScore_ShouldCalculateCorrectScore(
+            [FrozenMock] UnitModFactory unitModFactory,
+            ICombatObject attacker,
+            ICombatObject target,
+            BattleFormulas battleFormulas)
+        {
+            attacker.AttackBonus(target).Returns(0.2m);
+            attacker.Stats.Base.Weapon.Returns(WeaponType.Bow);
+            target.Stats.Base.Armor.Returns(ArmorType.Machine);
+            attacker.Type.Returns<ushort>(1);
+            target.Type.Returns<ushort>(2);
+            unitModFactory.GetModifier(1, 2).Returns(1.25);
+
+            var score = battleFormulas.GetAttackScore(attacker, target, 1);
+
+            score.Should().Be(15);
+        }
     }
 }

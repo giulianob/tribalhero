@@ -235,7 +235,7 @@ namespace Game.Logic.Formulas
 
             if (effects.Count == 0)
             {
-                return ushort.MaxValue;
+                return int.MaxValue;
             }
 
             return effects.Min(x => (int)x.Value[0]);

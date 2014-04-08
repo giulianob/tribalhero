@@ -129,7 +129,7 @@ namespace Testing.BattleTests
             private ICity city;
             private ITroopStub troopStub;
 
-            public StubCityCombatObject(uint id, uint battleId, IBattleFormulas battleFormulas) : base(id, battleId, battleFormulas)
+            public StubCityCombatObject(uint id, uint battleId, IBattleFormulas battleFormulas, IDbManager dbManager) : base(id, battleId, battleFormulas, dbManager)
             {
                 city = Substitute.For<ICity>();
             }

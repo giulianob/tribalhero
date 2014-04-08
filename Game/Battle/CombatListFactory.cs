@@ -13,7 +13,12 @@ namespace Game.Battle
             this.kernel = kernel;
         }
 
-        public ICombatList GetCombatList()
+        public ICombatList GetAttackerCombatList()
+        {
+            return new CombatList(kernel.Get<IDbManager>(), kernel.Get<ITileLocator>(), kernel.Get<IBattleFormulas>());
+        }
+
+        public ICombatList GetDefenderCombatList()
         {
             return new CombatList(kernel.Get<IDbManager>(), kernel.Get<ITileLocator>(), kernel.Get<IBattleFormulas>());
         }

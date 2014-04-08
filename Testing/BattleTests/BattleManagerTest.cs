@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Common.Testing;
 using FluentAssertions;
 using Game.Battle;
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Battle.Reporting;
 using Game.Battle.RewardStrategies;
-using Moq;
+using NSubstitute;
 using Persistance;
+using Ploeh.AutoFixture.Xunit;
 using Xunit;
+using Xunit.Extensions;
 
 namespace Testing.BattleTests
 {
@@ -19,41 +22,35 @@ namespace Testing.BattleTests
 
         private static ICombatGroup CreateGroup(params ICombatObject[] combatObjects)
         {
-            Mock<ICombatGroup> combatGroup = new Mock<ICombatGroup>();
-            combatGroup.SetupAllProperties();
-            combatGroup.Setup(m => m.GetEnumerator()).Returns(() => combatObjects.ToList().GetEnumerator());
-            return combatGroup.Object;
+            var combatGroup = Substitute.For<ICombatGroup>();
+            combatGroup.GetEnumerator().Returns(c => combatObjects.ToList().GetEnumerator());
+            return combatGroup;
         }
 
         private class BattleManagerSut
         {
             public readonly StubCombatList MockAttackers = new StubCombatList();
 
-            public readonly Mock<IBattleFormulas> MockBattleFormulas = new Mock<IBattleFormulas>();
+            public readonly IBattleFormulas MockBattleFormulas = Substitute.For<IBattleFormulas>();
 
-            public readonly Mock<IBattleReport> MockBattleReport = new Mock<IBattleReport>();
+            public readonly IBattleReport MockBattleReport = Substitute.For<IBattleReport>();
 
-            public readonly Mock<IBattleOrder> MockBattleOrder = new Mock<IBattleOrder>();
+            public readonly IBattleOrder MockBattleOrder = Substitute.For<IBattleOrder>();
 
-            public readonly Mock<IBattleRandom> MockBattleRandom = new Mock<IBattleRandom>();
+            public readonly IBattleRandom MockBattleRandom = Substitute.For<IBattleRandom>();
 
-            public readonly Mock<ICombatListFactory> MockCombatListFactory = new Mock<ICombatListFactory>();
+            public readonly ICombatListFactory MockCombatListFactory = Substitute.For<ICombatListFactory>();
 
-            public readonly Mock<IDbManager> MockDbManager = new Mock<IDbManager>();
+            public readonly IDbManager MockDbManager = Substitute.For<IDbManager>();
 
             public readonly StubCombatList MockDefenders = new StubCombatList();
 
-            public readonly Mock<IRewardStrategy> MockRewardStrategy = new Mock<IRewardStrategy>();
-
-
+            public readonly IRewardStrategy MockRewardStrategy = Substitute.For<IRewardStrategy>();
 
             public BattleManagerSut()
             {
-                var combatLists = new Queue<ICombatList>();
-                combatLists.Enqueue(MockAttackers);
-                combatLists.Enqueue(MockDefenders);
-
-                MockCombatListFactory.Setup(p => p.GetCombatList()).Returns(combatLists.Dequeue);
+                MockCombatListFactory.GetAttackerCombatList().Returns(MockAttackers);
+                MockCombatListFactory.GetDefenderCombatList().Returns(MockDefenders);
             }
 
             public StubbedAttackTargetBattleManager CreateStubbedAttackBattleManager(uint battleId,
@@ -68,13 +65,13 @@ namespace Testing.BattleTests
                 return new StubbedAttackTargetBattleManager(battleId,
                                                             location,
                                                             owner,
-                                                            MockRewardStrategy.Object,
-                                                            MockDbManager.Object,
-                                                            MockBattleReport.Object,
-                                                            MockCombatListFactory.Object,
-                                                            MockBattleFormulas.Object,
-                                                            MockBattleOrder.Object,
-                                                            MockBattleRandom.Object,
+                                                            MockRewardStrategy,
+                                                            MockDbManager,
+                                                            MockBattleReport,
+                                                            MockCombatListFactory,
+                                                            MockBattleFormulas,
+                                                            MockBattleOrder,
+                                                            MockBattleRandom,
                                                             attackTargetCallback);
             }
         }
@@ -105,9 +102,9 @@ namespace Testing.BattleTests
             /// <summary>
             ///     Set the upkeep manually in tests
             /// </summary>
-            public int Upkeep { get; private set; }
+            public int UpkeepExcludingWaitingToJoinBattle { get; private set; }
 
-            public int UpkeepNotParticipated(uint round)
+            public int UpkeepNotParticipatedInRound(uint round)
             {
                 return MockInRange.Where(x => x.LastRound <= round).Sum(x => x.Upkeep);
             }
@@ -225,8 +222,8 @@ namespace Testing.BattleTests
                                                               new BattleOwner(BattleOwnerType.City, 200),
                                                               delegate { });
 
-            var defender = new Mock<ICombatObject>();
-            var defenderGroup = CreateGroup(defender.Object);
+            var defender = Substitute.For<ICombatObject>();
+            var defenderGroup = CreateGroup(defender);
 
             sut.MockDefenders.Add(defenderGroup);
 
@@ -239,9 +236,9 @@ namespace Testing.BattleTests
 
             enterBattleRaised.Should().BeFalse();
             exitBattleRaised.Should().BeTrue();
-            defender.Verify(m => m.ExitBattle(), Times.Once());
-            sut.MockBattleReport.Verify(m => m.CreateBattleReport(), Times.Never());
-            sut.MockBattleReport.Verify(m => m.CompleteReport(ReportState.Staying), Times.Once());
+            defender.Received(1).ExitBattle();
+            sut.MockBattleReport.DidNotReceive().CreateBattleReport();
+            sut.MockBattleReport.Received().CompleteReport(ReportState.Staying);
         }
 
         /// <summary>
@@ -261,8 +258,8 @@ namespace Testing.BattleTests
                                                               new BattleOwner(BattleOwnerType.City, 200),
                                                               delegate { });
 
-            var attacker = new Mock<ICombatObject>();
-            var attackerGroup = CreateGroup(attacker.Object);
+            var attacker = Substitute.For<ICombatObject>();
+            var attackerGroup = CreateGroup(attacker);
 
             sut.MockAttackers.Add(attackerGroup);
 
@@ -275,9 +272,9 @@ namespace Testing.BattleTests
 
             enterBattleRaised.Should().BeFalse();
             exitBattleRaised.Should().BeTrue();
-            attacker.Verify(m => m.ExitBattle(), Times.Once());
-            sut.MockBattleReport.Verify(m => m.CreateBattleReport(), Times.Never());
-            sut.MockBattleReport.Verify(m => m.CompleteReport(ReportState.Staying), Times.Once());
+            attacker.Received().ExitBattle();
+            sut.MockBattleReport.DidNotReceive().CreateBattleReport();
+            sut.MockBattleReport.Received(1).CompleteReport(ReportState.Staying);
             sut.MockAttackers.ClearCalled.Should().BeTrue();
             sut.MockDefenders.ClearCalled.Should().BeTrue();
         }
@@ -298,8 +295,8 @@ namespace Testing.BattleTests
                                                               new BattleOwner(BattleOwnerType.City, 200),
                                                               delegate { });
 
-            var defender = new Mock<ICombatObject>();
-            var defenderGroup = CreateGroup(defender.Object);
+            var defender = Substitute.For<ICombatObject>();
+            var defenderGroup = CreateGroup(defender);
 
             sut.MockDefenders.Add(defenderGroup);
 
@@ -313,9 +310,9 @@ namespace Testing.BattleTests
 
             enterBattleRaised.Should().BeFalse();
             exitBattleRaised.Should().BeTrue();
-            defender.Verify(m => m.ExitBattle(), Times.Once());
-            sut.MockBattleReport.Verify(m => m.CreateBattleReport(), Times.Never());
-            sut.MockBattleReport.Verify(m => m.CompleteReport(ReportState.Staying), Times.Once());
+            defender.Received(1).ExitBattle();
+            sut.MockBattleReport.DidNotReceive().CreateBattleReport();
+            sut.MockBattleReport.Received(1).CompleteReport(ReportState.Staying);
         }
 
         /// <summary>
@@ -344,8 +341,8 @@ namespace Testing.BattleTests
 
             enterBattleRaised.Should().BeFalse();
             exitBattleRaised.Should().BeTrue();
-            sut.MockBattleReport.Verify(m => m.CreateBattleReport(), Times.Never());
-            sut.MockBattleReport.Verify(m => m.CompleteReport(ReportState.Staying), Times.Once());
+            sut.MockBattleReport.DidNotReceive().CreateBattleReport();
+            sut.MockBattleReport.Received().CompleteReport(ReportState.Staying);
         }
 
         /// <summary>
@@ -365,8 +362,8 @@ namespace Testing.BattleTests
                                                               new BattleOwner(BattleOwnerType.City, 200),
                                                               delegate { });
 
-            var attacker = new Mock<ICombatObject>();
-            var attackerGroup = CreateGroup(attacker.Object);
+            var attacker = Substitute.For<ICombatObject>();
+            var attackerGroup = CreateGroup(attacker);
 
             sut.MockAttackers.Add(attackerGroup);
 
@@ -380,9 +377,9 @@ namespace Testing.BattleTests
 
             enterBattleRaised.Should().BeFalse();
             exitBattleRaised.Should().BeTrue();
-            attacker.Verify(m => m.ExitBattle(), Times.Once());
-            sut.MockBattleReport.Verify(m => m.CreateBattleReport(), Times.Never());
-            sut.MockBattleReport.Verify(m => m.CompleteReport(ReportState.Staying), Times.Once());
+            attacker.Received().ExitBattle();
+            sut.MockBattleReport.DidNotReceive().CreateBattleReport();
+            sut.MockBattleReport.Received(1).CompleteReport(ReportState.Staying);
             sut.MockAttackers.ClearCalled.Should().BeTrue();
             sut.MockDefenders.ClearCalled.Should().BeTrue();
         }
@@ -401,10 +398,10 @@ namespace Testing.BattleTests
                                                               new BattleOwner(BattleOwnerType.City, 200),
                                                               delegate { });
 
-            var defender = new Mock<ICombatObject>();
-            var attacker = new Mock<ICombatObject>();
-            var defenderGroup = CreateGroup(defender.Object);
-            var attackerGroup = CreateGroup(attacker.Object);
+            var defender = Substitute.For<ICombatObject>();
+            var attacker = Substitute.For<ICombatObject>();
+            var defenderGroup = CreateGroup(defender);
+            var attackerGroup = CreateGroup(attacker);
 
             sut.MockDefenders.Add(defenderGroup);
             sut.MockAttackers.Add(attackerGroup);
@@ -418,8 +415,8 @@ namespace Testing.BattleTests
 
             enterBattleRaised.Should().BeFalse();
             exitBattleRaised.Should().BeTrue();
-            sut.MockBattleReport.Verify(m => m.CreateBattleReport(), Times.Never());
-            sut.MockBattleReport.Verify(m => m.CompleteReport(ReportState.Staying), Times.Once());
+            sut.MockBattleReport.DidNotReceive().CreateBattleReport();
+            sut.MockBattleReport.Received().CompleteReport(ReportState.Staying);
             sut.MockAttackers.ClearCalled.Should().BeTrue();
             sut.MockDefenders.ClearCalled.Should().BeTrue();
         }
@@ -438,31 +435,33 @@ namespace Testing.BattleTests
                                                               new BattleLocation(BattleLocationType.City, 100),
                                                               new BattleOwner(BattleOwnerType.City, 200),
                                                               delegate { });
-            
-            var defender = new Mock<ICombatObject>();
-            var attacker = new Mock<ICombatObject>();
-            var defenderGroup = CreateGroup(defender.Object);
-            var attackerGroup = CreateGroup(attacker.Object);
+
+            var defender = Substitute.For<ICombatObject>();
+            var attacker = Substitute.For<ICombatObject>();
+            var defenderGroup = CreateGroup(defender);
+            var attackerGroup = CreateGroup(attacker);
 
             sut.MockDefenders.Add(defenderGroup);
             sut.MockAttackers.Add(attackerGroup);
-            sut.MockDefenders.MockInRange = new List<ICombatObject> {attacker.Object};
-            sut.MockAttackers.MockInRange = new List<ICombatObject> {defender.Object};
+            sut.MockDefenders.MockInRange = new List<ICombatObject> {attacker};
+            sut.MockAttackers.MockInRange = new List<ICombatObject> {defender};
 
-            // ReSharper disable RedundantAssignment
-            var attackerBattleSide = BattleManager.BattleSide.Attack;
-            ICombatGroup outAttackerGroup = null;
-            ICombatObject outAttackerObject = null;           
-            // ReSharper restore RedundantAssignment
-            sut.MockBattleOrder.Setup(
-                                       m =>
-                                       m.NextObject(It.IsAny<uint>(),
-                                                    It.IsAny<ICombatList>(),
-                                                    It.IsAny<ICombatList>(),
-                                                    out outAttackerObject,
-                                                    out outAttackerGroup,
-                                                    out attackerBattleSide)).Returns(true);
-        
+            BattleManager.BattleSide attackerBattleSide;
+            ICombatGroup outAttackerGroup;
+            ICombatObject outAttackerObject;
+            sut.MockBattleOrder.NextObject(Arg.Any<uint>(),
+                                           Arg.Any<ICombatList>(),
+                                           Arg.Any<ICombatList>(),
+                                           out outAttackerObject,
+                                           out outAttackerGroup,
+                                           out attackerBattleSide).Returns(args =>
+                                           {
+                                               args[3] = null;
+                                               args[4] = null;
+                                               args[5] = BattleManager.BattleSide.Attack;
+                                               return true;
+                                           });
+
             var enterBattleRaised = false;
             battle.EnterBattle += delegate { enterBattleRaised = true; };
 
@@ -472,7 +471,7 @@ namespace Testing.BattleTests
             battle.ExecuteTurn();
             enterBattleRaised.Should().BeTrue();
             enterRoundRaised.Should().BeFalse();
-            sut.MockBattleReport.Verify(m => m.CreateBattleReport(), Times.Once());
+            sut.MockBattleReport.Received(1).CreateBattleReport();
         }
 
         /// <summary>
@@ -491,36 +490,34 @@ namespace Testing.BattleTests
                                                               new BattleOwner(BattleOwnerType.City, 200),
                                                               delegate { });
 
-            var defender = new Mock<ICombatObject>();
-            var attacker = new Mock<ICombatObject>();
-            var defenderGroup = CreateGroup(defender.Object);
-            var attackerGroup = CreateGroup(attacker.Object);
+            var defender = Substitute.For<ICombatObject>();
+            var attacker = Substitute.For<ICombatObject>();
+            var defenderGroup = CreateGroup(defender);
+            var attackerGroup = CreateGroup(attacker);
 
             sut.MockDefenders.Add(defenderGroup);
             sut.MockAttackers.Add(attackerGroup);
-            sut.MockDefenders.MockInRange = new List<ICombatObject> { attacker.Object };
-            sut.MockAttackers.MockInRange = new List<ICombatObject> { defender.Object };
+            sut.MockDefenders.MockInRange = new List<ICombatObject> {attacker};
+            sut.MockAttackers.MockInRange = new List<ICombatObject> {defender};
 
             // ReSharper disable RedundantAssignment
             var attackerBattleSide = BattleManager.BattleSide.Attack;
             ICombatGroup outAttackerGroup = null;
-            ICombatObject outAttackerObject = null;           
+            ICombatObject outAttackerObject = null;
             // ReSharper restore RedundantAssignment
-            sut.MockBattleOrder.Setup(
-                                       m =>
-                                       m.NextObject(It.IsAny<uint>(),
-                                                    It.IsAny<ICombatList>(),
-                                                    It.IsAny<ICombatList>(),
-                                                    out outAttackerObject,
-                                                    out outAttackerGroup,
-                                                    out attackerBattleSide)).Returns(false);
+            sut.MockBattleOrder.NextObject(Arg.Any<uint>(),
+                                           Arg.Any<ICombatList>(),
+                                           Arg.Any<ICombatList>(),
+                                           out outAttackerObject,
+                                           out outAttackerGroup,
+                                           out attackerBattleSide).Returns(false);
 
             var enterRoundRaised = false;
             battle.EnterRound += (manager, attackers, defenders, round) =>
-                {
-                    round.Should().Be(1);
-                    enterRoundRaised = true;
-                };
+            {
+                round.Should().Be(1);
+                enterRoundRaised = true;
+            };
 
             battle.BattleStarted = true;
             battle.Turn = 100;
@@ -528,7 +525,7 @@ namespace Testing.BattleTests
             battle.Round.Should().Be(1);
             battle.Turn.Should().Be(0);
             enterRoundRaised.Should().BeTrue();
-            sut.MockBattleReport.Verify(m => m.CreateBattleReport(), Times.Never());
+            sut.MockBattleReport.DidNotReceive().CreateBattleReport();
         }
 
         /// <summary>
@@ -545,49 +542,57 @@ namespace Testing.BattleTests
                                                               new BattleOwner(BattleOwnerType.City, 200),
                                                               delegate { });
 
-            var defender = new Mock<ICombatObject>();
-            defender.SetupProperty(p => p.Stats.Atk, 0m);
-            var attacker = new Mock<ICombatObject>();
+            var defender = Substitute.For<ICombatObject>();
+            defender.Stats.Atk.Returns(0m);
+            var attacker = Substitute.For<ICombatObject>();
 
-            var defenderGroup = CreateGroup(defender.Object);
-            var attackerGroup = CreateGroup(attacker.Object);
+            var defenderGroup = CreateGroup(defender);
+            var attackerGroup = CreateGroup(attacker);
 
             sut.MockDefenders.Add(defenderGroup);
             sut.MockAttackers.Add(attackerGroup);
-            sut.MockDefenders.MockInRange = new List<ICombatObject> {attacker.Object};
-            sut.MockAttackers.MockInRange = new List<ICombatObject> {defender.Object};
+            sut.MockDefenders.MockInRange = new List<ICombatObject> {attacker};
+            sut.MockAttackers.MockInRange = new List<ICombatObject> {defender};
 
             sut.MockAttackers.MockGetBestTargets.Enqueue(new StubCombatList.GetBestTargetQueueItem
             {
-                    BestTargetResult = CombatList.BestTargetResult.Ok,
-                    Targets =
-                            new List<CombatList.Target>
-                            {
-                                    new CombatList.Target {CombatObject = attacker.Object, Group = attackerGroup}
-                            }
+                BestTargetResult = CombatList.BestTargetResult.Ok,
+                Targets =
+                    new List<CombatList.Target>
+                    {
+                        new CombatList.Target {CombatObject = attacker, Group = attackerGroup}
+                    }
             });
-            var attackerObject = defender.Object;
-            var attackerBattleSide = BattleManager.BattleSide.Defense;
-            sut.MockBattleOrder.Setup(m => m.NextObject(It.IsAny<uint>(),
-                    It.IsAny<ICombatList>(),
-                    It.IsAny<ICombatList>(),
-                    out attackerObject,
-                    out defenderGroup,
-                    out attackerBattleSide)).Returns(true);
+            ICombatObject outAttackerObject;
+            ICombatGroup outDefenderGroup;
+            BattleManager.BattleSide outAttackerBattleSide;
+            sut.MockBattleOrder.NextObject(Arg.Any<uint>(),
+                                           Arg.Any<ICombatList>(),
+                                           Arg.Any<ICombatList>(),
+                                           out outAttackerObject,
+                                           out outDefenderGroup,
+                                           out outAttackerBattleSide)
+               .Returns(args =>
+               {
+                   args[3] = defender;
+                   args[4] = defenderGroup;
+                   args[5] = BattleManager.BattleSide.Defense;
+                   return true;
+               });
 
             var skippedAttackerCalled = false;
             battle.SkippedAttacker += (manager, side, group, o) =>
-                {
-                    side.Should().Be(BattleManager.BattleSide.Defense);
-                    o.Should().Be(defender.Object);
-                    skippedAttackerCalled = true;
-                };
+            {
+                side.Should().Be(BattleManager.BattleSide.Defense);
+                o.Should().Be(defender);
+                skippedAttackerCalled = true;
+            };
 
             battle.BattleStarted = true;
             battle.ExecuteTurn().Should().BeTrue();
             skippedAttackerCalled.Should().BeTrue();
-            sut.MockDbManager.Verify(m => m.Save(defender.Object), Times.Once());
-            defender.Verify(m => m.ParticipatedInRound(0), Times.Once());
+            sut.MockDbManager.Received().Save(defender);
+            defender.Received().ParticipatedInRound(0);
         }
 
         /// <summary>
@@ -596,7 +601,7 @@ namespace Testing.BattleTests
         ///     Then he should be skipped
         ///     And another attacker should be used immediatelly
         /// </summary>
-        [Fact(Skip = "Need to mock the out params in NextObject for multiple calls and not sure how to do that in Moq. Should be easy once this is done w/ NSubstitute")]
+        [Fact]
         public void TestExecuteWhenSkippedDueToNoneInRangeShouldFindAnotherTargetImmediately()
         {
             var sut = new BattleManagerSut();
@@ -605,67 +610,63 @@ namespace Testing.BattleTests
                                                               new BattleOwner(BattleOwnerType.City, 200),
                                                               delegate { });
 
-            var defender = new Mock<ICombatObject>();
-            defender.SetupProperty(p => p.Stats.Atk, 0m);
-            var attacker = new Mock<ICombatObject>();
+            var defender = Substitute.For<ICombatObject>();
+            defender.Stats.Atk.Returns(0m);
+            var attacker = Substitute.For<ICombatObject>();
 
-            var defenderGroup = CreateGroup(defender.Object);
-            var attackerGroup = CreateGroup(attacker.Object);
+            var defenderGroup = CreateGroup(defender);
+            var attackerGroup = CreateGroup(attacker);
 
             sut.MockDefenders.Add(defenderGroup);
             sut.MockAttackers.Add(attackerGroup);
-            sut.MockDefenders.MockInRange = new List<ICombatObject> {attacker.Object};
-            sut.MockAttackers.MockInRange = new List<ICombatObject> {defender.Object};
+            sut.MockDefenders.MockInRange = new List<ICombatObject> {attacker};
+            sut.MockAttackers.MockInRange = new List<ICombatObject> {defender};
 
             // Have it skip both objects but w/ different code path
             sut.MockAttackers.MockGetBestTargets.Enqueue(new StubCombatList.GetBestTargetQueueItem
             {
-                    BestTargetResult = CombatList.BestTargetResult.NoneInRange,
-                    Targets =
-                            new List<CombatList.Target>
-                            {
-                                    new CombatList.Target {CombatObject = attacker.Object, Group = attackerGroup}
-                            }
+                BestTargetResult = CombatList.BestTargetResult.NoneInRange,
+                Targets =
+                    new List<CombatList.Target>
+                    {
+                        new CombatList.Target {CombatObject = attacker, Group = attackerGroup}
+                    }
             });
 
-            sut.MockDefenders.MockGetBestTargets.Enqueue(new StubCombatList.GetBestTargetQueueItem
+            sut.MockAttackers.MockGetBestTargets.Enqueue(new StubCombatList.GetBestTargetQueueItem
             {
-                    BestTargetResult = CombatList.BestTargetResult.Ok,
-                    Targets = new List<CombatList.Target>()
+                BestTargetResult = CombatList.BestTargetResult.Ok,
+                Targets = new List<CombatList.Target>()
             });
 
             // ReSharper disable RedundantAssignment
-            var firstOrderAttackSide = BattleManager.BattleSide.Defense;
-            var firstOrderAttackObject = defender.Object;
-            var firstOrderAttackGroup = defenderGroup;
+            BattleManager.BattleSide firstOrderAttackSide;
+            ICombatObject firstOrderAttackObject;
+            ICombatGroup firstOrderAttackGroup;
             // ReSharper restore RedundantAssignment
             sut.MockBattleOrder
-               .Setup(
-                      m =>
-                      m.NextObject(It.IsAny<uint>(),
-                                   It.IsAny<ICombatList>(),
-                                   It.IsAny<ICombatList>(),
-                                   out firstOrderAttackObject,
-                                   out firstOrderAttackGroup,
-                                   out firstOrderAttackSide))
-               .Returns(false);
-            
+               .NextObject(Arg.Any<uint>(),
+                           Arg.Any<ICombatList>(),
+                           Arg.Any<ICombatList>(),
+                           out firstOrderAttackObject,
+                           out firstOrderAttackGroup,
+                           out firstOrderAttackSide)
+               .Returns(args =>
+               {
+                   args[3] = defender;
+                   args[4] = defenderGroup;
+                   args[5] = BattleManager.BattleSide.Defense;
+                   return true;
+               });
+
             int skippedCallCount = 0;
             battle.SkippedAttacker += (manager, side, group, o) =>
-                {
-                    skippedCallCount++;
+            {
+                skippedCallCount++;
 
-                    if (skippedCallCount == 1)
-                    {
-                        side.Should().Be(BattleManager.BattleSide.Defense);
-                        o.Should().Be(defender.Object);
-                    }
-                    else if (skippedCallCount == 2)
-                    {
-                        side.Should().Be(BattleManager.BattleSide.Attack);
-                        o.Should().Be(attacker.Object);
-                    }
-                };
+                side.Should().Be(BattleManager.BattleSide.Defense);
+                o.Should().Be(defender);
+            };
 
             battle.BattleStarted = true;
             battle.ExecuteTurn().Should().BeTrue();
@@ -682,44 +683,50 @@ namespace Testing.BattleTests
         {
             var sut = new BattleManagerSut();
 
-            var attacker = new Mock<ICombatObject>();
-            attacker.SetupProperty(p => p.Stats.Atk, 10m);
+            var attacker = Substitute.For<ICombatObject>();
+            attacker.Stats.Atk.Returns(10m);
 
-            var attackerWithoutInRange = new Mock<ICombatObject>();
-            var defender1 = new Mock<ICombatObject>();
-            var defender2 = new Mock<ICombatObject>();
+            var attackerWithoutInRange = Substitute.For<ICombatObject>();
+            var defender1 = Substitute.For<ICombatObject>();
+            var defender2 = Substitute.For<ICombatObject>();
 
-            var attacker1Group = CreateGroup(attacker.Object);
-            var attackerWithoutInRangeGroup = CreateGroup(attackerWithoutInRange.Object);
-            var defenderGroup = CreateGroup(defender1.Object, defender2.Object);
+            var attacker1Group = CreateGroup(attacker);
+            var attackerWithoutInRangeGroup = CreateGroup(attackerWithoutInRange);
+            var defenderGroup = CreateGroup(defender1, defender2);
 
             sut.MockDefenders.Add(defenderGroup);
             sut.MockAttackers.Add(attacker1Group);
             sut.MockAttackers.Add(attackerWithoutInRangeGroup);
-            sut.MockDefenders.MockInRange = new List<ICombatObject> {attacker.Object};
+            sut.MockDefenders.MockInRange = new List<ICombatObject> {attacker};
 
             // ReSharper disable RedundantAssignment
-            var attackerBattleSide = BattleManager.BattleSide.Attack;
-            var attackerObject = attacker.Object;
+            BattleManager.BattleSide outAttackerBattleSide;
+            ICombatObject outAttackerObject;
+            ICombatGroup outCombatGroup;
             // ReSharper restore RedundantAssignment
-            sut.MockBattleOrder.Setup(
-                                       m =>
-                                       m.NextObject(It.IsAny<uint>(),
-                                                    It.IsAny<ICombatList>(),
-                                                    It.IsAny<ICombatList>(),
-                                                    out attackerObject,
-                                                    out attacker1Group,
-                                                    out attackerBattleSide)).Returns(true);
+            sut.MockBattleOrder.NextObject(Arg.Any<uint>(),
+                                           Arg.Any<ICombatList>(),
+                                           Arg.Any<ICombatList>(),
+                                           out outAttackerObject,
+                                           out outCombatGroup,
+                                           out outAttackerBattleSide)
+               .Returns(args =>
+               {
+                   args[3] = attacker;
+                   args[4] = attacker1Group;
+                   args[5] = BattleManager.BattleSide.Attack;
+                   return true;
+               });
 
             sut.MockDefenders.MockGetBestTargets.Enqueue(new StubCombatList.GetBestTargetQueueItem
             {
-                    BestTargetResult = CombatList.BestTargetResult.Ok,
-                    Targets =
-                            new List<CombatList.Target>
-                            {
-                                    new CombatList.Target {CombatObject = defender1.Object, Group = attacker1Group},
-                                    new CombatList.Target {CombatObject = defender2.Object, Group = attacker1Group}
-                            }
+                BestTargetResult = CombatList.BestTargetResult.Ok,
+                Targets =
+                    new List<CombatList.Target>
+                    {
+                        new CombatList.Target {CombatObject = defender1, Group = attacker1Group},
+                        new CombatList.Target {CombatObject = defender2, Group = attacker1Group}
+                    }
             });
 
             var battle = sut.CreateStubbedAttackBattleManager(1,
@@ -729,19 +736,19 @@ namespace Testing.BattleTests
 
             var withdrawCalled = false;
             battle.WithdrawAttacker += (manager, @group) =>
-                {
-                    withdrawCalled = true;
-                    Assert.Same(@group, attackerWithoutInRangeGroup);
-                };
+            {
+                withdrawCalled = true;
+                attackerWithoutInRangeGroup.Should().Equal(@group);
+            };
 
             battle.BattleStarted = true;
-            
+
             battle.ExecuteTurn().Should().BeTrue();
 
             withdrawCalled.Should().BeTrue();
-            attacker.Verify(m => m.ParticipatedInRound(0), Times.Once());
-            attackerWithoutInRange.Verify(m => m.ExitBattle(), Times.Once());
-            attacker.Verify(m => m.ExitBattle(), Times.Never());
+            attacker.Received().ParticipatedInRound(0);
+            attackerWithoutInRange.Received().ExitBattle();
+            attacker.DidNotReceive().ExitBattle();
         }
 
         /// <summary>
@@ -756,41 +763,48 @@ namespace Testing.BattleTests
         {
             var sut = new BattleManagerSut();
 
-            var attacker = new Mock<ICombatObject>();
-            attacker.SetupProperty(p => p.Stats.Atk, 10m);
-            attacker.SetupProperty(p => p.LastRound);
-            attacker.Setup(m => m.ParticipatedInRound(0)).Callback(() => { attacker.Object.LastRound++; });
-            var defender1 = new Mock<ICombatObject>();
-            var defender2 = new Mock<ICombatObject>();
+            var attacker = Substitute.For<ICombatObject>();
+            attacker.Stats.Atk.Returns(10m);
+            attacker.When(x => x.ParticipatedInRound(0)).Do(args => { attacker.LastRound++; });
+            var defender1 = Substitute.For<ICombatObject>();
+            var defender2 = Substitute.For<ICombatObject>();
 
-            var attackerGroup = CreateGroup(attacker.Object);
-            var defenderGroup = CreateGroup(defender1.Object, defender2.Object);
+            var attackerGroup = CreateGroup(attacker);
+            var defenderGroup = CreateGroup(defender1, defender2);
 
             sut.MockDefenders.Add(defenderGroup);
             sut.MockAttackers.Add(attackerGroup);
-            sut.MockDefenders.MockInRange = new List<ICombatObject> {attacker.Object};
+            sut.MockDefenders.MockInRange = new List<ICombatObject> {attacker};
 
             sut.MockDefenders.MockGetBestTargets.Enqueue(new StubCombatList.GetBestTargetQueueItem
             {
-                    BestTargetResult = CombatList.BestTargetResult.Ok,
-                    Targets =
-                            new List<CombatList.Target>
-                            {
-                                    new CombatList.Target {CombatObject = defender1.Object, Group = attackerGroup},
-                                    new CombatList.Target {CombatObject = defender2.Object, Group = attackerGroup}
-                            }
+                BestTargetResult = CombatList.BestTargetResult.Ok,
+                Targets =
+                    new List<CombatList.Target>
+                    {
+                        new CombatList.Target {CombatObject = defender1, Group = attackerGroup},
+                        new CombatList.Target {CombatObject = defender2, Group = attackerGroup}
+                    }
             });
 
             // ReSharper disable RedundantAssignment
-            var attackerBattleSide = BattleManager.BattleSide.Attack;
-            var attackerOutObject = attacker.Object;
+            BattleManager.BattleSide outAttackerBattleSide;
+            ICombatObject outAttackerObject;
+            ICombatGroup outAttackerGroup;
             // ReSharper restore RedundantAssignment            
-            sut.MockBattleOrder.Setup(m => m.NextObject(It.IsAny<uint>(),
-                    It.IsAny<ICombatList>(),
-                    It.IsAny<ICombatList>(),
-                    out attackerOutObject,
-                    out attackerGroup,
-                    out attackerBattleSide)).Returns(true);
+            sut.MockBattleOrder.NextObject(Arg.Any<uint>(),
+                                           Arg.Any<ICombatList>(),
+                                           Arg.Any<ICombatList>(),
+                                           out outAttackerObject,
+                                           out outAttackerGroup,
+                                           out outAttackerBattleSide)
+               .Returns(args =>
+               {
+                   args[3] = attacker;
+                   args[4] = attackerGroup;
+                   args[5] = BattleManager.BattleSide.Attack;
+                   return true;
+               });
 
             var attackTargetCallCount = 0;
 
@@ -802,39 +816,39 @@ namespace Testing.BattleTests
                                                                attackerObject,
                                                                defenderObject,
                                                                attackIndex) =>
-                                                                  {
-                                                                      attackTargetCallCount++;
+                                                              {
+                                                                  attackTargetCallCount++;
 
-                                                                      switch(attackIndex)
-                                                                      {
-                                                                          case 0:
-                                                                              defenderObject.CombatObject.Should().Be(defender1.Object);
-                                                                              break;
-                                                                          case 1:
-                                                                              defenderObject.CombatObject.Should().Be(defender2.Object);
-                                                                              break;
-                                                                          default:
-                                                                              throw new Exception(
-                                                                                      "Unexpected attackIndex");
-                                                                      }
-                                                                  });
+                                                                  switch(attackIndex)
+                                                                  {
+                                                                      case 0:
+                                                                          defenderObject.CombatObject.Should().Be(defender1);
+                                                                          break;
+                                                                      case 1:
+                                                                          defenderObject.CombatObject.Should().Be(defender2);
+                                                                          break;
+                                                                      default:
+                                                                          throw new Exception(
+                                                                                  "Unexpected attackIndex");
+                                                                  }
+                                                              });
 
             var exitTurnCalled = false;
             battle.ExitTurn += (manager, attackers, defenders, turn) =>
-                {
-                    turn.Should().Be(0);
-                    exitTurnCalled = true;
-                };
+            {
+                turn.Should().Be(0);
+                exitTurnCalled = true;
+            };
 
             battle.BattleStarted = true;
-           
+
             battle.ExecuteTurn().Should().BeTrue();
 
             battle.Turn.Should().Be(1);
             attackTargetCallCount.Should().Be(2);
             exitTurnCalled.Should().BeTrue();
-            attacker.Verify(m => m.ParticipatedInRound(0), Times.Once());
-            sut.MockDbManager.Verify(m => m.Save(attacker.Object), Times.Once());
+            attacker.Received().ParticipatedInRound(0);
+            sut.MockDbManager.Received().Save(attacker);
         }
 
         /// <summary>
@@ -849,44 +863,48 @@ namespace Testing.BattleTests
         {
             var sut = new BattleManagerSut();
 
-            var defender = new Mock<ICombatObject>();
-            defender.SetupProperty(p => p.Stats.Atk, 10m);
-            defender.SetupProperty(p => p.LastRound);
-            defender.Setup(m => m.ParticipatedInRound(0)).Callback(() => { defender.Object.LastRound++; });
-            var attacker1 = new Mock<ICombatObject>();
-            var attacker2 = new Mock<ICombatObject>();
+            var defender = Substitute.For<ICombatObject>();
+            defender.Stats.Atk.Returns(10m);
+            defender.When(m => m.ParticipatedInRound(0)).Do(args => { defender.LastRound++; });
+            var attacker1 = Substitute.For<ICombatObject>();
+            var attacker2 = Substitute.For<ICombatObject>();
 
-            var defenderGroup = CreateGroup(defender.Object);
-            var attackerGroup = CreateGroup(attacker1.Object, attacker2.Object);
+            var defenderGroup = CreateGroup(defender);
+            var attackerGroup = CreateGroup(attacker1, attacker2);
 
             sut.MockDefenders.Add(defenderGroup);
             sut.MockAttackers.Add(attackerGroup);
-            sut.MockDefenders.MockInRange = new List<ICombatObject> {attacker1.Object, attacker2.Object};
-            sut.MockAttackers.MockInRange = new List<ICombatObject> {defender.Object};
+            sut.MockDefenders.MockInRange = new List<ICombatObject> {attacker1, attacker2};
+            sut.MockAttackers.MockInRange = new List<ICombatObject> {defender};
 
             sut.MockAttackers.MockGetBestTargets.Enqueue(new StubCombatList.GetBestTargetQueueItem
             {
-                    BestTargetResult = CombatList.BestTargetResult.Ok,
-                    Targets =
-                            new List<CombatList.Target>
-                            {
-                                    new CombatList.Target {CombatObject = attacker1.Object, Group = attackerGroup},
-                                    new CombatList.Target {CombatObject = attacker2.Object, Group = attackerGroup}
-                            }
+                BestTargetResult = CombatList.BestTargetResult.Ok,
+                Targets =
+                    new List<CombatList.Target>
+                    {
+                        new CombatList.Target {CombatObject = attacker1, Group = attackerGroup},
+                        new CombatList.Target {CombatObject = attacker2, Group = attackerGroup}
+                    }
             });
 
-            // ReSharper disable RedundantAssignment
-            var defenderBattleSide = BattleManager.BattleSide.Defense;
-            var defenderOutObject = defender.Object;
-            // ReSharper restore RedundantAssignment
-            sut.MockBattleOrder.Setup(
-                              m =>
-                              m.NextObject(It.IsAny<uint>(),
-                                           It.IsAny<ICombatList>(),
-                                           It.IsAny<ICombatList>(),
-                                           out defenderOutObject,
-                                           out defenderGroup,
-                                           out defenderBattleSide)).Returns(true);
+            BattleManager.BattleSide outDefenderBattleSide;
+            ICombatObject outDefenderOutObject;
+            ICombatGroup outDefenderGroup;
+            sut.MockBattleOrder.NextObject(Arg.Any<uint>(),
+                                           Arg.Any<ICombatList>(),
+                                           Arg.Any<ICombatList>(),
+                                           out outDefenderOutObject,
+                                           out outDefenderGroup,
+                                           out outDefenderBattleSide)
+               .Returns(args =>
+               {
+                   args[3] = defender;
+                   args[4] = defenderGroup;
+                   args[5] = BattleManager.BattleSide.Defense;
+                   return true;
+               });
+
             var attackTargetCallCount = 0;
 
             var battle = sut.CreateStubbedAttackBattleManager(1,
@@ -897,29 +915,29 @@ namespace Testing.BattleTests
                                                                attackerObject,
                                                                defenderObject,
                                                                attackIndex) =>
-                                                                  {
-                                                                      attackTargetCallCount++;
+                                                              {
+                                                                  attackTargetCallCount++;
 
-                                                                      switch(attackIndex)
-                                                                      {
-                                                                          case 0:
-                                                                              defenderObject.CombatObject.Should().Be(attacker1.Object);
-                                                                              break;
-                                                                          case 1:
-                                                                              defenderObject.CombatObject.Should().Be(attacker2.Object);
-                                                                              break;
-                                                                          default:
-                                                                              throw new Exception(
-                                                                                      "Unexpected attackIndex");
-                                                                      }
-                                                                  });
+                                                                  switch(attackIndex)
+                                                                  {
+                                                                      case 0:
+                                                                          defenderObject.CombatObject.Should().Be(attacker1);
+                                                                          break;
+                                                                      case 1:
+                                                                          defenderObject.CombatObject.Should().Be(attacker2);
+                                                                          break;
+                                                                      default:
+                                                                          throw new Exception(
+                                                                                  "Unexpected attackIndex");
+                                                                  }
+                                                              });
 
             var exitTurnCalled = false;
             battle.ExitTurn += (manager, attackers, defenders, turn) =>
-                {
-                    turn.Should().Be(0);
-                    exitTurnCalled = true;
-                };
+            {
+                turn.Should().Be(0);
+                exitTurnCalled = true;
+            };
 
             battle.BattleStarted = true;
             battle.ExecuteTurn().Should().BeTrue();
@@ -927,8 +945,297 @@ namespace Testing.BattleTests
             battle.Turn.Should().Be(1);
             attackTargetCallCount.Should().Be(2);
             exitTurnCalled.Should().BeTrue();
-            defender.Verify(m => m.ParticipatedInRound(0), Times.Once());
-            sut.MockDbManager.Verify(m => m.Save(defender.Object), Times.Once());
-        }        
+            defender.Received().ParticipatedInRound(0);
+            sut.MockDbManager.Received().Save(defender);
+        }
+
+        [Theory, AutoNSubstituteData]
+        public void Execute_WhenHittingUnitKillsTarget_ShouldCarryOverToNextTarget(
+                [Frozen] IBattleFormulas battleFormulas,
+                [Frozen] IBattleOrder battleOrder,
+                ICombatObject attacker1,
+                ICombatGroup attackerGroup,
+                ICombatObject defender1,
+                ICombatObject defender2,
+                ICombatGroup defenderGroup,
+                BattleManager battleManager
+                )
+        {
+            attacker1.Stats.Atk.Returns(10);
+
+            // Attacker has 300 raw damage
+            // Defender takes 150 dmg but only has 100 hp so 50 dmg should be carried over
+            // 33% should be carried over
+            battleFormulas.GetAttackerDmgToDefender(attacker1, defender1, Arg.Any<uint>()).Returns(300);
+            decimal outActualDmg;
+            defender1.WhenForAnyArgs(p => p.CalcActualDmgToBeTaken(null, null, null, 0, 0, out outActualDmg))
+                     .Do(args => { args[5] = 150m; });
+            defender1.Hp.Returns(100m);
+
+            battleFormulas.GetAttackerDmgToDefender(attacker1, defender2, Arg.Any<uint>()).Returns(200);
+
+            battleManager.Attackers.Count.Returns(1);
+            battleManager.Attackers.AllAliveCombatObjects().Returns(new[] {attacker1});
+
+            battleManager.Defenders.Count.Returns(2);
+            battleManager.Defenders.HasInRange(null).ReturnsForAnyArgs(true);
+            battleManager.Defenders.AllCombatObjects().Returns(new[] {defender1, defender2});
+
+            List<CombatList.Target> outCarryOverDefender;
+            battleManager.Defenders.GetBestTargets(0, null, out outCarryOverDefender, 0, 0)
+                         .ReturnsForAnyArgs(args =>
+                         {
+                             args[2] = new List<CombatList.Target>
+                             {
+                                 new CombatList.Target {CombatObject = defender1, Group = defenderGroup}
+                             };
+                             return CombatList.BestTargetResult.Ok;
+                         }, args =>
+                         {
+                             args[2] = new List<CombatList.Target>
+                             {
+                                 new CombatList.Target {CombatObject = defender2, Group = defenderGroup}
+                             };
+                             return CombatList.BestTargetResult.Ok;
+                         });
+
+            ICombatObject outCombatObject;
+            ICombatGroup outCombatGroup;
+            BattleManager.BattleSide outFoundInGroup;
+            battleOrder.NextObject(0, null, null, out outCombatObject, out outCombatGroup, out outFoundInGroup)
+                       .ReturnsForAnyArgs(args =>
+                       {
+                           args[3] = attacker1;
+                           args[4] = attackerGroup;
+                           args[5] = BattleManager.BattleSide.Attack;
+                           return true;
+                       });
+
+            battleManager.ExecuteTurn();
+
+            defender2.Received(1).CalcActualDmgToBeTaken(Arg.Any<ICombatList>(),
+                                                         Arg.Any<ICombatList>(),
+                                                         Arg.Any<IBattleRandom>(),
+                                                         Arg.Is<decimal>(dmg => dmg > 66.6m && dmg < 66.67m),
+                                                         1,
+                                                         out outActualDmg);
+        }
+
+        [Theory, AutoNSubstituteData]
+        public void Execute_WhenHittingUnitKillsTarget_ShouldCarryOverToNextTargetOnlyOnce(
+                [Frozen] IBattleFormulas battleFormulas,
+                [Frozen] IBattleOrder battleOrder,
+                ICombatObject attacker1,
+                ICombatGroup attackerGroup,
+                ICombatObject defender1,
+                ICombatObject defender2,
+                ICombatObject defender3,
+                ICombatGroup defenderGroup,
+                BattleManager battleManager
+                )
+        {
+            attacker1.Stats.Atk.Returns(10);
+
+            battleFormulas.GetAttackerDmgToDefender(null, null, 0).ReturnsForAnyArgs(100m);
+            decimal outActualDmg;
+            defender1.WhenForAnyArgs(p => p.CalcActualDmgToBeTaken(null, null, null, 0, 0, out outActualDmg))
+                     .Do(args => { args[5] = 100m; });
+            defender1.Hp.Returns(10m);
+
+            defender2.WhenForAnyArgs(p => p.CalcActualDmgToBeTaken(null, null, null, 0, 0, out outActualDmg))
+                     .Do(args => { args[5] = 100m; });
+            defender2.Hp.Returns(10m);
+
+            battleManager.Attackers.Count.Returns(1);
+            battleManager.Attackers.AllAliveCombatObjects().Returns(new[] {attacker1});
+
+            battleManager.Defenders.Count.Returns(2);
+            battleManager.Defenders.HasInRange(null).ReturnsForAnyArgs(true);
+            battleManager.Defenders.AllCombatObjects().Returns(new[] {defender1, defender2, defender3});
+
+            List<CombatList.Target> outCarryOverDefender;
+            battleManager.Defenders.GetBestTargets(0, null, out outCarryOverDefender, 0, 0)
+                         .ReturnsForAnyArgs(
+                                            args =>
+                                            {
+                                                args[2] = new List<CombatList.Target>
+                                                {
+                                                    new CombatList.Target {CombatObject = defender1, Group = defenderGroup}
+                                                };
+                                                return CombatList.BestTargetResult.Ok;
+                                            },
+                                            args =>
+                                            {
+                                                args[2] = new List<CombatList.Target>
+                                                {
+                                                    new CombatList.Target {CombatObject = defender2, Group = defenderGroup}
+                                                };
+                                                return CombatList.BestTargetResult.Ok;
+                                            },
+                                            args =>
+                                            {
+                                                args[2] = new List<CombatList.Target>
+                                                {
+                                                    new CombatList.Target {CombatObject = defender3, Group = defenderGroup}
+                                                };
+                                                return CombatList.BestTargetResult.Ok;
+                                            });
+
+            ICombatObject outCombatObject;
+            ICombatGroup outCombatGroup;
+            BattleManager.BattleSide outFoundInGroup;
+            battleOrder.NextObject(0, null, null, out outCombatObject, out outCombatGroup, out outFoundInGroup)
+                       .ReturnsForAnyArgs(args =>
+                       {
+                           args[3] = attacker1;
+                           args[4] = attackerGroup;
+                           args[5] = BattleManager.BattleSide.Attack;
+                           return true;
+                       });
+
+            battleManager.ExecuteTurn();
+
+            defender3.DidNotReceiveWithAnyArgs().CalcActualDmgToBeTaken(null,
+                                                                        null,
+                                                                        null,
+                                                                        0,
+                                                                        0,
+                                                                        out outActualDmg);
+        }
+
+        /// <summary>
+        /// Scenario:
+        /// Attacker always tries to deal 100 damage but actual is 40 dmg and splashes 2.
+        /// Defender1 has 10 HP
+        /// Defender2 has 5 HP
+        /// Defender3 has 20 HP
+        /// Defender4 has 300 HP
+        /// Defender1 and Defender2 are hit by splash.
+        /// Defender1 dies and damage is carried over to Defender3
+        /// Defender2 dies and 35 damage is carried over to Defender4
+        /// </summary>
+        [Theory, AutoNSubstituteData]
+        public void Execute_WhenHittingSplashesAndKillsTargetWithSecondaryHit_ShouldCarryOverToNextTarget(
+                [Frozen] IBattleFormulas battleFormulas,
+                [Frozen] IBattleOrder battleOrder,
+                ICombatObject attacker1,
+                ICombatGroup attackerGroup,
+                ICombatObject defender1,
+                ICombatObject defender2,
+                ICombatObject defender3,
+                ICombatObject defender4,
+                ICombatGroup defenderGroup,
+                BattleManager battleManager)
+        {
+            decimal outActualDmg;
+
+            attacker1.Stats.Atk.Returns(1);
+            battleFormulas.GetAttackerDmgToDefender(attacker1, Arg.Any<ICombatObject>(), Arg.Any<uint>()).Returns(100m);
+
+            defender1.Hp.Returns(10);
+            defender1.WhenForAnyArgs(p => p.CalcActualDmgToBeTaken(null, null, null, 0, 0, out outActualDmg)).Do(args => { args[5] = 40m; });
+
+            defender2.Hp.Returns(5);
+            defender2.WhenForAnyArgs(p => p.CalcActualDmgToBeTaken(null, null, null, 0, 0, out outActualDmg)).Do(args => { args[5] = 40m; });
+
+            defender3.Hp.Returns(20);
+            defender3.WhenForAnyArgs(p => p.CalcActualDmgToBeTaken(null, null, null, 0, 0, out outActualDmg)).Do(args => { args[5] = 40m; });
+
+            defender4.Hp.Returns(300);
+            defender4.WhenForAnyArgs(p => p.CalcActualDmgToBeTaken(null, null, null, 0, 0, out outActualDmg)).Do(args => { args[5] = 40m; });
+
+            battleManager.Attackers.Count.Returns(1);
+            battleManager.Attackers.AllAliveCombatObjects().Returns(new[] {attacker1});
+
+            battleManager.Defenders.Count.Returns(4);
+            battleManager.Defenders.HasInRange(null).ReturnsForAnyArgs(true);
+            battleManager.Defenders.AllCombatObjects().Returns(new[] {defender1, defender2, defender3, defender4});
+
+            List<CombatList.Target> outCarryOverDefender;
+            battleManager.Defenders.GetBestTargets(0, null, out outCarryOverDefender, 0, 0).ReturnsForAnyArgs(args =>
+            {
+                args[2] = new List<CombatList.Target>
+                {
+                    new CombatList.Target {CombatObject = defender1, Group = defenderGroup},
+                    new CombatList.Target {CombatObject = defender2, Group = defenderGroup}
+                };
+                return CombatList.BestTargetResult.Ok;
+            }, args =>
+            {
+                args[2] = new List<CombatList.Target> {new CombatList.Target {CombatObject = defender3, Group = defenderGroup}};
+                return CombatList.BestTargetResult.Ok;
+            }, args =>
+            {
+                args[2] = new List<CombatList.Target> {new CombatList.Target {CombatObject = defender4, Group = defenderGroup}};
+                return CombatList.BestTargetResult.Ok;
+            });
+
+            ICombatObject outCombatObject;
+            ICombatGroup outCombatGroup;
+            BattleManager.BattleSide outFoundInGroup;
+            battleOrder.NextObject(0, null, null, out outCombatObject, out outCombatGroup, out outFoundInGroup).ReturnsForAnyArgs(args =>
+            {
+                args[3] = attacker1;
+                args[4] = attackerGroup;
+                args[5] = BattleManager.BattleSide.Attack;
+                return true;
+            });
+
+
+            battleManager.ExecuteTurn();
+
+            outActualDmg = 40;
+            defender3.Received(1).CalcActualDmgToBeTaken(Arg.Any<ICombatList>(), Arg.Any<ICombatList>(), Arg.Any<IBattleRandom>(), 75m, 1, out outActualDmg);
+            defender4.Received(1).CalcActualDmgToBeTaken(Arg.Any<ICombatList>(), Arg.Any<ICombatList>(), Arg.Any<IBattleRandom>(), 87.5m, 3, out outActualDmg);
+        }
+
+        [Theory, AutoNSubstituteData]
+        public void Execute_WhenNewRound_ShouldCallJoinBattleOnAllNewTroops(
+                [Frozen] IDbManager dbManager,
+                [Frozen] IBattleOrder battleOrder,
+                [Frozen] ICombatListFactory combatListFactory,
+                ICombatObject attacker1,
+                ICombatObject attacker2,
+                ICombatGroup attackerGroup,
+                ICombatObject defender1,
+                ICombatObject defender2,
+                ICombatGroup defenderGroup,
+                BattleManager battleManager)
+        {
+            defender1.IsWaitingToJoinBattle.Returns(false);
+            defender2.IsWaitingToJoinBattle.Returns(true);
+            attacker1.IsWaitingToJoinBattle.Returns(false);
+            attacker2.IsWaitingToJoinBattle.Returns(true);
+            attacker2.Id.Returns((uint)1337);
+
+            battleManager.Attackers.Count.Returns(1);
+            battleManager.Attackers.AllAliveCombatObjects().Returns(new[] {attacker1});
+            battleManager.Attackers.AllCombatObjects().Returns(c => new[] {attacker1, attacker2});
+
+            battleManager.Defenders.Count.Returns(1);
+            battleManager.Defenders.HasInRange(null).ReturnsForAnyArgs(true);
+            battleManager.Defenders.AllCombatObjects().Returns(c => new[] {defender1, defender2});
+
+            ICombatObject outCombatObject;
+            ICombatGroup outCombatGroup;
+            BattleManager.BattleSide outFoundInGroup;
+            battleOrder.NextObject(0, null, null, out outCombatObject, out outCombatGroup, out outFoundInGroup).ReturnsForAnyArgs(args =>
+            {
+                args[3] = null;
+                args[4] = attackerGroup;
+                args[5] = BattleManager.BattleSide.Attack;
+                return false;
+            });
+            
+            battleManager.ExecuteTurn();
+
+            attacker1.DidNotReceive().JoinBattle(1);
+            defender1.DidNotReceive().JoinBattle(1);
+            defender2.Received().JoinBattle(1);
+            attacker2.Received().JoinBattle(1);
+
+            dbManager.Received().Save(defender2);
+            dbManager.Received().Save(attacker2);
+        }
     }
 }

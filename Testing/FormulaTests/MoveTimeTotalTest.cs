@@ -6,7 +6,6 @@ using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
 using Game.Setup;
-using Moq;
 using NSubstitute;
 using Xunit.Extensions;
 
@@ -271,18 +270,18 @@ namespace Testing.FormulaTests
 
         private ITroopStub CreateMockedStub(byte speed, List<Effect> effects)
         {
-            var technologyManager = new Mock<ITechnologyManager>();
-            technologyManager.Setup(m => m.GetEffects(It.IsAny<EffectCode>(), It.IsAny<EffectInheritance>()))
+            var technologyManager = Substitute.For<ITechnologyManager>();
+            technologyManager.GetEffects(Arg.Any<EffectCode>(), Arg.Any<EffectInheritance>())
                              .Returns(effects);
 
-            var city = new Mock<ICity>();
-            city.SetupGet(p => p.Technologies).Returns(technologyManager.Object);
+            var city = Substitute.For<ICity>();
+            city.Technologies.Returns(technologyManager);
 
-            var stub = new Mock<ITroopStub>();
-            stub.SetupGet(p => p.City).Returns(city.Object);
-            stub.SetupGet(p => p.Speed).Returns(speed);
+            var stub = Substitute.For<ITroopStub>();
+            stub.City.Returns(city);
+            stub.Speed.Returns(speed);
 
-            return stub.Object;
+            return stub;
         }
     }
 }

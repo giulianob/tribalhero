@@ -86,7 +86,7 @@ namespace Game.Logic.Formulas
             var bonusAmt = new[] {15, 34, 75, 141, 232, 349, 493, 665, 865, 1094};
 
             // Get nothing if they didnt defeat the camp
-            if (battle.Defenders.Upkeep > 0)
+            if (battle.Defenders.UpkeepExcludingWaitingToJoinBattle > 0)
             {
                 return new Resource();
             }            

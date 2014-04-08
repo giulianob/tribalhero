@@ -39,8 +39,9 @@ namespace Game.Battle.CombatObjects
                                          decimal hp,
                                          IStronghold stronghold,
                                          IStructureCsvFactory structureCsvFactory,
-                                         IBattleFormulas battleFormulas)
-                : base(id, battleId, battleFormulas)
+                                         IBattleFormulas battleFormulas,
+                                         IDbManager dbManager)
+                : base(id, battleId, battleFormulas, dbManager)
         {
             Stronghold = stronghold;
             this.type = type;
@@ -195,6 +196,7 @@ namespace Game.Battle.CombatObjects
                         new DbColumn("hits_dealt", HitDealt, DbType.UInt16),
                         new DbColumn("hits_dealt_by_unit", HitDealtByUnit, DbType.UInt32),
                         new DbColumn("hits_received", HitRecv, DbType.UInt16),
+                        new DbColumn("is_waiting_to_join_battle", IsWaitingToJoinBattle, DbType.Boolean)
                 };
             }
         }
@@ -235,7 +237,7 @@ namespace Game.Battle.CombatObjects
                                                     out decimal actualDmg)
         {
             // Miss chance
-            actualDmg = BattleFormulas.GetDmgWithMissChance(attackers.Upkeep, defenders.Upkeep, baseDmg, random);
+            actualDmg = BattleFormulas.GetDmgWithMissChance(attackers.UpkeepExcludingWaitingToJoinBattle, defenders.UpkeepExcludingWaitingToJoinBattle, baseDmg, random);
         }
 
         public override void TakeDamage(decimal dmg, out Resource returning, out int attackPoints)

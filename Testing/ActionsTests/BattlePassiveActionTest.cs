@@ -65,7 +65,7 @@ namespace Testing.ActionsTests
 
             // Defender Stubs                       
             var defenders = new Mock<ICombatList>();
-            defenders.SetupGet(p => p.Upkeep).Returns(1000);
+            defenders.SetupGet(p => p.UpkeepExcludingWaitingToJoinBattle).Returns(1000);
 
             // Attacker Stubs
             var attackerStub1 = MockStub(101);
@@ -80,7 +80,7 @@ namespace Testing.ActionsTests
             var attackerGroup2 = CreateCityOffensiveCombatGroup(attackerTroop2);
 
             var attackers = new Mock<ICombatList>();
-            attackers.SetupGet(p => p.Upkeep).Returns(150);
+            attackers.SetupGet(p => p.UpkeepExcludingWaitingToJoinBattle).Returns(150);
             attackers.Setup(p => p.GetEnumerator())
                      .Returns(() => new List<ICombatGroup> {attackerGroup1, attackerGroup2}.GetEnumerator());
 
@@ -140,7 +140,7 @@ namespace Testing.ActionsTests
 
             // Defender Stubs                       
             var defenders = new Mock<ICombatList>();
-            defenders.SetupGet(p => p.Upkeep).Returns(175);
+            defenders.SetupGet(p => p.UpkeepExcludingWaitingToJoinBattle).Returns(175);
 
             // Attacker Stubs
             var attackerStub1 = MockStub(101);
@@ -155,7 +155,7 @@ namespace Testing.ActionsTests
             var attackerGroup2 = CreateCityOffensiveCombatGroup(attackerTroop2);
 
             var attackers = new Mock<ICombatList>();
-            attackers.SetupGet(p => p.Upkeep).Returns(150);            
+            attackers.SetupGet(p => p.UpkeepExcludingWaitingToJoinBattle).Returns(150);            
             attackers.Setup(p => p.GetEnumerator())
                      .Returns(() => new List<ICombatGroup> {attackerGroup1, attackerGroup2}.GetEnumerator());
 
@@ -213,7 +213,7 @@ namespace Testing.ActionsTests
 
             // Defender Stubs                       
             var defenders = new Mock<ICombatList>();
-            defenders.SetupGet(p => p.Upkeep).Returns(175);
+            defenders.SetupGet(p => p.UpkeepExcludingWaitingToJoinBattle).Returns(175);
 
             // Attacker Stubs
             var attackerStub1 = MockStub(100);
@@ -228,7 +228,7 @@ namespace Testing.ActionsTests
             var attackerGroup2 = CreateCityOffensiveCombatGroup(attackerTroop2);
 
             var attackers = new Mock<ICombatList>();
-            attackers.SetupGet(p => p.Upkeep).Returns(300);
+            attackers.SetupGet(p => p.UpkeepExcludingWaitingToJoinBattle).Returns(300);
             attackers.Setup(p => p.GetEnumerator())
                      .Returns(() => new List<ICombatGroup> {attackerGroup1, attackerGroup2}.GetEnumerator());
 
@@ -286,7 +286,7 @@ namespace Testing.ActionsTests
 
             // Defender Stubs                       
             var defenders = new Mock<ICombatList>();
-            defenders.SetupGet(p => p.Upkeep).Returns(175);
+            defenders.SetupGet(p => p.UpkeepExcludingWaitingToJoinBattle).Returns(175);
 
             // Attacker Stubs
             var attackerStub1 = MockStub(100);
@@ -301,7 +301,7 @@ namespace Testing.ActionsTests
             var attackerGroup2 = CreateCityOffensiveCombatGroup(attackerTroop2);
 
             var attackers = new Mock<ICombatList>();
-            attackers.SetupGet(p => p.Upkeep).Returns(1100);
+            attackers.SetupGet(p => p.UpkeepExcludingWaitingToJoinBattle).Returns(1100);
             attackers.Setup(p => p.GetEnumerator())
                      .Returns(() => new List<ICombatGroup> {attackerGroup1, attackerGroup2}.GetEnumerator());
 
@@ -359,7 +359,7 @@ namespace Testing.ActionsTests
 
             // Defender Stubs                       
             var defenders = new Mock<ICombatList>();
-            defenders.SetupGet(p => p.Upkeep).Returns(0);
+            defenders.SetupGet(p => p.UpkeepExcludingWaitingToJoinBattle).Returns(0);
 
             // Attacker Stubs
             var attackerStub1 = MockStub(100);
@@ -374,7 +374,7 @@ namespace Testing.ActionsTests
             var attackerGroup2 = CreateCityOffensiveCombatGroup(attackerTroop2);
 
             var attackers = new Mock<ICombatList>();
-            attackers.SetupGet(p => p.Upkeep).Returns(1100);
+            attackers.SetupGet(p => p.UpkeepExcludingWaitingToJoinBattle).Returns(1100);
             attackers.Setup(p => p.GetEnumerator())
                      .Returns(() => new List<ICombatGroup> {attackerGroup1, attackerGroup2}.GetEnumerator());
 

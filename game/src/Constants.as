@@ -19,6 +19,7 @@ package src
 		/* SESSION VARIABLES */
 		public static var username: String = "1234";
 		public static var hostname: String = "local.tribalhero.com";
+		public static var serverPort: int = 443;
 		public static var sessionId: String;
 		public static var playerName: String;
 		public static var timeDelta: int;

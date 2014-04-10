@@ -718,7 +718,7 @@ namespace Game.Battle
                 // Give defender rewards if there are any
                 if (attackPoints > 0 || (defenderDroppedLoot != null && !defenderDroppedLoot.Empty))
                 {
-                    rewardStrategy.GiveDefendersRewards(Defenders.AllCombatObjects(),
+                    rewardStrategy.GiveDefendersRewards(attacker,
                                                         attackPoints,
                                                         defenderDroppedLoot ?? new Resource());
                 }

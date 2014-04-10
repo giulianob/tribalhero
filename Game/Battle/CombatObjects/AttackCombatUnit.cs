@@ -361,12 +361,12 @@ namespace Game.Battle.CombatObjects
             }
         }
 
-        public override void ReceiveReward(int attackPoint, Resource resource)
+        public override void ReceiveReward(int attackPoints, Resource resource)
         {
             loot.Add(resource);
 
             troopObject.BeginUpdate();
-            troopObject.Stats.AttackPoint += attackPoint;
+            troopObject.Stats.AttackPoint += attackPoints;
             troopObject.Stats.Loot.Add(resource);
             troopObject.EndUpdate();
         }

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Game.Battle.CombatObjects;
 using Game.Data;
 
@@ -10,6 +9,6 @@ namespace Game.Battle.RewardStrategies
 
         void GiveAttackerRewards(ICombatObject attacker, int attackPoints, Resource loot);
 
-        void GiveDefendersRewards(IEnumerable<ICombatObject> defenders, int attackPoints, Resource loot);
+        void GiveDefendersRewards(ICombatObject attacker, int defensePoints, Resource loot);
     }
 }

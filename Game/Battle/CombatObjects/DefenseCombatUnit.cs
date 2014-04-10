@@ -255,9 +255,11 @@ namespace Game.Battle.CombatObjects
             return byte.MaxValue;
         }
 
-        public override void ReceiveReward(int reward, Resource resource)
+        public override void ReceiveReward(int attackPoints, Resource resource)
         {
-            throw new Exception("Why is a defense combat unit receiving rewards dammit?");
+            City.BeginUpdate();
+            City.DefensePoint += attackPoints;
+            City.EndUpdate();
         }
 
         public override void CalcActualDmgToBeTaken(ICombatList attackers,

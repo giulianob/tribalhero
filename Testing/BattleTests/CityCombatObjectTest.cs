@@ -175,7 +175,7 @@ namespace Testing.BattleTests
                 throw new NotImplementedException();
             }
 
-            public override void ReceiveReward(int reward, Resource resource)
+            public override void ReceiveReward(int attackPoints, Resource resource)
             {
                 throw new NotImplementedException();
             }

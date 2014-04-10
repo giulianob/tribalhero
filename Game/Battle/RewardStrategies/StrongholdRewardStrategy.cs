@@ -25,26 +25,11 @@ namespace Game.Battle.RewardStrategies
             attacker.ReceiveReward(attackPoints, loot);
         }
 
-        public void GiveDefendersRewards(IEnumerable<ICombatObject> defenders, int attackPoints, Resource loot)
+        public void GiveDefendersRewards(ICombatObject attacker, int defensePoints, Resource loot)
         {
-            if (stronghold.Tribe == null)
+            if (stronghold.Tribe != null && defensePoints > 0)
             {
-                return;
-            }
-
-            var cityObjectDefenders = defenders.OfType<CityCombatObject>();
-
-            // Give anyone stationed defense points as well
-            if (attackPoints > 0)
-            {
-                foreach (var defendingCity in cityObjectDefenders.Select(co => co.City).Distinct())
-                {
-                    defendingCity.BeginUpdate();
-                    defendingCity.DefensePoint += attackPoints;
-                    defendingCity.EndUpdate();
-                }
-
-                stronghold.Tribe.DefensePoint += attackPoints;
+                stronghold.Tribe.DefensePoint += defensePoints;
             }
         }
     }

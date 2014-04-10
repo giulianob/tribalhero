@@ -81,7 +81,7 @@ namespace Game.Battle.CombatObjects
 
         byte AttackRadius();
 
-        void ReceiveReward(int reward, Resource resource);
+        void ReceiveReward(int attackPoints, Resource resource);
 
         int LootPerRound();
 

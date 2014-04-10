@@ -279,7 +279,7 @@ namespace Game.Battle.CombatObjects
             }
         }
 
-        public override void ReceiveReward(int attackPoint, Resource resource)
+        public override void ReceiveReward(int attackPoints, Resource resource)
         {
         }
     }

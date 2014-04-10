@@ -123,7 +123,7 @@ namespace Game.Battle.CombatObjects
 
         public abstract byte AttackRadius();
 
-        public abstract void ReceiveReward(int reward, Resource resource);
+        public abstract void ReceiveReward(int attackPoints, Resource resource);
 
         public abstract int LootPerRound();
 

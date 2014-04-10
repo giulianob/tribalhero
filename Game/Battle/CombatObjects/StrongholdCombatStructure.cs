@@ -248,7 +248,7 @@ namespace Game.Battle.CombatObjects
             hp = Math.Max(0, hp - dmg);
         }
 
-        public override void ReceiveReward(int attackPoint, Resource resource)
+        public override void ReceiveReward(int attackPoints, Resource resource)
         {
         }
     }

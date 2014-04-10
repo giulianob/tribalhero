@@ -356,8 +356,11 @@ namespace Game.Battle.CombatObjects
             regionManager.UnlockRegions(lockedRegions);
         }
 
-        public override void ReceiveReward(int reward, Resource resource)
+        public override void ReceiveReward(int attackPoints, Resource resource)
         {
+            City.BeginUpdate();
+            City.DefensePoint += attackPoints;
+            City.EndUpdate();
         }
     }
 }

@@ -1,0 +1,72 @@
+<project name="gameserver" default="compile" basedir="." xmlns="antlib:org.apache.tools.ant"  xmlns:antcontrib="antlib:net.sf.antcontrib">
+	
+    <taskdef resource="net/sf/antcontrib/antlib.xml" uri="antlib:net.sf.antcontrib">
+      <classpath>
+        <pathelement location="${basedir}/Lib/ant/ant-contrib.jar"/>
+      </classpath>
+    </taskdef>
+    
+    <description>Game server build</description>
+	
+	<target name="init">
+		<echo message="Building from ${basedir}" />
+	
+		<tstamp />
+		
+		<fail unless="game.version">Version not specified</fail>
+		
+		<antcontrib:propertyregex property="major_version" input="${game.version}" regexp="^([0-9]*).([0-9]*)$" select="\1" />
+		<antcontrib:propertyregex property="revision" input="${game.version}" regexp="^([0-9]*).([0-9]*)$" select="\2" />
+	</target>
+	
+	<target name="compile" depends="init">
+		<replaceregexp file="${basedir}/Game/Setup/Config.cs" match="client_min_version(.*)" replace="client_min_version = ${major_version};" byline="true" />		
+		<replaceregexp file="${basedir}/Game/Setup/Config.cs" match="client_min_revision(.*)" replace="client_min_revision = ${revision};" byline="true" />				
+	
+		<exec executable="xbuild" failonerror="true" dir="${basedir}">
+			<arg value="Game.sln" />
+			<arg value="/t:Common:Rebuild;Persistance:Rebuild;Game:Rebuild;CSVToXML:Rebuild;Common_Testing:Rebuild;Testing:Rebuild;DatabaseGenerator:Rebuild;GraphGenerator:Rebuild;Launcher:Rebuild;LauncherService:Rebuild" />			
+
+			<arg value="/p:Configuration=Release" />
+			<arg value="/p:BuildProjectReferences=false" />
+		</exec>
+	</target>
+	
+	<target name="deploy" if="deploydir" depends="compile">
+		<mkdir dir="${deploydir}" />	
+
+		<exec dir="${basedir}" executable="mono" failonerror="true">
+			<arg value="${basedir}/GraphGenerator/bin/Release/GraphGenerator.exe" />
+			<arg value="--output=${deploydir}/graphoutput" />
+			<arg value="--img=${basedir}/graphics/buildings" />
+			<arg value="--img=${basedir}/graphics/units" />
+			<arg value="--img=${basedir}/graphics/icons/props" />
+			<arg value="--gv-path=/usr/bin/dot" />
+		</exec>
+		
+		<exec dir="${basedir}" executable="mono" failonerror="true">
+			<arg value="${basedir}/DatabaseGenerator/bin/Release/DatabaseGenerator.exe" />
+			<arg value="--output=${deploydir}/databaseoutput" />
+			<arg value="--img=${basedir}/graphics/buildings" />
+			<arg value="--img=${basedir}/graphics/units" />
+			<arg value="--img=${basedir}/graphics/icons/props" />
+		</exec>					
+			
+		<tar destfile="${deploydir}/Launcher.tar.gz" compression="gzip">
+			<zipfileset dir="${basedir}/Launcher/bin/Release" prefix="bin" />
+			<zipfileset dir="${basedir}/conf" prefix="conf" />			
+		</tar>
+		
+		<tar destfile="${deploydir}/LauncherService.tar.gz" compression="gzip">
+			<zipfileset dir="${basedir}/LauncherService/bin/Release" prefix="bin" />
+			<zipfileset dir="${basedir}/conf" prefix="conf" />			
+		</tar>		
+		
+		<tar destfile="${deploydir}/Database.tar.gz" compression="gzip">
+			<zipfileset dir="${deploydir}/databaseoutput/"/>
+		</tar>
+		<tar destfile="${deploydir}/Graph.tar.gz" compression="gzip">
+			<zipfileset dir="${deploydir}/graphoutput/" includes="*.png" />			
+		</tar>
+	</target>	
+</project>

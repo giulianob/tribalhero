@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Game" type="flex">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/swc/Game/Game.swc!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

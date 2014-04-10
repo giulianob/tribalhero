@@ -1,30 +1,32 @@
 ﻿
 package src.UI.Sidebars.ObjectInfo {
 
-    import flash.events.*;
-    import flash.utils.Timer;
+import flash.events.*;
+import flash.utils.Timer;
 
-    import org.aswing.*;
-    import org.aswing.border.*;
-    import org.aswing.ext.*;
+import org.aswing.*;
+import org.aswing.border.*;
+import org.aswing.ext.*;
 
-    import src.Constants;
-    import src.Global;
-    import src.Map.*;
-    import src.Objects.*;
-    import src.Objects.Actions.*;
-    import src.Objects.Factories.*;
-    import src.Objects.Prototypes.*;
-    import src.UI.*;
-    import src.UI.Components.CityLabel;
-    import src.UI.Components.PlayerLabel;
-    import src.UI.Components.SimpleTooltip;
-    import src.UI.Sidebars.ObjectInfo.Buttons.*;
-    import src.Util.BinaryList.*;
-    import src.Util.DateUtil;
-    import src.Util.Util;
+import src.Constants;
+import src.Global;
+import src.Map.*;
+import src.Objects.*;
+import src.Objects.Actions.*;
+import src.Objects.Factories.*;
+import src.Objects.Prototypes.*;
+import src.UI.*;
+import src.UI.Components.CityLabel;
+import src.UI.Components.PlayerLabel;
+import src.UI.Components.SimpleTooltip;
+import src.UI.Sidebars.ObjectInfo.Buttons.*;
+import src.UI.Sidebars.ObjectInfo.CustomInfo.CustomInfoFactory;
+import src.UI.Sidebars.ObjectInfo.CustomInfo.ICustomInfo;
+import src.Util.BinaryList.*;
+import src.Util.DateUtil;
+import src.Util.Util;
 
-    public class ObjectInfoSidebar extends GameJSidebar
+public class ObjectInfoSidebar extends GameJSidebar
 	{
 		//UI
 		private var pnlStats:Form;
@@ -111,7 +113,12 @@ package src.UI.Sidebars.ObjectInfo {
 
 					buttons = buttons.concat(StructureFactory.getButtons(structureObject)).concat(StructureFactory.getTechButtons(structureObject));
 				}
-			}
+
+                var customInfo:ICustomInfo = (new CustomInfoFactory()).getCustomInfo(city,structureObject);
+                if(customInfo!=null) {
+                    customInfo.loadForm(pnlStats);
+                }
+            }
 			else {
 				propPrototype = PropertyFactory.getProperties(gameObject.type, PropertyPrototype.VISIBILITY_PUBLIC);
 

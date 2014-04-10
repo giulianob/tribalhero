@@ -21,10 +21,10 @@ import org.aswing.geom.IntDimension;
 import src.UI.LookAndFeel.GameLookAndFeel;
 
 public class MiniMapLegendPanel extends JPanel {
-    static const TOGGLE_BUTTON_WIDTH: int = 140;
-    static const TOGGLE_BUTTON_HEIGHT: int = 20;
-    static const ICON_WIDTH: int = 20;
-    static const ICON_HEIGHT: int = 20;
+    public static const TOGGLE_BUTTON_WIDTH: int = 140;
+    public static const TOGGLE_BUTTON_HEIGHT: int = 20;
+    public static const ICON_WIDTH: int = 20;
+    public static const ICON_HEIGHT: int = 20;
 
     public function addRaw(icon: Component) : void {
         append(icon);

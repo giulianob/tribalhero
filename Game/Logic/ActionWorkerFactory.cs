@@ -17,7 +17,12 @@ namespace Game.Logic
 
         public IActionWorker CreateActionWorker(Func<ILockable> lockDelegate, ILocation location)
         {
-            return new ActionWorker(lockDelegate, location, kernel.Get<ILocker>(), kernel.Get<IScheduler>(), kernel.Get<IDbManager>());
+            return new ActionWorker(lockDelegate,
+                                    location,
+                                    kernel.Get<ILocker>(),
+                                    kernel.Get<IScheduler>(),
+                                    kernel.Get<IDbManager>(),
+                                    kernel.Get<RequirementFormula>());
         }
     }
 }

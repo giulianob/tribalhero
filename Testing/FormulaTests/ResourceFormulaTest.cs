@@ -120,5 +120,70 @@ namespace Testing.FormulaTests
                                expectedOutput.ToNiceString(),
                                hiddenResources.ToNiceString());
         }
+
+
+        public static IEnumerable<object[]> HiddenResourceWithTemporaryBasementsShouldProtectResourcesData
+        {
+            get
+            {
+                // Has 1 temporary basement
+                yield return
+                        new object[]
+                        {
+                            new byte[] {10}, 0m, false, new Resource(1000, 1000, 10000, 100000),
+                            new Resource(1700, 1000, 1000, 1700)
+                        };
+                // Has multiple temporary basement
+                yield return
+                        new object[]
+                        {
+                            new byte[] {8,9,10}, 0m, false, new Resource(1000, 1000, 10000, 100000),
+                            new Resource(4800, 2700, 2250, 4800)
+                        };
+
+            }
+        }
+
+        [Theory, PropertyData("HiddenResourceWithTemporaryBasementsShouldProtectResourcesData")]
+        public void HiddenResourceWithTemporaryBasementsShouldProtectResources(byte[] basementLevels,
+                                                                      decimal ap,
+                                                                      bool checkApBonus,
+                                                                      Resource cityResourceLimit,
+                                                                      Resource expectedOutput)
+        {
+            var fixture = FixtureHelper.Create();
+
+            var city = Substitute.For<ICity>();
+
+            var basements = new List<IStructure>();
+            foreach (byte basementLevel in basementLevels)
+            {
+                var basement = Substitute.For<IStructure>();
+                basement.Lvl.Returns(basementLevel);
+                basements.Add(basement);
+            }
+
+            city.GetEnumerator().Returns(args => basements.GetEnumerator());
+            city.Resource.Crop.Limit.Returns(cityResourceLimit.Crop);
+            city.Resource.Gold.Limit.Returns(cityResourceLimit.Gold);
+            city.Resource.Wood.Limit.Returns(cityResourceLimit.Wood);
+            city.Resource.Iron.Limit.Returns(cityResourceLimit.Iron);
+            city.Resource.Labor.Limit.Returns(cityResourceLimit.Labor);
+            city.AlignmentPoint.Returns(ap);
+
+            var objectTypeFactory = fixture.Freeze<IObjectTypeFactory>();
+            objectTypeFactory.IsStructureType("TempBasement", Arg.Any<IStructure>()).Returns(true);
+
+            var formula = fixture.Create<Formula>();
+
+            var hiddenResources = formula.HiddenResource(city, checkApBonus);
+
+            hiddenResources.CompareTo(expectedOutput)
+                           .Should()
+                           .Be(0,
+                               "Expected {0} but found {1}",
+                               expectedOutput.ToNiceString(),
+                               hiddenResources.ToNiceString());
+        }
     }
 }

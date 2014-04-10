@@ -104,6 +104,7 @@ namespace Game
             #region Formulas
 
             Bind<Formula>().ToSelf().InSingletonScope();
+            Bind<RequirementFormula>().ToSelf().InSingletonScope();
 
             #endregion
 

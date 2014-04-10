@@ -23,17 +23,20 @@ namespace Game.Logic
 
         private readonly IDbManager dbManager;
 
+        private readonly RequirementFormula requirementFormula;
+
         private readonly LargeIdGenerator actionIdGen = new LargeIdGenerator(int.MaxValue);
 
         private readonly IDictionary<uint, ActiveAction> active = new Dictionary<uint, ActiveAction>();
 
         private readonly IDictionary<uint, PassiveAction> passive = new Dictionary<uint, PassiveAction>();
 
-        public ActionWorker(Func<ILockable> lockDelegate, ILocation location, ILocker locker, IScheduler scheduler, IDbManager dbManager)
+        public ActionWorker(Func<ILockable> lockDelegate, ILocation location, ILocker locker, IScheduler scheduler, IDbManager dbManager, RequirementFormula requirementFormula)
         {
             this.locker = locker;
             this.scheduler = scheduler;
             this.dbManager = dbManager;
+            this.requirementFormula = requirementFormula;
             Location = location;
             LockDelegate = lockDelegate;
         }
@@ -223,7 +226,7 @@ namespace Game.Logic
                 error =
                         Ioc.Kernel.Get<EffectRequirementFactory>()
                            .GetEffectRequirementContainer(actionReq.EffectReqId)
-                           .Validate(workerObject, effects.GetAllEffects(actionReq.EffectReqInherit));
+                           .Validate(workerObject, effects.GetAllEffects(actionReq.EffectReqInherit), requirementFormula);
 
                 if (error != Error.Ok)
                 {

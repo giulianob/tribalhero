@@ -41,13 +41,13 @@ namespace Game.Logic
 
         #endregion
 
-        public Error Validate(IGameObject obj, IEnumerable<Effect> effects)
+        public Error Validate(IGameObject obj, IEnumerable<Effect> effects, RequirementFormula requirementFormula)
         {
             foreach (var req in list)
             {
                 var parms = new object[] {obj, effects, req.Parms, Id};
                 Error error;
-                if ((error = (Error)req.Method.Invoke(null, parms)) != Error.Ok)
+                if ((error = (Error)req.Method.Invoke(requirementFormula, parms)) != Error.Ok)
                 {
                     return error;
                 }

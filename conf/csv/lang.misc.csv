@@ -126,6 +126,7 @@ PLAYER_PROFILE_INVITATION_TOOLTIP_LOCATION,Ask your friend for their invitation 
 SEND_ATTACK_AP_BONUS,The city you are attacking currently has alignment rating bonuses since they have been attacked a lot lately. You may receive less loot than usual and this city's defenses may be temporarily increased.\n\nAre you sure you want to still attack?
 ,
 MINIMAP_LEGEND_CITY,Your city
+MINIMAP_LEGEND_OTHER,Other
 ,
 MINIMAP_LEGEND_DIFFICULTY,Difficulty
 MINIMAP_LEGEND_DIFFICULTY_STRONGEST,Very strong

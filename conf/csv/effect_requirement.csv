@@ -43,7 +43,7 @@ Id,Method,P1,P2,P3,P4,P5,Description,Website Description,Comment
 ,,,,,,,,,
 //basement,,,,,,,,,
 21111,HaveTechnology,21102,lvl=1,count=1,,,,Requires Tunnel Excavation Research.,Require Tunnel Excavation Technology 
-,,,,,,,,,
+21112,LessThanStructureCount,TempBasement,Basement,,,,Number of temporary basements cannot exceed number of regular basements.,Number of temporary basements cannot exceed number of regular basements.,"Each basement has -1 count, each temp basement has +1 count."
 ,,,,,,,,,
 //training ground,,,,,,,,,
 22011,HaveTechnology,22011,lvl=1,count=1,,,,Requires 5 for Price of 4 Technology.,Require 5 for price of 4

@@ -146,6 +146,19 @@ namespace Game.Logic.Formulas
                              0);
             }
 
+            int[] tempRateCrop = { 0, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700 };
+            int[] tempRateWood = { 0, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700 };
+            int[] tempRateGold = { 0, 0, 0, 0, 0, 500, 600, 700, 800, 900, 1000 };
+            int[] tempRateIron = { 0, 0, 0, 0, 0, 0, 0, 0, 500, 750, 1000 };
+            foreach (var structure in city.Where(x => ObjectTypeFactory.IsStructureType("TempBasement", x)))
+            {
+                resource.Add(tempRateCrop[structure.Lvl],
+                             tempRateGold[structure.Lvl],
+                             tempRateIron[structure.Lvl],
+                             tempRateWood[structure.Lvl],
+                             0);
+            }
+
             if (checkAlignmentPointBonus && city.AlignmentPoint >= 75m)
             {
                 const double pct = .75;

@@ -11,11 +11,6 @@ import src.Objects.Factories.ObjectFactory;
 public class MiniMapDrawer
 	{
 
- /*   private var treeDrawer: MiniMapTreeDrawer = new MiniMapTreeDrawer();
-    private var strongholdDrawer: MiniMapStrongholdDrawer = new MiniMapStrongholdDrawer();
-    private var troopDrawer: MiniMapTroopDrawer= new MiniMapTroopDrawer();
-    private var barbarianDrawer: MiniMapBarbarianDrawer = new MiniMapBarbarianDrawer();
-*/
         private var groupCity: MiniMapGroupCity = new MiniMapGroupCity();
         private var groupStronghold: MiniMapGroupStronghold = new MiniMapGroupStronghold();
         private var groupOther: MiniMapGroupOther = new MiniMapGroupOther();
@@ -38,7 +33,7 @@ public class MiniMapDrawer
 
 		public function apply(obj: MiniMapRegionObject) : void {
 			obj.removeSprite();
-            obj.graphics
+
 			switch(obj.type) {
                 case ObjectFactory.TYPE_CITY:
                     groupCity.applyCity(obj);

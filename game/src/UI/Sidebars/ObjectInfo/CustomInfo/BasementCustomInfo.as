@@ -15,8 +15,10 @@ import src.Map.City;
 import src.Objects.Effects.Formula;
 import src.Objects.Resources;
 import src.Objects.StructureObject;
+    import src.UI.Components.SimpleTooltip;
+    import src.Util.StringHelper;
 
-public class BasementCustomInfo implements ICustomInfo {
+    public class BasementCustomInfo implements ICustomInfo {
     private var city: City;
     private var structure: StructureObject;
 
@@ -31,37 +33,41 @@ public class BasementCustomInfo implements ICustomInfo {
         var key: JLabel;
         var value:JLabel;
 
-        key = new JLabel("Hidden Crop");
+        key = new JLabel(StringHelper.localize("TMP_BASEMENT_SIDEBAR_HIDDEN_CROP"));
         key.setHorizontalAlignment(AsWingConstants.LEFT);
         value = new JLabel(resources.crop.toString());
         value.setHorizontalAlignment(AsWingConstants.LEFT);
         value.setHorizontalTextPosition(AsWingConstants.RIGHT);
         value.setIcon(new AssetIcon(new ICON_CROP()));
+        new SimpleTooltip(value, StringHelper.localize("TMP_BASEMENT_SIDEBAR_TOOLTIP"));
         form.addRow(key,value);
 
-        key = new JLabel("Hidden Wood");
+        key = new JLabel(StringHelper.localize("TMP_BASEMENT_SIDEBAR_HIDDEN_WOOD"));
         key.setHorizontalAlignment(AsWingConstants.LEFT);
         value = new JLabel(resources.wood.toString());
         value.setHorizontalAlignment(AsWingConstants.LEFT);
         value.setHorizontalTextPosition(AsWingConstants.RIGHT);
         value.setIcon(new AssetIcon(new ICON_WOOD()));
+        new SimpleTooltip(value, StringHelper.localize("TMP_BASEMENT_SIDEBAR_TOOLTIP"));
         form.addRow(key,value);
 
 
-        key = new JLabel("Hidden Gold");
+        key = new JLabel(StringHelper.localize("TMP_BASEMENT_SIDEBAR_HIDDEN_GOLD"));
         key.setHorizontalAlignment(AsWingConstants.LEFT);
         value = new JLabel(resources.gold.toString());
         value.setHorizontalAlignment(AsWingConstants.LEFT);
         value.setHorizontalTextPosition(AsWingConstants.RIGHT);
         value.setIcon(new AssetIcon(new ICON_GOLD()));
+        new SimpleTooltip(value, StringHelper.localize("TMP_BASEMENT_SIDEBAR_TOOLTIP"));
         form.addRow(key,value);
 
-        key = new JLabel("Hidden Iron");
+        key = new JLabel(StringHelper.localize("TMP_BASEMENT_SIDEBAR_HIDDEN_IRON"));
         key.setHorizontalAlignment(AsWingConstants.LEFT);
         value = new JLabel(resources.iron.toString());
         value.setHorizontalAlignment(AsWingConstants.LEFT);
         value.setHorizontalTextPosition(AsWingConstants.RIGHT);
-        value.setIcon(new AssetIcon(new ICON_IRON()));
+        value.setIcon(new AssetIcon(new ICON_IRON()))
+        new SimpleTooltip(value, StringHelper.localize("TMP_BASEMENT_SIDEBAR_TOOLTIP"));
         form.addRow(key,value);
 
     }

@@ -13,7 +13,14 @@ namespace Game.Logic
 {
     public class RequirementFormula
     {
-        public static Error DefensePoint(IGameObject obj, IEnumerable<Effect> effects, String[] parms, uint id)
+        private readonly IObjectTypeFactory objectTypeFactory;
+
+        public RequirementFormula(IObjectTypeFactory objectTypeFactory)
+        {
+            this.objectTypeFactory = objectTypeFactory;
+        }
+
+        public Error DefensePoint(IGameObject obj, IEnumerable<Effect> effects, String[] parms, uint id)
         {
             switch(parms[0])
             {
@@ -35,7 +42,7 @@ namespace Game.Logic
             return Error.EffectRequirementNotMet;
         }
 
-        public static Error AttackPoint(IGameObject obj, IEnumerable<Effect> effects, String[] parms, uint id)
+        public Error AttackPoint(IGameObject obj, IEnumerable<Effect> effects, String[] parms, uint id)
         {
             switch(parms[0])
             {
@@ -57,7 +64,7 @@ namespace Game.Logic
             return Error.EffectRequirementNotMet;
         }
 
-        public static Error PlayerDefensePoint(IGameObject obj, IEnumerable<Effect> effects, String[] parms, uint id)
+        public Error PlayerDefensePoint(IGameObject obj, IEnumerable<Effect> effects, String[] parms, uint id)
         {
             switch(parms[0])
             {
@@ -79,7 +86,7 @@ namespace Game.Logic
             return Error.EffectRequirementNotMet;
         }
 
-        public static Error PlayerAttackPoint(IGameObject obj, IEnumerable<Effect> effects, String[] parms, uint id)
+        public Error PlayerAttackPoint(IGameObject obj, IEnumerable<Effect> effects, String[] parms, uint id)
         {
             switch(parms[0])
             {
@@ -101,7 +108,7 @@ namespace Game.Logic
             return Error.EffectRequirementNotMet;
         }
 
-        public static Error HaveUnit(IGameObject obj, IEnumerable<Effect> effects, String[] parms, uint id)
+        public Error HaveUnit(IGameObject obj, IEnumerable<Effect> effects, String[] parms, uint id)
         {
             ushort type = ushort.Parse(parms[0]);
             int sum =
@@ -127,7 +134,7 @@ namespace Game.Logic
             return Error.EffectRequirementNotMet;
         }
 
-        public static Error CanBuild(IGameObject obj, IEnumerable<Effect> effects, String[] parms, uint id)
+        public Error CanBuild(IGameObject obj, IEnumerable<Effect> effects, String[] parms, uint id)
         {
             if (effects.Any(effect => (int)effect.Value[0] == int.Parse(parms[0])))
             {
@@ -136,7 +143,7 @@ namespace Game.Logic
             return Error.EffectRequirementNotMet;
         }
 
-        public static Error UniqueTechnology(IGameObject obj, IEnumerable<Effect> effects, string[] parms, uint id)
+        public Error UniqueTechnology(IGameObject obj, IEnumerable<Effect> effects, string[] parms, uint id)
         {
             if (obj.City.Any(s => s != obj && s.Technologies.Any(t => t.Level > 0 && t.Type == uint.Parse(parms[0]))))
             {
@@ -145,7 +152,7 @@ namespace Game.Logic
             return Error.Ok;
         }
 
-        public static Error HaveTechnology(IGameObject obj, IEnumerable<Effect> effects, string[] parms, uint id)
+        public Error HaveTechnology(IGameObject obj, IEnumerable<Effect> effects, string[] parms, uint id)
         {
             int count =
                     effects.Count(
@@ -156,7 +163,7 @@ namespace Game.Logic
             return count >= int.Parse(parms[2]) ? Error.Ok : Error.EffectRequirementNotMet;
         }
 
-        public static Error HaveStructure(IGameObject obj, IEnumerable<Effect> effects, string[] parms, uint id)
+        public Error HaveStructure(IGameObject obj, IEnumerable<Effect> effects, string[] parms, uint id)
         {
             ushort type = ushort.Parse(parms[0]);
             byte min = byte.Parse(parms[1]);
@@ -167,7 +174,7 @@ namespace Game.Logic
                            : Error.EffectRequirementNotMet;
         }
 
-        public static Error HaveNoStructure(IGameObject obj, IEnumerable<Effect> effects, string[] parms, uint id)
+        public Error HaveNoStructure(IGameObject obj, IEnumerable<Effect> effects, string[] parms, uint id)
         {
             ushort type = ushort.Parse(parms[0]);
             byte min = byte.Parse(parms[1]);
@@ -180,7 +187,7 @@ namespace Game.Logic
             return totalStructures < count ? Error.Ok : Error.EffectRequirementNotMet;
         }
 
-        public static Error CountLessThan(IGameObject obj, IEnumerable<Effect> effects, string[] parms, uint id)
+        public Error CountLessThan(IGameObject obj, IEnumerable<Effect> effects, string[] parms, uint id)
         {
             int effectCode = int.Parse(parms[0]);
             int maxCount = int.Parse(parms[1]);
@@ -195,10 +202,21 @@ namespace Game.Logic
             return count < maxCount ? Error.Ok : Error.EffectRequirementNotMet;
         }
 
-        public static Error DistributedPointSystem(IGameObject obj, IEnumerable<Effect> effects, string[] parms, uint id)
+        public Error DistributedPointSystem(IGameObject obj, IEnumerable<Effect> effects, string[] parms, uint id)
         {
             DistributedPointSystemRequirement requirement = new DistributedPointSystemRequirement();
             return requirement.Validate(obj as Structure, uint.Parse(parms[0]));
+        }
+
+        public Error LessThanStructureCount(IGameObject obj, IEnumerable<Effect> effects, string[] parms, uint id)
+        {
+            string type = parms[0]; // tmp basement
+            string type2 = parms[1]; // basement 
+            var count1 = obj.City.Count(structure => objectTypeFactory.IsStructureType(type, structure));
+            var count2 = obj.City.Count(structure => objectTypeFactory.IsStructureType(type2, structure));
+            if (count1 < count2)
+                return Error.Ok;
+            return Error.EffectRequirementNotMet;
         }
     }
 }

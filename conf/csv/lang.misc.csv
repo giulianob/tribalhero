@@ -309,3 +309,9 @@ ACHIEVEMENT_NOTIFICATION,{1} has received a {2} achievement for <a href='http://
 ,
 FOREST_REQUIRE_LUMBERMILL,You need to have a lumbermill before you can gather wood from forests.
 FOREST_LABOR_LIMIT,All {0} lumbermill laborers are already at work.
+,
+TMP_BASEMENT_SIDEBAR_TOOLTIP,Amount of resources protected by all of your basements. Enemies will not be able to loot more resources if they fall below the hidden amount.
+TMP_BASEMENT_SIDEBAR_HIDDEN_CROP,Hidden Crop
+TMP_BASEMENT_SIDEBAR_HIDDEN_WOOD,Hidden Wood
+TMP_BASEMENT_SIDEBAR_HIDDEN_IRON,Hidden Iron
+TMP_BASEMENT_SIDEBAR_HIDDEN_GOLD,Hidden Gold

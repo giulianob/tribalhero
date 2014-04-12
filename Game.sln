@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30110.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DE2FE5FA-D81A-4387-BFEF-5387EEA6F84A}"
 EndProject
@@ -16,8 +16,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "Testing\Testing.csproj", "{D1F46AEF-D56B-4744-A0DB-7AB2EA8CC729}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LauncherService", "LauncherService\LauncherService.csproj", "{F934F8B0-48F3-4E07-BFB3-D074B4A1BDE5}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleSimulator", "ConsoleSimulator\ConsoleSimulator.csproj", "{831301A1-D65D-4DD6-AB67-23FBBE59145A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WallGenerator", "WallGenerator\WallGenerator.csproj", "{3EA58B92-1988-4B63-976E-A4879BC2F3E4}"
 EndProject
@@ -106,16 +104,6 @@ Global
 		{F934F8B0-48F3-4E07-BFB3-D074B4A1BDE5}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{F934F8B0-48F3-4E07-BFB3-D074B4A1BDE5}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{F934F8B0-48F3-4E07-BFB3-D074B4A1BDE5}.Release|x86.ActiveCfg = Release|Any CPU
-		{831301A1-D65D-4DD6-AB67-23FBBE59145A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{831301A1-D65D-4DD6-AB67-23FBBE59145A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{831301A1-D65D-4DD6-AB67-23FBBE59145A}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{831301A1-D65D-4DD6-AB67-23FBBE59145A}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{831301A1-D65D-4DD6-AB67-23FBBE59145A}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{831301A1-D65D-4DD6-AB67-23FBBE59145A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{831301A1-D65D-4DD6-AB67-23FBBE59145A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{831301A1-D65D-4DD6-AB67-23FBBE59145A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{831301A1-D65D-4DD6-AB67-23FBBE59145A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{831301A1-D65D-4DD6-AB67-23FBBE59145A}.Release|x86.ActiveCfg = Release|Any CPU
 		{3EA58B92-1988-4B63-976E-A4879BC2F3E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3EA58B92-1988-4B63-976E-A4879BC2F3E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3EA58B92-1988-4B63-976E-A4879BC2F3E4}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -190,7 +178,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{831301A1-D65D-4DD6-AB67-23FBBE59145A} = {8D9628A2-F0B3-45E1-AA6A-BA947E0B3C49}
 		{3EA58B92-1988-4B63-976E-A4879BC2F3E4} = {8D9628A2-F0B3-45E1-AA6A-BA947E0B3C49}
 		{4425303F-20F2-44B0-85F0-D578308782B3} = {8D9628A2-F0B3-45E1-AA6A-BA947E0B3C49}
 		{C8B227DE-A119-4DB4-B7E4-4BC16F523CB0} = {8D9628A2-F0B3-45E1-AA6A-BA947E0B3C49}

@@ -161,7 +161,7 @@ package src
             displayObject: 10
         };
 
-        public static const shadowAlpha: Number = 0.75;
+        public static const shadowAlpha: Number = 0.5;
 	}
 }
 

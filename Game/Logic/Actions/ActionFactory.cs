@@ -39,7 +39,7 @@ namespace Game.Logic.Actions
 
         public CityAttackChainAction CreateCityAttackChainAction(uint cityId, ITroopObjectInitializer troopObjectInitializer, uint targetCityId, Position target)
         {
-            return new CityAttackChainAction(cityId, troopObjectInitializer, targetCityId, target, kernel.Get<IActionFactory>(), kernel.Get<Procedure>(), kernel.Get<ILocker>(), kernel.Get<IGameObjectLocator>(), kernel.Get<CityBattleProcedure>(), kernel.Get<BattleProcedure>());
+            return new CityAttackChainAction(cityId, troopObjectInitializer, targetCityId, target, kernel.Get<IActionFactory>(), kernel.Get<Procedure>(), kernel.Get<ILocker>(), kernel.Get<IGameObjectLocator>(), kernel.Get<CityBattleProcedure>(), kernel.Get<BattleProcedure>(), kernel.Get<Formula>());
         }
 
         public StructureBuildActiveAction CreateStructureBuildActiveAction(uint cityId, ushort type, uint x, uint y, byte level)

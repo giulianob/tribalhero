@@ -76,9 +76,6 @@ namespace Game.Comm
 
         private void ListenerHandler()
         {
-            // Write policy to data folder
-            File.WriteAllText(Path.Combine(Config.data_folder, "crossdomain.xml"), policy);
-
             logger.Info("Ready to serve policy file: " + policy);
 
             listener.Start();

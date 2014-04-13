@@ -294,15 +294,15 @@ import src.Objects.Troop.*;
             return new Resources(0, hp / 8, hp / 16, hp / 4, 0);
         }
 
-        static var rateCrop:Array = [0, 100, 150, 220, 330, 500, 740, 1100, 1100, 1100, 1100];
-        static var rateWood:Array = [0, 100, 150, 220, 330, 500, 740, 1100, 1100, 1100, 1100];
-        static var rateGold:Array = [0, 0, 0, 0, 0, 100, 150, 220, 330, 500, 740]
-        static var rateIron:Array = [0, 0, 0, 0, 0, 0, 0, 0, 200, 360, 660];
+        internal static var rateCrop:Array = [0, 100, 150, 220, 330, 500, 740, 1100, 1100, 1100, 1100];
+        internal static var rateWood:Array = [0, 100, 150, 220, 330, 500, 740, 1100, 1100, 1100, 1100];
+        internal static var rateGold:Array = [0, 0, 0, 0, 0, 100, 150, 220, 330, 500, 740]
+        internal static var rateIron:Array = [0, 0, 0, 0, 0, 0, 0, 0, 200, 360, 660];
 
-        static var rateTempCrop:Array = [0, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700];
-        static var rateTempWood:Array = [0, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700];
-        static var rateTempGold:Array = [0, 0, 0, 0, 0, 500, 600, 700, 800, 900, 1000];
-        static var rateTempIron:Array = [0, 0, 0, 0, 0, 0, 0, 0, 500, 750, 1000];
+        internal static var rateTempCrop:Array = [0, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700];
+        internal static var rateTempWood:Array = [0, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700];
+        internal static var rateTempGold:Array = [0, 0, 0, 0, 0, 500, 600, 700, 800, 900, 1000];
+        internal static var rateTempIron:Array = [0, 0, 0, 0, 0, 0, 0, 0, 500, 750, 1000];
 
         public static function getHiddenResource(city: City): Resources
         {

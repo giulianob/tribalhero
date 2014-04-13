@@ -4,10 +4,10 @@ relre:/obj/
 relre:.git/
 relre:nbproject/
 relre:.suo
+relre:Thumbs.db
 
 glob:server_ReSharper.Game/
 glob:server/conf/csv/compiled/*.csv
-glob:server/conf/data/*.xml
 glob:server/*.user
 glob:server/TestResults/*
 glob:server/conf/regions/region_changes.dat
@@ -36,7 +36,6 @@ glob:site/app/webroot/img/tree/game-tree-large.png
 glob:site/app/webroot/img/db/buildings/(.*).png
 glob:site/app/webroot/img/db/units/*.png
 glob:site/vendors/ruckusing/logs/development.log
-
 glob:site/app/webroot/tmp/Game.swf
 
 glob:site/app/webroot/data.xml

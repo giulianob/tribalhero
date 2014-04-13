@@ -339,7 +339,16 @@ namespace Game.Logic.Actions
                 throw new Exception("Stronghold not found");
             }
 
-            CallbackLock.CallbackLockHandler lockAll = delegate { return targetStronghold.LockList.ToArray(); };
+            CallbackLock.CallbackLockHandler lockAll = delegate
+            {
+                var locks = targetStronghold.LockList.ToList();
+                if (city.Owner.IsInTribe)
+                {
+                    locks.Add(city.Owner.Tribesman.Tribe);
+                }
+
+                return locks.ToArray();
+            };
 
             locker.Lock(lockAll, null, city, targetStronghold).Do(() =>
             {
@@ -352,10 +361,11 @@ namespace Game.Logic.Actions
                 //Remove notification once battle is over
                 city.Notifications.Remove(this);
 
-                // Calculate how many attack points to give to the city
-                city.BeginUpdate();
-                procedure.GiveAttackPoints(city, troopObject.Stats.AttackPoint);
-                city.EndUpdate();
+                // Attack points from SH battles go to tribe
+                if (city.Owner.IsInTribe)
+                {
+                    city.Owner.Tribesman.Tribe.AttackPoint += troopObject.Stats.AttackPoint;
+                }
 
                 // Remove troop if he's dead
                 if (TroopIsDead(troopObject, city))
@@ -371,7 +381,6 @@ namespace Game.Logic.Actions
                 }
                 else
                 {
-
                     city.Notifications.Add(troopObject, this);
                     // Send troop back home
                     var tma = actionFactory.CreateTroopMovePassiveAction(city.Id,

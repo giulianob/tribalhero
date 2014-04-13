@@ -38,18 +38,18 @@
 		<exec dir="${basedir}" executable="mono" failonerror="true">
 			<arg value="${basedir}/GraphGenerator/bin/Release/GraphGenerator.exe" />
 			<arg value="--output=${deploydir}/graphoutput" />
-			<arg value="--img=${basedir}/../client/graphics/buildings" />
-			<arg value="--img=${basedir}/../client/graphics/units" />
-			<arg value="--img=${basedir}/../client/graphics/icons/props" />
+			<arg value="--img=${basedir}/../graphics/buildings" />
+			<arg value="--img=${basedir}/../graphics/units" />
+			<arg value="--img=${basedir}/../graphics/icons/props" />
 			<arg value="--gv-path=/usr/bin/dot" />
 		</exec>
 		
 		<exec dir="${basedir}" executable="mono" failonerror="true">
 			<arg value="${basedir}/DatabaseGenerator/bin/Release/DatabaseGenerator.exe" />
 			<arg value="--output=${deploydir}/databaseoutput" />
-			<arg value="--img=${basedir}/../client/graphics/buildings" />
-			<arg value="--img=${basedir}/../client/graphics/units" />
-			<arg value="--img=${basedir}/../client/graphics/icons/props" />
+			<arg value="--img=${basedir}/../graphics/buildings" />
+			<arg value="--img=${basedir}/../graphics/units" />
+			<arg value="--img=${basedir}/../graphics/icons/props" />
 		</exec>					
 			
 		<tar destfile="${deploydir}/Launcher.tar.gz" compression="gzip">

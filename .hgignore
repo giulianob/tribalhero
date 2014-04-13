@@ -1,0 +1,25 @@
+glob:app/tmp/cache/models/cake_*
+glob:app/tmp/cache/persistent/cake_*
+glob:app/tmp/logs/*
+glob:nbproject/private/private.properties
+glob:nbproject/project.xml
+glob:nbproject/project.properties
+glob:nbproject/private/private.xml
+glob:app/tmp/cache/cake_*
+glob:app/webroot/files/Game.swf
+glob:app/config/core.php
+glob:app/config/database.php
+glob:app/views/database/generated/*.ctp
+glob:app/views/database/generated/*.php
+glob:app/webroot/img/tree/game-tree.png
+glob:app/webroot/img/tree/game-tree-large.png
+relre:app/webroot/img/db/buildings/(.*).png
+glob:app/webroot/img/db/units/*.png
+syntax: glob
+vendors/ruckusing/logs/development.log
+.git/
+nbproject/
+app/webroot/tmp/Game.swf
+.idea/workspace.xml
+app/webroot/data.xml
+app/webroot/Game_en.xml

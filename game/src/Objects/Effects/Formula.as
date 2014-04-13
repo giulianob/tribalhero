@@ -10,8 +10,10 @@
     import src.Objects.Actions.CurrentActiveAction;
     import src.Objects.Actions.StructureUpgradeAction;
     import src.Objects.Factories.*;
-    import src.Objects.Prototypes.*;
-    import src.Objects.Troop.*;
+import src.Objects.Factories.ObjectFactory;
+import src.Objects.Prototypes.*;
+import src.Objects.Prototypes.ObjectTypePrototype;
+import src.Objects.Troop.*;
     import src.Util.StringHelper;
     import src.Util.Util;
 
@@ -290,6 +292,38 @@
         {
 			var hp: int = gateMax - currentHp;
             return new Resources(0, hp / 8, hp / 16, hp / 4, 0);
+        }
+
+        static var rateCrop:Array = [0, 100, 150, 220, 330, 500, 740, 1100, 1100, 1100, 1100];
+        static var rateWood:Array = [0, 100, 150, 220, 330, 500, 740, 1100, 1100, 1100, 1100];
+        static var rateGold:Array = [0, 0, 0, 0, 0, 100, 150, 220, 330, 500, 740]
+        static var rateIron:Array = [0, 0, 0, 0, 0, 0, 0, 0, 200, 360, 660];
+
+        static var rateTempCrop:Array = [0, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700];
+        static var rateTempWood:Array = [0, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700];
+        static var rateTempGold:Array = [0, 0, 0, 0, 0, 500, 600, 700, 800, 900, 1000];
+        static var rateTempIron:Array = [0, 0, 0, 0, 0, 0, 0, 0, 500, 750, 1000];
+
+        public static function getHiddenResource(city: City): Resources
+        {
+            var resources: Resources = new Resources(0,0,0,0,0);
+
+            Enumerable.from(city.structures()).eachElement(function(structure:CityObject):void {
+                if(structure.level==0) return;
+                if(ObjectFactory.isType("Basement",structure.type)) {
+                    resources.crop+=rateCrop[structure.level];
+                    resources.wood+=rateWood[structure.level];
+                    resources.gold+=rateGold[structure.level];
+                    resources.iron+=rateIron[structure.level];
+                }
+                if(ObjectFactory.isType("TempBasement",structure.type)) {
+                    resources.crop+=rateTempCrop[structure.level];
+                    resources.wood+=rateTempWood[structure.level];
+                    resources.gold+=rateTempGold[structure.level];
+                    resources.iron+=rateTempIron[structure.level];
+                }
+            });
+            return resources;
         }
 
         public static function cityMaxConcurrentBuildActions(structureType: int, city: City): Boolean

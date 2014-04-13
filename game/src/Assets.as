@@ -459,6 +459,10 @@
         [EmbedPosition(name = "map", x = 30, y = "6")]
         public static const BASEMENT_STRUCTURE: Class;
 
+        [Embed(source = "../../graphics/buildings/BASEMENT_TMP_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = 43, y = 16)]
+        public static const  BASEMENT_TMP_STRUCTURE: Class;
+
         [Embed(source = "../../graphics/buildings/FOREST_CAMP_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = 36, y = "4")]
         public static const FOREST_CAMP_STRUCTURE: Class;

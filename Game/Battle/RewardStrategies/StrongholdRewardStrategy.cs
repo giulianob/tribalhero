@@ -3,20 +3,16 @@ using System.Linq;
 using Game.Battle.CombatObjects;
 using Game.Data;
 using Game.Data.Stronghold;
-using Game.Map;
 
 namespace Game.Battle.RewardStrategies
 {
     public class StrongholdRewardStrategy : IRewardStrategy
     {
-        private readonly IGameObjectLocator gameObjectLocator;
-
         private readonly IStronghold stronghold;
 
-        public StrongholdRewardStrategy(IStronghold stronghold, IGameObjectLocator gameObjectLocator)
+        public StrongholdRewardStrategy(IStronghold stronghold)
         {
             this.stronghold = stronghold;
-            this.gameObjectLocator = gameObjectLocator;
         }
 
         public void RemoveLoot(IBattleManager battleManager, int attackIndex, ICombatObject attacker, ICombatObject defender, out Resource actualLoot)
@@ -29,26 +25,11 @@ namespace Game.Battle.RewardStrategies
             attacker.ReceiveReward(attackPoints, loot);
         }
 
-        public void GiveDefendersRewards(IEnumerable<ICombatObject> defenders, int attackPoints, Resource loot)
+        public void GiveDefendersRewards(ICombatObject attacker, int defensePoints, Resource loot)
         {
-            if (stronghold.Tribe == null)
+            if (stronghold.Tribe != null && defensePoints > 0)
             {
-                return;
-            }
-
-            var cityObjectDefenders = defenders.OfType<CityCombatObject>();
-
-            // Give anyone stationed defense points as well
-            if (attackPoints > 0)
-            {
-                foreach (var defendingCity in cityObjectDefenders.Select(co => co.City).Distinct())
-                {
-                    defendingCity.BeginUpdate();
-                    defendingCity.DefensePoint += attackPoints;
-                    defendingCity.EndUpdate();
-                }
-
-                stronghold.Tribe.DefensePoint += attackPoints;
+                stronghold.Tribe.DefensePoint += defensePoints;
             }
         }
     }

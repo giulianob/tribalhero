@@ -27,19 +27,29 @@ namespace Game.Util.Locking
             this.multiObjectLockFactory = multiObjectLockFactory;
         }
 
+        private int GetWaitRetrySleep(int attempts)
+        {
+            if (attempts <= 1)
+            {
+                return 0;
+            }
+
+            return Math.Min(500, attempts * attempts * 3);
+        }
+
         public IMultiObjectLock Lock(CallbackLockHandler lockHandler,
                                  object[] lockHandlerParams,
                                  params ILockable[] baseLocks)
         {
-            int count = 0;
+            int attempts = 0;
             while (currentLock == null)
             {
-                if ((++count) % 10 == 0)
+                if ((++attempts) % 10 == 0)
                 {
-                    logger.Warn(string.Format("CallbackLock has iterated {0} times {1}", count, Environment.StackTrace));
+                    logger.Warn(string.Format("CallbackLock has iterated {0} times {1}", attempts, Environment.StackTrace));
                 }
 
-                if (count >= 10000)
+                if (attempts > 300)
                 {
                     throw new LockException("Callback lock exceeded maximum count");
                 }
@@ -63,7 +73,7 @@ namespace Game.Util.Locking
                 {
                     currentLock.UnlockAll();
                     currentLock = null;
-                    Thread.Sleep(0);
+                    Thread.Sleep(GetWaitRetrySleep(attempts));
                     continue;
                 }
 
@@ -74,7 +84,7 @@ namespace Game.Util.Locking
 
                 currentLock.UnlockAll();
                 currentLock = null;
-                Thread.Sleep(0);
+                Thread.Sleep(GetWaitRetrySleep(attempts));
             }
 
             return currentLock;

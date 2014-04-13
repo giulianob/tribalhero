@@ -7,7 +7,6 @@ Id,Method,P1,P2,P3,P4,P5,Description,Website Description,Comment
 20003,HaveUnit,type=11,gt,count=4,,,,Requires training 5 Fighters.,Requires training 5 fighters.. For Upgrading mainbuilding to lvl 3
 //20004,HaveStructure,2301,minlvl=1,maxlvl=15,,,,Requires a University.,Require University Lvl 1. For Upgrading mainbuilding to lvl 4
 //20005,HaveStructure,2202,minlvl=1,maxlvl=15,,,,Requires a Stable.,Require Stable Lvl 1. For building Stable
-20006,PlayerAttackPoint,gt,49,,,,,Requires 50 or more attack points.,Requires 50 or more attack points. For upgrading main building to lvl 7.
 20007,HaveNoStructure,2201,minlvl=0,maxlvl=3,count=1,,All other Training Ground need to be at least level 4 before you can build a new one.,All other Training Grounds need to be upgraded level 4.,
 210601,HaveNoStructure,2106,minlvl=0,maxlvl=15,count=1,,,,Require Lvl4 Main building for 2nd Farm
 210602,HaveNoStructure,2106,minlvl=0,maxlvl=15,count=2,,,,2 Farm per city Max
@@ -43,7 +42,7 @@ Id,Method,P1,P2,P3,P4,P5,Description,Website Description,Comment
 ,,,,,,,,,
 //basement,,,,,,,,,
 21111,HaveTechnology,21102,lvl=1,count=1,,,,Requires Tunnel Excavation Research.,Require Tunnel Excavation Technology 
-,,,,,,,,,
+21112,LessThanStructureCount,TempBasement,Basement,,,,Number of temporary basements cannot exceed number of regular basements.,Number of temporary basements cannot exceed number of regular basements.,"Each basement has -1 count, each temp basement has +1 count."
 ,,,,,,,,,
 //training ground,,,,,,,,,
 22011,HaveTechnology,22011,lvl=1,count=1,,,,Requires 5 for Price of 4 Technology.,Require 5 for price of 4

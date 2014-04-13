@@ -33,10 +33,11 @@ namespace Game.Battle.RewardStrategies
 
         public void GiveAttackerRewards(ICombatObject attacker, int attackPoints, Resource loot)
         {
-            attacker.ReceiveReward(attackPoints, loot);
+            // Barb tribes dont give any attack points so just give them loot
+            attacker.ReceiveReward(0, loot);
         }
 
-        public void GiveDefendersRewards(IEnumerable<ICombatObject> defenders, int attackPoints, Resource loot)
+        public void GiveDefendersRewards(ICombatObject attacker, int defensePoints, Resource loot)
         {
             if (!loot.Empty)
             {

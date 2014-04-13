@@ -129,7 +129,7 @@ namespace Testing.BattleTests
             private ICity city;
             private ITroopStub troopStub;
 
-            public StubCityCombatObject(uint id, uint battleId, IBattleFormulas battleFormulas) : base(id, battleId, battleFormulas)
+            public StubCityCombatObject(uint id, uint battleId, IBattleFormulas battleFormulas, IDbManager dbManager) : base(id, battleId, battleFormulas, dbManager)
             {
                 city = Substitute.For<ICity>();
             }
@@ -175,7 +175,7 @@ namespace Testing.BattleTests
                 throw new NotImplementedException();
             }
 
-            public override void ReceiveReward(int reward, Resource resource)
+            public override void ReceiveReward(int attackPoints, Resource resource)
             {
                 throw new NotImplementedException();
             }

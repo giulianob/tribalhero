@@ -58,6 +58,8 @@ namespace Game.Battle.CombatObjects
 
         byte Size { get; }
 
+        bool IsWaitingToJoinBattle { get; set; }
+
         void ExitBattle();
 
         decimal AttackBonus(ICombatObject target);
@@ -79,12 +81,16 @@ namespace Game.Battle.CombatObjects
 
         byte AttackRadius();
 
-        void ReceiveReward(int reward, Resource resource);
+        void ReceiveReward(int attackPoints, Resource resource);
 
         int LootPerRound();
 
         bool CanSee(ICombatObject obj, uint lowestSteath);
 
         void ParticipatedInRound(uint round);
+
+        void JoinBattle(uint round);
+
+        bool HasAttacked(uint round);
     }
 }

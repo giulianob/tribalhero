@@ -48,18 +48,20 @@ namespace Game.Battle
             BackingList.Sort((combatGroup1, combatGroup2) => combatGroup1.Id.CompareTo(combatGroup2.Id));
         }
 
-        public int Upkeep
+        public int UpkeepExcludingWaitingToJoinBattle
         {
             get
             {
-                return AllCombatObjects().Sum(obj => obj.Upkeep);
+                return AllCombatObjects()
+                    .Where(obj => !obj.IsWaitingToJoinBattle)
+                    .Sum(obj => obj.Upkeep);
             }
         }
 
-        public int UpkeepNotParticipated(uint round)
+        public int UpkeepNotParticipatedInRound(uint round)
         {
             return AllAliveCombatObjects()
-                    .Where(obj => obj.LastRound <= round)
+                    .Where(obj => !obj.IsWaitingToJoinBattle && !obj.HasAttacked(round))
                     .Sum(x => x.Upkeep);
         }
 
@@ -74,12 +76,13 @@ namespace Game.Battle
 
             var objectsByScore = new List<CombatScoreItem>(Count);
 
-            var objsInRange = (from @group in this
-                               from combatObject in @group
-                               where
-                                       combatObject.InRange(attacker) && attacker.InRange(combatObject) &&
-                                       !combatObject.IsDead
-                               select new Target {Group = @group, CombatObject = combatObject}).ToList();
+            var objsInRange = (from combatGroup in this
+                               from defender in combatGroup
+                               where !defender.IsWaitingToJoinBattle &&
+                                     !defender.IsDead &&
+                                     defender.InRange(attacker) &&
+                                     attacker.InRange(defender)
+                               select new Target {Group = combatGroup, CombatObject = defender}).ToList();
 
             if (objsInRange.Count == 0)
             {
@@ -98,7 +101,7 @@ namespace Game.Battle
                 }
 
                 // Calculate dmg against each target as base score
-                int score = ((int)(battleFormulas.GetAttackerDmgToDefender(attacker, target.CombatObject, round) * 10));
+                int score = battleFormulas.GetAttackScore(attacker, target.CombatObject, round);
 
                 if (bestTarget == null || score > bestTargetScore)
                 {

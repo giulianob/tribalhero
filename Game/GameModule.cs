@@ -101,6 +101,7 @@ namespace Game
             #region Formulas
 
             container.Register<Formula>(Lifestyle.Singleton);
+            container.Register<RequirementFormula>(Lifestyle.Singleton);
 
             #endregion
 

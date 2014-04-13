@@ -16,23 +16,20 @@ namespace Game.Battle.CombatObjects
     {
         protected readonly IBattleFormulas BattleFormulas;
 
+        private readonly IDbManager dbManager;
+
         protected readonly uint BattleId;
 
-        /// <summary>
-        ///     Parameterless constructor for mocking only
-        /// </summary>
-        [Obsolete("Used for testing only", true)]
-        protected CombatObject()
-        {
-        }
-
-        protected CombatObject(uint id, uint battleId, IBattleFormulas battleFormulas)
+        protected CombatObject(uint id, uint battleId, IBattleFormulas battleFormulas, IDbManager dbManager)
         {
             Id = id;
             MinDmgDealt = ushort.MaxValue;
             MinDmgRecv = ushort.MaxValue;
             BattleId = battleId;
             BattleFormulas = battleFormulas;
+            this.dbManager = dbManager;
+
+            IsWaitingToJoinBattle = true;
         }
 
         #region Properties
@@ -64,6 +61,8 @@ namespace Game.Battle.CombatObjects
         public uint GroupId { get; set; }
 
         public bool Disposed { get; private set; }
+
+        public bool IsWaitingToJoinBattle { get; set; }
 
         #endregion
 
@@ -97,7 +96,7 @@ namespace Game.Battle.CombatObjects
 
         #endregion
 
-        #region Abstract Methods        
+        #region Abstract Methods
 
         public virtual decimal AttackBonus(ICombatObject target)
         {
@@ -124,7 +123,7 @@ namespace Game.Battle.CombatObjects
 
         public abstract byte AttackRadius();
 
-        public abstract void ReceiveReward(int reward, Resource resource);
+        public abstract void ReceiveReward(int attackPoints, Resource resource);
 
         public abstract int LootPerRound();
 
@@ -150,10 +149,16 @@ namespace Game.Battle.CombatObjects
 
         #region Public Methods
 
+        public void JoinBattle(uint round)
+        {
+            IsWaitingToJoinBattle = false;
+            LastRound = round;
+        }
+
         public virtual void ExitBattle()
         {
             Disposed = true;
-            DbPersistance.Current.Delete(this);
+            dbManager.Delete(this);
         }
 
         public bool CanSee(ICombatObject obj, uint lowestSteath)
@@ -165,6 +170,11 @@ namespace Game.Battle.CombatObjects
         {
             LastRound = round + 1;
             RoundsParticipated++;
+        }
+
+        public bool HasAttacked(uint round)
+        {
+            return LastRound > round;
         }
 
         #endregion

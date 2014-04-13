@@ -1,9 +1,9 @@
 #region
 
+using System.Linq;
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Setup;
-using Game.Setup.DependencyInjection;
 using Game.Util;
 using ILogger = Common.ILogger;
 
@@ -14,10 +14,14 @@ namespace Game.Battle
     public class BattleViewer
     {
         private readonly ILogger logger = LoggerFactory.Current.GetLogger<BattleViewer>();
-        private readonly IBattleManager battleManager;
-        private uint currentRound = 0;
 
-        public BattleViewer(IBattleManager battle)
+        private readonly IBattleManager battleManager;
+
+        private readonly UnitFactory unitFactory;
+
+        private readonly IStructureCsvFactory structureCsvFactory;
+
+        public BattleViewer(IBattleManager battle, UnitFactory unitFactory, IStructureCsvFactory structureCsvFactory)
         {
             battle.EnterBattle += BattleEnterBattle;
             battle.ExitBattle += BattleExitBattle;
@@ -25,14 +29,20 @@ namespace Game.Battle
             battle.UnitKilled += BattleUnitKilled;
             battle.ActionAttacked += BattleActionAttacked;
             battle.SkippedAttacker += BattleSkippedAttacker;
-            battle.EnterRound += BattleEnterRound;
+            battle.EnterRound += BattleEnterRound;            
             battleManager = battle;
+            this.unitFactory = unitFactory;
+            this.structureCsvFactory = structureCsvFactory;
+        }
+
+        private int TotalUpkeep(ICombatList combatList)
+        {
+            return combatList.AllCombatObjects().Sum(p => p.Upkeep);
         }
 
         private void BattleEnterRound(IBattleManager battle, ICombatList atk, ICombatList def, uint round)
         {
-            Append("Round[" + round + "] Started with atk_upkeep[" + atk.Upkeep + "] def_upkeep[" + def.Upkeep + "]\n");
-            currentRound = round;
+            Append("Round[" + round + "] Started with atk_upkeep[" + TotalUpkeep(atk) + "] def_upkeep[" + TotalUpkeep(def) + "]\n");
         }
 
         private void Append(string str)
@@ -46,26 +56,26 @@ namespace Game.Battle
             {
                 var unit = co as AttackCombatUnit;
                 Append("Team[Atk] Unit[" + co.Id + "] Formation[" + unit.Formation + "] Type[" +
-                       Ioc.Kernel.Get<UnitFactory>().GetName(unit.Type, 1) + "] HP[" + unit.Hp + "]");
+                       unitFactory.GetName(unit.Type, 1) + "] HP[" + unit.Hp + "]");
             }
             else if (co is DefenseCombatUnit)
             {
                 var unit = co as DefenseCombatUnit;
                 Append("Team[Def] Unit[" + co.Id + "] Formation[" + unit.Formation + "] Type[" +
-                       Ioc.Kernel.Get<UnitFactory>().GetName(unit.Type, 1) + "] HP[" + unit.Hp + "]");
+                       unitFactory.GetName(unit.Type, 1) + "] HP[" + unit.Hp + "]");
             }
             else if (co is CombatStructure)
             {
                 var cs = co as CombatStructure;
                 Append("Team[Def] Structure[" + co.Id + "] Type[" +
-                       Ioc.Kernel.Get<IStructureCsvFactory>().GetName(cs.Structure.Type, cs.Structure.Lvl) + "] HP[" + cs.Hp +
+                       structureCsvFactory.GetName(cs.Structure.Type, cs.Structure.Lvl) + "] HP[" + cs.Hp +
                        "]");
             }
             else if (co is BarbarianTribeCombatUnit)
             {
                 var unit = co as BarbarianTribeCombatUnit;
                 Append("Team[Def] Unit[" + co.Id + "] Type[" +
-                       Ioc.Kernel.Get<UnitFactory>().GetName(unit.Type, 1) + "] HP[" + unit.Hp + "]");               
+                       unitFactory.GetName(unit.Type, 1) + "] HP[" + unit.Hp + "]");               
             }
         }
 
@@ -96,24 +106,18 @@ namespace Game.Battle
 
         private void BattleExitTurn(IBattleManager battle, ICombatList atk, ICombatList def, uint turn)
         {
-            Append("Turn[" + turn + "] Ended with atk_upkeep[" + atk.Upkeep + "] def_upkeep[" + def.Upkeep + "]");
-            Append("Turn[" + turn + "] Ended with atk_upkeep_active[" + atk.UpkeepNotParticipated(currentRound) + "] def_upkeep_active[" + def.UpkeepNotParticipated(currentRound) + "]\n");
-        }
-
-        private void BattleEnterTurn(IBattleManager battle, ICombatList atk, ICombatList def, int turn)
-        {
-            Append("Turn[" + turn + "] Started with atk_upkeep[" + atk.Upkeep + "] def_upkeep[" + def.Upkeep + "]");
-            Append("Turn[" + turn + "] Started with atk_upkeep_active[" + atk.UpkeepNotParticipated(currentRound) + "] def_upkeep_active[" + def.UpkeepNotParticipated(currentRound) + "]\n");
+            Append("Turn[" + turn + "] Ended with atk_upkeep[" + TotalUpkeep(atk) + "] def_upkeep[" + TotalUpkeep(def) + "]");
+            Append("Turn[" + turn + "] Ended with atk_upkeep_active[" + atk.UpkeepNotParticipatedInRound(battle.Round) + "] def_upkeep_active[" + def.UpkeepNotParticipatedInRound(battle.Round) + "]\n");
         }
 
         private void BattleExitBattle(IBattleManager battle, ICombatList atk, ICombatList def)
         {
-            Append("Battle Ended with atk_upkeep[" + atk.Upkeep + "] def_upkeep[" + def.Upkeep + "]\n");
+            Append("Battle Ended with atk_upkeep[" + TotalUpkeep(atk) + "] def_upkeep[" + TotalUpkeep(def) + "]\n");
         }
 
         private void BattleEnterBattle(IBattleManager battle, ICombatList atk, ICombatList def)
         {
-            Append("Battle Started with atk_upkeep[" + atk.Upkeep + "] def_upkeep[" + def.Upkeep + "]\n");
+            Append("Battle Started with atk_upkeep[" + TotalUpkeep(atk) + "] def_upkeep[" + TotalUpkeep(def) + "]\n");
         }
 
         private void BattleSkippedAttacker(IBattleManager battle,

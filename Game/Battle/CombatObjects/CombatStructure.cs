@@ -48,8 +48,9 @@ namespace Game.Battle.CombatObjects
                                IActionFactory actionFactory,
                                IBattleFormulas battleFormulas,
                                ITileLocator tileLocator,
-                               IRegionManager regionManager)
-                : base(id, battleId, battleFormulas)
+                               IRegionManager regionManager,
+                               IDbManager dbManager)
+                : base(id, battleId, battleFormulas, dbManager)
         {
             this.stats = stats;
             this.formula = formula;
@@ -73,8 +74,9 @@ namespace Game.Battle.CombatObjects
                                IActionFactory actionFactory,
                                IBattleFormulas battleFormulas,
                                ITileLocator tileLocator,
-                               IRegionManager regionManager)
-                : base(id, battleId, battleFormulas)
+                               IRegionManager regionManager, 
+                               IDbManager dbManager)
+                : base(id, battleId, battleFormulas, dbManager)
         {
             Structure = structure;
             this.formula = formula;
@@ -249,7 +251,8 @@ namespace Game.Battle.CombatObjects
                                new DbColumn("speed", stats.Spd, DbType.Byte),
                                new DbColumn("hits_dealt", HitDealt, DbType.UInt16),
                                new DbColumn("hits_dealt_by_unit", HitDealtByUnit, DbType.UInt32),
-                               new DbColumn("hits_received", HitRecv, DbType.UInt16)
+                               new DbColumn("hits_received", HitRecv, DbType.UInt16),
+                               new DbColumn("is_waiting_to_join_battle", IsWaitingToJoinBattle, DbType.Boolean)
                        };
             }
         }
@@ -284,7 +287,7 @@ namespace Game.Battle.CombatObjects
                                                     out decimal actualDmg)
         {
             // Miss chance
-            actualDmg = BattleFormulas.GetDmgWithMissChance(attackers.Upkeep, defenders.Upkeep, baseDmg, random);
+            actualDmg = BattleFormulas.GetDmgWithMissChance(attackers.UpkeepExcludingWaitingToJoinBattle, defenders.UpkeepExcludingWaitingToJoinBattle, baseDmg, random);
 
             // Splash dmg reduction
             actualDmg = BattleFormulas.SplashReduction(this, actualDmg, attackIndex);
@@ -353,8 +356,11 @@ namespace Game.Battle.CombatObjects
             regionManager.UnlockRegions(lockedRegions);
         }
 
-        public override void ReceiveReward(int reward, Resource resource)
+        public override void ReceiveReward(int attackPoints, Resource resource)
         {
+            City.BeginUpdate();
+            City.DefensePoint += attackPoints;
+            City.EndUpdate();
         }
     }
 }

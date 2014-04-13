@@ -47,8 +47,9 @@ namespace Game.Battle.CombatObjects
                                  ushort count,
                                  IBattleFormulas battleFormulas,
                                  Formula formula,
-                                 UnitFactory unitFactory)
-                : base(id, battleId, battleFormulas)
+                                 UnitFactory unitFactory,
+                                 IDbManager dbManager)
+                : base(id, battleId, battleFormulas, dbManager)
         {
             troopStub = stub;
             this.formation = formation;
@@ -73,8 +74,9 @@ namespace Game.Battle.CombatObjects
                                  decimal leftOverHp,
                                  IBattleFormulas battleFormulas,
                                  Formula formula,
-				 UnitFactory unitFactory)
-                : this(id, battleId, stub, formation, type, lvl, count, battleFormulas, formula, unitFactory)
+                                 UnitFactory unitFactory,
+                                 IDbManager dbManager)
+                : this(id, battleId, stub, formation, type, lvl, count, battleFormulas, formula, unitFactory, dbManager)
         {
             this.leftOverHp = leftOverHp;
         }
@@ -222,7 +224,8 @@ namespace Game.Battle.CombatObjects
                         new DbColumn("damage_received", DmgRecv, DbType.Decimal),
                         new DbColumn("hits_dealt", HitDealt, DbType.UInt16),
                         new DbColumn("hits_dealt_by_unit", HitDealtByUnit, DbType.UInt32),
-                        new DbColumn("hits_received", HitRecv, DbType.UInt16)
+                        new DbColumn("hits_received", HitRecv, DbType.UInt16),
+                        new DbColumn("is_waiting_to_join_battle", IsWaitingToJoinBattle, DbType.Boolean)
                 };
             }
         }
@@ -252,9 +255,11 @@ namespace Game.Battle.CombatObjects
             return byte.MaxValue;
         }
 
-        public override void ReceiveReward(int reward, Resource resource)
+        public override void ReceiveReward(int attackPoints, Resource resource)
         {
-            throw new Exception("Why is a defense combat unit receiving rewards dammit?");
+            City.BeginUpdate();
+            City.DefensePoint += attackPoints;
+            City.EndUpdate();
         }
 
         public override void CalcActualDmgToBeTaken(ICombatList attackers,
@@ -265,7 +270,7 @@ namespace Game.Battle.CombatObjects
                                                     out decimal actualDmg)
         {
             // Miss chance
-            actualDmg = BattleFormulas.GetDmgWithMissChance(attackers.Upkeep, defenders.Upkeep, baseDmg, random);
+            actualDmg = BattleFormulas.GetDmgWithMissChance(attackers.UpkeepExcludingWaitingToJoinBattle, defenders.UpkeepExcludingWaitingToJoinBattle, baseDmg, random);
 
             // Splash dmg reduction
             actualDmg = BattleFormulas.SplashReduction(this, actualDmg, attackIndex);

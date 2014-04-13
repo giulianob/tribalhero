@@ -178,28 +178,18 @@ namespace Game.Map
                         return false;
                     }
 
-                    using (var ms = new MemoryStream(map.Length))
+                    var dummyPacket = new Packet();
+                    // Write tiles
+                    dummyPacket.AddBytes(map);
+                    // Write objects
+                    dummyPacket.AddUInt16(primaryObjects.Count);
+                    foreach (ISimpleGameObject obj in primaryObjects)
                     {
-                        var bw = new BinaryWriter(ms);
-
-                        // Write map tiles
-                        bw.Write(map);
-
-                        // Write objects
-                        bw.Write(primaryObjects.Count);
-
-                        foreach (ISimpleGameObject obj in primaryObjects)
-                        {
-                            // TODO: Make this not require a packet
-                            Packet dummyPacket = new Packet();
-                            PacketHelper.AddToPacket(obj, dummyPacket, true);
-                            bw.Write(dummyPacket.GetPayload());
-                        }
-
-                        ms.Position = 0;
-                        objects = ms.ToArray();
-                        isDirty = false;
+                        PacketHelper.AddToPacket(obj, dummyPacket, true);
                     }
+
+                    objects = dummyPacket.GetPayload();
+                    isDirty = false;
 
                     primaryLock.ExitWriteLock();
 

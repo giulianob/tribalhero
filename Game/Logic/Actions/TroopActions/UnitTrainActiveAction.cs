@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
@@ -231,7 +230,7 @@ namespace Game.Logic.Actions
                     int xfor1 = formula.GetXForOneCount(structure.Technologies);
                     int totalordered = count + count / xfor1;
                     int totaltrained = totalordered - ActionCount;
-                    int totalpaidunit = totaltrained - (totaltrained - 1) / xfor1;
+                    int totalpaidunit = totaltrained - (totaltrained / (xfor1 + 1));
                     int totalrefund = count - totalpaidunit;
                     Resource totalCost = cost * totalrefund;
 

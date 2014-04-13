@@ -2,13 +2,14 @@ using System;
 using System.Linq;
 using Game.Data;
 using Game.Data.Troop;
+using Persistance;
 
 namespace Game.Battle.CombatObjects
 {
     public abstract class CityCombatObject : CombatObject
     {
-        protected CityCombatObject(uint id, uint battleId, IBattleFormulas battleFormulas)
-                : base(id, battleId, battleFormulas)
+        protected CityCombatObject(uint id, uint battleId, IBattleFormulas battleFormulas, IDbManager dbManager)
+                : base(id, battleId, battleFormulas, dbManager)
         {
         }
 

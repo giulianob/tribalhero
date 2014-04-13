@@ -8,7 +8,7 @@ package src.Graphics {
     import src.Constants;
     import src.Objects.SimpleObject;
 
-    [Embed(source = "../../../graphics/WallTilemap.png")]
+    [Embed(source = "../../../../graphics/WallTilemap.png")]
     public class WallTileset extends Bitmap {
         public function WallTileset() { }
 

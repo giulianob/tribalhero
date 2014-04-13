@@ -1,6 +1,7 @@
 ﻿package src.Objects.Effects {
 import System.Linq.Enumerable;
 import System.Linq.Enumerable;
+import System.Linq.Enumerable;
 import System.Linq.Option.Option;
 import System.Linq.Option.Option;
 
@@ -32,7 +33,8 @@ import src.Objects.TechnologyStats;
 		{name: "PlayerAttackPoint", method: playerAttackPoint, message: playerAttackPointMsg },
 		{name: "HaveUnit", method: haveUnit, message: haveUnitMsg },
 		{name: "UniqueTechnology", method: uniqueTechnology, message: uniqueTechnologyMsg },
-        {name: "DistributedPointSystem", method: pointSystemTechnology, message: pointSystemTechnologyMsg }
+        {name: "DistributedPointSystem", method: pointSystemTechnology, message: pointSystemTechnologyMsg },
+        {name: "LessThanStructureCount", method: lessThanStructureCount }
 		);
 
 		private static var methodsSorted: Boolean = false;
@@ -475,6 +477,17 @@ import src.Objects.TechnologyStats;
              return "You need to have " + pointSystemRequire(parentObj,type) + " point(s) to upgrade this technology.";
         }
 
+        private static function lessThanStructureCount(parentObj: GameObject, effects: Array, type1: String, type2: String, param3: int, param4: int, param5:int):Boolean
+        {
+            var city: City = Global.map.cities.get(parentObj.groupId);
+            var count1: int = Enumerable.from(city.structures()).count(function(structure):Boolean{
+                return ObjectFactory.isType(type1,structure.type);
+            });
+            var count2: int = Enumerable.from(city.structures()).count(function(structure):Boolean{
+                return ObjectFactory.isType(type2,structure.type);
+            });
+            return count1 < count2;
+        }
 	}
 }
 

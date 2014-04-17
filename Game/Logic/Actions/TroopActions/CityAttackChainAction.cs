@@ -272,8 +272,6 @@ namespace Game.Logic.Actions
                 // Check if troop is still alive
                 if (troopObject.Stub.TotalCount > 0)
                 {
-
-
                     // Add notification for walking back
                     city.Notifications.Add(troopObject, this);
 

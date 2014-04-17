@@ -59,7 +59,7 @@ public class UnitTrainDialog extends GameJPanel {
 
 			var self: UnitTrainDialog = this;
 			btnOk.addActionListener(function():void { if (onAccept != null) {
-                if (getInstantTimeCount() == 0) {
+                if (getInstantTrainCount() == 0) {
                     onAccept(self);
                     return;
                 }
@@ -77,7 +77,7 @@ public class UnitTrainDialog extends GameJPanel {
 			updateTime();
 		}
 
-        private function getInstantTimeCount() : int {
+        private function getInstantTrainCount() : int {
             var effectForStructureType:Array =
                     Enumerable.from(city.techManager.getEffects(EffectPrototype.EFFECT_UNIT_TRAIN_INSTANT_TIME, EffectPrototype.INHERIT_ALL)).where(function(effect:EffectPrototype): Boolean{
                         return (int)(effect.param1) == structure.type;
@@ -107,7 +107,7 @@ public class UnitTrainDialog extends GameJPanel {
         }
 
 		private function updateTime(e: Event = null) : void {
-            var instantTimeCount: int = getInstantTimeCount();
+            var instantTimeCount: int = getInstantTrainCount();
             var count: int = sldAmount.getValue();
 			var trainTime: int = Formula.trainTime(structure.level, count-instantTimeCount, unitPrototype);
             pnlTime.removeAll();

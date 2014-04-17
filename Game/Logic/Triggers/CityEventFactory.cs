@@ -15,6 +15,11 @@ namespace Game.Logic.Triggers
             return new StructureDowngradeEvent(structure, type, level);
         }
 
+        public StructureRemoveEvent CreateStructureRemoveEvent(IStructure structure, int type)
+        {
+            return new StructureRemoveEvent(structure, type);
+        }
+
         public StructureConvertEvent CreateStructureConvertEvent(IStructure structure, int type, byte level)
         {
             return new StructureConvertEvent(structure, type, level);

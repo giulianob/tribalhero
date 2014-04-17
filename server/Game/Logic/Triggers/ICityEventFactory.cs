@@ -8,6 +8,8 @@ namespace Game.Logic.Triggers
         StructureUpgradeEvent CreateStructureUpgradeEvent(IStructure structure, int type, byte level);
         
         StructureDowngradeEvent CreateStructureDowngradeEvent(IStructure structure, int type, byte level);
+
+        StructureRemoveEvent CreateStructureRemoveEvent(IStructure structure, int type);
         
         StructureConvertEvent CreateStructureConvertEvent(IStructure structure, int type, byte level);
         

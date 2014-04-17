@@ -145,7 +145,6 @@ namespace Game.Logic.Actions
         {
             targetCity.Battle.ActionAttacked += BattleActionAttacked;
             targetCity.Battle.WithdrawAttacker += BattleWithdrawAttacker;
-            targetCity.Battle.EnterRound += BattleEnterRound;
             targetCity.Battle.GroupKilled += BattleGroupKilled;
         }
 
@@ -154,7 +153,6 @@ namespace Game.Logic.Actions
             targetCity.Battle.ActionAttacked -= BattleActionAttacked;
             targetCity.Battle.GroupKilled -= BattleGroupKilled;
             targetCity.Battle.WithdrawAttacker -= BattleWithdrawAttacker;
-            targetCity.Battle.EnterRound -= BattleEnterRound;
         }
 
         public override Error Validate(string[] parms)
@@ -353,29 +351,7 @@ namespace Game.Logic.Actions
                 dbManager.Save(this);
             }
         }
-
-        private void BattleEnterRound(IBattleManager battle, ICombatList atk, ICombatList def, uint round)
-        {
-            ICity city;
-
-            ICity targetCity;
-
-            ITroopObject troopObject;
-            if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject) ||
-                !gameObjectLocator.TryGetObjects(targetCityId, out targetCity))
-            {
-                throw new Exception("City or troop not found");
-            }
-
-            // if battle lasts more than 5 rounds, attacker gets 3 attack points.
-            if (battle.GetCombatGroup(groupId).Any(co => co.RoundsParticipated == 5))
-            {
-                troopObject.BeginUpdate();
-                troopObject.Stats.AttackPoint += 3;
-                troopObject.EndUpdate();
-            }
-        }
-
+        
         public override void UserCancelled()
         {
         }

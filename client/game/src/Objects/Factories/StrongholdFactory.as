@@ -16,7 +16,7 @@
 		}
 
         private static function getSpriteName(): String {
-            return "STRONGHOLD_STRUCTURE";
+            return "DEFAULT_STRONGHOLD_STRUCTURE";
         }
 
 		public static function getSprite(withPosition: String, withShadow: Boolean = false): DisplayObjectContainer

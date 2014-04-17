@@ -1,25 +1,32 @@
 ﻿package src.Objects.Battle {
-    import flash.display.*;
+    import flash.display.DisplayObjectContainer;
 
     import src.Objects.Factories.*;
     import src.Objects.Prototypes.*;
 
     public class CombatStructure extends CombatObject
 	{		
-		private var prototype: StructurePrototype;
+		private var structurePrototype: StructurePrototype;
+
+        public var theme: String;
 		
-		public function CombatStructure(combatObjectId: int, type: int, level: int, hp: Number, maxHp: Number)
+		public function CombatStructure(combatObjectId: int, theme: String, type: int, level: int, hp: Number, maxHp: Number)
 		{
 			super(combatObjectId, type, level, hp, maxHp);
-						
-			prototype = StructureFactory.getPrototype(type, level);
+            this.theme = theme;
+
+            structurePrototype = StructureFactory.getPrototype(type, level);
 		}
 
+        override public function getIcon(): DisplayObjectContainer {
+            return StructureFactory.getSprite(theme, type, level);
+        }
+
 		public override function get name(): String {
-			if (!prototype)
+			if (!structurePrototype)
 				return "Unknown";
 			
-			return prototype.getName();
+			return structurePrototype.getName();
 		}				
 	}
 	

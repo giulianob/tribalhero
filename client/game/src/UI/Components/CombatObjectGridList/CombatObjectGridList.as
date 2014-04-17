@@ -18,10 +18,6 @@
     import src.UI.Tooltips.UnitTooltip;
     import src.Util.Util;
 
-    /**
-	 * ...
-	 * @author Giuliano
-	 */
 	public class CombatObjectGridList extends GridList
 	{
 		private var tooltip: Tooltip;
@@ -41,20 +37,18 @@
 
 		public function onItemRollOver(event: GridListItemEvent):void
 		{
-			var dp: CombatObjectGridCell = event.getCell() as CombatObjectGridCell;
+			var objPrototype: * = event.getValue().prototype;
 
-			var prototype: * = event.getValue().prototype;
-
-			if (prototype is UnitPrototype)
+			if (objPrototype is UnitPrototype)
 			{
-				var unitTooltip: UnitTooltip = new UnitTooltip(prototype);
+				var unitTooltip: UnitTooltip = new UnitTooltip(objPrototype);
 				unitTooltip.show(event.getCell().getCellComponent());
 
 				this.tooltip = unitTooltip;
 			}
-			else if (prototype is StructurePrototype)
+			else if (objPrototype is StructurePrototype)
 			{
-				var structureTooltip: StructureTooltip = new StructureTooltip(null, prototype);
+				var structureTooltip: StructureTooltip = new StructureTooltip(null, objPrototype);
 				structureTooltip.show(event.getCell().getCellComponent());
 
 				this.tooltip = structureTooltip;
@@ -71,7 +65,7 @@
 
 		public function addCombatObject(combatObj: CombatObject):void {
 			var prototype: * = ObjectFactory.getPrototype(combatObj.type, combatObj.level);
-			var icon: DisplayObject = ObjectFactory.getSpriteEx(combatObj.type, combatObj.level);
+			var icon: DisplayObject = combatObj.getIcon();
 			Util.resizeSprite(icon, 55, 35);
 
 			(getModel() as VectorListModel).append( { "source": icon, "data": combatObj, "prototype": prototype} );

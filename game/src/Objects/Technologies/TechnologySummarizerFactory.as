@@ -50,7 +50,8 @@ package src.Objects.Technologies {
                 summarizer = new AdditiveTechnologySummarizer(10, 30);
             } else if (key.indexOf("INSTANT_") == 0) {
                 if (key.indexOf("TRAINING_GROUND") != -1) {
-                    summarizer = new AdditiveTechnologySummarizer(5, 150);
+                    summarizer = new SpecificPointsPerLevelTechnologySummarizer([15, 15, 15, 20, 25, 30, 35, 40, 45, 50],
+                                                                                150);
                 } else if (key.indexOf("BARRACK") != -1) {
                     summarizer = new AdditiveTechnologySummarizer(5, 150);
                 } else if (key.indexOf("STABLE") != -1) {

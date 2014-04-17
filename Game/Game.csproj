@@ -414,12 +414,15 @@
     <Compile Include="Logic\Requirements\LayoutRequirements\LayoutRequirementFactory.cs" />
     <Compile Include="Logic\Triggers\CityEventFactory.cs" />
     <Compile Include="Logic\Triggers\CityTriggerManager.cs" />
+    <Compile Include="Logic\Triggers\Conditions\StructureDowngradeOrRemoveCondition.cs" />
+    <Compile Include="Logic\Triggers\Conditions\StructureRemoveCondition.cs" />
     <Compile Include="Logic\Triggers\Conditions\StructureDowngradeCondition.cs" />
     <Compile Include="Logic\Triggers\Conditions\StructureConvertCondition.cs" />
     <Compile Include="Logic\Triggers\Conditions\StructureUpgradeCondition.cs" />
     <Compile Include="Logic\Triggers\Conditions\TechnologyChangeCondition.cs" />
     <Compile Include="Logic\Triggers\DynamicAction.cs" />
     <Compile Include="Logic\Triggers\DynamicActionFactory.cs" />
+    <Compile Include="Logic\Triggers\Events\StructureRemoveEvent.cs" />
     <Compile Include="Logic\Triggers\Events\StructureDowngradeEvent.cs" />
     <Compile Include="Logic\Triggers\Events\StructureConvertEvent.cs" />
     <Compile Include="Logic\Triggers\Events\StructureUpgradeEvent.cs" />

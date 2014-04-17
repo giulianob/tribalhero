@@ -1,0 +1,503 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xliff version="1.0" xml:lang="en">
+
+  <file datatype="plaintext" original="Game.fla" source-language="EN">
+    <header></header>
+    <body>
+      <trans-unit id="001" resname="ARMORY_STRUCTURE_DESCRIPTION">
+        <source>Armory general description</source>
+      </trans-unit>
+      <trans-unit id="002" resname="ARMORY_STRUCTURE_LVL_1">
+        <source>Level 1 description</source>
+      </trans-unit>
+      <trans-unit id="003" resname="ARMORY_STRUCTURE_LVL_2">
+        <source>Level 2 description</source>
+      </trans-unit>
+      <trans-unit id="004" resname="ARMORY_STRUCTURE_LVL_3">
+        <source>Level 3 description</source>
+      </trans-unit>
+      <trans-unit id="005" resname="ARMORY_STRUCTURE_LVL_4">
+        <source>Level 4 description</source>
+      </trans-unit>
+      <trans-unit id="006" resname="ARMORY_STRUCTURE_LVL_5">
+        <source>Level 5 description</source>
+      </trans-unit>
+      <trans-unit id="007" resname="ARMORY_STRUCTURE_LVL_6">
+        <source>Level 6 description</source>
+      </trans-unit>
+      <trans-unit id="008" resname="ARMORY_STRUCTURE_LVL_7">
+        <source>Level 7 description</source>
+      </trans-unit>
+      <trans-unit id="009" resname="ARMORY_STRUCTURE_LVL_8">
+        <source>Level 8 description</source>
+      </trans-unit>
+      <trans-unit id="010" resname="ARMORY_STRUCTURE_LVL_9">
+        <source>Level 9 description</source>
+      </trans-unit>
+      <trans-unit id="011" resname="ARMORY_STRUCTURE_LVL_10">
+        <source>Level 10 description</source>
+      </trans-unit>
+      <trans-unit id="012" resname="ARMORY_STRUCTURE_NAME">
+        <source>Armory</source>
+      </trans-unit>
+      <trans-unit id="013" resname="BARRACK_STRUCTURE_DESCRIPTION">
+        <source>Barrack general description</source>
+      </trans-unit>
+      <trans-unit id="014" resname="BARRACK_STRUCTURE_LVL_1">
+        <source>Level 1 description</source>
+      </trans-unit>
+      <trans-unit id="015" resname="BARRACK_STRUCTURE_LVL_2">
+        <source>Level 2 description</source>
+      </trans-unit>
+      <trans-unit id="016" resname="BARRACK_STRUCTURE_LVL_3">
+        <source>Level 3 description</source>
+      </trans-unit>
+      <trans-unit id="017" resname="BARRACK_STRUCTURE_LVL_4">
+        <source>Level 4 description</source>
+      </trans-unit>
+      <trans-unit id="018" resname="BARRACK_STRUCTURE_LVL_5">
+        <source>Level 5 description</source>
+      </trans-unit>
+      <trans-unit id="019" resname="BARRACK_STRUCTURE_LVL_6">
+        <source>Level 6 description</source>
+      </trans-unit>
+      <trans-unit id="020" resname="BARRACK_STRUCTURE_LVL_7">
+        <source>Level 7 description</source>
+      </trans-unit>
+      <trans-unit id="021" resname="BARRACK_STRUCTURE_LVL_8">
+        <source>Level 8 description</source>
+      </trans-unit>
+      <trans-unit id="022" resname="BARRACK_STRUCTURE_LVL_9">
+        <source>Level 9 description</source>
+      </trans-unit>
+      <trans-unit id="023" resname="BARRACK_STRUCTURE_LVL_10">
+        <source>Level 10 description</source>
+      </trans-unit>
+      <trans-unit id="024" resname="BARRACK_STRUCTURE_NAME">
+        <source>Barrack</source>
+      </trans-unit>
+      <trans-unit id="025" resname="CanBuild">
+        <source>$P1 (Level $P2)</source>
+      </trans-unit>
+      <trans-unit id="026" resname="CANNON_TOWER_STRUCTURE_DESCRIPTION">
+        <source>Cannon tower general description</source>
+      </trans-unit>
+      <trans-unit id="027" resname="CANNON_TOWER_STRUCTURE_LVL_1">
+        <source>Level 1 description</source>
+      </trans-unit>
+      <trans-unit id="028" resname="CANNON_TOWER_STRUCTURE_LVL_2">
+        <source>Level 2 description</source>
+      </trans-unit>
+      <trans-unit id="029" resname="CANNON_TOWER_STRUCTURE_LVL_3">
+        <source>Level 3 description</source>
+      </trans-unit>
+      <trans-unit id="030" resname="CANNON_TOWER_STRUCTURE_LVL_4">
+        <source>Level 4 description</source>
+      </trans-unit>
+      <trans-unit id="031" resname="CANNON_TOWER_STRUCTURE_LVL_5">
+        <source>Level 5 description</source>
+      </trans-unit>
+      <trans-unit id="032" resname="CANNON_TOWER_STRUCTURE_NAME">
+        <source>Cannon tower</source>
+      </trans-unit>
+      <trans-unit id="033" resname="DISTRIBUTION_CENTER_STRUCTURE_DESCRIPTION">
+        <source>Distribution center general description</source>
+      </trans-unit>
+      <trans-unit id="034" resname="DISTRIBUTION_CENTER_STRUCTURE_LVL_1">
+        <source>Level 1 description</source>
+      </trans-unit>
+      <trans-unit id="035" resname="DISTRIBUTION_CENTER_STRUCTURE_LVL_2">
+        <source>Level 2 description</source>
+      </trans-unit>
+      <trans-unit id="036" resname="DISTRIBUTION_CENTER_STRUCTURE_LVL_3">
+        <source>Level 3 description</source>
+      </trans-unit>
+      <trans-unit id="037" resname="DISTRIBUTION_CENTER_STRUCTURE_LVL_4">
+        <source>Level 4 description</source>
+      </trans-unit>
+      <trans-unit id="038" resname="DISTRIBUTION_CENTER_STRUCTURE_LVL_5">
+        <source>Level 5 description</source>
+      </trans-unit>
+      <trans-unit id="039" resname="DISTRIBUTION_CENTER_STRUCTURE_LVL_6">
+        <source>Level 6 description</source>
+      </trans-unit>
+      <trans-unit id="040" resname="DISTRIBUTION_CENTER_STRUCTURE_LVL_7">
+        <source>Level 7 description</source>
+      </trans-unit>
+      <trans-unit id="041" resname="DISTRIBUTION_CENTER_STRUCTURE_LVL_8">
+        <source>Level 8 description</source>
+      </trans-unit>
+      <trans-unit id="042" resname="DISTRIBUTION_CENTER_STRUCTURE_LVL_9">
+        <source>Level 9 description</source>
+      </trans-unit>
+      <trans-unit id="043" resname="DISTRIBUTION_CENTER_STRUCTURE_LVL_10">
+        <source>Level 10 description</source>
+      </trans-unit>
+      <trans-unit id="044" resname="DISTRIBUTION_CENTER_STRUCTURE_NAME">
+        <source>Distribution center</source>
+      </trans-unit>
+      <trans-unit id="045" resname="ERROR_-1">
+        <source>An unexpected error has occurred</source>
+      </trans-unit>
+      <trans-unit id="046" resname="ERROR_100">
+        <source>The maximum number of allowed actions has been reached</source>
+      </trans-unit>
+      <trans-unit id="047" resname="ERROR_102">
+        <source>The maximum number of allowed actions has been reached</source>
+      </trans-unit>
+      <trans-unit id="048" resname="ERROR_103">
+        <source>The maximum number of allowed actions has been reached</source>
+      </trans-unit>
+      <trans-unit id="049" resname="ERROR_104">
+        <source>The specified action was not found</source>
+      </trans-unit>
+      <trans-unit id="050" resname="ERROR_105">
+        <source>The specified action is invalid</source>
+      </trans-unit>
+      <trans-unit id="051" resname="ERROR_106">
+        <source>The specified action is already in progress</source>
+      </trans-unit>
+      <trans-unit id="052" resname="ERROR_200">
+        <source>You do not have enough resources</source>
+      </trans-unit>
+      <trans-unit id="053" resname="ERROR_201">
+        <source>The specified resource is not tradable</source>
+      </trans-unit>
+      <trans-unit id="054" resname="ERROR_250">
+        <source>The requirements for this action have not been met</source>
+      </trans-unit>
+      <trans-unit id="055" resname="ERROR_251">
+        <source>The requirements for this action have not been met</source>
+      </trans-unit>
+      <trans-unit id="056" resname="ERROR_300">
+        <source>The market price has changed since you opened the market dialog. Close the dialog and try again.</source>
+      </trans-unit>
+      <trans-unit id="057" resname="ERROR_301">
+        <source>An invalid quantity was specified</source>
+      </trans-unit>
+      <trans-unit id="058" resname="ERROR_400">
+        <source>The specified object does not exist</source>
+      </trans-unit>
+      <trans-unit id="059" resname="ERROR_401">
+        <source>The specified structure does not exist</source>
+      </trans-unit>
+      <trans-unit id="060" resname="ERROR_402">
+        <source>The specified player does not exist</source>
+      </trans-unit>
+      <trans-unit id="061" resname="ERROR_410">
+        <source>The map is full!</source>
+      </trans-unit>
+      <trans-unit id="062" resname="ERROR_411">
+        <source>Unable to build on the specified tile</source>
+      </trans-unit>
+      <trans-unit id="063" resname="ERROR_600">
+        <source>You can&apos;t attack yourself!</source>
+      </trans-unit>
+      <trans-unit id="064" resname="ERROR_601">
+        <source>Not allowed while city is in battle</source>
+      </trans-unit>
+      <trans-unit id="065" resname="ERROR_602">
+        <source>Why would you want to defend yourself?</source>
+      </trans-unit>
+      <trans-unit id="066" resname="FARM_STRUCTURE_DESCRIPTION">
+        <source>Farm general description</source>
+      </trans-unit>
+      <trans-unit id="067" resname="FARM_STRUCTURE_LVL_1">
+        <source>Level 1 description</source>
+      </trans-unit>
+      <trans-unit id="068" resname="FARM_STRUCTURE_LVL_2">
+        <source>Level 2 description</source>
+      </trans-unit>
+      <trans-unit id="069" resname="FARM_STRUCTURE_LVL_3">
+        <source>Level 3 description</source>
+      </trans-unit>
+      <trans-unit id="070" resname="FARM_STRUCTURE_LVL_4">
+        <source>Level 4 description</source>
+      </trans-unit>
+      <trans-unit id="071" resname="FARM_STRUCTURE_LVL_5">
+        <source>Level 5 description</source>
+      </trans-unit>
+      <trans-unit id="072" resname="FARM_STRUCTURE_LVL_6">
+        <source>Level 6 description</source>
+      </trans-unit>
+      <trans-unit id="073" resname="FARM_STRUCTURE_LVL_7">
+        <source>Level 7 description</source>
+      </trans-unit>
+      <trans-unit id="074" resname="FARM_STRUCTURE_LVL_8">
+        <source>Level 8 description</source>
+      </trans-unit>
+      <trans-unit id="075" resname="FARM_STRUCTURE_LVL_9">
+        <source>Level 9 description</source>
+      </trans-unit>
+      <trans-unit id="076" resname="FARM_STRUCTURE_LVL_10">
+        <source>Level 10 description</source>
+      </trans-unit>
+      <trans-unit id="077" resname="FARM_STRUCTURE_NAME">
+        <source>Farm</source>
+      </trans-unit>
+      <trans-unit id="078" resname="FOUNDRY_STRUCTURE_DESCRIPTION">
+        <source>Foundry general description</source>
+      </trans-unit>
+      <trans-unit id="079" resname="FOUNDRY_STRUCTURE_LVL_1">
+        <source>Level 1 description</source>
+      </trans-unit>
+      <trans-unit id="080" resname="FOUNDRY_STRUCTURE_LVL_2">
+        <source>Level 2 description</source>
+      </trans-unit>
+      <trans-unit id="081" resname="FOUNDRY_STRUCTURE_LVL_3">
+        <source>Level 3 description</source>
+      </trans-unit>
+      <trans-unit id="082" resname="FOUNDRY_STRUCTURE_LVL_4">
+        <source>Level 4 description</source>
+      </trans-unit>
+      <trans-unit id="083" resname="FOUNDRY_STRUCTURE_LVL_5">
+        <source>Level 5 description</source>
+      </trans-unit>
+      <trans-unit id="084" resname="FOUNDRY_STRUCTURE_NAME">
+        <source>Foundry</source>
+      </trans-unit>
+      <trans-unit id="085" resname="LUMBERMILL_STRUCTURE_DESCRIPTION">
+        <source>Lumbermill general description</source>
+      </trans-unit>
+      <trans-unit id="086" resname="LUMBERMILL_STRUCTURE_LVL_1">
+        <source>Level 1 description</source>
+      </trans-unit>
+      <trans-unit id="087" resname="LUMBERMILL_STRUCTURE_LVL_2">
+        <source>Level 2 description</source>
+      </trans-unit>
+      <trans-unit id="088" resname="LUMBERMILL_STRUCTURE_LVL_3">
+        <source>Level 3 description</source>
+      </trans-unit>
+      <trans-unit id="089" resname="LUMBERMILL_STRUCTURE_LVL_4">
+        <source>Level 4 description</source>
+      </trans-unit>
+      <trans-unit id="090" resname="LUMBERMILL_STRUCTURE_LVL_5">
+        <source>Level 5 description</source>
+      </trans-unit>
+      <trans-unit id="091" resname="LUMBERMILL_STRUCTURE_LVL_6">
+        <source>Level 6 description</source>
+      </trans-unit>
+      <trans-unit id="092" resname="LUMBERMILL_STRUCTURE_LVL_7">
+        <source>Level 7 description</source>
+      </trans-unit>
+      <trans-unit id="093" resname="LUMBERMILL_STRUCTURE_LVL_8">
+        <source>Level 8 description</source>
+      </trans-unit>
+      <trans-unit id="094" resname="LUMBERMILL_STRUCTURE_LVL_9">
+        <source>Level 9 description</source>
+      </trans-unit>
+      <trans-unit id="095" resname="LUMBERMILL_STRUCTURE_LVL_10">
+        <source>Level 10 description</source>
+      </trans-unit>
+      <trans-unit id="096" resname="LUMBERMILL_STRUCTURE_NAME">
+        <source>Lumbermill</source>
+      </trans-unit>
+      <trans-unit id="097" resname="MARKET_STRUCTURE_DESCRIPTION">
+        <source>Market general description</source>
+      </trans-unit>
+      <trans-unit id="098" resname="MARKET_STRUCTURE_LVL_1">
+        <source>Level 1 description</source>
+      </trans-unit>
+      <trans-unit id="099" resname="MARKET_STRUCTURE_LVL_2">
+        <source>Level 2 description</source>
+      </trans-unit>
+      <trans-unit id="100" resname="MARKET_STRUCTURE_LVL_3">
+        <source>Level 3 description</source>
+      </trans-unit>
+      <trans-unit id="101" resname="MARKET_STRUCTURE_LVL_4">
+        <source>Level 4 description</source>
+      </trans-unit>
+      <trans-unit id="102" resname="MARKET_STRUCTURE_LVL_5">
+        <source>Level 5 description</source>
+      </trans-unit>
+      <trans-unit id="103" resname="MARKET_STRUCTURE_NAME">
+        <source>Market</source>
+      </trans-unit>
+      <trans-unit id="104" resname="STABLE_STRUCTURE_DESCRIPTION">
+        <source>Stable general description</source>
+      </trans-unit>
+      <trans-unit id="105" resname="STABLE_STRUCTURE_LVL_1">
+        <source>Level 1 description</source>
+      </trans-unit>
+      <trans-unit id="106" resname="STABLE_STRUCTURE_LVL_2">
+        <source>Level 2 description</source>
+      </trans-unit>
+      <trans-unit id="107" resname="STABLE_STRUCTURE_LVL_3">
+        <source>Level 3 description</source>
+      </trans-unit>
+      <trans-unit id="108" resname="STABLE_STRUCTURE_LVL_4">
+        <source>Level 4 description</source>
+      </trans-unit>
+      <trans-unit id="109" resname="STABLE_STRUCTURE_LVL_5">
+        <source>Level 5 description</source>
+      </trans-unit>
+      <trans-unit id="110" resname="STABLE_STRUCTURE_LVL_6">
+        <source>Level 6 description</source>
+      </trans-unit>
+      <trans-unit id="111" resname="STABLE_STRUCTURE_LVL_7">
+        <source>Level 7 description</source>
+      </trans-unit>
+      <trans-unit id="112" resname="STABLE_STRUCTURE_LVL_8">
+        <source>Level 8 description</source>
+      </trans-unit>
+      <trans-unit id="113" resname="STABLE_STRUCTURE_LVL_9">
+        <source>Level 9 description</source>
+      </trans-unit>
+      <trans-unit id="114" resname="STABLE_STRUCTURE_LVL_10">
+        <source>Level 10 description</source>
+      </trans-unit>
+      <trans-unit id="115" resname="STABLE_STRUCTURE_NAME">
+        <source>Stable</source>
+      </trans-unit>
+      <trans-unit id="116" resname="TECH_MARTIAL_ARTS">
+        <source>Martial Arts</source>
+      </trans-unit>
+      <trans-unit id="117" resname="TOWER_STRUCTURE_DESCRIPTION">
+        <source>Tower general description</source>
+      </trans-unit>
+      <trans-unit id="118" resname="TOWER_STRUCTURE_LVL_1">
+        <source>Level 1 description</source>
+      </trans-unit>
+      <trans-unit id="119" resname="TOWER_STRUCTURE_LVL_2">
+        <source>Level 2 description</source>
+      </trans-unit>
+      <trans-unit id="120" resname="TOWER_STRUCTURE_LVL_3">
+        <source>Level 3 description</source>
+      </trans-unit>
+      <trans-unit id="121" resname="TOWER_STRUCTURE_LVL_4">
+        <source>Level 4 description</source>
+      </trans-unit>
+      <trans-unit id="122" resname="TOWER_STRUCTURE_LVL_5">
+        <source>Level 5 description</source>
+      </trans-unit>
+      <trans-unit id="123" resname="TOWER_STRUCTURE_NAME">
+        <source>Tower</source>
+      </trans-unit>
+      <trans-unit id="124" resname="TOWNCENTER_STRUCTURE_DESCRIPTION">
+        <source>Town Center general description</source>
+      </trans-unit>
+      <trans-unit id="125" resname="TOWNCENTER_STRUCTURE_LVL_1">
+        <source>Level 1 description</source>
+      </trans-unit>
+      <trans-unit id="126" resname="TOWNCENTER_STRUCTURE_LVL_2">
+        <source>Level 2 description</source>
+      </trans-unit>
+      <trans-unit id="127" resname="TOWNCENTER_STRUCTURE_LVL_3">
+        <source>Level 3 description</source>
+      </trans-unit>
+      <trans-unit id="128" resname="TOWNCENTER_STRUCTURE_LVL_4">
+        <source>Level 4 description</source>
+      </trans-unit>
+      <trans-unit id="129" resname="TOWNCENTER_STRUCTURE_LVL_5">
+        <source>Level 5 description</source>
+      </trans-unit>
+      <trans-unit id="130" resname="TOWNCENTER_STRUCTURE_LVL_6">
+        <source>Level 6 description</source>
+      </trans-unit>
+      <trans-unit id="131" resname="TOWNCENTER_STRUCTURE_LVL_7">
+        <source>Level 7 description</source>
+      </trans-unit>
+      <trans-unit id="132" resname="TOWNCENTER_STRUCTURE_LVL_8">
+        <source>Level 8 description</source>
+      </trans-unit>
+      <trans-unit id="133" resname="TOWNCENTER_STRUCTURE_LVL_9">
+        <source>Level 9 description</source>
+      </trans-unit>
+      <trans-unit id="134" resname="TOWNCENTER_STRUCTURE_LVL_10">
+        <source>Level 10 description</source>
+      </trans-unit>
+      <trans-unit id="135" resname="TOWNCENTER_STRUCTURE_NAME">
+        <source>Town Center</source>
+      </trans-unit>
+      <trans-unit id="136" resname="TROOP_STATE_BATTLE">
+        <source>In battle</source>
+      </trans-unit>
+      <trans-unit id="137" resname="TROOP_STATE_BATTLE_STATIONED">
+        <source>In battle</source>
+      </trans-unit>
+      <trans-unit id="138" resname="TROOP_STATE_IDLE">
+        <source>Idle</source>
+      </trans-unit>
+      <trans-unit id="139" resname="TROOP_STATE_MOVING">
+        <source>On the move</source>
+      </trans-unit>
+      <trans-unit id="140" resname="TROOP_STATE_STATIONED">
+        <source>Stationed</source>
+      </trans-unit>
+      <trans-unit id="141" resname="UNIVERSITY_STRUCTURE_DESCRIPTION">
+        <source>University general description</source>
+      </trans-unit>
+      <trans-unit id="142" resname="UNIVERSITY_STRUCTURE_LVL_1">
+        <source>Level 1 description</source>
+      </trans-unit>
+      <trans-unit id="143" resname="UNIVERSITY_STRUCTURE_LVL_2">
+        <source>Level 2 description</source>
+      </trans-unit>
+      <trans-unit id="144" resname="UNIVERSITY_STRUCTURE_LVL_3">
+        <source>Level 3 description</source>
+      </trans-unit>
+      <trans-unit id="145" resname="UNIVERSITY_STRUCTURE_LVL_4">
+        <source>Level 4 description</source>
+      </trans-unit>
+      <trans-unit id="146" resname="UNIVERSITY_STRUCTURE_LVL_5">
+        <source>Level 5 description</source>
+      </trans-unit>
+      <trans-unit id="147" resname="UNIVERSITY_STRUCTURE_LVL_6">
+        <source>Level 6 description</source>
+      </trans-unit>
+      <trans-unit id="148" resname="UNIVERSITY_STRUCTURE_LVL_7">
+        <source>Level 7 description</source>
+      </trans-unit>
+      <trans-unit id="149" resname="UNIVERSITY_STRUCTURE_LVL_8">
+        <source>Level 8 description</source>
+      </trans-unit>
+      <trans-unit id="150" resname="UNIVERSITY_STRUCTURE_LVL_9">
+        <source>Level 9 description</source>
+      </trans-unit>
+      <trans-unit id="151" resname="UNIVERSITY_STRUCTURE_LVL_10">
+        <source>Level 10 description</source>
+      </trans-unit>
+      <trans-unit id="152" resname="UNIVERSITY_STRUCTURE_NAME">
+        <source>University</source>
+      </trans-unit>
+      <trans-unit id="153" resname="WORKSHOP_STRUCTURE_DESCRIPTION">
+        <source>Workshop general description</source>
+      </trans-unit>
+      <trans-unit id="154" resname="WORKSHOP_STRUCTURE_LVL_1">
+        <source>Level 1 description</source>
+      </trans-unit>
+      <trans-unit id="155" resname="WORKSHOP_STRUCTURE_LVL_2">
+        <source>Level 2 description</source>
+      </trans-unit>
+      <trans-unit id="156" resname="WORKSHOP_STRUCTURE_LVL_3">
+        <source>Level 3 description</source>
+      </trans-unit>
+      <trans-unit id="157" resname="WORKSHOP_STRUCTURE_LVL_4">
+        <source>Level 4 description</source>
+      </trans-unit>
+      <trans-unit id="158" resname="WORKSHOP_STRUCTURE_LVL_5">
+        <source>Level 5 description</source>
+      </trans-unit>
+      <trans-unit id="159" resname="WORKSHOP_STRUCTURE_LVL_6">
+        <source>Level 6 description</source>
+      </trans-unit>
+      <trans-unit id="160" resname="WORKSHOP_STRUCTURE_LVL_7">
+        <source>Level 7 description</source>
+      </trans-unit>
+      <trans-unit id="161" resname="WORKSHOP_STRUCTURE_LVL_8">
+        <source>Level 8 description</source>
+      </trans-unit>
+      <trans-unit id="162" resname="WORKSHOP_STRUCTURE_LVL_9">
+        <source>Level 9 description</source>
+      </trans-unit>
+      <trans-unit id="163" resname="WORKSHOP_STRUCTURE_LVL_10">
+        <source>Level 10 description</source>
+      </trans-unit>
+      <trans-unit id="164" resname="WORKSHOP_STRUCTURE_NAME">
+        <source>Workshop</source>
+      </trans-unit>
+    </body>
+  </file>
+
+</xliff>

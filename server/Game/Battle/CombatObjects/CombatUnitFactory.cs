@@ -214,7 +214,7 @@ namespace Game.Battle.CombatObjects
                                                                        IStronghold stronghold,
                                                                        decimal hp)
         {
-            var objectTypeFactory = kernel.Get<ObjectTypeFactory>();
+            var objectTypeFactory = kernel.Get<IObjectTypeFactory>();
 
             return new StrongholdCombatGate(battleManager.GetNextCombatObjectId(),
                                             battleManager.BattleId,

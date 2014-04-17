@@ -130,7 +130,6 @@ namespace Game.Logic.Actions
         private void RegisterBattleListeners(IBarbarianTribe barbarianTribe)
         {
             barbarianTribe.Battle.WithdrawAttacker += BattleWithdrawAttacker;
-            barbarianTribe.Battle.EnterRound += BattleEnterRound;
             barbarianTribe.Battle.GroupKilled += BattleGroupKilled;
         }
 
@@ -138,7 +137,6 @@ namespace Game.Logic.Actions
         {
             barbarianTribe.Battle.GroupKilled -= BattleGroupKilled;
             barbarianTribe.Battle.WithdrawAttacker -= BattleWithdrawAttacker;
-            barbarianTribe.Battle.EnterRound -= BattleEnterRound;
         }
 
         public override Error Validate(string[] parms)
@@ -281,25 +279,6 @@ namespace Game.Logic.Actions
             battle.BattleReport.SetLootedResources(combatGroup.Owner, combatGroup.Id, battle.BattleId, looted, actual);
         }
         
-        private void BattleEnterRound(IBattleManager battle, ICombatList atk, ICombatList def, uint round)
-        {
-            ICity city;
-            ITroopObject troopObject;
-
-            if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject))
-            {
-                throw new Exception("City or troop not found");
-            }
-
-            // if battle lasts more than 5 rounds, attacker gets 3 attack points.
-            if (battle.GetCombatGroup(groupId).Any(co => co.RoundsParticipated == 5))
-            {
-                troopObject.BeginUpdate();
-                troopObject.Stats.AttackPoint += 3;
-                troopObject.EndUpdate();
-            }
-        }
-
         public override void UserCancelled()
         {
         }

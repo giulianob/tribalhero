@@ -396,8 +396,8 @@ BASIC_TRAINING_TECHNOLOGY_LVL_1,Allows training Fighters.
 ,
 INSTANT_TRAINING_GROUND_TECHNOLOGY_NAME,Training Ground Kickstart
 INSTANT_TRAINING_GROUND_TECHNOLOGY_SUMMARY,First {0} of Fighter and Bowman of the city will be trained immediately.  (Stacks additively up to 150)
-INSTANT_TRAINING_GROUND_TECHNOLOGY_LVL_1,First 5 of Fighter and Bowman of the city will be trained immediately.  (Stacks additively up to 150)
-INSTANT_TRAINING_GROUND_TECHNOLOGY_LVL_2,First 10 of Fighter and Bowman of the city will be trained immediately.  (Stacks additively up to 150)
+INSTANT_TRAINING_GROUND_TECHNOLOGY_LVL_1,First 15 of Fighter and Bowman of the city will be trained immediately.  (Stacks additively up to 150)
+INSTANT_TRAINING_GROUND_TECHNOLOGY_LVL_2,First 15 of Fighter and Bowman of the city will be trained immediately.  (Stacks additively up to 150)
 INSTANT_TRAINING_GROUND_TECHNOLOGY_LVL_3,First 15 of Fighter and Bowman of the city will be trained immediately.  (Stacks additively up to 150)
 INSTANT_TRAINING_GROUND_TECHNOLOGY_LVL_4,First 20 of Fighter and Bowman of the city will be trained immediately.  (Stacks additively up to 150)
 INSTANT_TRAINING_GROUND_TECHNOLOGY_LVL_5,First 25 of Fighter and Bowman of the city will be trained immediately.  (Stacks additively up to 150)

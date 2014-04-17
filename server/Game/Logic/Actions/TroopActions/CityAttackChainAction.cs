@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
 using Game.Data.Troop;
+using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
@@ -20,6 +21,8 @@ namespace Game.Logic.Actions
         private readonly IActionFactory actionFactory;
 
         private readonly BattleProcedure battleProcedure;
+
+        private readonly Formula formula;
 
         private uint cityId;
 
@@ -44,7 +47,8 @@ namespace Game.Logic.Actions
                                      ILocker locker,
                                      IGameObjectLocator gameObjectLocator,
                                      CityBattleProcedure cityBattleProcedure,
-                                     BattleProcedure battleProcedure)
+                                     BattleProcedure battleProcedure,
+                                     Formula formula)
         {
             this.actionFactory = actionFactory;
             this.procedure = procedure;
@@ -52,6 +56,7 @@ namespace Game.Logic.Actions
             this.gameObjectLocator = gameObjectLocator;
             this.cityBattleProcedure = cityBattleProcedure;
             this.battleProcedure = battleProcedure;
+            this.formula = formula;
         }
 
         public CityAttackChainAction(uint cityId,
@@ -63,8 +68,9 @@ namespace Game.Logic.Actions
                                      ILocker locker,
                                      IGameObjectLocator gameObjectLocator,
                                      CityBattleProcedure cityBattleProcedure,
-                                     BattleProcedure battleProcedure)
-            : this(actionFactory, procedure, locker, gameObjectLocator, cityBattleProcedure, battleProcedure)
+                                     BattleProcedure battleProcedure,
+                                     Formula formula)
+            : this(actionFactory, procedure, locker, gameObjectLocator, cityBattleProcedure, battleProcedure,formula)
         {
             this.tmpTarget = target;
             this.cityId = cityId;
@@ -260,14 +266,12 @@ namespace Game.Logic.Actions
 
                 // Calculate how many attack points to give to the city
                 city.BeginUpdate();
-                procedure.GiveAttackPoints(city, troopObject.Stats.AttackPoint);
+                city.AttackPoint += formula.GetAttackPoint(troopObject.Stats.AttackPoint);
                 city.EndUpdate();
 
                 // Check if troop is still alive
                 if (troopObject.Stub.TotalCount > 0)
                 {
-
-
                     // Add notification for walking back
                     city.Notifications.Add(troopObject, this);
 

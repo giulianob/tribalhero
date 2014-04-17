@@ -18,6 +18,11 @@ namespace Game.Logic.Procedures
             this.cityEventFactory = cityEventFactory;
         }
 
+        public virtual void OnStructureRemove(IStructure structure)
+        {
+            cityTriggerManager.Process(cityEventFactory.CreateStructureRemoveEvent(structure, structure.Type));
+        }
+
         public virtual void OnStructureDowngrade(IStructure structure)
         {
             cityTriggerManager.Process(cityEventFactory.CreateStructureDowngradeEvent(structure, structure.Type, structure.Lvl));

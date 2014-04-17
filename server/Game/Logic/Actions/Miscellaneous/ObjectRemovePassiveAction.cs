@@ -273,7 +273,7 @@ namespace Game.Logic.Actions
                     procedure.OnStructureUpgradeDowngrade(structure);
                     city.EndUpdate();
 
-                    callbackProcedure.OnStructureDowngrade(structure);
+                    callbackProcedure.OnStructureRemove(structure);
 
                     foreach (var tech in techs)
                     {

@@ -4,8 +4,7 @@ Condition,CP1,CP2,CP3,CP4,CP5,Action,P1,P2,P3,P4,P5,NlsDesc,Comments
 structure_upgrade,Type=2000,Lvl=8,,,,city_radius_change,radius=6,,,,,,
 ,,,,,,,,,,,,,
 // forest camp,,,,,,,,,,,,,
-structure_downgrade,type=2108,lvl=0,,,,forest_camp_labor_update,,,,,,,
-structure_downgrade,type=2108,lvl=1,,,,forest_camp_labor_update,,,,,,,
+structure_downgrade_or_remove,type=2108,,,,,forest_camp_labor_update,,,,,,,
 ,,,,,,,,,,,,,
 // lumbermill,,,,,,,,,,,,,
 structure_upgrade,Type=2107,Lvl=1,,,,forest_camp_rate_update,,,,,,,
@@ -23,21 +22,8 @@ structure_upgrade,Type=2107,Lvl=12,,,,forest_camp_rate_update,,,,,,,
 structure_upgrade,Type=2107,Lvl=13,,,,forest_camp_rate_update,,,,,,,
 structure_upgrade,Type=2107,Lvl=14,,,,forest_camp_rate_update,,,,,,,
 structure_upgrade,Type=2107,Lvl=15,,,,forest_camp_rate_update,,,,,,,
-structure_downgrade,Type=2107,Lvl=1,,,,forest_camp_rate_update,,,,,,,
-structure_downgrade,Type=2107,Lvl=2,,,,forest_camp_rate_update,,,,,,,
-structure_downgrade,Type=2107,Lvl=3,,,,forest_camp_rate_update,,,,,,,
-structure_downgrade,Type=2107,Lvl=4,,,,forest_camp_rate_update,,,,,,,
-structure_downgrade,Type=2107,Lvl=5,,,,forest_camp_rate_update,,,,,,,
-structure_downgrade,Type=2107,Lvl=6,,,,forest_camp_rate_update,,,,,,,
-structure_downgrade,Type=2107,Lvl=7,,,,forest_camp_rate_update,,,,,,,
-structure_downgrade,Type=2107,Lvl=8,,,,forest_camp_rate_update,,,,,,,
-structure_downgrade,Type=2107,Lvl=9,,,,forest_camp_rate_update,,,,,,,
-structure_downgrade,Type=2107,Lvl=10,,,,forest_camp_rate_update,,,,,,,
-structure_downgrade,Type=2107,Lvl=11,,,,forest_camp_rate_update,,,,,,,
-structure_downgrade,Type=2107,Lvl=12,,,,forest_camp_rate_update,,,,,,,
-structure_downgrade,Type=2107,Lvl=13,,,,forest_camp_rate_update,,,,,,,
-structure_downgrade,Type=2107,Lvl=14,,,,forest_camp_rate_update,,,,,,,
-structure_downgrade,Type=2107,Lvl=15,,,,forest_camp_rate_update,,,,,,,
+,,,,,,,,,,,,,
+structure_downgrade_or_remove,Type=2107,,,,,forest_camp_rate_update,,,,,,,
 ,,,,,,,,,,,,,
 // tribal gathering,,,,,,,,,,,,,
 structure_upgrade,Type=3002,Lvl=1,,,,structure_self_destroy,time=28800,,,,,,
@@ -65,21 +51,21 @@ structure_upgrade,Type=3011,Lvl=12,,,,structure_change,time=!14400,type=3012,lvl
 structure_upgrade,Type=3011,Lvl=13,,,,structure_change,time=!14400,type=3012,lvl=13,,,FARMING_LABEL,//changing to mature
 structure_upgrade,Type=3011,Lvl=14,,,,structure_change,time=!14400,type=3012,lvl=14,,,FARMING_LABEL,//changing to mature
 structure_upgrade,Type=3011,Lvl=15,,,,structure_change,time=!14400,type=3012,lvl=15,,,FARMING_LABEL,//changing to mature
-structure_downgrade,Type=3011,Lvl=1,,,,structure_change,time=0,3008,1,,,,//trashed
-structure_downgrade,Type=3011,Lvl=2,,,,structure_change,time=0,3008,1,,,,//trashed
-structure_downgrade,Type=3011,Lvl=3,,,,structure_change,time=0,3008,1,,,,//trashed
-structure_downgrade,Type=3011,Lvl=4,,,,structure_change,time=0,3008,1,,,,//trashed
-structure_downgrade,Type=3011,Lvl=5,,,,structure_change,time=0,3008,1,,,,//trashed
-structure_downgrade,Type=3011,Lvl=6,,,,structure_change,time=0,3008,1,,,,//trashed
-structure_downgrade,Type=3011,Lvl=7,,,,structure_change,time=0,3008,1,,,,//trashed
-structure_downgrade,Type=3011,Lvl=8,,,,structure_change,time=0,3008,1,,,,//trashed
-structure_downgrade,Type=3011,Lvl=9,,,,structure_change,time=0,3008,1,,,,//trashed
-structure_downgrade,Type=3011,Lvl=10,,,,structure_change,time=0,3008,1,,,,//trashed
-structure_downgrade,Type=3011,Lvl=11,,,,structure_change,time=0,3008,1,,,,//trashed
-structure_downgrade,Type=3011,Lvl=12,,,,structure_change,time=0,3008,1,,,,//trashed
-structure_downgrade,Type=3011,Lvl=13,,,,structure_change,time=0,3008,1,,,,//trashed
-structure_downgrade,Type=3011,Lvl=14,,,,structure_change,time=0,3008,1,,,,//trashed
-structure_downgrade,Type=3011,Lvl=15,,,,structure_change,time=0,3008,1,,,,//trashed
+structure_downgrade,Type=3011,Lvl=1,,,,structure_change,time=0,3008,1,,,,//when enemy knocks it down
+structure_downgrade,Type=3011,Lvl=2,,,,structure_change,time=0,3008,1,,,,//when enemy knocks it down
+structure_downgrade,Type=3011,Lvl=3,,,,structure_change,time=0,3008,1,,,,//when enemy knocks it down
+structure_downgrade,Type=3011,Lvl=4,,,,structure_change,time=0,3008,1,,,,//when enemy knocks it down
+structure_downgrade,Type=3011,Lvl=5,,,,structure_change,time=0,3008,1,,,,//when enemy knocks it down
+structure_downgrade,Type=3011,Lvl=6,,,,structure_change,time=0,3008,1,,,,//when enemy knocks it down
+structure_downgrade,Type=3011,Lvl=7,,,,structure_change,time=0,3008,1,,,,//when enemy knocks it down
+structure_downgrade,Type=3011,Lvl=8,,,,structure_change,time=0,3008,1,,,,//when enemy knocks it down
+structure_downgrade,Type=3011,Lvl=9,,,,structure_change,time=0,3008,1,,,,//when enemy knocks it down
+structure_downgrade,Type=3011,Lvl=10,,,,structure_change,time=0,3008,1,,,,//when enemy knocks it down
+structure_downgrade,Type=3011,Lvl=11,,,,structure_change,time=0,3008,1,,,,//when enemy knocks it down
+structure_downgrade,Type=3011,Lvl=12,,,,structure_change,time=0,3008,1,,,,//when enemy knocks it down
+structure_downgrade,Type=3011,Lvl=13,,,,structure_change,time=0,3008,1,,,,//when enemy knocks it down
+structure_downgrade,Type=3011,Lvl=14,,,,structure_change,time=0,3008,1,,,,//when enemy knocks it down
+structure_downgrade,Type=3011,Lvl=15,,,,structure_change,time=0,3008,1,,,,//when enemy knocks it down
 structure_convert,Type=3012,Lvl=1,,,,structure_change,time=!21600,3010,1,,,TIME_LEFT_LABEL,//kill field
 structure_convert,Type=3012,Lvl=2,,,,structure_change,time=!21600,3010,1,,,TIME_LEFT_LABEL,//kill field
 structure_convert,Type=3012,Lvl=3,,,,structure_change,time=!21600,3010,1,,,TIME_LEFT_LABEL,//kill field
@@ -110,21 +96,21 @@ structure_convert,Type=3012,Lvl=12,,,,property_create,name=Crop,RandomINT,320,48
 structure_convert,Type=3012,Lvl=13,,,,property_create,name=Crop,RandomINT,328,492,,,//set crop property to how much player will get
 structure_convert,Type=3012,Lvl=14,,,,property_create,name=Crop,RandomINT,336,504,,,//set crop property to how much player will get
 structure_convert,Type=3012,Lvl=15,,,,property_create,name=Crop,RandomINT,344,516,,,//set crop property to how much player will get
-structure_downgrade,Type=3012,Lvl=1,,,,structure_change,time=0,3008,1,,,,//trashed
-structure_downgrade,Type=3012,Lvl=2,,,,structure_change,time=0,3008,1,,,,//trashed
-structure_downgrade,Type=3012,Lvl=3,,,,structure_change,time=0,3008,1,,,,//trashed
-structure_downgrade,Type=3012,Lvl=4,,,,structure_change,time=0,3008,1,,,,//trashed
-structure_downgrade,Type=3012,Lvl=5,,,,structure_change,time=0,3008,1,,,,//trashed
-structure_downgrade,Type=3012,Lvl=6,,,,structure_change,time=0,3008,1,,,,//trashed
-structure_downgrade,Type=3012,Lvl=7,,,,structure_change,time=0,3008,1,,,,//trashed
-structure_downgrade,Type=3012,Lvl=8,,,,structure_change,time=0,3008,1,,,,//trashed
-structure_downgrade,Type=3012,Lvl=9,,,,structure_change,time=0,3008,1,,,,//trashed
-structure_downgrade,Type=3012,Lvl=10,,,,structure_change,time=0,3008,1,,,,//trashed
-structure_downgrade,Type=3012,Lvl=11,,,,structure_change,time=0,3008,1,,,,//trashed
-structure_downgrade,Type=3012,Lvl=12,,,,structure_change,time=0,3008,1,,,,//trashed
-structure_downgrade,Type=3012,Lvl=13,,,,structure_change,time=0,3008,1,,,,//trashed
-structure_downgrade,Type=3012,Lvl=14,,,,structure_change,time=0,3008,1,,,,//trashed
-structure_downgrade,Type=3012,Lvl=15,,,,structure_change,time=0,3008,1,,,,//trashed
+structure_downgrade,Type=3012,Lvl=1,,,,structure_change,time=0,3008,1,,,,//when enemy knocks it down
+structure_downgrade,Type=3012,Lvl=2,,,,structure_change,time=0,3008,1,,,,//when enemy knocks it down
+structure_downgrade,Type=3012,Lvl=3,,,,structure_change,time=0,3008,1,,,,//when enemy knocks it down
+structure_downgrade,Type=3012,Lvl=4,,,,structure_change,time=0,3008,1,,,,//when enemy knocks it down
+structure_downgrade,Type=3012,Lvl=5,,,,structure_change,time=0,3008,1,,,,//when enemy knocks it down
+structure_downgrade,Type=3012,Lvl=6,,,,structure_change,time=0,3008,1,,,,//when enemy knocks it down
+structure_downgrade,Type=3012,Lvl=7,,,,structure_change,time=0,3008,1,,,,//when enemy knocks it down
+structure_downgrade,Type=3012,Lvl=8,,,,structure_change,time=0,3008,1,,,,//when enemy knocks it down
+structure_downgrade,Type=3012,Lvl=9,,,,structure_change,time=0,3008,1,,,,//when enemy knocks it down
+structure_downgrade,Type=3012,Lvl=10,,,,structure_change,time=0,3008,1,,,,//when enemy knocks it down
+structure_downgrade,Type=3012,Lvl=11,,,,structure_change,time=0,3008,1,,,,//when enemy knocks it down
+structure_downgrade,Type=3012,Lvl=12,,,,structure_change,time=0,3008,1,,,,//when enemy knocks it down
+structure_downgrade,Type=3012,Lvl=13,,,,structure_change,time=0,3008,1,,,,//when enemy knocks it down
+structure_downgrade,Type=3012,Lvl=14,,,,structure_change,time=0,3008,1,,,,//when enemy knocks it down
+structure_downgrade,Type=3012,Lvl=15,,,,structure_change,time=0,3008,1,,,,//when enemy knocks it down
 ,,,,,,,,,,,,,
 //weapon export,,,,,,,,,,,,,
 technology_change,Type=22031,,,,,resource_rate_update,,,,,,,
@@ -144,16 +130,7 @@ structure_upgrade,Type=2302,Lvl=7,,,,distributed_points_update,,,,,,,
 structure_upgrade,Type=2302,Lvl=8,,,,distributed_points_update,,,,,,,
 structure_upgrade,Type=2302,Lvl=9,,,,distributed_points_update,,,,,,,
 structure_upgrade,Type=2302,Lvl=10,,,,distributed_points_update,,,,,,,
-structure_downgrade,Type=2302,Lvl=1,,,,distributed_points_update,,,,,,,
-structure_downgrade,Type=2302,Lvl=2,,,,distributed_points_update,,,,,,,
-structure_downgrade,Type=2302,Lvl=3,,,,distributed_points_update,,,,,,,
-structure_downgrade,Type=2302,Lvl=4,,,,distributed_points_update,,,,,,,
-structure_downgrade,Type=2302,Lvl=5,,,,distributed_points_update,,,,,,,
-structure_downgrade,Type=2302,Lvl=6,,,,distributed_points_update,,,,,,,
-structure_downgrade,Type=2302,Lvl=7,,,,distributed_points_update,,,,,,,
-structure_downgrade,Type=2302,Lvl=8,,,,distributed_points_update,,,,,,,
-structure_downgrade,Type=2302,Lvl=9,,,,distributed_points_update,,,,,,,
-structure_downgrade,Type=2302,Lvl=10,,,,distributed_points_update,,,,,,,
+structure_downgrade_or_remove,Type=2302,,,,,distributed_points_update,,,,,,,
 technology_change,Type=23021,,,,,distributed_points_update,,,,,,,
 technology_change,Type=23022,,,,,distributed_points_update,,,,,,,
 technology_change,Type=23023,,,,,distributed_points_update,,,,,,,
@@ -175,16 +152,7 @@ structure_upgrade,Type=2303,Lvl=7,,,,distributed_points_update,,,,,,,
 structure_upgrade,Type=2303,Lvl=8,,,,distributed_points_update,,,,,,,
 structure_upgrade,Type=2303,Lvl=9,,,,distributed_points_update,,,,,,,
 structure_upgrade,Type=2303,Lvl=10,,,,distributed_points_update,,,,,,,
-structure_downgrade,Type=2303,Lvl=1,,,,distributed_points_update,,,,,,,
-structure_downgrade,Type=2303,Lvl=2,,,,distributed_points_update,,,,,,,
-structure_downgrade,Type=2303,Lvl=3,,,,distributed_points_update,,,,,,,
-structure_downgrade,Type=2303,Lvl=4,,,,distributed_points_update,,,,,,,
-structure_downgrade,Type=2303,Lvl=5,,,,distributed_points_update,,,,,,,
-structure_downgrade,Type=2303,Lvl=6,,,,distributed_points_update,,,,,,,
-structure_downgrade,Type=2303,Lvl=7,,,,distributed_points_update,,,,,,,
-structure_downgrade,Type=2303,Lvl=8,,,,distributed_points_update,,,,,,,
-structure_downgrade,Type=2303,Lvl=9,,,,distributed_points_update,,,,,,,
-structure_downgrade,Type=2303,Lvl=10,,,,distributed_points_update,,,,,,,
+structure_downgrade_or_remove,Type=2303,,,,,distributed_points_update,,,,,,,
 technology_change,Type=23031,,,,,distributed_points_update,,,,,,,
 technology_change,Type=23032,,,,,distributed_points_update,,,,,,,
 technology_change,Type=23033,,,,,distributed_points_update,,,,,,,

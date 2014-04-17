@@ -1,0 +1,727 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Dawn.SocketAwaitable</name>
+    </assembly>
+    <members>
+        <member name="T:Dawn.Net.Sockets.BlockingBufferManager">
+            <summary>
+                Represents a buffer manager that when a buffer is requested, blocks the calling thread
+                until a buffer is available.
+            </summary>
+        </member>
+        <member name="F:Dawn.Net.Sockets.BlockingBufferManager.typeName">
+            <summary>
+                The full name of the <see cref="T:Dawn.Net.Sockets.BlockingBufferManager"/> type.
+            </summary>
+        </member>
+        <member name="F:Dawn.Net.Sockets.BlockingBufferManager.bufferSize">
+            <summary>
+                Size of the buffers provided by the buffer manager.
+            </summary>
+        </member>
+        <member name="F:Dawn.Net.Sockets.BlockingBufferManager.data">
+            <summary>
+                Data block that provides the underlying storage for the buffers provided by the
+                buffer manager.
+            </summary>
+        </member>
+        <member name="F:Dawn.Net.Sockets.BlockingBufferManager.availableIndices">
+            <summary>
+                Zero-based starting indices in <see cref="F:Dawn.Net.Sockets.BlockingBufferManager.data"/>, of the available segments.
+            </summary>
+        </member>
+        <member name="F:Dawn.Net.Sockets.BlockingBufferManager.usedIndices">
+            <summary>
+                Zero-based starting indices in <see cref="F:Dawn.Net.Sockets.BlockingBufferManager.data"/>, of the unavailable segments.
+            </summary>
+        </member>
+        <member name="F:Dawn.Net.Sockets.BlockingBufferManager.isDisposed">
+            <summary>
+                A value indicating whether the <see cref="M:Dawn.Net.Sockets.BlockingBufferManager.Dispose"/> has
+                been called.
+            </summary>
+        </member>
+        <member name="M:Dawn.Net.Sockets.BlockingBufferManager.#ctor(System.Int32,System.Int32)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Dawn.Net.Sockets.BlockingBufferManager"/> class.
+            </summary>
+            <param name="bufferSize">
+                Size of the buffers that will be provided by the buffer manager.
+            </param>
+            <param name="bufferCount">
+                Maximum amount of the buffers that will be concurrently used.
+            </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+                <paramref name="bufferSize"/> or <paramref name="bufferCount"/> is less than one.
+            </exception>
+        </member>
+        <member name="M:Dawn.Net.Sockets.BlockingBufferManager.GetBuffer">
+            <summary>
+                Gets an available buffer. This method blocks the calling thread until a buffer
+                becomes available.
+            </summary>
+            <returns>
+                An <see cref="T:System.ArraySegment`1"/> with <see cref="P:Dawn.Net.Sockets.BlockingBufferManager.BufferSize"/> as its
+                count.
+            </returns>
+            <exception cref="T:System.ObjectDisposedException">
+                The <see cref="T:Dawn.Net.Sockets.BlockingBufferManager"/> has been disposed.
+            </exception>
+        </member>
+        <member name="M:Dawn.Net.Sockets.BlockingBufferManager.ReleaseBuffer(System.ArraySegment{System.Byte})">
+            <summary>
+                Releases the specified buffer and makes it available for future use.
+            </summary>
+            <param name="buffer">
+                Buffer to release.
+            </param>
+            <exception cref="T:System.ArgumentException">
+                <paramref name="buffer"/>'s array is null, count is not <see cref="P:Dawn.Net.Sockets.BlockingBufferManager.BufferSize"/>,
+                or the offset is invalid; i.e. not taken from the current buffer manager.
+            </exception>
+            <exception cref="T:System.ObjectDisposedException">
+                The <see cref="T:Dawn.Net.Sockets.BlockingBufferManager"/> has been disposed.
+            </exception>
+        </member>
+        <member name="M:Dawn.Net.Sockets.BlockingBufferManager.Dispose">
+            <summary>
+                Releases all resources used by the current instance of
+                <see cref="T:Dawn.Net.Sockets.BlockingBufferManager"/>. Underlying data block is an exception if it's
+                used in unmanaged operations that require pinning the buffer (e.g.
+                <see cref="M:System.Net.Sockets.Socket.ReceiveAsync(System.Net.Sockets.SocketAsyncEventArgs)"/>).
+            </summary>
+        </member>
+        <member name="P:Dawn.Net.Sockets.BlockingBufferManager.BufferSize">
+            <summary>
+                Gets the size of the buffers provided by the buffer manager.
+            </summary>
+        </member>
+        <member name="P:Dawn.Net.Sockets.BlockingBufferManager.AvailableBuffers">
+            <summary>
+                Gets the number of available buffers provided by the buffer manager.
+            </summary>
+        </member>
+        <member name="P:Dawn.Net.Sockets.BlockingBufferManager.IsDisposed">
+            <summary>
+                Gets a value indicating whether the <see cref="T:Dawn.Net.Sockets.BlockingBufferManager"/> is
+                disposed.
+            </summary>
+        </member>
+        <member name="T:Dawn.Net.Sockets.SocketAwaitable">
+            <summary>
+                Represents awaitable and re-usable socket arguments.
+            </summary>
+        </member>
+        <member name="F:Dawn.Net.Sockets.SocketAwaitable.EmptyArray">
+            <summary>
+                A cached, empty array of bytes.
+            </summary>
+        </member>
+        <member name="F:Dawn.Net.Sockets.SocketAwaitable.arguments">
+            <summary>
+                Asynchronous socket arguments for internal use.
+            </summary>
+        </member>
+        <member name="F:Dawn.Net.Sockets.SocketAwaitable.syncRoot">
+            <summary>
+                An object that can be used to synchronize access to the
+                <see cref="T:Dawn.Net.Sockets.SocketAwaitable"/>.
+            </summary>
+        </member>
+        <member name="F:Dawn.Net.Sockets.SocketAwaitable.awaiter">
+            <summary>
+                An awaiter that waits the completions of asynchronous socket operations.
+            </summary>
+        </member>
+        <member name="F:Dawn.Net.Sockets.SocketAwaitable.transferred">
+            <summary>
+                The data buffer segment that holds the transferred bytes.
+            </summary>
+        </member>
+        <member name="F:Dawn.Net.Sockets.SocketAwaitable.isDisposed">
+            <summary>
+                A value indicating whether the <see cref="T:Dawn.Net.Sockets.SocketAwaitable"/> is disposed.
+            </summary>
+        </member>
+        <member name="F:Dawn.Net.Sockets.SocketAwaitable.shouldCaptureContext">
+            <summary>
+                A value that indicates whether the socket operations using the
+                <see cref="T:Dawn.Net.Sockets.SocketAwaitable"/> should capture the current synchronization context
+                and attempt to marshall their continuations back to the captured context.
+            </summary>
+        </member>
+        <member name="M:Dawn.Net.Sockets.SocketAwaitable.#ctor">
+            <summary>
+                Initializes a new instance of the <see cref="T:Dawn.Net.Sockets.SocketAwaitable"/> class.
+            </summary>
+        </member>
+        <member name="M:Dawn.Net.Sockets.SocketAwaitable.Clear">
+            <summary>
+                Clears the buffer, accepted socket, remote endpoint and socket flags to prepare
+                <see cref="T:Dawn.Net.Sockets.SocketAwaitable"/> for pooling.
+            </summary>
+        </member>
+        <member name="M:Dawn.Net.Sockets.SocketAwaitable.GetAwaiter">
+            <summary>
+                Gets the awaitable object to await a socket operation.
+            </summary>
+            <returns>
+                A <see cref="T:Dawn.Net.Sockets.SocketAwaiter"/> used to await this <see cref="T:Dawn.Net.Sockets.SocketAwaitable"/>.
+            </returns>
+        </member>
+        <member name="M:Dawn.Net.Sockets.SocketAwaitable.Dispose">
+            <summary>
+                Releases all resources used by <see cref="T:Dawn.Net.Sockets.SocketAwaitable"/>.
+            </summary>
+        </member>
+        <member name="P:Dawn.Net.Sockets.SocketAwaitable.AcceptSocket">
+            <summary>
+                Gets the socket created for accepting a connection with an asynchronous socket
+                method.
+            </summary>
+        </member>
+        <member name="P:Dawn.Net.Sockets.SocketAwaitable.Buffer">
+            <summary>
+                Gets or sets the data buffer to use with the asynchronous socket methods.
+            </summary>
+        </member>
+        <member name="P:Dawn.Net.Sockets.SocketAwaitable.Transferred">
+            <summary>
+                Gets the data buffer segment that holds the transferred bytes.
+            </summary>
+        </member>
+        <member name="P:Dawn.Net.Sockets.SocketAwaitable.ConnectByNameError">
+            <summary>
+                Gets the exception in the case of a connection failure when a
+                <see cref="T:System.Net.DnsEndPoint"/> was used.
+            </summary>
+        </member>
+        <member name="P:Dawn.Net.Sockets.SocketAwaitable.DisconnectReuseSocket">
+            <summary>
+                Gets or sets a value indicating whether a socket can be reused after a disconnect
+                operation.
+            </summary>
+        </member>
+        <member name="P:Dawn.Net.Sockets.SocketAwaitable.LastOperation">
+            <summary>
+                Gets the type of socket operation most recently performed with this context object.
+            </summary>
+        </member>
+        <member name="P:Dawn.Net.Sockets.SocketAwaitable.RemoteEndPoint">
+            <summary>
+                Gets or sets the remote IP endpoint for an asynchronous operation.
+            </summary>
+        </member>
+        <member name="P:Dawn.Net.Sockets.SocketAwaitable.SocketFlags">
+            <summary>
+                Gets or sets the behavior of an asynchronous operation.
+            </summary>
+        </member>
+        <member name="P:Dawn.Net.Sockets.SocketAwaitable.UserToken">
+            <summary>
+                Gets or sets a user or application object associated with this asynchronous socket
+                operation.
+            </summary>
+        </member>
+        <member name="P:Dawn.Net.Sockets.SocketAwaitable.ShouldCaptureContext">
+            <summary>
+                Gets or sets a value indicating whether the socket operations using the
+                <see cref="T:Dawn.Net.Sockets.SocketAwaitable"/> should capture the current synchronization context
+                and attempt to marshall their continuations back to the captured context.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+                A socket operation was already in progress using the current
+                <see cref="T:Dawn.Net.Sockets.SocketAwaitable"/>.
+            </exception>
+        </member>
+        <member name="P:Dawn.Net.Sockets.SocketAwaitable.IsDisposed">
+            <summary>
+                Gets a value indicating whether the <see cref="T:Dawn.Net.Sockets.SocketAwaitable"/> is disposed.
+            </summary>
+        </member>
+        <member name="P:Dawn.Net.Sockets.SocketAwaitable.Arguments">
+            <summary>
+                Gets the asynchronous socket arguments for internal use.
+            </summary>
+        </member>
+        <member name="T:Dawn.Net.Sockets.SocketAwaitablePool">
+            <summary>
+                Represents a thread-safe pool of awaitable socket arguments.
+            </summary>
+        </member>
+        <member name="F:Dawn.Net.Sockets.SocketAwaitablePool.typeName">
+            <summary>
+                The full name of the <see cref="T:Dawn.Net.Sockets.SocketAwaitablePool"/> type.
+            </summary>
+        </member>
+        <member name="F:Dawn.Net.Sockets.SocketAwaitablePool.bag">
+            <summary>
+                A thread-safe, unordered collection of awaitable socket arguments.
+            </summary>
+        </member>
+        <member name="F:Dawn.Net.Sockets.SocketAwaitablePool.isDisposed">
+            <summary>
+                A value indicating whether the <see cref="T:Dawn.Net.Sockets.SocketAwaitablePool"/> is disposed.
+            </summary>
+        </member>
+        <member name="M:Dawn.Net.Sockets.SocketAwaitablePool.#ctor(System.Int32)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Dawn.Net.Sockets.SocketAwaitablePool"/> class.
+            </summary>
+            <param name="initialCount">
+                The initial size of the pool.
+            </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+                <paramref name="initialCount"/> is less than zero.
+            </exception>
+        </member>
+        <member name="M:Dawn.Net.Sockets.SocketAwaitablePool.Add(Dawn.Net.Sockets.SocketAwaitable)">
+            <summary>
+                Adds a <see cref="T:Dawn.Net.Sockets.SocketAwaitable"/> instance to the pool.
+            </summary>
+            <param name="awaitable">
+                Awaitable socket arguments to add.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="awaitable"/> is null.
+            </exception>
+        </member>
+        <member name="M:Dawn.Net.Sockets.SocketAwaitablePool.Take">
+            <summary>
+                Removes and returns a <see cref="T:Dawn.Net.Sockets.SocketAwaitable"/> instance from the pool, if the
+                pool has one; otherwise, returns a new <see cref="T:Dawn.Net.Sockets.SocketAwaitable"/> instance.
+            </summary>
+            <returns>
+                A <see cref="T:Dawn.Net.Sockets.SocketAwaitable"/> instance from the pool, if the pool has one;
+                otherwise, a new <see cref="T:Dawn.Net.Sockets.SocketAwaitable"/> instance.
+            </returns>
+            <exception cref="T:System.ObjectDisposedException">
+                The <see cref="T:Dawn.Net.Sockets.SocketAwaitablePool"/> has been disposed.
+            </exception>
+        </member>
+        <member name="M:Dawn.Net.Sockets.SocketAwaitablePool.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+            <summary>
+                Copies the pool elements to an existing one-dimensional array, starting at the
+                specified offset.
+            </summary>
+            <param name="array">
+                The one-dimensional array of awaitable socket arguments that is the destination of
+                the arguments copied from the pool. Array must have zero-based indexing.
+            </param>
+            <param name="offset">
+                The zero-based index in <paramref name="array"/> of which copying begins.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="array"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+                <paramref name="offset"/> is less than zero.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+                <paramref name="array"/> is not a single-dimensional array of
+                <see cref="T:Dawn.Net.Sockets.SocketAwaitable"/> instances.
+                -or-
+                <paramref name="offset"/> is equal to or greater than the length of
+                <paramref name="array"/>
+                -or-
+                The number of elements in the source pool is greater than the available space from
+                <paramref name="offset"/> to the end of <paramref name="array"/>.
+            </exception>
+            <exception cref="T:System.ObjectDisposedException">
+                The <see cref="T:Dawn.Net.Sockets.SocketAwaitablePool"/> has been disposed.
+            </exception>
+        </member>
+        <member name="M:Dawn.Net.Sockets.SocketAwaitablePool.GetEnumerator">
+            <summary>
+                Returns an enumerator that iterates through the <see cref="T:Dawn.Net.Sockets.SocketAwaitablePool"/>.
+            </summary>
+            <returns>
+                An enumerator for the contents of the <see cref="T:Dawn.Net.Sockets.SocketAwaitablePool"/>.
+            </returns>
+            <exception cref="T:System.ObjectDisposedException">
+                The <see cref="T:Dawn.Net.Sockets.SocketAwaitablePool"/> has been disposed.
+            </exception>
+        </member>
+        <member name="M:Dawn.Net.Sockets.SocketAwaitablePool.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+                Returns a non-generic enumerator that iterates through the
+                <see cref="T:Dawn.Net.Sockets.SocketAwaitablePool"/>.
+            </summary>
+            <returns>
+                An enumerator for the contents of the <see cref="T:Dawn.Net.Sockets.SocketAwaitablePool"/>.
+            </returns>
+            <exception cref="T:System.ObjectDisposedException">
+                The <see cref="T:Dawn.Net.Sockets.SocketAwaitablePool"/> has been disposed.
+            </exception>
+        </member>
+        <member name="M:Dawn.Net.Sockets.SocketAwaitablePool.Dispose">
+            <summary>
+                Release all resources used by the <see cref="T:Dawn.Net.Sockets.SocketAwaitablePool"/>.
+            </summary>
+        </member>
+        <member name="P:Dawn.Net.Sockets.SocketAwaitablePool.Count">
+            <summary>
+                Gets the number of awaitable socket arguments in the
+                <see cref="T:Dawn.Net.Sockets.SocketAwaitablePool"/>.
+            </summary>
+        </member>
+        <member name="P:Dawn.Net.Sockets.SocketAwaitablePool.IsDisposed">
+            <summary>
+                Gets a value indicating whether the <see cref="T:Dawn.Net.Sockets.SocketAwaitablePool"/> is disposed.
+            </summary>
+        </member>
+        <member name="P:Dawn.Net.Sockets.SocketAwaitablePool.System#Collections#ICollection#IsSynchronized">
+            <summary>
+                Gets a value indicating whether access to the <see cref="T:System.Collections.ICollection"/> is
+                synchronized with the <see cref="P:System.Collections.ICollection.SyncRoot"/> property.
+                This property always returns false.
+            </summary>
+        </member>
+        <member name="P:Dawn.Net.Sockets.SocketAwaitablePool.System#Collections#ICollection#SyncRoot">
+            <summary>
+                Gets an object that can be used to synchronize access to the
+                <see cref="T:System.Collections.ICollection"/>. This property is not supported.
+            </summary>
+        </member>
+        <member name="T:Dawn.Net.Sockets.SocketEx">
+            <summary>
+                Provides socket extensions for easier asynchronous operations.
+            </summary>
+        </member>
+        <member name="F:Dawn.Net.Sockets.SocketEx.acceptOp">
+            <summary>
+                Holds a delegate of <see cref="T:System.Net.Sockets.Socket"/>'s accept operation.
+            </summary>
+        </member>
+        <member name="F:Dawn.Net.Sockets.SocketEx.connectOp">
+            <summary>
+                Holds a delegate of <see cref="T:System.Net.Sockets.Socket"/>'s connect operation.
+            </summary>
+        </member>
+        <member name="F:Dawn.Net.Sockets.SocketEx.disconnectOp">
+            <summary>
+                Holds a delegate of <see cref="T:System.Net.Sockets.Socket"/>'s disconnect operation.
+            </summary>
+        </member>
+        <member name="F:Dawn.Net.Sockets.SocketEx.receiveOp">
+            <summary>
+                Holds a delegate of <see cref="T:System.Net.Sockets.Socket"/>'s receive operation.
+            </summary>
+        </member>
+        <member name="F:Dawn.Net.Sockets.SocketEx.sendOp">
+            <summary>
+                Holds a delegate of <see cref="T:System.Net.Sockets.Socket"/>'s send operation.
+            </summary>
+        </member>
+        <member name="M:Dawn.Net.Sockets.SocketEx.AcceptAsync(System.Net.Sockets.Socket,Dawn.Net.Sockets.SocketAwaitable)">
+            <summary>
+                Begins an awaitable operation to accept an incoming connection attempt.
+            </summary>
+            <param name="socket">
+                Socket that will accept the connection.
+            </param>
+            <param name="awaitable">
+                The <see cref="T:Dawn.Net.Sockets.SocketAwaitable"/> object to use for this asynchronous socket
+                operation.
+            </param>
+            <returns>
+                <paramref name="awaitable"/>, when awaited, will have the accepted socket in its
+                <see cref="P:Dawn.Net.Sockets.SocketAwaitable.AcceptSocket"/> property. Awaiter of the result returns
+                a <see cref="T:System.Net.Sockets.SocketError"/> that corresponds to the result of this asynchronous
+                operation.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="socket"/> or <paramref name="awaitable"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+                <see cref="P:Dawn.Net.Sockets.SocketAwaitable.Buffer"/> of the <paramref name="awaitable"/> is not
+                large enough. The buffer must be at least 2 * (sizeof(SOCKADDR_STORAGE + 16) bytes.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+                <paramref name="socket"/> is not bound, is not listening for connections, or is
+                already connected.
+                -or-
+                A socket operation was already in progress using <paramref name="awaitable"/>
+            </exception>
+            <exception cref="T:System.NotSupportedException">
+                Windows XP or later is required for this method.
+            </exception>
+            <exception cref="T:System.ObjectDisposedException">
+                <paramref name="socket"/> has been disposed.
+            </exception>
+        </member>
+        <member name="M:Dawn.Net.Sockets.SocketEx.ConnectAsync(System.Net.Sockets.Socket,Dawn.Net.Sockets.SocketAwaitable)">
+            <summary>
+                Begins an awaitable request for a connection to a remote host.
+            </summary>
+            <param name="socket">
+                Socket that will connect to a remote host.
+            </param>
+            <param name="awaitable">
+                The <see cref="T:Dawn.Net.Sockets.SocketAwaitable"/> object to use for this asynchronous socket
+                operation.
+            </param>
+            <returns>
+                The specified <see cref="T:Dawn.Net.Sockets.SocketAwaitable"/> which, when awaited, returns a
+                <see cref="T:System.Net.Sockets.SocketError"/> object that corresponds to the result of the connection
+                attempt.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="socket"/>, <paramref name="awaitable"/>, or
+                <see cref="P:Dawn.Net.Sockets.SocketAwaitable.RemoteEndPoint"/> is null.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+                <paramref name="socket"/> is listening or a socket operation was already in
+                progress using <paramref name="awaitable"/>.
+            </exception>
+            <exception cref="T:System.NotSupportedException">
+                Windows XP or later is required for this method. This exception also occurs if the
+                local endpoint and the <see cref="P:Dawn.Net.Sockets.SocketAwaitable.RemoteEndPoint"/> are not the
+                same address family.
+                -or-
+                Address family of <see cref="P:System.Net.Sockets.Socket.LocalEndPoint"/> is different than the address
+                family of <see cref="P:System.Net.Sockets.SocketAsyncEventArgs.RemoteEndPoint"/>.
+            </exception>
+            <exception cref="T:System.ObjectDisposedException">
+                <paramref name="socket"/> has been disposed.
+            </exception>
+            <exception cref="T:System.Security.SecurityException">
+                A caller higher in the call stack does not have permission for the requested
+                operation.
+            </exception>
+        </member>
+        <member name="M:Dawn.Net.Sockets.SocketEx.DisonnectAsync(System.Net.Sockets.Socket,Dawn.Net.Sockets.SocketAwaitable)">
+            <summary>
+                Begins an awaitable request to disconnect from a remote endpoint.
+            </summary>
+            <param name="socket">
+                Socket that will connect to a remote host.
+            </param>
+            <param name="awaitable">
+                The <see cref="T:Dawn.Net.Sockets.SocketAwaitable"/> object to use for this asynchronous socket
+                operation.
+            </param>
+            <returns>
+                The specified <see cref="T:Dawn.Net.Sockets.SocketAwaitable"/> which, when awaited, returns a
+                <see cref="T:System.Net.Sockets.SocketError"/> object that corresponds to the result of the connection
+                attempt.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="socket"/> or <paramref name="awaitable"/> is null.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+                A socket operation was already in progress using <paramref name="awaitable"/>.
+            </exception>
+            <exception cref="T:System.NotSupportedException">
+                Windows XP or later is required for this method. This exception also occurs if the
+                local endpoint and the <see cref="P:Dawn.Net.Sockets.SocketAwaitable.RemoteEndPoint"/> are not the
+                same address family.
+                -or-
+                Address family of <see cref="P:System.Net.Sockets.Socket.LocalEndPoint"/> is different than the address
+                family of <see cref="P:System.Net.Sockets.SocketAsyncEventArgs.RemoteEndPoint"/>.
+            </exception>
+            <exception cref="T:System.ObjectDisposedException">
+                <paramref name="socket"/> has been disposed.
+            </exception>
+        </member>
+        <member name="M:Dawn.Net.Sockets.SocketEx.ReceiveAsync(System.Net.Sockets.Socket,Dawn.Net.Sockets.SocketAwaitable)">
+            <summary>
+                Begins an awaitable request to receive data from a connected <see cref="T:System.Net.Sockets.Socket"/>
+                object.
+            </summary>
+            <param name="socket">
+                Socket that will receive data.
+            </param>
+            <param name="awaitable">
+                The <see cref="T:Dawn.Net.Sockets.SocketAwaitable"/> object to use for this asynchronous socket
+                operation.
+            </param>
+            <returns>
+                The specified <see cref="T:Dawn.Net.Sockets.SocketAwaitable"/> which, when awaited, will hold the
+                received data in its <see cref="P:System.Net.Sockets.SocketAsyncEventArgs.Buffer"/> property. Awaiter
+                of <see cref="T:Dawn.Net.Sockets.SocketAwaitable"/> returns a <see cref="T:System.Net.Sockets.SocketError"/> object that
+                corresponds to the result of the asynchronous operation.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="socket"/> or <paramref name="awaitable"/> is null.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+                A socket operation was already in progress using <paramref name="awaitable"/>.
+            </exception>
+            <exception cref="T:System.NotSupportedException">
+                Windows XP or later is required for this method.
+            </exception>
+            <exception cref="T:System.ObjectDisposedException">
+                <paramref name="socket"/> has been disposed.
+            </exception>
+        </member>
+        <member name="M:Dawn.Net.Sockets.SocketEx.SendAsync(System.Net.Sockets.Socket,Dawn.Net.Sockets.SocketAwaitable)">
+            <summary>
+                Sends data asynchronously to a connected <see cref="T:System.Net.Sockets.Socket"/> object and returns a
+                <see cref="T:Dawn.Net.Sockets.SocketAwaitable"/> to await.
+            </summary>
+            <param name="socket">
+                Socket to send the data to.
+            </param>
+            <param name="awaitable">
+                The <see cref="T:Dawn.Net.Sockets.SocketAwaitable"/> object to use for this asynchronous socket
+                operation.
+            </param>
+            <returns>
+                The specified <see cref="T:Dawn.Net.Sockets.SocketAwaitable"/> which, when awaited, will return a
+                <see cref="T:System.Net.Sockets.SocketError"/> object that corresponds to the result of the send
+                operation.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="socket"/> or <paramref name="awaitable"/> is null.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+                A socket operation was already in progress using <paramref name="awaitable"/>.
+            </exception>
+            <exception cref="T:System.NotSupportedException">
+                Windows XP or later is required for this method.
+            </exception>
+            <exception cref="T:System.ObjectDisposedException">
+                <paramref name="socket"/> has been disposed.
+            </exception>
+        </member>
+        <member name="M:Dawn.Net.Sockets.SocketEx.OperateAsync(System.Net.Sockets.Socket,Dawn.Net.Sockets.SocketAwaitable,System.Func{System.Net.Sockets.Socket,Dawn.Net.Sockets.SocketAwaitable,System.Boolean})">
+            <summary>
+                Calls the specified asynchronous method of a <see cref="T:System.Net.Sockets.Socket"/> and returns an
+                awaitable object that provides the operation result when awaited.
+            </summary>
+            <param name="socket">
+                <see cref="T:System.Net.Sockets.Socket"/> to run an asynchronous operation.
+            </param>
+            <param name="awaitable">
+                The <see cref="T:Dawn.Net.Sockets.SocketAwaitable"/> object to use for this asynchronous socket
+                operation.
+            </param>
+            <param name="operation">
+                Socket operation to perform.
+            </param>
+            <returns>
+                A <see cref="T:Dawn.Net.Sockets.SocketAwaitable"/> which, when awaited, returns a
+                <see cref="T:System.Net.Sockets.SocketError"/> object that corresponds to the result of
+                <paramref name="operation"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="socket"/> or <paramref name="awaitable"/> is null.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+                A socket operation was already in progress using <paramref name="awaitable"/>.
+                -or-
+                For accept operations:
+                <paramref name="socket"/> is not bound, is not listening for connections, or is
+                already connected.
+                -or-
+                For connect operations:
+                <paramref name="socket"/> is listening.
+            </exception>
+            <exception cref="T:System.NotSupportedException">
+                Windows XP or later is required for this method.
+                -or-
+                For connect operations:
+                Address family of <see cref="P:System.Net.Sockets.Socket.LocalEndPoint"/> is different than the address
+                family of <see cref="P:System.Net.Sockets.SocketAsyncEventArgs.RemoteEndPoint"/>.
+            </exception>
+            <exception cref="T:System.ObjectDisposedException">
+                <paramref name="socket"/> has been disposed.
+            </exception>
+            <exception cref="T:System.Security.SecurityException">
+                For connection operations:
+                A caller higher in the call stack does not have permission for the requested
+                operation.
+            </exception>
+        </member>
+        <member name="T:Dawn.Net.Sockets.SocketAwaiter">
+            <summary>
+                Provides an object that waits for the completion of a <see cref="T:Dawn.Net.Sockets.SocketAwaitable"/>.
+                This class is not thread-safe: It doesn't support multiple concurrent awaiters.
+            </summary>
+        </member>
+        <member name="F:Dawn.Net.Sockets.SocketAwaiter.sentinel">
+            <summary>
+                A sentinel delegate that does nothing.
+            </summary>
+        </member>
+        <member name="F:Dawn.Net.Sockets.SocketAwaiter.awaitable">
+            <summary>
+                The asynchronous socket arguments to await.
+            </summary>
+        </member>
+        <member name="F:Dawn.Net.Sockets.SocketAwaiter.syncRoot">
+            <summary>
+                An object to synchronize access to the awaiter for validations.
+            </summary>
+        </member>
+        <member name="F:Dawn.Net.Sockets.SocketAwaiter.continuation">
+            <summary>
+                The continuation delegate that will be called after the current operation is
+                awaited.
+            </summary>
+        </member>
+        <member name="F:Dawn.Net.Sockets.SocketAwaiter.isCompleted">
+            <summary>
+                A value indicating whether the asynchronous operation is completed.
+            </summary>
+        </member>
+        <member name="F:Dawn.Net.Sockets.SocketAwaiter.syncContext">
+            <summary>
+                A synchronization context for marshaling the continuation delegate to.
+            </summary>
+        </member>
+        <member name="M:Dawn.Net.Sockets.SocketAwaiter.#ctor(Dawn.Net.Sockets.SocketAwaitable)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Dawn.Net.Sockets.SocketAwaiter"/> class.
+            </summary>
+            <param name="awaitable">
+                The asynchronous socket arguments to await.
+            </param>
+        </member>
+        <member name="M:Dawn.Net.Sockets.SocketAwaiter.GetResult">
+            <summary>
+                Gets the result of the asynchronous socket operation.
+            </summary>
+            <returns>
+                A <see cref="T:System.Net.Sockets.SocketError"/> that represents the result of the socket operations.
+            </returns>
+        </member>
+        <member name="M:Dawn.Net.Sockets.SocketAwaiter.System#Runtime#CompilerServices#INotifyCompletion#OnCompleted(System.Action)">
+            <summary>
+                Gets invoked when the asynchronous operation is completed and runs the specified
+                delegate as continuation.
+            </summary>
+            <param name="continuation">
+                Continuation to run.
+            </param>
+        </member>
+        <member name="M:Dawn.Net.Sockets.SocketAwaiter.Reset">
+            <summary>
+                Resets this awaiter for re-use.
+            </summary>
+        </member>
+        <member name="M:Dawn.Net.Sockets.SocketAwaiter.Complete">
+            <summary>
+                Sets <see cref="P:Dawn.Net.Sockets.SocketAwaiter.IsCompleted"/> to true, nullifies the <see cref="F:Dawn.Net.Sockets.SocketAwaiter.syncContext"/>
+                and updates <see cref="P:Dawn.Net.Sockets.SocketAwaitable.Transferred"/>.
+            </summary>
+        </member>
+        <member name="P:Dawn.Net.Sockets.SocketAwaiter.IsCompleted">
+            <summary>
+                Gets a value indicating whether the asynchronous operation is completed.
+            </summary>
+        </member>
+        <member name="P:Dawn.Net.Sockets.SocketAwaiter.SyncRoot">
+            <summary>
+                Gets an object to synchronize access to the awaiter for validations.
+            </summary>
+        </member>
+        <member name="P:Dawn.Net.Sockets.SocketAwaiter.SyncContext">
+            <summary>
+                Gets or sets a synchronization context for marshaling the continuation delegate to.
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -59,7 +59,7 @@ namespace Game.Setup
 
         #region Database Settings
 
-        public static string database_schema_version = "0";
+        public static string database_schema_version = "20140418010026";
         public static bool database_verbose;
         public static bool database_empty;
         public static bool database_load_players = true;

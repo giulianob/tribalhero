@@ -1,0 +1,80 @@
+<project name="gameserver" default="compile" basedir="." xmlns="antlib:org.apache.tools.ant"  xmlns:antcontrib="antlib:net.sf.antcontrib">
+		
+    <taskdef resource="net/sf/antcontrib/antlib.xml" uri="antlib:net.sf.antcontrib">
+      <classpath>
+        <pathelement location="${basedir}/lib/ant/ant-contrib.jar"/>
+      </classpath>
+    </taskdef>
+    
+	<description>Game client build</description>
+	
+	<target name="init">
+		<echo message="Init" />
+		
+		<tstamp />
+					
+		<antcontrib:propertyregex property="major_version" input="${game.version}" regexp="^([0-9]*).([0-9]*)$" select="\1" />
+		<antcontrib:propertyregex property="revision" input="${game.version}" regexp="^([0-9]*).([0-9]*)$" select="\2" />		
+
+		<fail unless="major_version">Version not specified in correct format. E.g. 1.2</fail>
+		<fail unless="revision">Version not specified in correct format. E.g. 1.2</fail>
+		
+		<antcontrib:propertyregex property="basedir.escaped" input="${basedir}" regexp="\\" replace="/" global="true"/>
+		
+		<echo message="${basedir.escaped}" />
+		
+		<!-- Make bin dir -->		
+		<mkdir dir="bin" />		
+	</target>
+	
+	<target name="stacktracer">
+        <echo message="Adding stacktracer" />
+    
+		<echo message="Building ${basedir}/stacktracer/stacktracer.sln" />
+		<exec executable="xbuild" failonerror="true" dir="${basedir}/stacktracer/">
+			<arg value="stacktracer.sln" />
+			<arg value="/t:stacktracer:Rebuild" />
+			<arg value="/p:Configuration=Release" />
+			<arg value="/p:BuildProjectReferences=false" />
+		</exec>
+	
+		<echo message="Running stacktracer" />	
+		<exec executable="mono" failonerror="true">
+			<arg value="${basedir}/stacktracer/bin/Release/stacktracer.exe" />
+			<arg value="--path=${basedir}/game/" />
+			<arg value="--mappings-output-path=${basedir}/bin/stacktracer.map" />
+			<arg value="--output-only=false" />
+			<arg value="--ignored-files=&quot;Constants.as,ProfanityFilter.as&quot;" />
+		</exec>
+	</target>
+		
+	<target name="compile" depends="init">		
+        <antcontrib:if>
+            <isset property="game.stacktracer"/>
+            <antcontrib:then>
+                <antcall target="stacktracer"/>
+            </antcontrib:then>
+        </antcontrib:if>
+        
+        <echo message="Compiling" />
+        
+        <replaceregexp file="${basedir}/game/src/Constants.as" match="var version\:(.*)" replace="var version: int = ${major_version};" byline="true" />		
+        <replaceregexp file="${basedir}/game/src/Constants.as" match="var revision\:(.*)" replace="var revision: int = ${revision};" byline="true" />			
+	
+		<exec executable="${mxmlc}" dir="${basedir}" failonerror="true">
+			<arg line="-load-config+=GameConfig.xml -debug=false -swf-version=22 -frame start src.Main -keep-as3-metadata+=EmbedPosition -o bin/Game.swf" />
+		</exec>
+	</target>
+	
+	<target name="obfuscate" depends="compile">
+        <echo message="Obfuscating" />
+        
+		<taskdef name="secureswf" classpath="${secureswf}/secureSWF.jar" classname="secureSWF.ant.ProtectTask" />
+		
+		<!-- Adjust Game.sspj file for obfuscation -->
+		<replaceregexp file="${basedir}/Game.sspj" match="c:(\\|/)source(\\|/)gameclient(\\|/)" replace="" flags="gi" />
+		<replaceregexp file="${basedir}/Game.sspj" match="bin\\" replace="bin/" flags="gi" />		
+		
+		<secureswf outputpath="${basedir}/bin/protected" projectfile="Game.sspj" codeWrapping="0" logfile="bin/obfuscate.log" aggressiveRenaming="false" keyFilePath="${secureswf}/key.data" />
+	</target>	
+</project>

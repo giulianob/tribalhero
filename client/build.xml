@@ -1,0 +1,85 @@
+<project name="gameserver" default="compile" basedir="." xmlns:dn="antlib:org.apache.ant.dotnet" xmlns="antlib:org.apache.tools.ant"  xmlns:antcontrib="antlib:net.sf.antcontrib">
+
+    <taskdef resource="net/sf/antcontrib/antlib.xml" uri="antlib:net.sf.antcontrib">
+      <classpath>
+        <pathelement location="${basedir}/lib/ant/ant-contrib.jar"/>
+      </classpath>
+    </taskdef>
+    
+    <taskdef resource="org/apache/ant/dotnet/antlib.xml" uri="antlib:org.apache.ant.dotnet">
+      <classpath>
+        <pathelement location="${basedir}/lib/ant/ant-dotnet-1.1.jar"/>
+      </classpath>
+    </taskdef>    
+    
+	<description>Game client build</description>
+	
+	<target name="init">
+		<echo message="Init" />
+		
+		<tstamp />
+			
+		<fail unless="game.version">Version not specified</fail>
+		
+		<antcontrib:propertyregex property="major_version" input="${game.version}" regexp="^([0-9]*).([0-9]*)$" select="\1" />
+		<antcontrib:propertyregex property="revision" input="${game.version}" regexp="^([0-9]*).([0-9]*)$" select="\2" />		
+		
+		<property name="src" location="game/src" />
+		<property name="fdbuild" location="C:/Program Files (x86)/FlashDevelop/Tools/fdbuild" />
+		<property name="flexsdk" location="C:/Program Files (x86)/FlashDevelop/Tools/flexsdk" />
+		<property name="secureswf" location="C:\Program Files (x86)\secureSWF" />
+		<antcontrib:propertyregex property="basedir.escaped" input="${basedir}" regexp="\\" replace="/" global="true"/>
+		
+		<echo message="${basedir.escaped}" />
+		
+		<!-- Make bin dir -->		
+		<mkdir dir="bin" />		
+	</target>
+	
+	<target name="stacktracer">
+        <echo message="Adding stacktracer" />
+    
+		<echo message="Building ${basedir}\stacktracer\stacktracer.sln" />
+		<dn:msbuild buildfile="${basedir}\stacktracer\stacktracer.sln">
+			<target name="stacktracer:Rebuild" />
+			
+			<property name="Configuration" value="Release" />
+			<property name="Platform" value="any cpu" />
+			<property name="BuildProjectReferences" value="false" />
+		</dn:msbuild>
+		
+		<exec executable="${basedir}/stacktracer/bin/release/stacktracer.exe">
+			<arg line="--path=${basedir}/game/ --mappings-output-path=${basedir}/bin/stacktracer.map --output-only=false --ignored-files=&quot;Constants.as,ProfanityFilter.as&quot;" />
+		</exec>
+	</target>
+		
+	<target name="compile" depends="init">		
+        <antcontrib:if>
+            <isset property="game.stacktracer"/>
+            <antcontrib:then>
+                <antcall target="stacktracer"/>
+            </antcontrib:then>
+        </antcontrib:if>
+        
+        <echo message="Compiling" />
+        
+        <replaceregexp file="${basedir}\game\src\Constants.as" match="var version\:(.*)" replace="var version: int = ${major_version};" byline="true" />		
+        <replaceregexp file="${basedir}\game\src\Constants.as" match="var revision\:(.*)" replace="var revision: int = ${revision};" byline="true" />			
+	
+		<exec executable="${fdbuild}/fdbuild.exe" dir="${basedir}" failonerror="true">
+			<arg line="Game.as3proj -compiler &quot;${flexsdk}&quot; -notrace" />
+		</exec>		
+	</target>
+	
+	<target name="obfuscate" depends="compile">
+        <echo message="Obfuscating" />
+        
+		<taskdef name="secureswf" classpath="${secureswf}\secureSWF.jar" classname="secureSWF.ant.ProtectTask" />
+		
+		<!-- Adjust Game.sspj file for obfuscation -->
+		<replaceregexp file="${basedir}/Game.sspj" match="c:\\source\\gameclient" replace="${basedir.escaped}" flags="gi" />
+		<replaceregexp file="${basedir}/Game.sspj" match="c:/source/gameclient" replace="${basedir.escaped}" flags="gi" />
+		
+		<secureswf outputpath="${basedir}\bin\protected" projectfile="Game.sspj" codeWrapping="0" logfile="bin\obfuscate.log" aggressiveRenaming="false" keyFilePath="${basedir}/key.data" />
+	</target>	
+</project>

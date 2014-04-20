@@ -143,15 +143,6 @@ namespace Game.Logic
             return Error.EffectRequirementNotMet;
         }
 
-        public Error UniqueTechnology(IGameObject obj, IEnumerable<Effect> effects, string[] parms, uint id)
-        {
-            if (obj.City.Any(s => s != obj && s.Technologies.Any(t => t.Level > 0 && t.Type == uint.Parse(parms[0]))))
-            {
-                return Error.EffectRequirementNotMet;
-            }
-            return Error.Ok;
-        }
-
         public Error HaveTechnology(IGameObject obj, IEnumerable<Effect> effects, string[] parms, uint id)
         {
             int count =

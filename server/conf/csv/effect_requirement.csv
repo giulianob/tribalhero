@@ -37,7 +37,6 @@ Id,Method,P1,P2,P3,P4,P5,Description,Website Description,Comment
 22023,HaveStructure,id=2302,minlvl=3,maxlvl=15,,,,Requires Armory (Level 3).,Require Armory level 3.
 ,,,,,,,,,
 //foundry,,,,,,,,,
-21101,UniqueTechnology,id=21101,,,,,,,
 21102,HaveNoStructure,2109,minlvl=0,maxlvl=15,count=1,,,,1 Refinery per city Max
 ,,,,,,,,,
 //basement,,,,,,,,,

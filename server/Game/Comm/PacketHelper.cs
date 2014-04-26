@@ -377,7 +377,7 @@ namespace Game.Comm
             combatObject.AddPacketInfo(packet);
         }
 
-        public static void AddLoginToPacket(Session session, Packet packet)
+        public static void AddLoginToPacket(Session session, IThemeManager themeManager, Packet packet)
         {
             // Tribal info
             packet.AddUInt32(session.Player.Tribesman == null ? 0 : session.Player.Tribesman.Tribe.Id);
@@ -391,10 +391,27 @@ namespace Game.Comm
 
             //Cities
             IEnumerable<ICity> list = session.Player.GetCityList();
-            packet.AddByte((byte)session.Player.GetCityCount());
+            packet.AddInt32(session.Player.GetCityCount());
             foreach (var city in list)
             {
                 AddToPacket(city, packet);
+            }
+
+            // Themes purchased
+            packet.AddInt32(session.Player.ThemePurchases.Count);
+            foreach (var theme in session.Player.ThemePurchases)
+            {
+                packet.AddString(theme.ThemeId);
+            }
+
+            // Themes available
+            var themes = themeManager.Themes;
+            packet.AddInt32(themes.Count);
+            foreach (var theme in themes)
+            {
+                packet.AddString(theme.Id);
+                packet.AddInt32(theme.Cost);
+                packet.AddUInt32(theme.Created.ToUnixTime());
             }
         }
 

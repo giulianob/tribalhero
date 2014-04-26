@@ -88,6 +88,14 @@
 			"LabelButton.foreground", new ASColorUIResource(0x000000)			
 			],
 
+            "Class.darkSmallHeader", [
+                "Label.font", new ASFontUIResource("Arial", 11, true),
+                "Label.foreground", new ASColorUIResource(0x000000),
+
+                "LabelButton.font", new ASFontUIResource("Arial", 11, true, false, true),
+                "LabelButton.foreground", new ASColorUIResource(0x000000)
+            ],
+
 			"Class.darkLargeText", [
 			"Label.font", new ASFontUIResource("Arial", 13, false),
 			"Label.foreground", new ASColorUIResource(0x000000)

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Common;
+using Game.Comm.Api;
 using Game.Data;
 using Game.Data.BarbarianTribe;
 using Game.Logic;
@@ -18,6 +19,7 @@ using Game.Map.LocationStrategies;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
+using Newtonsoft.Json;
 using Persistance;
 
 #endregion
@@ -52,6 +54,8 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly IChannel channel;
 
+        private readonly IThemeManager themeManager;
+
         public LoginCommandsModule(IActionFactory actionFactory,
                                    ITribeManager tribeManager,
                                    IDbManager dbManager,
@@ -62,7 +66,8 @@ namespace Game.Comm.ProcessorCommands
                                    ILocationStrategyFactory locationStrategyFactory,
                                    IBarbarianTribeManager barbarianTribeManager,
                                    CallbackProcedure callbackProcedure,
-                                   IChannel channel)
+                                   IChannel channel,
+                                   IThemeManager themeManager)
         {
             this.actionFactory = actionFactory;
             this.tribeManager = tribeManager;
@@ -72,6 +77,7 @@ namespace Game.Comm.ProcessorCommands
             this.procedure = procedure;
             this.callbackProcedure = callbackProcedure;
             this.channel = channel;
+            this.themeManager = themeManager;
             this.cityFactory = cityFactory;
             this.locationStrategyFactory = locationStrategyFactory;
             this.barbarianTribeManager = barbarianTribeManager;
@@ -101,13 +107,7 @@ namespace Game.Comm.ProcessorCommands
             string loginKey = string.Empty;
             string playerName;
             string playerPassword = string.Empty;
-            uint playerId;
-            string twoFactorSecretKey = null;
-            bool banned = false;
-            var achievements = new List<Achievement>();
             
-            PlayerRights playerRights = PlayerRights.Basic;
-
             try
             {
                 clientVersion = packet.GetInt16();
@@ -137,9 +137,10 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
+            LoginResponseData loginResponseData;
             if (Config.database_load_players)
             {
-                ApiResponse response;
+                ApiResponse<LoginResponseData> response;
                 try
                 {
                     response = loginMode == 0
@@ -161,34 +162,10 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                playerId = uint.Parse(response.Data.player.id);
-                playerName = response.Data.player.name;
-                if (((IDictionary<string, Object>)response.Data.player).ContainsKey("two_factor_secret_key"))
-                {
-                    twoFactorSecretKey = response.Data.player.two_factor_secret_key;
-                }
-                
-                banned = int.Parse(response.Data.player.banned) == 1;
-                playerRights = (PlayerRights)Int32.Parse(response.Data.player.rights);
-
-                if (((IDictionary<string, Object>)response.Data).ContainsKey("achievements"))
-                {
-                    foreach (var achievement in response.Data.achievements)
-                    {
-                        achievements.Add(new Achievement
-                        {
-                                Id = int.Parse(achievement.id),
-                                Type = achievement.type,
-                                Tier = Enum.Parse(typeof(AchievementTier), achievement.tier),
-                                Description = achievement.description,
-                                Title = achievement.title,
-                                Icon = achievement.icon
-                        });
-                    }
-                }
+                loginResponseData = response.Data;
 
                 // If we are under admin only mode then kick out non admin
-                if (Config.server_admin_only && playerRights == PlayerRights.Basic)
+                if (Config.server_admin_only && loginResponseData.Player.Rights == PlayerRights.Basic)
                 {
                     ReplyError(session, packet, Error.UnderMaintenance);
                     session.CloseSession();
@@ -197,6 +174,8 @@ namespace Game.Comm.ProcessorCommands
             }
             else
             {
+                // This is a fake login for testing only
+                uint playerId;
                 if (!uint.TryParse(playerName, out playerId))
                 {
                     ReplyError(session, packet, Error.PlayerNotFound);
@@ -204,34 +183,44 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                playerName = "Player " + playerId;
+                loginResponseData = new LoginResponseData
+                {
+                    Player = new LoginResponseData.PlayerData
+                    {
+                        Banned = false,
+                        Id = playerId,
+                        Name = "Player " + playerId,
+                        Rights = PlayerRights.Basic
+                    },
+                    Achievements = new List<Achievement>(),
+                    ThemePurchases = new List<ThemePurchase>(),
+                };
             }
 
             //Create the session id that will be used for the calls to the web server
             string sessionId;
             if (Config.server_admin_always && !Config.server_production)
             {
-                sessionId = playerId.ToString(CultureInfo.InvariantCulture);
-                playerRights = PlayerRights.Bureaucrat;
+                sessionId = loginResponseData.Player.Id.ToString(CultureInfo.InvariantCulture);
+                loginResponseData.Player.Rights = PlayerRights.Bureaucrat;
             }
             else
             {
                 SHA1 sha = new SHA1CryptoServiceProvider();
-                byte[] hash =
-                        sha.ComputeHash(Encoding.UTF8.GetBytes(playerId + Config.database_salt + DateTime.UtcNow.Ticks));
+                byte[] hash = sha.ComputeHash(Encoding.UTF8.GetBytes(loginResponseData.Player.Id + Config.database_salt + DateTime.UtcNow.Ticks + Config.Random.Next()));
                 sessionId = BitConverter.ToString(hash).Replace("-", String.Empty);
             }
 
             lock (loginLock)
             {
-                bool newPlayer = !world.Players.TryGetValue(playerId, out player);
+                bool newPlayer = !world.Players.TryGetValue(loginResponseData.Player.Id, out player);
 
                 //If it's a new player then add him to our session
                 if (newPlayer)
                 {
-                    logger.Info(string.Format("Creating new player {0}({1}) IP: {2}", playerName, playerId, session.RemoteIP));
+                    logger.Info(string.Format("Creating new player {0}({1}) IP: {2}", playerName, loginResponseData.Player.Id, session.RemoteIP));
 
-                    player = new Player(playerId, SystemClock.Now, SystemClock.Now, playerName, string.Empty, playerRights, sessionId);
+                    player = new Player(loginResponseData.Player.Id, SystemClock.Now, SystemClock.Now, playerName, string.Empty, loginResponseData.Player.Rights, sessionId);
 
                     if (!world.Players.TryAdd(player.PlayerId, player))
                     {
@@ -271,19 +260,21 @@ namespace Game.Comm.ProcessorCommands
                 // Setup session references
                 session.Player = player;
                 player.HasTwoFactorAuthenticated = null;
-                player.TwoFactorSecretKey = twoFactorSecretKey;
+                player.TwoFactorSecretKey = loginResponseData.Player.TwoFactorSecretKey;
                 player.Session = session;
                 player.SessionId = sessionId;
-                player.Rights = playerRights;
+                player.Rights = loginResponseData.Player.Rights;
                 player.LastLogin = SystemClock.Now;
-                player.Banned = banned;
+                player.Banned = loginResponseData.Player.Banned;
                 player.Achievements.Clear();
-                achievements.ForEach(player.Achievements.Add);
+                player.Achievements.AddRange(loginResponseData.Achievements);
+                player.ThemePurchases.Clear();
+                player.ThemePurchases.AddRange(loginResponseData.ThemePurchases);
 
                 dbManager.Save(player);
 
                 // If player was banned then kick his ass out
-                if (banned)
+                if (loginResponseData.Player.Banned)
                 {
                     ReplyError(session, packet, Error.Banned);
                     session.CloseSession();
@@ -325,7 +316,7 @@ namespace Game.Comm.ProcessorCommands
                 else
                 {
                     reply.AddByte(0);
-                    PacketHelper.AddLoginToPacket(session, reply);
+                    PacketHelper.AddLoginToPacket(session, themeManager, reply);
                     SubscribeDefaultChannels(session, session.Player);
                 }
 
@@ -424,7 +415,7 @@ namespace Game.Comm.ProcessorCommands
 
                 var reply = new Packet(packet);
                 reply.Option |= (ushort)Packet.Options.Compressed;
-                PacketHelper.AddLoginToPacket(session, reply);
+                PacketHelper.AddLoginToPacket(session, themeManager, reply);
                 SubscribeDefaultChannels(session, session.Player);
                 session.Write(reply);
             });

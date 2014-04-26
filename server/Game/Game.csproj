@@ -75,6 +75,9 @@
     <Reference Include="Dawn.SocketAwaitable">
       <HintPath>..\Lib\dawn.socketawaitable\Dawn.SocketAwaitable.dll</HintPath>
     </Reference>
+    <Reference Include="Flurl">
+      <HintPath>..\packages\Flurl.0.2.1\lib\portable-win+net40+sl40+wp+Xbox40\Flurl.dll</HintPath>
+    </Reference>
     <Reference Include="JsonFx, Version=2.0.1209.2802, Culture=neutral, PublicKeyToken=315052dd637f8a52, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\JsonFx.2.0.1209.2802\lib\net40\JsonFx.dll</HintPath>
@@ -175,6 +178,7 @@
     <Compile Include="Battle\StatsModCalculator\IntStatsModCalculator.cs" />
     <Compile Include="Battle\StatsModCalculator\MaxHpModCalculator.cs" />
     <Compile Include="Battle\StrongholdMainBattleManager.cs" />
+    <Compile Include="Comm\Api\LoginResponse.cs" />
     <Compile Include="Comm\AsyncTcpServer.cs" />
     <Compile Include="Comm\Channel\BattleChannel.cs" />
     <Compile Include="Battle\BattleFormulas.cs" />
@@ -267,6 +271,7 @@
     <Compile Include="Data\Forest\IForest.cs" />
     <Compile Include="Data\Forest\IForestFactory.cs" />
     <Compile Include="Data\Forest\IForestManager.cs" />
+    <Compile Include="Data\IThemeManager.cs" />
     <Compile Include="Data\PlayerChatState.cs" />
     <Compile Include="Data\City.cs" />
     <Compile Include="Comm\Processor.cs" />
@@ -316,6 +321,9 @@
     <Compile Include="Data\Technology.cs" />
     <Compile Include="Data\TechnologyManager.cs" />
     <Compile Include="Data\TechnologyManagerFactory.cs" />
+    <Compile Include="Data\Theme.cs" />
+    <Compile Include="Data\ThemeManager.cs" />
+    <Compile Include="Data\ThemePurchase.cs" />
     <Compile Include="Data\Tribe\Assignment.cs" />
     <Compile Include="Data\Tribe\AssignmentFactory.cs" />
     <Compile Include="Data\Tribe\EventArguments\TribeEventArg.cs" />
@@ -527,6 +535,7 @@
     <Compile Include="Module\Market.cs" />
     <Compile Include="Data\Stronghold\StrongholdActivationChecker.cs" />
     <Compile Include="Module\Remover\PlayersRemoverFactory.cs" />
+    <Compile Include="Module\StoreSync.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Map\Region.cs" />
     <Compile Include="Map\World.cs" />
@@ -553,6 +562,7 @@
     <Compile Include="Setup\RequirementCsvFactory.cs" />
     <Compile Include="Setup\TechnologyFactory.cs" />
     <Compile Include="Util\Channel.cs" />
+    <Compile Include="Util\DeliminatorSeparatedPropertyNamesContractResolver.cs" />
     <Compile Include="Util\DuplicateSubscriptionException.cs" />
     <Compile Include="Util\EnumExtension.cs" />
     <Compile Include="Util\EventHandlerExtensions.cs" />

@@ -1,12 +1,11 @@
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
 using Persistance;
 
 namespace Game.Data
 {
-    public class AchievementList : ObservableCollection<Achievement>, IPersistableList
+    public class AchievementList : List<Achievement>, IPersistableList
     {
         private readonly uint playerId;
 

@@ -151,6 +151,10 @@
         [Embed(source = "../../../graphics/MaskTile.png")]
         public static const MASK_TILE: Class;
 
+        // Icons
+        [Embed(source = "../../../graphics/icons/props/coin.png")]
+        public static const ICON_COIN: Class;
+
         // Achievement Icons
 		[Embed(source = "../../../graphics/icons/achievements/anvil-gold.png")]		
 		public static const ICON_ACHIEVEMENT_ANVIL_GOLD: Class;
@@ -522,23 +526,15 @@
         public static const DEFAULT_GRAPE_FIELD_STRUCTURE: Class;
 
         // Pirates structure pack
+        [Embed(source = "../../../graphics/themes/pirates/THUMBNAIL.png")]
+        public static const PIRATES_THEME_THUMBNAIL: Class;
 
-        /*
-//        [Embed(source = "../../../graphics/themes/pirates/TROOP.png")]
-//        //****[EmbedPosition(name = "map", x = "7", y = "2")]
-//        public static const PIRATES_TROOP: Class;
-//
-//        [Embed(source = "../../../graphics/themes/pirates/TROOP_SHADOW.png")]
-//        //****[EmbedPosition(name = "map", x = "0", y = "12")]
-//        public static const PIRATES_TROOP_SHADOW: Class;
+        [Embed(source = "../../../graphics/themes/pirates/BANNER.png")]
+        public static const PIRATES_THEME_BANNER: Class;
 
         [Embed(source = "../../../graphics/themes/pirates/ARMORY_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = "25", y = "-18")]
         public static const PIRATES_ARMORY_STRUCTURE: Class;
-
-        [Embed(source = "../../../graphics/themes/pirates/ARMORY_STRUCTURE_SHADOW.png")]
-        //****[EmbedPosition(name = "map", x = "11", y = "13")]
-        public static const PIRATES_ARMORY_STRUCTURE_SHADOW: Class;
 
         [Embed(source = "../../../graphics/themes/pirates/FIELD_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = "24", y = "5")]
@@ -548,111 +544,29 @@
         [EmbedPosition(name = "map", x = "75", y = "-52")]
         public static const PIRATES_BARRACK_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/BARRACK_STRUCTURE_SHADOW.png")]
-        //****[EmbedPosition(name = "map", x = 84, y = "10")]
-        public static const PIRATES_BARRACK_STRUCTURE_SHADOW: Class;
-
-//        [Embed(source = "../../../graphics/themes/pirates/FOUNDATION.png")]
-//        //****[EmbedPosition(name = "map", x = 42, y = "-24")]
-//        public static const PIRATES_FOUNDATION: Class;
-//
-//        [Embed(source = "../../../graphics/themes/pirates/CONSTRUCTION_SMALL.png")]
-//        //****[EmbedPosition(name = "map", x = 32, y = "1")]
-//        public static const PIRATES_BUILDING_1: Class;
-
-//        [Embed(source = "../../../graphics/themes/pirates/CONSTRUCTION.png")]
-//        //****[EmbedPosition(name = "map", x = 102, y = "-3")]
-//        public static const PIRATES_BUILDING_2: Class;
-//
-//        [Embed(source = "../../../graphics/themes/pirates/CONSTRUCTION.png")]
-//        //****[EmbedPosition(name = "map", x = 177, y = "68")]
-//        public static const PIRATES_BUILDING_3: Class;
-
-//        [Embed(source = "../../../graphics/themes/pirates/TRIBAL_GATHERING_STRUCTURE.png")]
-//        public static const PIRATES_STRUCTURE_SIMPLE: Class;
-//
-//        [Embed(source = "../../../graphics/themes/pirates/TRIBAL_GATHERING_STRUCTURE.png")]
-//        public static const PIRATES_STRUCTURE_COMPLEX: Class;
-//
-//        [Embed(source = "../../../graphics/themes/pirates/TRIBAL_GATHERING_STRUCTURE.png")]
-//        //****[EmbedPosition(name = "map", x = 24, y = "6")]
-//        public static const PIRATES_EMBASSY_STRUCTURE: Class;
-
         [Embed(source = "../../../graphics/themes/pirates/FOUNDRY_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = "27", y = "-7")]
         public static const PIRATES_FOUNDRY_STRUCTURE: Class;
-
-        [Embed(source = "../../../graphics/themes/pirates/FOUNDRY_STRUCTURE_SHADOW.png")]
-        //****[EmbedPosition(name = "map", x = 28, y = "24")]
-        public static const PIRATES_FOUNDRY_STRUCTURE_SHADOW: Class;
-
-//        [Embed(source = "../../../graphics/themes/pirates/TRIBAL_CARNIVAL_STRUCTURE.png")]
-//        //****[EmbedPosition(name = "map", x = 39, y = "14")]
-//        public static const PIRATES_TRIBAL_CARNIVAL_STRUCTURE: Class;
-//
-//        [Embed(source = "../../../graphics/themes/pirates/TRIBAL_CARNIVAL_STRUCTURE_SHADOW.png")]
-//        //****[EmbedPosition(name = "map", x = 39, y = "21")]
-//        public static const PIRATES_TRIBAL_CARNIVAL_STRUCTURE_SHADOW: Class;
-//
-//        [Embed(source = "../../../graphics/themes/pirates/TRIBAL_FAIR_STRUCTURE.png")]
-//        //****[EmbedPosition(name = "map", x = 38, y = "13")]
-//        public static const PIRATES_TRIBAL_FAIR_STRUCTURE: Class;
-//
-//        [Embed(source = "../../../graphics/themes/pirates/TRIBAL_FAIR_STRUCTURE_SHADOW.png")]
-//        //****[EmbedPosition(name = "map", x = 36, y = "20")]
-//        public static const PIRATES_TRIBAL_FAIR_STRUCTURE_SHADOW: Class;
-//
-//        [Embed(source = "../../../graphics/themes/pirates/TRIBAL_FESTIVAL_STRUCTURE.png")]
-//        //****[EmbedPosition(name = "map", x = 35, y = "1")]
-//        public static const PIRATES_TRIBAL_FESTIVAL_STRUCTURE: Class;
-//
-//        [Embed(source = "../../../graphics/themes/pirates/TRIBAL_FESTIVAL_STRUCTURE_SHADOW.png")]
-//        //****[EmbedPosition(name = "map", x = 34, y = "11")]
-//        public static const PIRATES_TRIBAL_FESTIVAL_STRUCTURE_SHADOW: Class;
 
         [Embed(source = "../../../graphics/themes/pirates/STRONGHOLD_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = "117", y = "-94")]
         public static const PIRATES_STRONGHOLD_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/STRONGHOLD_STRUCTURE_SHADOW.png")]
-        //****[EmbedPosition(name = "map", x = 20, y = "20")]
-        public static const PIRATES_STRONGHOLD_STRUCTURE_SHADOW: Class;
-
-//        [Embed(source = "../../../graphics/themes/pirates/TRIBAL_GATHERING_STRUCTURE.png")]
-//        //****[EmbedPosition(name = "map", x = 24, y = "6")]
-//        public static const PIRATES_TRIBAL_GATHERING_STRUCTURE: Class;
-
         [Embed(source = "../../../graphics/themes/pirates/FARM_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = "19", y = "-17")]
         public static const PIRATES_FARM_STRUCTURE: Class;
-
-        [Embed(source = "../../../graphics/themes/pirates/FARM_STRUCTURE_SHADOW.png")]
-        //****[EmbedPosition(name = "map", x = 76, y = "15")]
-        public static const PIRATES_FARM_STRUCTURE_SHADOW: Class;
 
         [Embed(source = "../../../graphics/themes/pirates/MARKET_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = "16", y = "-11")]
         public static const PIRATES_MARKET_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/MARKET_STRUCTURE_SHADOW.png")]
-        //****[EmbedPosition(name = "map", x = 33, y = "34")]
-        public static const PIRATES_MARKET_STRUCTURE_SHADOW: Class;
-
         [Embed(source = "../../../graphics/themes/pirates/REFINERY_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = "32", y = "-24")]
         public static const PIRATES_REFINERY_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/REFINERY_STRUCTURE_SHADOW.png")]
-        //****[EmbedPosition(name = "map", x = 21, y = "25")]
-        public static const PIRATES_REFINERY_STRUCTURE_SHADOW: Class;
-
         [Embed(source = "../../../graphics/themes/pirates/STABLE_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = "99", y = "-18")]
         public static const PIRATES_STABLE_STRUCTURE: Class;
-
-        [Embed(source = "../../../graphics/themes/pirates/STABLE_STRUCTURE_SHADOW.png")]
-        //****[EmbedPosition(name = "map", x = 74, y = "29")]
-        public static const PIRATES_STABLE_STRUCTURE_SHADOW: Class;
 
         [Embed(source = "../../../graphics/themes/pirates/TOWER_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = "37", y = "-41")]
@@ -662,49 +576,25 @@
         [EmbedPosition(name = "map", x = "80", y = "-86")]
         public static const PIRATES_TOWNCENTER_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/TOWNCENTER_STRUCTURE_SHADOW.png")]
-        //****[EmbedPosition(name = "map", x = "107", y = "5")]
-        public static const PIRATES_TOWNCENTER_STRUCTURE_SHADOW: Class;
-
         [Embed(source = "../../../graphics/themes/pirates/TRADING_POST_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = "56", y = "-14")]
         public static const PIRATES_TRADING_POST_STRUCTURE: Class;
-
-        [Embed(source = "../../../graphics/themes/pirates/TRADING_POST_STRUCTURE_SHADOW.png")]
-        //****[EmbedPosition(name = "map", x = "67", y = "13")]
-        public static const PIRATES_TRADING_POST_STRUCTURE_SHADOW: Class;
 
         [Embed(source = "../../../graphics/themes/pirates/UNIVERSITY_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = "101", y = "-55")]
         public static const PIRATES_UNIVERSITY_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/UNIVERSITY_STRUCTURE_SHADOW.png")]
-        //****[EmbedPosition(name = "map", x = 33, y = "-4")]
-        public static const PIRATES_UNIVERSITY_STRUCTURE_SHADOW: Class;
-
         [Embed(source = "../../../graphics/themes/pirates/LUMBERMILL_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = "11", y = "-13")]
         public static const PIRATES_LUMBERMILL_STRUCTURE: Class;
-
-        [Embed(source = "../../../graphics/themes/pirates/LUMBERMILL_STRUCTURE_SHADOW.png")]
-        //****[EmbedPosition(name = "map", x = 14, y = "26")]
-        public static const PIRATES_LUMBERMILL_STRUCTURE_SHADOW: Class;
 
         [Embed(source = "../../../graphics/themes/pirates/WORKSHOP_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = "36", y = "-76")]
         public static const PIRATES_WORKSHOP_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/WORKSHOP_STRUCTURE_SHADOW.png")]
-        //****[EmbedPosition(name = "map", x = 70, y = "13")]
-        public static const PIRATES_WORKSHOP_STRUCTURE_SHADOW: Class;
-
         [Embed(source = "../../../graphics/themes/pirates/TRAINING_GROUND_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = "74", y = "-13")]
         public static const PIRATES_TRAINING_GROUND_STRUCTURE: Class;
-
-        [Embed(source = "../../../graphics/themes/pirates/TRAINING_GROUND_STRUCTURE_SHADOW.png")]
-        //****[EmbedPosition(name = "map", x = 51, y = "4")]
-        public static const PIRATES_TRAINING_GROUND_STRUCTURE_SHADOW: Class;
 
         [Embed(source = "../../../graphics/themes/pirates/CANNON_TOWER_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = 24, y = "-40")]
@@ -714,10 +604,6 @@
         [EmbedPosition(name = "map", x = "19", y = "-47")]
         public static const PIRATES_BLACKSMITH_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/BLACKSMITH_STRUCTURE_SHADOW.png")]
-        //****[EmbedPosition(name = "map", x = 12, y = "21")]
-        public static const PIRATES_BLACKSMITH_STRUCTURE_SHADOW: Class;
-
         [Embed(source = "../../../graphics/themes/pirates/BASEMENT_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = "29", y = "4")]
         public static const PIRATES_BASEMENT_STRUCTURE: Class;
@@ -726,10 +612,6 @@
         [EmbedPosition(name = "map", x = "23", y = "2")]
         public static const PIRATES_FOREST_CAMP_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/FOREST_CAMP_STRUCTURE_SHADOW.png")]
-        //****[EmbedPosition(name = "map", x = 34, y = "27")]
-        public static const PIRATES_FOREST_CAMP_STRUCTURE_SHADOW: Class;
-
         [Embed(source = "../../../graphics/themes/pirates/DEAD_FIELD_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = "28", y = "10")]
         public static const PIRATES_DEAD_FIELD_STRUCTURE: Class;
@@ -737,6 +619,5 @@
         [Embed(source = "../../../graphics/themes/pirates/GRAPE_FIELD_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = "25", y = "7")]
         public static const PIRATES_GRAPE_FIELD_STRUCTURE: Class;
-        */
     }
 }

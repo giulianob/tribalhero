@@ -21,7 +21,6 @@ package src.Util {
 			TEXT_FIELD.type = TextFieldType.DYNAMIC;
 		}
 
-
         public static function htmlEscape(str:String):String
 		{
 			str = XML(new XMLNode(XMLNodeType.TEXT_NODE, str)).toXMLString();

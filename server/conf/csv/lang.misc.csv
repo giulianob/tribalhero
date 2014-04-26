@@ -330,3 +330,12 @@ STRUCTURE_PROPERTY_CROP,Crop
 STRUCTURE_PROPERTY_LABOR,Laborers
 STRUCTURE_PROPERTY_POINTS_USED,Points Used
 STRUCTURE_PROPERTY_POINTS_AVAILABLE,Points Available
+,
+PIRATES_THEME_NAME,Shipwrecked Pirates
+PIRATES_THEME_DESCRIPTION,Bring a spring upon her cable rum mutiny belay gunwalls tackle Arr yawl coxswain provost. Belay draught keel sutler carouser topgallant Corsair gabion Shiver me timbers ballast. Brig keelhaul mizzenmast aft wherry haul wind Yellow Jack hogshead bowsprit lookout.
+,
+STORE_DIALOG_TITLE,Store
+,
+STORE_VIEW_THEME_DIALOG_PREVIEW_TAB,Preview
+STORE_VIEW_THEME_DIALOG_DETAIL_TAB,Included Items
+STORE_VIEW_THEME_DIALOG_BUY,Buy for {0}

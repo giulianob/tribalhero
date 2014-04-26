@@ -69,8 +69,8 @@ package src.Util {
             sprite.scaleY = size.height / sprite.height;
         }
 
-		public static function createTopAlignedScrollPane(pnl: JPanel): JScrollPane {
-			var scrollPane: JScrollPane = new JScrollPane(new JViewport(pnl, true), JScrollPane.SCROLLBAR_AS_NEEDED, JScrollPane.SCROLLBAR_AS_NEEDED);
+		public static function createTopAlignedScrollPane(component: Component): JScrollPane {
+			var scrollPane: JScrollPane = new JScrollPane(new JViewport(component, true), JScrollPane.SCROLLBAR_AS_NEEDED, JScrollPane.SCROLLBAR_AS_NEEDED);
 			(scrollPane.getViewport() as JViewport).setVerticalAlignment(AsWingConstants.TOP);
 
 			return scrollPane;

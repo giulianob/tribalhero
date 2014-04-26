@@ -75,85 +75,98 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Assets.as" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/game/src/Assets.as">
+      <file leaf-file-name="PurchaseStoreThemeProcess.as" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/game/src/Objects/Process/PurchaseStoreThemeProcess.as">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="462" column="53" selection-start="19436" selection-end="19436" vertical-scroll-proportion="0.0" vertical-offset="7621" max-vertical-offset="8993">
+            <state line="13" column="0" selection-start="367" selection-end="367" vertical-scroll-proportion="0.0" vertical-offset="189" max-vertical-offset="952">
               <folding>
-                <element signature="e#19#47#0" expanded="true" />
+                <element signature="e#34#75#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BasementCustomInfo.as" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/game/src/UI/Sidebars/ObjectInfo/CustomInfo/BasementCustomInfo.as">
+      <file leaf-file-name="StoreDialogViewModel.as" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/game/src/UI/ViewModels/StoreDialogViewModel.as">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="30" column="52" selection-start="905" selection-end="905" vertical-scroll-proportion="0.0" vertical-offset="510" max-vertical-offset="1377">
+            <state line="4" column="8" selection-start="107" selection-end="107" vertical-scroll-proportion="0.11467116" vertical-offset="0" max-vertical-offset="593">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Formula.as" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/game/src/Objects/Effects/Formula.as">
+      <file leaf-file-name="Deferred.as" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/src/com/codecatalyst/promise/Deferred.as">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="300" column="0" selection-start="11635" selection-end="11635" vertical-scroll-proportion="0.0" vertical-offset="5100" max-vertical-offset="6120">
+            <state line="116" column="25" selection-start="3909" selection-end="3909" vertical-scroll-proportion="0.0" vertical-offset="1173" max-vertical-offset="2006">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="StructureFactory.as" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/game/src/Objects/Factories/StructureFactory.as">
+      <file leaf-file-name="Resolver.as" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/src/com/codecatalyst/promise/Resolver.as">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="126" column="13" selection-start="4293" selection-end="4293" vertical-scroll-proportion="0.0" vertical-offset="2142" max-vertical-offset="4046">
+            <state line="161" column="24" selection-start="6503" selection-end="6503" vertical-scroll-proportion="0.0" vertical-offset="3129" max-vertical-offset="4199">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Constants.as" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/game/src/Constants.as">
+      <file leaf-file-name="Theme.as" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/game/src/Objects/Theme.as">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="126" column="0" selection-start="4361" selection-end="4361" vertical-scroll-proportion="0.0" vertical-offset="2142" max-vertical-offset="2941">
+            <state line="19" column="65" selection-start="604" selection-end="604" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="493">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TechnologySummarizerFactory.as" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/game/src/Objects/Technologies/TechnologySummarizerFactory.as">
+      <file leaf-file-name="StructureStoreItem.as" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/game/src/Objects/Store/StructureStoreItem.as">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="47" column="55" selection-start="2432" selection-end="2432" vertical-scroll-proportion="0.3576538" vertical-offset="549" max-vertical-offset="1411">
+            <state line="24" column="0" selection-start="875" selection-end="875" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="459">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AdditiveTechnologySummarizer.as" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/game/src/Objects/Technologies/AdditiveTechnologySummarizer.as">
+      <file leaf-file-name="StoreThemeGridCell.as" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/game/src/UI/Components/Store/StoreThemeGridCell.as">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="24" column="0" selection-start="803" selection-end="803" vertical-scroll-proportion="0.0" vertical-offset="408" max-vertical-offset="578">
+            <state line="23" column="0" selection-start="727" selection-end="727" vertical-scroll-proportion="0.0" vertical-offset="153" max-vertical-offset="1360">
+              <folding>
+                <element signature="e#38#66#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="IStoreItem.as" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/game/src/Objects/Store/IStoreItem.as">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="6" column="37" selection-start="168" selection-end="168" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="255">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="UnitTrainDialog.as" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/game/src/UI/Dialog/UnitTrainDialog.as">
+      <file leaf-file-name="StoreItemGridCell.as" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/game/src/UI/Components/Store/StoreItemGridCell.as">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="124" column="0" selection-start="4790" selection-end="4790" vertical-scroll-proportion="0.0" vertical-offset="2108" max-vertical-offset="4165">
+            <state line="19" column="0" selection-start="557" selection-end="557" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="663">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GeneralComm.as" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/game/src/Comm/Commands/GeneralComm.as">
+      <file leaf-file-name="StoreViewThemeDetails.as" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/game/src/UI/Dialog/StoreViewThemeDetails.as">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="229" column="0" selection-start="8151" selection-end="8151" vertical-scroll-proportion="0.0" vertical-offset="3893" max-vertical-offset="7225">
-              <folding />
+            <state line="44" column="45" selection-start="1636" selection-end="1636" vertical-scroll-proportion="0.0" vertical-offset="426" max-vertical-offset="2380">
+              <folding>
+                <element signature="e#28#69#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -168,57 +181,57 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/game/src/Map/RegionManager.as" />
-        <option value="$PROJECT_DIR$/game/src/UI/Dialog/ObjectSelectDialog.as" />
-        <option value="$PROJECT_DIR$/game/src/Objects/WallManager.as" />
-        <option value="$PROJECT_DIR$/game/src/Objects/Factories/TroopFactory.as" />
-        <option value="$PROJECT_DIR$/game/src/Objects/SimpleGameObject.as" />
-        <option value="$PROJECT_DIR$/game/src/Objects/SimpleObject.as" />
-        <option value="$PROJECT_DIR$/game/src/Objects/WallObject.as" />
-        <option value="$PROJECT_DIR$/game/src/Objects/ObjectContainer.as" />
-        <option value="$PROJECT_DIR$/game/src/Objects/Troop/TroopObject.as" />
-        <option value="$PROJECT_DIR$/game/src/UI/GameJBox.as" />
-        <option value="$PROJECT_DIR$/game/src/UI/GameJBoxBackground.as" />
-        <option value="$PROJECT_DIR$/game/src/Comm/TcpSession.as" />
-        <option value="$PROJECT_DIR$/game/src/Map/MiniMap/MiniMap.as" />
-        <option value="$PROJECT_DIR$/game/src/Map/MiniMap/MiniMapDrawer.as" />
-        <option value="$PROJECT_DIR$/game/src/Map/MiniMap/MiniMapLegend.as" />
-        <option value="$PROJECT_DIR$/game/src/Main.as" />
-        <option value="$PROJECT_DIR$/game/src/Comm/GameURLLoader.as" />
-        <option value="$PROJECT_DIR$/game/src/UI/Components/CityActionGridList/CityActionGridList.as" />
-        <option value="$PROJECT_DIR$/game/src/Objects/Battle/CombatObject.as" />
-        <option value="$PROJECT_DIR$/game/src/Objects/Battle/CombatUnit.as" />
-        <option value="$PROJECT_DIR$/game/src/UI/Components/CombatObjectGridList/CombatObjectGridList.as" />
-        <option value="$PROJECT_DIR$/game/src/Objects/Factories/StrongholdFactory.as" />
-        <option value="$PROJECT_DIR$/game/src/Objects/Factories/BarbarianTribeFactory.as" />
-        <option value="$PROJECT_DIR$/game/src/Objects/StructureObject.as" />
-        <option value="$PROJECT_DIR$/game/src/Objects/Battle/CombatStructure.as" />
-        <option value="$PROJECT_DIR$/game/src/UI/Components/BattleReport/UnitIconCell.as" />
-        <option value="$PROJECT_DIR$/game/src/UI/Components/TableCells/StructureCell.as" />
-        <option value="$PROJECT_DIR$/game/src/UI/Cursors/BuildStructureCursor.as" />
-        <option value="$PROJECT_DIR$/game/src/UI/Components/BattleReport/BattleEventTroopGridCell.as" />
-        <option value="$PROJECT_DIR$/game/src/Objects/Factories/ObjectFactory.as" />
-        <option value="$PROJECT_DIR$/game/src/Comm/Commands/BattleComm.as" />
         <option value="$PROJECT_DIR$/game/src/Comm/Commands/CityComm.as" />
         <option value="$PROJECT_DIR$/game/src/Map/CityObject.as" />
         <option value="$PROJECT_DIR$/game/src/Map/City.as" />
-        <option value="$PROJECT_DIR$/game/src/Comm/Commands/GeneralComm.as" />
         <option value="$PROJECT_DIR$/game/src/UI/Sidebars/ObjectInfo/Buttons/BuildButton.as" />
         <option value="$PROJECT_DIR$/game/src/Objects/Prototypes/PropertyPrototype.as" />
         <option value="$PROJECT_DIR$/game/src/Objects/Factories/PropertyFactory.as" />
-        <option value="$PROJECT_DIR$/game/src/Objects/Factories/StructureFactory.as" />
         <option value="$PROJECT_DIR$/game/src/UI/LookAndFeel/GameGraphicLookAndFeel.as" />
-        <option value="$PROJECT_DIR$/game/src/UI/Sidebars/ObjectInfo/ObjectInfoSidebar.as" />
         <option value="$PROJECT_DIR$/game/src/Comm/Commands/ObjectComm.as" />
         <option value="$PROJECT_DIR$/game/src/Comm/Commands.as" />
         <option value="$PROJECT_DIR$/game/src/UI/Dialog/MarketBuyDialog.as" />
         <option value="$PROJECT_DIR$/game/src/UI/Sidebars/ObjectInfo/CustomInfo/BasementCustomInfo.as" />
-        <option value="$PROJECT_DIR$/game/src/Constants.as" />
         <option value="$PROJECT_DIR$/game/src/Objects/Technologies/AdditiveTechnologySummarizer.as" />
         <option value="$PROJECT_DIR$/game/src/Objects/Technologies/TechnologySummarizerFactory.as" />
         <option value="$PROJECT_DIR$/game/src/Objects/Technologies/SpecificPointsPerLevelTechnologySummarizer.as" />
         <option value="$PROJECT_DIR$/game/src/UI/Dialog/UnitTrainDialog.as" />
+        <option value="$PROJECT_DIR$/game/src/Objects/ObjectContainer.as" />
+        <option value="$PROJECT_DIR$/game/src/Objects/Factories/TroopFactory.as" />
+        <option value="$PROJECT_DIR$/game/src/Objects/Factories/StrongholdFactory.as" />
+        <option value="$PROJECT_DIR$/game/src/Objects/Factories/ForestFactory.as" />
+        <option value="$PROJECT_DIR$/game/src/Objects/Factories/BarbarianTribeFactory.as" />
+        <option value="$PROJECT_DIR$/game/src/Objects/SimpleGameObject.as" />
+        <option value="$PROJECT_DIR$/game/src/Objects/StructureObject.as" />
+        <option value="$PROJECT_DIR$/game/src/UI/Components/Store/StoreThemeGridCell.java" />
+        <option value="$PROJECT_DIR$/game/src/Util/StringHelper.as" />
+        <option value="$PROJECT_DIR$/game/src/UI/Sidebars/ObjectInfo/ObjectInfoSidebar.as" />
+        <option value="$PROJECT_DIR$/game/src/Comm/Commands/GeneralComm.as" />
+        <option value="$PROJECT_DIR$/game/src/UI/Components/CoinLabel.as" />
+        <option value="$PROJECT_DIR$/game/src/UI/LookAndFeel/GameLookAndFeel.as" />
+        <option value="$PROJECT_DIR$/game/src/UI/Components/SimpleTroopGridList/SimpleTroopGridCell.as" />
+        <option value="$PROJECT_DIR$/game/src/Objects/Theme.as" />
         <option value="$PROJECT_DIR$/game/src/Assets.as" />
+        <option value="$PROJECT_DIR$/game/src/ThemeDetails.as" />
+        <option value="$PROJECT_DIR$/game/src/Constants.as" />
+        <option value="$PROJECT_DIR$/game/src/Objects/IStoreItem.as" />
+        <option value="$PROJECT_DIR$/game/src/Objects/Factories/StructureFactory.as" />
+        <option value="$PROJECT_DIR$/game/src/Objects/Prototypes/StructurePrototype.as" />
+        <option value="$PROJECT_DIR$/game/src/Util/Util.as" />
+        <option value="$PROJECT_DIR$/game/src/UI/Dialog/StoreDialog.as" />
+        <option value="$PROJECT_DIR$/game/src/UI/Components/SimpleTroopGridList/SimpleTroopGridList.as" />
+        <option value="$PROJECT_DIR$/game/src/UI/Components/Store/StoreItemGridCell.as" />
+        <option value="$PROJECT_DIR$/game/src/UI/Tooltips/StoreItemTooltip.as" />
+        <option value="$PROJECT_DIR$/game/src/Objects/Process/PurchaseStoreItem.as" />
+        <option value="$PROJECT_DIR$/game/src/UI/Dialog/IStoreItemDetailDialog.as" />
+        <option value="$PROJECT_DIR$/game/src/Objects/Process/PurchaseStoreItemProcess.as" />
+        <option value="$PROJECT_DIR$/lib/src/com/codecatalyst/promise/Promise.as" />
+        <option value="$PROJECT_DIR$/game/src/UI/Components/Store/StoreThemeGridCell.as" />
+        <option value="$PROJECT_DIR$/game/src/Objects/Store/IStoreItem.as" />
+        <option value="$PROJECT_DIR$/game/src/Objects/Store/StructureStoreItem.as" />
+        <option value="$PROJECT_DIR$/game/src/UI/Dialog/StoreViewThemeDetails.as" />
+        <option value="$PROJECT_DIR$/game/src/Objects/Process/PurchaseStoreThemeProcess.as" />
+        <option value="$PROJECT_DIR$/game/src/UI/ViewModels/StoreDialogViewModel.as" />
       </list>
     </option>
   </component>
@@ -302,7 +315,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
@@ -372,38 +384,13 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="Objects" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="TribalHero" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="client" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="game" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Objects" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Technologies" />
+              <option name="myItemId" value="UI" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -451,7 +438,7 @@
     <property name="restartRequiresConfirmation" value="true" />
     <property name="GenerateAntBuildDialog.backupFiles" value="true" />
     <property name="options.searchVisible" value="true" />
-    <property name="SearchEverywhereHistory" value="" />
+    <property name="SearchEverywhereHistory" value="Ge" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -459,13 +446,14 @@
       <recent name="C:\source\gameclient\game\src\UI\Dialog" />
     </key>
     <key name="CreateActionScriptClassDialog.DESTINATION_PACKAGE_RECENT_KEY">
-      <recent name="src.Objects" />
-      <recent name="src.Objects.Technologies" />
-      <recent name="starling.extensions.pixelmask" />
-      <recent name="src" />
-      <recent name="src.UI.Components" />
+      <recent name="src.UI.ViewModels" />
+      <recent name="src.UI.Dialog" />
+      <recent name="src.Objects.Process" />
+      <recent name="src.UI.Tooltips" />
+      <recent name="src.UI.Components.Store" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\source\tribalhero\client\game\src\Objects\Store" />
       <recent name="C:\source\gameclient\game\src\Map\MiniMap" />
     </key>
   </component>
@@ -488,6 +476,9 @@
       <option name="PORT" value="5005" />
       <method />
     </configuration>
+    <configuration default="true" type="PhpLocalRunConfigurationType" factoryName="PHP Console">
+      <method />
+    </configuration>
     <configuration default="true" type="#com.intellij.j2meplugin.run.J2MEConfigurationType" factoryName="J2ME">
       <module name="" />
       <USER_OPTIONS />
@@ -504,9 +495,6 @@
       <option name="FORCE" />
       <option name="TO_START" />
       <option name="SELECTION" value="0" />
-      <method />
-    </configuration>
-    <configuration default="true" type="PhpLocalRunConfigurationType" factoryName="PHP Console">
       <method />
     </configuration>
     <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug" singleton="true">
@@ -539,6 +527,14 @@
       <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
+    <configuration default="true" type="RemoteFlashRunConfigurationType" factoryName="Flash Remote Debug">
+      <option name="BCName" value="" />
+      <option name="debugTransport" value="USB" />
+      <option name="moduleName" value="" />
+      <option name="remoteDebugTarget" value="Computer" />
+      <option name="usbDebugPort" value="7936" />
+      <method />
+    </configuration>
     <configuration default="true" type="Application" factoryName="Application">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <option name="MAIN_CLASS_NAME" />
@@ -552,14 +548,6 @@
       <option name="PASS_PARENT_ENVS" value="true" />
       <module name="" />
       <envs />
-      <method />
-    </configuration>
-    <configuration default="true" type="RemoteFlashRunConfigurationType" factoryName="Flash Remote Debug">
-      <option name="BCName" value="" />
-      <option name="debugTransport" value="USB" />
-      <option name="moduleName" value="" />
-      <option name="remoteDebugTarget" value="Computer" />
-      <option name="usbDebugPort" value="7936" />
       <method />
     </configuration>
     <configuration default="true" type="PhpUnitRemoteRunConfigurationType" factoryName="PHPUnit on Server">
@@ -732,11 +720,16 @@
       <workItem from="1397409133961" duration="7075000" />
       <workItem from="1397782059609" duration="61000" />
       <workItem from="1397783298364" duration="1593000" />
+      <workItem from="1397865041117" duration="27883000" />
+      <workItem from="1398195746274" duration="10738000" />
+      <workItem from="1398356359257" duration="1882000" />
+      <workItem from="1398469382051" duration="6790000" />
+      <workItem from="1398519143917" duration="4370000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="167484000" />
+    <option name="totallyTimeSpent" value="219147000" />
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
@@ -759,7 +752,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1616" height="876" extended-state="7" />
+    <frame x="-8" y="-8" width="1616" height="876" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -769,24 +762,24 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32937366" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30038512" sideWeight="0.67688024" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3297587" sideWeight="0.53209245" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.37513173" sideWeight="0.53016686" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.328877" sideWeight="0.46790758" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1724599" sideWeight="0.372914" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32977587" sideWeight="0.78396434" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25917926" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.20509383" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32937366" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24903722" sideWeight="0.67688024" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.27663672" sideWeight="0.7116992" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.36649552" sideWeight="0.7116992" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24967825" sideWeight="0.67548746" order="4" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32171583" sideWeight="0.6283697" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.17292225" sideWeight="0.62644416" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.13174947" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24967825" sideWeight="0.67548746" order="4" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.5139276" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -805,10 +798,17 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="flex">
+          <url>file://$PROJECT_DIR$/game/src/Comm/Commands/GeneralComm.as</url>
+          <line>150</line>
+          <option name="timeStamp" value="267" />
+        </line-breakpoint>
+      </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="267" />
+      <option name="time" value="276" />
     </breakpoint-manager>
   </component>
   <component name="antWorkspaceConfiguration">
@@ -816,272 +816,309 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/game/src/Comm/Commands/CityComm.as">
+    <entry file="file://$PROJECT_DIR$/game/src/UI/Components/TroopCompositionGridList/TroopCompositionGridList.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="234" column="47" selection-start="6369" selection-end="6369" vertical-scroll-proportion="0.0" vertical-offset="3628" max-vertical-offset="10659" />
+        <state line="20" column="39" selection-start="499" selection-end="499" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="816" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/Objects/SimpleGameObject.as">
+    <entry file="file://$PROJECT_DIR$/game/src/UI/Components/BattleReport/DatePlainTextCell.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="17" selection-start="252" selection-end="252" vertical-scroll-proportion="0.0" vertical-offset="102" max-vertical-offset="2261" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/Map/City.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="55" column="27" selection-start="1697" selection-end="1697" vertical-scroll-proportion="0.0" vertical-offset="467" max-vertical-offset="3655" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Sidebars/ObjectInfo/Buttons/BuildButton.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="75" column="0" selection-start="2129" selection-end="2129" vertical-scroll-proportion="0.0" vertical-offset="510" max-vertical-offset="1513" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/Main.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="151" column="30" selection-start="4511" selection-end="4511" vertical-scroll-proportion="0.0" vertical-offset="1674" max-vertical-offset="5151" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/Objects/Factories/EffectReqFactory.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="49" selection-start="394" selection-end="394" vertical-scroll-proportion="0.0" vertical-offset="153" max-vertical-offset="1054" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/src/org/aswing/JLabelButton.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="42" selection-start="243" selection-end="243" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1428" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Dialog/MessageBoard.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="292" column="16" selection-start="8843" selection-end="8843" vertical-scroll-proportion="0.0" vertical-offset="4479" max-vertical-offset="8143" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/Objects/Prototypes/PropertyPrototype.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="93" column="51" selection-start="2314" selection-end="2314" vertical-scroll-proportion="0.0" vertical-offset="1045" max-vertical-offset="1683" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/Objects/Factories/PropertyFactory.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="65" selection-start="580" selection-end="580" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1071" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/src/org/aswing/plaf/basic/BasicCheckBoxMenuItemUI.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="13" selection-start="117" selection-end="117" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="323" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/src/org/aswing/JSeparator.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="39" column="20" selection-start="1148" selection-end="1148" vertical-scroll-proportion="0.0" vertical-offset="310" max-vertical-offset="1292" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/src/org/aswing/plaf/MenuElementUI.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="17" selection-start="179" selection-end="179" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="374" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/src/org/aswing/event/InteractiveEvent.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="119" column="37" selection-start="6101" selection-end="6101" vertical-scroll-proportion="0.0" vertical-offset="1696" max-vertical-offset="2499" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/Objects/StructureObject.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="48" column="48" selection-start="1509" selection-end="1509" vertical-scroll-proportion="0.0" vertical-offset="552" max-vertical-offset="1513" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/src/org/aswing/JCheckBoxMenuItem.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="20" selection-start="546" selection-end="546" vertical-scroll-proportion="0.0" vertical-offset="80" max-vertical-offset="629" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/src/org/aswing/MenuElement.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="17" selection-start="322" selection-end="322" vertical-scroll-proportion="0.0" vertical-offset="469" max-vertical-offset="969" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/src/org/aswing/Container.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="191" column="20" selection-start="5651" selection-end="5651" vertical-scroll-proportion="0.0" vertical-offset="3000" max-vertical-offset="8772" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Components/PlayerLabel.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="51" column="8" selection-start="1325" selection-end="1325" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1139" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Components/MiniMapPointer.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="42" column="12" selection-start="1271" selection-end="1327" vertical-scroll-proportion="0.0" vertical-offset="225" max-vertical-offset="1989" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/src/org/aswing/JMenu.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="43" column="24" selection-start="1245" selection-end="1245" vertical-scroll-proportion="0.0" vertical-offset="429" max-vertical-offset="5848" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/LookAndFeel/GameLookAndFeel.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="82" column="29" selection-start="2342" selection-end="2352" vertical-scroll-proportion="0.0" vertical-offset="1088" max-vertical-offset="3400" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/src/org/aswing/JMenuItem.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="20" selection-start="629" selection-end="629" vertical-scroll-proportion="0.0" vertical-offset="140" max-vertical-offset="3043" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/src/org/aswing/JPopupMenu.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="42" column="20" selection-start="1274" selection-end="1274" vertical-scroll-proportion="0.0" vertical-offset="1381" max-vertical-offset="7616" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/LookAndFeel/GamePopupMenuBackground.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="17" selection-start="103" selection-end="103" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="408" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/src/org/aswing/plaf/basic/BasicPopupMenuUI.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="118" column="27" selection-start="3250" selection-end="3250" vertical-scroll-proportion="0.0" vertical-offset="1728" max-vertical-offset="2788" />
+        <state line="34" column="93" selection-start="978" selection-end="1047" vertical-scroll-proportion="0.0" vertical-offset="215" max-vertical-offset="918" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/game/src/UI/LookAndFeel/GameGraphicLookAndFeel.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="1754" column="53" selection-start="89686" selection-end="89687" vertical-scroll-proportion="0.0" vertical-offset="29482" max-vertical-offset="30107" />
+        <state line="48" column="57" selection-start="1935" selection-end="1935" vertical-scroll-proportion="0.0" vertical-offset="458" max-vertical-offset="30107" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Sidebars/ObjectInfo/ObjectInfoSidebar.as">
+    <entry file="file://$PROJECT_DIR$/game/src/UI/Components/BattleReport/LocalReportList.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="106" column="27" selection-start="3761" selection-end="3761" vertical-scroll-proportion="0.0" vertical-offset="1375" max-vertical-offset="7786" />
+        <state line="129" column="54" selection-start="3636" selection-end="3636" vertical-scroll-proportion="0.0" vertical-offset="1778" max-vertical-offset="2533" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/Comm/Commands/ObjectComm.as">
+    <entry file="file://$PROJECT_DIR$/game/src/UI/Components/CoinLabel.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="599" column="37" selection-start="17848" selection-end="17848" vertical-scroll-proportion="0.0" vertical-offset="10183" max-vertical-offset="10472" />
+        <state line="11" column="30" selection-start="439" selection-end="439" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="357" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/Comm/Commands.as">
+    <entry file="file://$PROJECT_DIR$/game/src/UI/Dialog/BattleViewer.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="54" column="51" selection-start="2097" selection-end="2097" vertical-scroll-proportion="0.0" vertical-offset="731" max-vertical-offset="2873" />
+        <state line="86" column="50" selection-start="3275" selection-end="3275" vertical-scroll-proportion="0.0" vertical-offset="945" max-vertical-offset="6205" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/Graphics/Tileset.as">
+    <entry file="file://$PROJECT_DIR$/game/src/Util/StringHelper.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="39" selection-start="96" selection-end="96" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="255" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Dialog/UnitMoveDialog.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="88" column="78" selection-start="2558" selection-end="2558" vertical-scroll-proportion="0.0" vertical-offset="459" max-vertical-offset="1972" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/Objects/Troop/TroopStubComparer.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="17" selection-start="103" selection-end="103" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="272" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Dialog/TroopsDialog.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="179" column="20" selection-start="7764" selection-end="7764" vertical-scroll-proportion="0.0" vertical-offset="1963" max-vertical-offset="6307" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/Objects/TechnologyStats.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="31" column="0" selection-start="941" selection-end="941" vertical-scroll-proportion="0.0" vertical-offset="303" max-vertical-offset="1207" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/Objects/TechnologyManager.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="45" column="0" selection-start="1137" selection-end="1137" vertical-scroll-proportion="0.0" vertical-offset="630" max-vertical-offset="2720" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/Objects/Factories/TechnologyFactory.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="52" selection-start="394" selection-end="394" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="935" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/src/org/aswing/AbstractButton.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="54" column="13" selection-start="1432" selection-end="1432" vertical-scroll-proportion="0.0" vertical-offset="16931" max-vertical-offset="17476" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/src/org/aswing/JButton.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="59" column="42" selection-start="1528" selection-end="1528" vertical-scroll-proportion="0.0" vertical-offset="645" max-vertical-offset="1190" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/src/org/aswing/plaf/basic/BasicButtonUI.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="13" selection-start="448" selection-end="448" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="6341" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Dialog/MarketBuyDialog.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="33" selection-start="325" selection-end="325" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="5814" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Sidebars/ObjectInfo/CustomInfo/BasementCustomInfo.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="52" selection-start="905" selection-end="905" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1105">
+        <state line="123" column="0" selection-start="3661" selection-end="3661" vertical-scroll-proportion="0.0" vertical-offset="1492" max-vertical-offset="2465">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/Objects/Effects/Formula.as">
+    <entry file="file://$PROJECT_DIR$/game/src/UI/Dialog/CreateTribeDialog.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="300" column="0" selection-start="11635" selection-end="11635" vertical-scroll-proportion="0.0" vertical-offset="5100" max-vertical-offset="6120">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/Objects/Factories/StructureFactory.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="126" column="13" selection-start="4293" selection-end="4293" vertical-scroll-proportion="0.0" vertical-offset="2142" max-vertical-offset="4046">
-          <folding />
-        </state>
+        <state line="71" column="39" selection-start="2055" selection-end="2055" vertical-scroll-proportion="0.0" vertical-offset="831" max-vertical-offset="1496" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/game/src/Constants.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="126" column="0" selection-start="4361" selection-end="4361" vertical-scroll-proportion="0.0" vertical-offset="2142" max-vertical-offset="2941">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/Comm/Commands/GeneralComm.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="229" column="0" selection-start="8151" selection-end="8151" vertical-scroll-proportion="0.0" vertical-offset="3893" max-vertical-offset="7225">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/Objects/Technologies/AdditiveTechnologySummarizer.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="24" column="0" selection-start="803" selection-end="803" vertical-scroll-proportion="0.0" vertical-offset="55" max-vertical-offset="527">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Dialog/UnitTrainDialog.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="124" column="0" selection-start="4790" selection-end="4790" vertical-scroll-proportion="0.0" vertical-offset="1547" max-vertical-offset="3808">
+        <state line="165" column="54" selection-start="5880" selection-end="5880" vertical-scroll-proportion="0.0" vertical-offset="2187" max-vertical-offset="2924">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/game/src/Assets.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="462" column="53" selection-start="19436" selection-end="19436" vertical-scroll-proportion="0.0" vertical-offset="7621" max-vertical-offset="8993">
+        <state line="120" column="0" selection-start="3408" selection-end="3408" vertical-scroll-proportion="0.0" vertical-offset="1746" max-vertical-offset="10591">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/Objects/Prototypes/StructurePrototype.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="106" column="0" selection-start="2514" selection-end="2514" vertical-scroll-proportion="0.0" vertical-offset="1209" max-vertical-offset="1938" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/Objects/Factories/StructureFactory.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="114" column="45" selection-start="3838" selection-end="3838" vertical-scroll-proportion="0.0" vertical-offset="1427" max-vertical-offset="4148" />
+      </provider>
+    </entry>
+    <entry file="jar://C:/flexsdk/frameworks/libs/player/11.9/playerglobal.swc!/library.swf">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="268" column="22" selection-start="10831" selection-end="10831" vertical-scroll-proportion="0.0" vertical-offset="4233" max-vertical-offset="186762">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/Util/Util.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="72" column="0" selection-start="2213" selection-end="2213" vertical-scroll-proportion="0.0" vertical-offset="510" max-vertical-offset="3791">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/src/org/aswing/JLabel.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="320" column="20" selection-start="8628" selection-end="8628" vertical-scroll-proportion="0.0" vertical-offset="5163" max-vertical-offset="6749" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/UI/Tooltips/TextTooltip.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="52" column="12" selection-start="1278" selection-end="1278" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1190" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/UI/Components/SimpleTooltip.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="38" column="8" selection-start="1095" selection-end="1095" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="918" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/src/org/aswing/ext/GridListLayout.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="91" column="4" selection-start="1938" selection-end="1938" vertical-scroll-proportion="0.0" vertical-offset="1233" max-vertical-offset="3400" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/UI/Components/SimpleTroopGridList/SimpleTroopGridCell.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="12" column="17" selection-start="341" selection-end="341" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="901" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/src/org/aswing/ext/GridList.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="96" column="20" selection-start="3017" selection-end="3017" vertical-scroll-proportion="0.0" vertical-offset="1314" max-vertical-offset="14144" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/UI/Dialog/MessageBoard.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="248" column="46" selection-start="7121" selection-end="7121" vertical-scroll-proportion="0.0" vertical-offset="3732" max-vertical-offset="8143" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/UI/Components/Messaging/PreviewTextCell.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1411" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/UI/Components/TableCells/MessageBoardThreadListCell.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="45" column="17" selection-start="1357" selection-end="1357" vertical-scroll-proportion="0.0" vertical-offset="510" max-vertical-offset="1292" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/src/org/aswing/ext/MultilineLabel.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="14" column="41" selection-start="408" selection-end="408" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="510" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/src/org/aswing/JTextArea.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="172" column="46" selection-start="4646" selection-end="4646" vertical-scroll-proportion="0.0" vertical-offset="2554" max-vertical-offset="8160" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/src/org/aswing/AssetPane.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="263" column="20" selection-start="7186" selection-end="7186" vertical-scroll-proportion="0.0" vertical-offset="4089" max-vertical-offset="10523" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/UI/Components/BattleReport/BattleImportantRound.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="35" column="16" selection-start="944" selection-end="996" vertical-scroll-proportion="0.0" vertical-offset="231" max-vertical-offset="1649" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/UI/Tooltips/Tooltip.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="93" column="8" selection-start="2884" selection-end="2884" vertical-scroll-proportion="0.0" vertical-offset="2482" max-vertical-offset="3400" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/UI/Tooltips/StoreItemTooltip.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="16" column="0" selection-start="435" selection-end="435" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="544" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/UI/Components/SimpleTroopGridList/SimpleTroopGridList.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="70" column="16" selection-start="2328" selection-end="2351" vertical-scroll-proportion="0.0" vertical-offset="442" max-vertical-offset="3417" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/UI/LookAndFeel/GameLookAndFeel.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="134" column="24" selection-start="4561" selection-end="4561" vertical-scroll-proportion="-0.054226477" vertical-offset="2278" max-vertical-offset="3536">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/UI/Tooltips/StructureTooltip.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="16" column="0" selection-start="448" selection-end="448" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1037" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/Objects/Process/AtkAssignmentCreateProcess.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="34" column="8" selection-start="1047" selection-end="1047" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1513" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/Objects/Process/AttackSendProcess.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1683" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/Objects/Process/LocateNotificationProcess.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="593">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/UI/Dialog/AttackTroopDialog.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="114" column="8" selection-start="3423" selection-end="3513" vertical-scroll-proportion="0.0" vertical-offset="1723" max-vertical-offset="3553">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/UI/Dialog/TribeProfileDialog.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="397" column="32" selection-start="17403" selection-end="17403" vertical-scroll-proportion="0.0" vertical-offset="5931" max-vertical-offset="13549">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/Objects/Process/AssignmentJoinProcess.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="26" column="27" selection-start="793" selection-end="793" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="901">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/src/com/codecatalyst/promise/Promise.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="810" column="13" selection-start="24484" selection-end="24484" vertical-scroll-proportion="0.0" vertical-offset="12772" max-vertical-offset="13515">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/src/org/aswing/ext/GeneralGridListCellFactory.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="16" column="0" selection-start="338" selection-end="338" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="442">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/UI/Dialog/StoreDialog.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="36" column="115" selection-start="1309" selection-end="1309" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1054">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/UI/Components/Store/StoreItemGridCell.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="19" column="0" selection-start="557" selection-end="557" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="663">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/UI/Components/Store/StoreThemeGridCell.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="23" column="0" selection-start="727" selection-end="727" vertical-scroll-proportion="0.0" vertical-offset="153" max-vertical-offset="1360">
           <folding>
-            <element signature="e#19#47#0" expanded="true" />
+            <element signature="e#38#66#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/Objects/Technologies/TechnologySummarizerFactory.as">
+    <entry file="file://$PROJECT_DIR$/game/src/Objects/Theme.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="47" column="55" selection-start="2432" selection-end="2432" vertical-scroll-proportion="0.3576538" vertical-offset="549" max-vertical-offset="1411">
+        <state line="19" column="65" selection-start="604" selection-end="604" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="493">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/Objects/Store/IStoreItem.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="6" column="37" selection-start="168" selection-end="168" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="255">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/Objects/Store/StructureStoreItem.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="24" column="0" selection-start="875" selection-end="875" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="459">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/UI/Dialog/StoreViewThemeDetails.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="44" column="45" selection-start="1636" selection-end="1636" vertical-scroll-proportion="0.0" vertical-offset="426" max-vertical-offset="2380">
+          <folding>
+            <element signature="e#28#69#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/src/com/codecatalyst/promise/Deferred.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="116" column="25" selection-start="3909" selection-end="3909" vertical-scroll-proportion="0.0" vertical-offset="1173" max-vertical-offset="2006">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/src/com/codecatalyst/promise/Resolver.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="161" column="24" selection-start="6503" selection-end="6503" vertical-scroll-proportion="0.0" vertical-offset="3129" max-vertical-offset="4199">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/Objects/Process/PurchaseStoreThemeProcess.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="0" selection-start="367" selection-end="367" vertical-scroll-proportion="0.0" vertical-offset="189" max-vertical-offset="952">
+          <folding>
+            <element signature="e#34#75#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/UI/ViewModels/StoreDialogViewModel.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="4" column="8" selection-start="107" selection-end="107" vertical-scroll-proportion="0.11467116" vertical-offset="0" max-vertical-offset="593">
           <folding />
         </state>
       </provider>

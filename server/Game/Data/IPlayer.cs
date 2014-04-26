@@ -72,6 +72,8 @@ namespace Game.Data
 
         string TwoFactorSecretKey { get; set; }
 
+        List<ThemePurchase> ThemePurchases { get; }
+
         bool HasPurchasedTheme(string theme);
     }
 }

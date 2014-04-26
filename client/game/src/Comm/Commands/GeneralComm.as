@@ -119,13 +119,13 @@
 			Constants.tribeIncoming = packet.readInt();
 			Constants.tribeAssignment = packet.readShort();
 
-			var now: Date = new Date();
 			var serverTime: int = packet.readUInt();
-			Constants.secondsPerUnit = Number(packet.readString());
+
+            Constants.secondsPerUnit = Number(packet.readString());
 
 			Util.log("Seconds per unit is " + Constants.secondsPerUnit);
 			Util.log("Server Time is " + new Date(serverTime * 1000));
-			var timeDelta: int = serverTime - int(now.time / 1000);
+			var timeDelta: int = serverTime - int(new Date().time / 1000);
 			Util.log("Delta is " + timeDelta);
 			Constants.timeDelta = timeDelta;			
 
@@ -149,9 +149,24 @@
 			}
 				
 			// Cities
-			var cityCnt: int = packet.readUByte();
-			for (var i: int = 0; i < cityCnt; i++)			
-				readCity(packet);			
+			var cityCnt: int = packet.readInt();
+			for (var i: int = 0; i < cityCnt; i++) {
+				readCity(packet);
+            }
+
+            // Themes purchased
+            Constants.themesPurchased = [];
+            var themesPurchasedCnt: int = packet.readInt();
+            for (i = 0; i < themesPurchasedCnt; i++) {
+                Constants.themesPurchased.push(packet.readString());
+            }
+
+            // Themes available
+            Constants.themesAvailable = [];
+            var themesAvailableCnt: int = packet.readInt();
+            for (i = 0; i < themesAvailableCnt; i++) {
+                Constants.themesAvailable.push(new Theme(packet.readString(), packet.readInt(), new Date(packet.readUInt() * 1000)));
+            }
 		}
 		
 		public function readCity(packet: Packet) : City {

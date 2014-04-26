@@ -72,6 +72,8 @@ namespace Game
 
         private readonly IStrongholdManagerLogger strongholdManagerLogger;
 
+        private readonly StoreSync storeSync;
+
         private readonly IPolicyServer policyServer;
 
         private readonly INetworkServer server;
@@ -94,7 +96,8 @@ namespace Game
                       StrongholdChecker strongholdChecker,
                       BarbarianTribeChecker barbarianTribeChecker,
                       ICityChannel cityChannel,
-                      IStrongholdManagerLogger strongholdManagerLogger)
+                      IStrongholdManagerLogger strongholdManagerLogger,
+                      StoreSync storeSync)
         {
             this.server = server;
             this.policyServer = policyServer;
@@ -113,6 +116,7 @@ namespace Game
             this.barbarianTribeChecker = barbarianTribeChecker;
             this.cityChannel = cityChannel;
             this.strongholdManagerLogger = strongholdManagerLogger;
+            this.storeSync = storeSync;
         }
 
         public EngineState State { get; private set; }
@@ -259,6 +263,9 @@ _________ _______ _________ ______   _______  _
 
             // Initialize game market
             Market.Init();
+
+            // Start store sync
+            storeSync.Start();
 
             // Start command processor
             server.Start(Config.server_listen_address, Config.server_port);

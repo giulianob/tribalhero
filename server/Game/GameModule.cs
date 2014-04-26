@@ -56,6 +56,10 @@ namespace Game
             container.Register<IRoadManager, RoadManager>(Lifestyle.Singleton);
             container.Register<IRoadPathFinder, RoadPathFinder>();
 
+            container.Register<IThemeManager, ThemeManager>(Lifestyle.Singleton);
+
+            container.Register<StoreSync>(Lifestyle.Singleton);
+
             #endregion
 
             #region General Comms

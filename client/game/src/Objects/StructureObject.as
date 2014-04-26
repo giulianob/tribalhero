@@ -39,6 +39,7 @@
 			super.copy(obj);
 			var gameObj: StructureObject = obj as StructureObject;
 			level = gameObj.level;
+            theme = gameObj.theme;
 			wallManager.draw(gameObj.wallManager.radius);
 		}
 				

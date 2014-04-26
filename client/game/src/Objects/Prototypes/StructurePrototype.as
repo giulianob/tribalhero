@@ -104,7 +104,11 @@
 			else
 			return 0;
 		}
-	}
+
+        public function getSpriteName(theme: String): String {
+            return theme + "_" + spriteClass;
+        }
+    }
 
 }
 

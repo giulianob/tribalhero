@@ -35,6 +35,8 @@ namespace Game.Data
 
         public AchievementList Achievements { get; private set; }
 
+        public List<ThemePurchase> ThemePurchases { get; private set; }
+
         public DateTime LastDeletedTribe { get; set; }
 
         public DateTime? HasTwoFactorAuthenticated { get; set; }
@@ -55,6 +57,7 @@ namespace Game.Data
                       PlayerRights playerRights,
                       string sessionId = "")
         {
+            ThemePurchases = new List<ThemePurchase>();
             ChatState = new PlayerChatState();
             Achievements = new AchievementList(playerid);
             PlayerId = playerid;

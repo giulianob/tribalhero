@@ -35,7 +35,8 @@ package src
 		public static var tribeAssignment: int;
 		public static var tribeIncoming: int;
         public static var soundMuted: Boolean;
-        public static var themesPurchased: Array = ["PIRATES"];
+        public static var themesPurchased: Array = [];
+        public static var themesAvailable: Array = [];
 
         /* APP CONSTANTS */
 		public static var mainWebsite: String = "http://tribalhero.com/";
@@ -132,8 +133,6 @@ package src
 		public static const queryData: Boolean = true;
 
 		public static const stealthRangeNames: Array = ["", "1st row", "2nd row", "3rd row", "4th row"];
-
-        public static var themesSupported: Array = ["DEFAULT", "PIRATES"];
 
 		/* Ranking Types */
 		public static const rankings: Array = [

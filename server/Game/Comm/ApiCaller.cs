@@ -2,65 +2,59 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
+using Flurl;
+using Game.Comm.Api;
 using Game.Data;
 using Game.Setup;
-using JsonFx.Json;
+using Game.Util;
+using Newtonsoft.Json;
 
 namespace Game.Comm
 {
-    public class ApiResponse
+    public class ApiResponse<T>
     {
-        public ApiResponse(bool success)
-        {
-            Success = success;
-        }
-
-        public ApiResponse(bool success, dynamic data)
-        {
-            Success = success;
-            Data = data;
-        }
-
         public bool Success { get; set; }
 
-        public dynamic Data { get; set; }
+        public T Data { get; set; }
 
-        public string ErrorMessage
+        public IEnumerable<string> ErrorMessages { get; set; }
+
+        public string AllErrorMessages
         {
             get
             {
-                if (Success || Data == null)
-                {
-                    return "An error occurred";
-                }
-
-                return String.Join(", ", Data.errorMessage);
+                return ErrorMessages == null ? string.Empty : string.Join(",", ErrorMessages);
             }
         }
     }
 
     public static class ApiCaller
     {
-        private static ApiResponse MakeCall(String model, String method, IEnumerable<KeyValuePair<string, string>> data)
+        private static ApiResponse<dynamic> MakeCall(String model, String method, IEnumerable<KeyValuePair<string, string>> data)
         {
-            var jsonReader = new JsonReader();
+            return MakeCall<dynamic>(model, method, data);
+        }
 
-            StringWriter queryString = new StringWriter();
-            queryString.Write(string.Format("&{0}={1}", "apiId", Config.api_id));
-            queryString.Write(string.Format("&{0}={1}", "apiKey", Config.api_key));
-            foreach (var kv in data)
+        private static ApiResponse<T> MakeCall<T>(String model, String method, IEnumerable<KeyValuePair<string, string>> data)
+        {
+            var queryParameters = data.ToDictionary(k => k.Key, v => v.Value);
+            queryParameters["apiId"] = Config.api_id;
+            queryParameters["apiKey"] = Config.api_key;
+
+            if (!Config.server_production)
             {
-                queryString.Write(string.Format("&{0}={1}", kv.Key, Uri.EscapeDataString(kv.Value)));
+                queryParameters["XDEBUG_SESSION_START"] = "eclipse";
             }
 
-            HttpWebRequest request =
-                    (HttpWebRequest)
-                    WebRequest.Create(string.Format("http://{0}/api/{1}/{2}/?{3}",
-                                                    Config.api_domain,
-                                                    model,
-                                                    method,
-                                                    queryString));
+            var url = new Url("http://" + Config.api_domain)
+                    .AppendPathSegment("api")
+                    .AppendPathSegment(model)
+                    .AppendPathSegment(method)
+                    .SetQueryParams(queryParameters);
+
+            HttpWebRequest request = (HttpWebRequest) WebRequest.Create(url);
             request.Proxy = null;
             request.Method = "GET";
 
@@ -70,74 +64,78 @@ namespace Game.Comm
 
                 if (webResponse.StatusCode != HttpStatusCode.OK)
                 {
-                    return new ApiResponse(false);
+                    return new ApiResponse<T> { Success = false, ErrorMessages = new[] { "Failed with status code:" + webResponse.StatusCode } };
                 }
 
                 Stream response = webResponse.GetResponseStream();
 
                 if (response == null)
                 {
-                    return new ApiResponse(false);
+                    return new ApiResponse<T> { Success = false, ErrorMessages = new[] { "Failed with null response" } };
                 }
 
                 using (StreamReader sr = new StreamReader(response))
                 {
                     var responseContent = sr.ReadToEnd();
-                    dynamic responseData = jsonReader.Read(responseContent);
-                    return new ApiResponse(responseData.success, responseData);
+
+                    return JsonConvert.DeserializeObject<ApiResponse<T>>(responseContent, new JsonSerializerSettings
+                    {
+                        ContractResolver = new SnakeCasePropertyNamesContractResolver()
+                    });
                 }
             }
-            catch(Exception)
+            catch(Exception e)
             {
-                return new ApiResponse(false);
+                return new ApiResponse<T> { Success = false, ErrorMessages = new[] { "Failed with exception: " + e.Message } };
             }
         }
 
-        public static ApiResponse CheckLogin(string name, string password)
+        public static ApiResponse<LoginResponseData> CheckLogin(string name, string password)
         {
             var parms = new List<KeyValuePair<string, string>>
             {
                     new KeyValuePair<string, string>("name", name),
                     new KeyValuePair<string, string>("password", password),
             };
-            return MakeCall("player", "check_login", parms);
+
+            return MakeCall<LoginResponseData>("player", "check_login", parms);
         }
 
-        public static ApiResponse CheckLoginKey(string name, string loginKey)
+        public static ApiResponse<LoginResponseData> CheckLoginKey(string name, string loginKey)
         {
             var parms = new List<KeyValuePair<string, string>>
             {
                     new KeyValuePair<string, string>("name", name),
                     new KeyValuePair<string, string>("login_key", loginKey),
             };
-            return MakeCall("player", "check_login", parms);
+            return MakeCall<LoginResponseData>("player", "check_login", parms);
         }
 
-        public static ApiResponse Unban(string name)
+        public static ApiResponse<dynamic> Unban(string name)
         {
             var parms = new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("name", name),};
             return MakeCall("player", "unban", parms);
         }
 
-        public static ApiResponse Ban(string name)
+        public static ApiResponse<dynamic> Ban(string name)
         {
             var parms = new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("name", name),};
             return MakeCall("player", "ban", parms);
         }
 
-        public static ApiResponse PlayerInfo(string nameOrEmail)
+        public static ApiResponse<dynamic> PlayerInfo(string nameOrEmail)
         {
             var parms = new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("nameOrEmail", nameOrEmail),};
             return MakeCall("player", "info", parms);
         }
 
-        public static ApiResponse PlayerSearch(string nameOrEmail)
+        public static ApiResponse<dynamic> PlayerSearch(string nameOrEmail)
         {
             var parms = new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("nameOrEmail", nameOrEmail),};
             return MakeCall("player", "search", parms);
         }
 
-        public static ApiResponse RenamePlayer(string name, string newName)
+        public static ApiResponse<dynamic> RenamePlayer(string name, string newName)
         {
             var parms = new List<KeyValuePair<string, string>>
             {
@@ -147,7 +145,7 @@ namespace Game.Comm
             return MakeCall("player", "rename", parms);
         }
 
-        public static ApiResponse SetPlayerRights(string name, PlayerRights rights)
+        public static ApiResponse<dynamic> SetPlayerRights(string name, PlayerRights rights)
         {
             var parms = new List<KeyValuePair<string, string>>
             {
@@ -157,7 +155,7 @@ namespace Game.Comm
             return MakeCall("player", "set_rights", parms);
         }
 
-        public static ApiResponse SetPassword(string name, string password)
+        public static ApiResponse<dynamic> SetPassword(string name, string password)
         {
             var parms = new List<KeyValuePair<string, string>>
             {
@@ -167,7 +165,7 @@ namespace Game.Comm
             return MakeCall("player", "set_password", parms);
         }
 
-        public static ApiResponse GiveAchievement(string name, AchievementTier tier, string type, string icon, string title, string description)
+        public static ApiResponse<dynamic> GiveAchievement(string name, AchievementTier tier, string type, string icon, string title, string description)
         {
             var parms = new List<KeyValuePair<string, string>>
             {
@@ -182,13 +180,18 @@ namespace Game.Comm
             return MakeCall("player", "give_achievement", parms);
         }
 
-        public static ApiResponse ResetAuthCode(string name)
+        public static ApiResponse<dynamic> ResetAuthCode(string name)
         {
             var parms = new List<KeyValuePair<string, string>>
             {
                     new KeyValuePair<string, string>("name", name)
             };
             return MakeCall("player", "reset_auth_code", parms);
+        }
+
+        public static ApiResponse<IEnumerable<Theme>> ThemeGetAll()
+        {
+            return MakeCall<IEnumerable<Theme>>("theme", "get_all", new Dictionary<string, string>());
         }
     }
 }

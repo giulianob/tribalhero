@@ -26,6 +26,8 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly IForestManager forestManager;
 
+        private readonly IThemeManager themeManager;
+
         private readonly IWorld world;
 
         private readonly ILocker locker;
@@ -35,6 +37,7 @@ namespace Game.Comm.ProcessorCommands
                                        IObjectTypeFactory objectTypeFactory,
                                        PropertyFactory propertyFactory,
                                        IForestManager forestManager,
+                                       IThemeManager themeManager,
                                        IWorld world,
                                        ILocker locker)
         {
@@ -43,6 +46,7 @@ namespace Game.Comm.ProcessorCommands
             this.objectTypeFactory = objectTypeFactory;
             this.propertyFactory = propertyFactory;
             this.forestManager = forestManager;
+            this.themeManager = themeManager;
             this.world = world;
             this.locker = locker;
         }
@@ -93,7 +97,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                if (!session.Player.HasPurchasedTheme(theme))
+                if (!session.Player.HasPurchasedTheme(theme) || !themeManager.HasTheme(theme))
                 {
                     ReplyError(session, packet, Error.ThemeNotPurchased);
                     return;

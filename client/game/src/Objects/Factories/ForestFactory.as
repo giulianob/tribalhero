@@ -28,12 +28,12 @@
 
             var sprite: Sprite = new Sprite();
 
-            if (withShadow) {
-                var shadow: Bitmap = Assets.getInstance(assetName + "_SHADOW", withPosition);
-                shadow.alpha = Constants.shadowAlpha;
-                shadow.name = "shadow";
-                sprite.addChild(shadow);
-            }
+//            if (withShadow) {
+//                var shadow: Bitmap = Assets.getInstance(assetName + "_SHADOW", withPosition);
+//                shadow.alpha = Constants.shadowAlpha;
+//                shadow.name = "shadow";
+//                sprite.addChild(shadow);
+//            }
 
             sprite.addChild(image);
 

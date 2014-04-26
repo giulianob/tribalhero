@@ -1,5 +1,7 @@
 ﻿package src.Objects.Factories {
 
+    import System.Linq.Enumerable;
+
     import flash.display.*;
 
     import src.Assets;
@@ -79,6 +81,13 @@
 			structurePrototypes.sort();
 		}
 
+        public static function getAllStructureTypes(): Array
+        {
+            return Enumerable.from(structurePrototypes.toArray()).where(function(strPrototype: StructurePrototype): Boolean {
+                return strPrototype.level == 1
+            }).toArray();
+        }
+
 		public static function getPrototype(type: int, level: int): StructurePrototype
 		{
 			var structPrototype: StructurePrototype = structurePrototypes.get([type, level]);
@@ -103,7 +112,7 @@
                 throw new Error("Missing structure worker " + strPrototype.workerid);
             }
 
-            return theme + "_" + strPrototype.spriteClass;
+            return strPrototype.getSpriteName(theme);
         }
 
 		public static function getSprite(theme: String, type: int, level: int, withPosition: String = "", withShadow: Boolean = false): DisplayObjectContainer

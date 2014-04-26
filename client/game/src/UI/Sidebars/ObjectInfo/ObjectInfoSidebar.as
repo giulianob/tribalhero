@@ -23,6 +23,7 @@ import src.UI.*;
 import src.UI.Components.CityLabel;
 import src.UI.Components.PlayerLabel;
 import src.UI.Components.SimpleTooltip;
+    import src.UI.Dialog.StoreDialog;
     import src.UI.LookAndFeel.GameLookAndFeel;
     import src.UI.LookAndFeel.GamePanelBackgroundDecorator;
 import src.UI.Sidebars.ObjectInfo.Buttons.*;
@@ -69,15 +70,23 @@ public class ObjectInfoSidebar extends GameJSidebar
                 }
 
                 themeDropdown.append(new JSeparator());
-                themeDropdown.append;
 
-                themeLink = new JLabelButton(StringHelper.localize("THEME_" + obj.theme), null, AsWingConstants.LEFT);
+                themeLink = new JLabelButton("", null, AsWingConstants.LEFT);
                 themeLink.addActionListener(function (e: Event): void {
-                    themeDropdown.show(themeLink, 0, themeLink.getHeight());
+                    if (!themeDropdown.isVisible()) {
+                        themeDropdown.show(themeLink, 0, themeLink.getHeight());
+                    }
+                    else {
+                        themeDropdown.setVisible(false);
+                    }
                 });
 
                 var storeLink: JLabelButton = new JLabelButton(StringHelper.localize("OBJECT_INFO_SIDEBAR_BUY_MORE_THEMES"), null, AsWingConstants.LEFT);
                 themeDropdown.append(storeLink);
+
+                storeLink.addActionListener(function (e: Event): void {
+                    new StoreDialog(Constants.themesAvailable).show();
+                });
 
 				city.addEventListener(City.RESOURCES_UPDATE, onResourcesUpdate);
 				city.currentActions.addEventListener(BinaryListEvent.CHANGED, onObjectUpdate);
@@ -120,7 +129,7 @@ public class ObjectInfoSidebar extends GameJSidebar
 
 			buttons = [];
 
-			var structPrototype: StructurePrototype = StructureFactory.getPrototype(gameObject.type, gameObject.level);
+            var structPrototype: StructurePrototype = StructureFactory.getPrototype(gameObject.type, gameObject.level);
 
 			if (!structPrototype) return;
 
@@ -142,6 +151,7 @@ public class ObjectInfoSidebar extends GameJSidebar
 					addStatRow("OBJECT_INFO_SIDEBAR_HP_LABEL", gameObject.hp.toString() + "/" + structPrototype.hp.toString());
 				}
 
+                themeLink.setText(StringHelper.localize("THEME_" + gameObject.theme));
                 addStatRow("OBJECT_INFO_SIDEBAR_THEME_LABEL", themeLink);
 
 				if (structPrototype.maxlabor > 0) {

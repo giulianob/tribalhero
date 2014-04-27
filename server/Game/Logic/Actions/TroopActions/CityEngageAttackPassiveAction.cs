@@ -178,7 +178,7 @@ namespace Game.Logic.Actions
             // Create the group in the battle
             uint battleId;
             ICombatGroup combatGroup;
-            cityBattleProcedure.JoinOrCreateCityBattle(targetCity, troopObject, out combatGroup, out battleId);
+            cityBattleProcedure.JoinOrCreateCityBattle(targetCity, troopObject, dbManager, out combatGroup, out battleId);
             groupId = combatGroup.Id;
 
             // Register the battle listeners

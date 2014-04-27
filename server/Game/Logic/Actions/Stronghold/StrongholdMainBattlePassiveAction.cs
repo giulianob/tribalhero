@@ -459,7 +459,7 @@ namespace Game.Logic.Actions
             stronghold.EndUpdate();
 
             beginTime = SystemClock.Now;
-            endTime = SystemClock.Now.AddMinutes(1);
+            endTime = SystemClock.Now.Add(formula.GetBattleDelayStartInterval());
 
             return Error.Ok;
         }

@@ -1,19 +1,7 @@
 package src.UI.Dialog {
     import com.codecatalyst.promise.Deferred;
-    import com.codecatalyst.promise.Promise;
 
-    import org.aswing.AsWingConstants;
-    import org.aswing.AssetIcon;
-    import org.aswing.AssetPane;
-    import org.aswing.CenterLayout;
-    import org.aswing.FlowLayout;
-    import org.aswing.JButton;
-    import org.aswing.JFrame;
-    import org.aswing.JLabel;
-    import org.aswing.JPanel;
-    import org.aswing.JTabbedPane;
-    import org.aswing.SoftBoxLayout;
-    import org.aswing.VectorListModel;
+    import org.aswing.*;
     import org.aswing.ext.GeneralGridListCellFactory;
     import org.aswing.ext.GridList;
     import org.aswing.ext.GridListItemEvent;
@@ -21,49 +9,53 @@ package src.UI.Dialog {
 
     import src.Assets;
     import src.Global;
-    import src.Objects.Factories.StructureFactory;
-    import src.Objects.Prototypes.StructurePrototype;
     import src.Objects.Store.IStoreItem;
-    import src.Objects.Store.StructureStoreItem;
-    import src.Objects.Theme;
     import src.UI.Components.Store.StoreItemGridCell;
     import src.UI.GameJPanel;
     import src.UI.LookAndFeel.GameLookAndFeel;
     import src.UI.Tooltips.StoreItemTooltip;
+    import src.UI.ViewModels.StoreViewThemeDetailsVM;
     import src.Util.StringHelper;
     import src.Util.Util;
 
-    public class StoreViewThemeDetails extends GameJPanel {
-        private var theme: Theme;
+    public class StoreViewThemeDetailsDialog extends GameJPanel {
         private var lblDescription: MultilineLabel;
+
+        private var btnBuy: JButton;
+
         private var itemTooltip: StoreItemTooltip;
+
         private var buyDeferred: Deferred;
 
-        public function StoreViewThemeDetails(theme: Theme) {
-            this.theme = theme;
+        private var viewModel: StoreViewThemeDetailsVM;
+
+        public function StoreViewThemeDetailsDialog(viewModel: StoreViewThemeDetailsVM) {
+            this.viewModel = viewModel;
             this.buyDeferred = new Deferred();
-            this.title = theme.localizedName;
+            this.title = viewModel.theme.localizedName;
 
             createUI();
-        }
 
-        public function getBuyItemPromise(): Promise {
-            return buyDeferred.promise;
+            btnBuy.addActionListener(function(): void {
+                getFrame().dispose();
+
+                viewModel.buy();
+            });
         }
 
         private function createUI(): void {
             setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
             setPreferredWidth(540);
 
-            var lblTitle: JLabel = new JLabel(theme.localizedName);
+            var lblTitle: JLabel = new JLabel(viewModel.theme.localizedName);
             GameLookAndFeel.changeClass(lblTitle, "darkHeader");
 
-            lblDescription = new MultilineLabel(theme.localizedDescription, 0, 100);
+            lblDescription = new MultilineLabel(viewModel.theme.localizedDescription, 0, 100);
 
             var pnlPreviewImage: JPanel = new JPanel(new CenterLayout());
-            pnlPreviewImage.appendAll(new AssetPane(Assets.getInstance(theme.id + "_THEME_BANNER")));
+            pnlPreviewImage.appendAll(new AssetPane(Assets.getInstance(viewModel.theme.id + "_THEME_BANNER")));
 
-            var gridStoreItems: GridList = new GridList(new VectorListModel(getThemeItems()), new GeneralGridListCellFactory(StoreItemGridCell), 5, 0);
+            var gridStoreItems: GridList = new GridList(new VectorListModel(viewModel.getThemeItems()), new GeneralGridListCellFactory(StoreItemGridCell), 5, 0);
             gridStoreItems.setTracksHeight(true);
             gridStoreItems.setTileWidth(85);
             gridStoreItems.setTileHeight(80);
@@ -73,7 +65,7 @@ package src.UI.Dialog {
             previewTabs.appendTab(pnlPreviewImage, StringHelper.localize("STORE_VIEW_THEME_DIALOG_PREVIEW_TAB"));
             previewTabs.appendTab(Util.createTopAlignedScrollPane(gridStoreItems), StringHelper.localize("STORE_VIEW_THEME_DIALOG_DETAIL_TAB"));
 
-            var btnBuy: JButton = new JButton(StringHelper.localize("STORE_VIEW_THEME_DIALOG_BUY", theme.cost), new AssetIcon(Assets.getInstance("ICON_COIN")));
+            btnBuy = new JButton(StringHelper.localize("STORE_VIEW_THEME_DIALOG_BUY", viewModel.theme.cost), new AssetIcon(Assets.getInstance("ICON_COIN")));
             btnBuy.setHorizontalTextPosition(AsWingConstants.LEFT);
             btnBuy.setIconTextGap(0);
 
@@ -104,19 +96,6 @@ package src.UI.Dialog {
             }
 
             this.itemTooltip = null;
-        }
-
-        private function getThemeItems(): Array {
-            var themeItems: Array = [];
-
-            for each (var structurePrototype: StructurePrototype in StructureFactory.getAllStructureTypes()) {
-                if (Assets.doesSpriteExist(structurePrototype.getSpriteName(theme.id))) {
-                    themeItems.push(new StructureStoreItem(theme, structurePrototype));
-                }
-            }
-
-            themeItems.sortOn("title", Array.CASEINSENSITIVE);
-            return themeItems;
         }
 
         public function show(owner:* = null, modal:Boolean = true, onClose:Function = null):JFrame

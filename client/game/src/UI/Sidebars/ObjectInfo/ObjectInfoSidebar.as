@@ -2,39 +2,36 @@
 package src.UI.Sidebars.ObjectInfo {
 
     import flash.display.DisplayObject;
-    import flash.display.DisplayObjectContainer;
-import flash.events.*;
-import flash.utils.Timer;
+    import flash.events.*;
+    import flash.utils.Timer;
 
-import org.aswing.*;
-import org.aswing.border.*;
-    import org.aswing.event.InteractiveEvent;
-import org.aswing.ext.*;
+    import org.aswing.*;
+    import org.aswing.border.*;
+    import org.aswing.ext.*;
 
     import src.Assets;
-import src.Constants;
-import src.Global;
-import src.Map.*;
-import src.Objects.*;
-import src.Objects.Actions.*;
-import src.Objects.Factories.*;
-import src.Objects.Prototypes.*;
-import src.UI.*;
-import src.UI.Components.CityLabel;
-import src.UI.Components.PlayerLabel;
-import src.UI.Components.SimpleTooltip;
+    import src.Constants;
+    import src.Global;
+    import src.Map.*;
+    import src.Objects.*;
+    import src.Objects.Actions.*;
+    import src.Objects.Factories.*;
+    import src.Objects.Prototypes.*;
+    import src.UI.*;
+    import src.UI.Components.CityLabel;
+    import src.UI.Components.PlayerLabel;
+    import src.UI.Components.SimpleTooltip;
     import src.UI.Dialog.StoreDialog;
-    import src.UI.LookAndFeel.GameLookAndFeel;
-    import src.UI.LookAndFeel.GamePanelBackgroundDecorator;
-import src.UI.Sidebars.ObjectInfo.Buttons.*;
-import src.UI.Sidebars.ObjectInfo.CustomInfo.CustomInfoFactory;
-import src.UI.Sidebars.ObjectInfo.CustomInfo.ICustomInfo;
-import src.Util.BinaryList.*;
-import src.Util.DateUtil;
+    import src.UI.Sidebars.ObjectInfo.Buttons.*;
+    import src.UI.Sidebars.ObjectInfo.CustomInfo.CustomInfoFactory;
+    import src.UI.Sidebars.ObjectInfo.CustomInfo.ICustomInfo;
+    import src.UI.ViewModels.StoreDialogVM;
+    import src.Util.BinaryList.*;
+    import src.Util.DateUtil;
     import src.Util.StringHelper;
-import src.Util.Util;
+    import src.Util.Util;
 
-public class ObjectInfoSidebar extends GameJSidebar
+    public class ObjectInfoSidebar extends GameJSidebar
 	{
 		private var pnlStats:Form;
 
@@ -85,7 +82,7 @@ public class ObjectInfoSidebar extends GameJSidebar
                 themeDropdown.append(storeLink);
 
                 storeLink.addActionListener(function (e: Event): void {
-                    new StoreDialog(Constants.themesAvailable).show();
+                    new StoreDialog(new StoreDialogVM(Constants.themesAvailable)).show();
                 });
 
 				city.addEventListener(City.RESOURCES_UPDATE, onResourcesUpdate);

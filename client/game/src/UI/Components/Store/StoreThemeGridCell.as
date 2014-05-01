@@ -2,8 +2,10 @@ package src.UI.Components.Store {
     import flash.display.Bitmap;
 
     import org.aswing.ASColor;
+
     import org.aswing.AsWingConstants;
     import org.aswing.AsWingUtils;
+    import org.aswing.AssetIcon;
     import org.aswing.AssetPane;
     import org.aswing.BorderLayout;
     import org.aswing.CenterLayout;
@@ -11,6 +13,8 @@ package src.UI.Components.Store {
     import org.aswing.Insets;
     import org.aswing.JLabel;
     import org.aswing.JPanel;
+    import org.aswing.SoftBoxLayout;
+    import org.aswing.UIManager;
     import org.aswing.border.EmptyBorder;
     import org.aswing.border.LineBorder;
     import org.aswing.ext.GridList;
@@ -20,6 +24,8 @@ package src.UI.Components.Store {
     import src.Objects.Theme;
     import src.UI.Components.CoinLabel;
     import src.UI.LookAndFeel.GameLookAndFeel;
+    import src.UI.LookAndFeel.GamePanelBackgroundDecorator;
+    import src.Util.StringHelper;
     import src.Util.Util;
 
     public class StoreThemeGridCell implements GridListCell {
@@ -49,18 +55,13 @@ package src.UI.Components.Store {
             footer.setConstraints("South");
             footer.appendAll(lblName, lblCost);
 
-            var padding: JPanel = new JPanel(new BorderLayout(5, 5));
-            padding.appendAll(AsWingUtils.createPaneToHold(thumbnail, new CenterLayout(), "Center"), footer);
-            padding.setBorder(new EmptyBorder(null, new Insets(5, 5, 5, 5)));
-            padding.setConstraints("Center");
-
             component.useHandCursor = true;
             component.mouseEnabled = true;
-            component.setOpaque(true);
-            component.setBackground(ASColor.WHITE);
+            component.mouseChildren = true;
+            component.setBackgroundDecorator(new GamePanelBackgroundDecorator("TabbedPane.top.contentRoundImage"));
+            component.setBorder(new EmptyBorder(null, UIManager.get("TabbedPane.contentMargin") as Insets));
             component.setLayout(new BorderLayout());
-            component.appendAll(padding);
-            component.setBorder(new LineBorder(null, lblName.getForeground(), 1, 3));
+            component.appendAll(AsWingUtils.createPaneToHold(thumbnail, new CenterLayout(), "Center"), footer);
         }
 
         public function getCellValue(): * {

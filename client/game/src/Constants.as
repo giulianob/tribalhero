@@ -37,6 +37,7 @@ package src
         public static var soundMuted: Boolean;
         public static var themesPurchased: Array = [];
         public static var themesAvailable: Array = [];
+        public static var coins: int = 0;
 
         /* APP CONSTANTS */
 		public static var mainWebsite: String = "http://tribalhero.com/";

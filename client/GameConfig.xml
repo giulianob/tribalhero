@@ -31,7 +31,6 @@ to be relative and use forward slashes.
       <name>CONFIG::desktop</name>
       <value>false</value>
     </define>
-    <verbose-stacktraces>true</verbose-stacktraces>
     <source-path append="true">
       <path-element>lib/src</path-element>
       <path-element>game</path-element>

@@ -15,19 +15,23 @@ package src.UI.Dialog {
     import src.UI.Components.Store.StoreThemeGridCell;
     import src.UI.GameJImagePanelBackground;
     import src.UI.GameJPanel;
+    import src.UI.ViewModels.StoreDialogVM;
     import src.Util.StringHelper;
     import src.Util.Util;
 
     public class StoreDialog extends GameJPanel {
 
         private var availableThemesGridList: GridList;
+        private var viewModel: StoreDialogVM;
 
-        public function StoreDialog(themes: Array) {
+        public function StoreDialog(viewModel: StoreDialogVM) {
+            this.viewModel = viewModel;
+
             title = StringHelper.localize("STORE_DIALOG_TITLE");
 
             createUI();
 
-            VectorListModel(availableThemesGridList.getModel()).appendAll(themes);
+            VectorListModel(availableThemesGridList.getModel()).appendAll(viewModel.themes);
         }
 
         private function createUI(): void {
@@ -49,17 +53,11 @@ package src.UI.Dialog {
         }
 
         public function viewThemeDetails(e: GridListItemEvent): void {
-            var theme: Theme = Theme(e.getValue());
-            new StoreViewThemeDetails(theme).show();
+            viewModel.viewThemeDetails(Theme(e.getValue()));
         }
 
-        public function show(owner:* = null, modal:Boolean = false, onClose:Function = null):JFrame
+        public function show(owner:* = null, modal:Boolean = true, onClose:Function = null):JFrame
         {
-            var existingDialog: StoreDialog = Global.gameContainer.findDialog(StoreDialog);
-            if (existingDialog) {
-                return existingDialog.getFrame();
-            }
-
             super.showSelf(owner, modal, onClose, null);
 
             frame.setResizable(false);

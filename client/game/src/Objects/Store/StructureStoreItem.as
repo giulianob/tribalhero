@@ -4,7 +4,7 @@ package src.Objects.Store {
     import src.Objects.Factories.StructureFactory;
     import src.Objects.Prototypes.StructurePrototype;
     import src.Objects.Theme;
-    import src.UI.Dialog.StoreViewThemeDetails;
+    import src.UI.Dialog.StoreViewThemeDetailsDialog;
 
     public class StructureStoreItem implements IStoreItem {
         private var structurePrototype: StructurePrototype;

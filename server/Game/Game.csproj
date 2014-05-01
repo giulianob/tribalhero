@@ -521,6 +521,7 @@
     <Compile Include="Map\RoadPathFinder.cs" />
     <Compile Include="Logic\IGameTask.cs" />
     <Compile Include="Module\Chat.cs" />
+    <Compile Include="Module\QueueListener.cs" />
     <Compile Include="Module\Remover\CityRemover.cs" />
     <Compile Include="Module\Remover\ActivePlayerSelector.cs" />
     <Compile Include="Module\Remover\CityRemoverFactory.cs" />

@@ -79,9 +79,7 @@
         <entry file="file://$PROJECT_DIR$/game/src/Assets.as">
           <provider selected="true" editor-type-id="text-editor">
             <state line="462" column="53" selection-start="19436" selection-end="19436" vertical-scroll-proportion="0.0" vertical-offset="7621" max-vertical-offset="8993">
-              <folding>
-                <element signature="e#19#47#0" expanded="true" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -122,10 +120,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TechnologySummarizerFactory.as" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="TechnologySummarizerFactory.as" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/game/src/Objects/Technologies/TechnologySummarizerFactory.as">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="47" column="55" selection-start="2432" selection-end="2432" vertical-scroll-proportion="0.3576538" vertical-offset="549" max-vertical-offset="1411">
+            <state line="47" column="55" selection-start="2432" selection-end="2432" vertical-scroll-proportion="0.0" vertical-offset="549" max-vertical-offset="1411">
               <folding />
             </state>
           </provider>
@@ -149,10 +147,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GeneralComm.as" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="GeneralComm.as" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/game/src/Comm/Commands/GeneralComm.as">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="229" column="0" selection-start="8151" selection-end="8151" vertical-scroll-proportion="0.0" vertical-offset="3893" max-vertical-offset="7225">
+            <state line="274" column="28" selection-start="9335" selection-end="9335" vertical-scroll-proportion="0.5515695" vertical-offset="4208" max-vertical-offset="7021">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CmdLineViewer.as" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/game/src/UI/Dialog/CmdLineViewer.as">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="30" column="28" selection-start="860" selection-end="860" vertical-scroll-proportion="0.0" vertical-offset="38" max-vertical-offset="9163">
               <folding />
             </state>
           </provider>
@@ -302,7 +309,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
@@ -404,6 +410,7 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -488,6 +495,9 @@
       <option name="PORT" value="5005" />
       <method />
     </configuration>
+    <configuration default="true" type="PhpLocalRunConfigurationType" factoryName="PHP Console">
+      <method />
+    </configuration>
     <configuration default="true" type="#com.intellij.j2meplugin.run.J2MEConfigurationType" factoryName="J2ME">
       <module name="" />
       <USER_OPTIONS />
@@ -504,9 +514,6 @@
       <option name="FORCE" />
       <option name="TO_START" />
       <option name="SELECTION" value="0" />
-      <method />
-    </configuration>
-    <configuration default="true" type="PhpLocalRunConfigurationType" factoryName="PHP Console">
       <method />
     </configuration>
     <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug" singleton="true">
@@ -539,6 +546,14 @@
       <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
+    <configuration default="true" type="RemoteFlashRunConfigurationType" factoryName="Flash Remote Debug">
+      <option name="BCName" value="" />
+      <option name="debugTransport" value="USB" />
+      <option name="moduleName" value="" />
+      <option name="remoteDebugTarget" value="Computer" />
+      <option name="usbDebugPort" value="7936" />
+      <method />
+    </configuration>
     <configuration default="true" type="Application" factoryName="Application">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <option name="MAIN_CLASS_NAME" />
@@ -552,14 +567,6 @@
       <option name="PASS_PARENT_ENVS" value="true" />
       <module name="" />
       <envs />
-      <method />
-    </configuration>
-    <configuration default="true" type="RemoteFlashRunConfigurationType" factoryName="Flash Remote Debug">
-      <option name="BCName" value="" />
-      <option name="debugTransport" value="USB" />
-      <option name="moduleName" value="" />
-      <option name="remoteDebugTarget" value="Computer" />
-      <option name="usbDebugPort" value="7936" />
       <method />
     </configuration>
     <configuration default="true" type="PhpUnitRemoteRunConfigurationType" factoryName="PHPUnit on Server">
@@ -732,11 +739,12 @@
       <workItem from="1397409133961" duration="7075000" />
       <workItem from="1397782059609" duration="61000" />
       <workItem from="1397783298364" duration="1593000" />
+      <workItem from="1398907204122" duration="1255000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="167484000" />
+    <option name="totallyTimeSpent" value="168739000" />
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
@@ -760,13 +768,14 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1616" height="876" extended-state="7" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32937366" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32937366" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32171583" sideWeight="0.6283697" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30038512" sideWeight="0.67688024" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3297587" sideWeight="0.53209245" order="3" side_tool="false" content_ui="tabs" />
@@ -781,12 +790,11 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.27663672" sideWeight="0.7116992" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.27984595" sideWeight="0.7116992" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24967825" sideWeight="0.67548746" order="4" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32171583" sideWeight="0.6283697" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.5139276" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -1049,13 +1057,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/Comm/Commands/GeneralComm.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="229" column="0" selection-start="8151" selection-end="8151" vertical-scroll-proportion="0.0" vertical-offset="3893" max-vertical-offset="7225">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/game/src/Objects/Technologies/AdditiveTechnologySummarizer.as">
       <provider selected="true" editor-type-id="text-editor">
         <state line="24" column="0" selection-start="803" selection-end="803" vertical-scroll-proportion="0.0" vertical-offset="55" max-vertical-offset="527">
@@ -1073,15 +1074,27 @@
     <entry file="file://$PROJECT_DIR$/game/src/Assets.as">
       <provider selected="true" editor-type-id="text-editor">
         <state line="462" column="53" selection-start="19436" selection-end="19436" vertical-scroll-proportion="0.0" vertical-offset="7621" max-vertical-offset="8993">
-          <folding>
-            <element signature="e#19#47#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/game/src/Objects/Technologies/TechnologySummarizerFactory.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="47" column="55" selection-start="2432" selection-end="2432" vertical-scroll-proportion="0.3576538" vertical-offset="549" max-vertical-offset="1411">
+        <state line="47" column="55" selection-start="2432" selection-end="2432" vertical-scroll-proportion="0.0" vertical-offset="549" max-vertical-offset="1411">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/UI/Dialog/CmdLineViewer.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="30" column="28" selection-start="860" selection-end="860" vertical-scroll-proportion="0.0" vertical-offset="38" max-vertical-offset="9163">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/Comm/Commands/GeneralComm.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="274" column="28" selection-start="9335" selection-end="9335" vertical-scroll-proportion="0.5515695" vertical-offset="4208" max-vertical-offset="7021">
           <folding />
         </state>
       </provider>

@@ -278,6 +278,9 @@ namespace Game.Comm
                                 }
                             }
 
+                            Task removedSocket;
+                            sessions.TryRemove(session, out removedSocket);
+
                             return;
                         }
                     }

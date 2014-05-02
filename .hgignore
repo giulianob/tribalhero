@@ -50,3 +50,5 @@ glob:client/stacktracer/stacktracer.5.1.ReSharper.user
 glob:client/stacktracer/stacktracer.suo
 glob:client/*.apk
 
+syntax: glob
+client/.idea/workspace.xml

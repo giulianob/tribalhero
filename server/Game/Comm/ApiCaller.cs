@@ -189,9 +189,9 @@ namespace Game.Comm
             return MakeCall("player", "reset_auth_code", parms);
         }
 
-        public static ApiResponse<IEnumerable<Theme>> ThemeGetAll()
+        public static ApiResponse<IEnumerable<StoreItem>> StoreItemGetAll()
         {
-            return MakeCall<IEnumerable<Theme>>("theme", "get_all", new Dictionary<string, string>());
+            return MakeCall<IEnumerable<StoreItem>>("storeitem", "get_all", new Dictionary<string, string>());
         }
     }
 }

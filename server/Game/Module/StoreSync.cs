@@ -33,11 +33,11 @@ namespace Game.Module
 
         public void Callback(object custom)
         {
-            var themesResponse = ApiCaller.ThemeGetAll();
+            var themesResponse = ApiCaller.StoreItemGetAll();
 
             if (themesResponse.Success)
             {
-                themeManager.UpdateThemes(themesResponse.Data);
+                // themeManager.UpdateThemes(themesResponse.Data);
             }
             else
             {

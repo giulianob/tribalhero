@@ -321,6 +321,7 @@
     <Compile Include="Data\Technology.cs" />
     <Compile Include="Data\TechnologyManager.cs" />
     <Compile Include="Data\TechnologyManagerFactory.cs" />
+    <Compile Include="Data\StoreItem.cs" />
     <Compile Include="Data\Theme.cs" />
     <Compile Include="Data\ThemeManager.cs" />
     <Compile Include="Data\ThemePurchase.cs" />

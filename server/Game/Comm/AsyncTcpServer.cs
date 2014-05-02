@@ -230,15 +230,9 @@ namespace Game.Comm
         {
             session.OnClose += OnClose;
 
-            var readTask = new Task(async () =>
-            {
-                await ReadLoop(session);
-            });
+            var readTask = ReadLoop(session).CatchUnhandledException();
 
-            sessions.TryAdd(session, readTask);
-
-            readTask.Start();
-            readTask.CatchUnhandledException();
+            sessions.TryAdd(session, readTask);                       
         }
 
         private async Task ReadLoop(AsyncSocketSession session)

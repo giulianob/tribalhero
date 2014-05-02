@@ -274,7 +274,7 @@ _________ _______ _________ ______   _______  _
             policyServer.Start(Config.server_listen_address, 843);
 
             // Start listening  for queue events
-            queueListener.Start(Config.api_domain);
+            // queueListener.Start(Config.api_domain);
 
             // Start thrift server
             ThreadPool.QueueUserWorkItem(o => thriftServer.Serve());

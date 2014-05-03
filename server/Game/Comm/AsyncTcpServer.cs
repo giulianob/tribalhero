@@ -74,7 +74,7 @@ namespace Game.Comm
             listener = new Socket(localAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             listener.Bind(new IPEndPoint(localAddr, port));
 
-            listeningTask = ListenerHandler().CatchUnhandledException();
+            listeningTask = ListenerHandler().CatchUnhandledException("ListenerHandler");
             
             return true;
         }
@@ -230,15 +230,11 @@ namespace Game.Comm
         {
             session.OnClose += OnClose;
 
-            var readTask = new Task(async () =>
-            {
-                await ReadLoop(session);
-            });
+            var readTask = ReadLoop(session);
 
             sessions.TryAdd(session, readTask);
 
-            readTask.Start();
-            readTask.CatchUnhandledException();
+            readTask.CatchUnhandledException("ReadTask for " + session.RemoteIP);
         }
 
         private async Task ReadLoop(AsyncSocketSession session)

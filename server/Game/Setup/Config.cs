@@ -121,6 +121,7 @@ namespace Game.Setup
         public static int battle_loot_resource_wood_ratio = 1;
         public static int battle_loot_resource_gold_ratio = 2;
         public static int battle_loot_resource_iron_ratio = 5;
+        public static int battle_delay_start_interval = 60;
 
         #endregion
 

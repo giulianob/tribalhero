@@ -195,6 +195,7 @@ namespace Game.Data.Stronghold
             stronghold.Tribe = tribe;
             stronghold.GateOpenTo = null;
             stronghold.Gate = formula.StrongholdGateLimit(stronghold.Lvl);
+            stronghold.GateMax = Convert.ToInt32(stronghold.Gate);
             stronghold.DateOccupied = DateTime.UtcNow;
             stronghold.EndUpdate();
             MarkIndexDirty();
@@ -294,6 +295,7 @@ namespace Game.Data.Stronghold
 
             stronghold.BeginUpdate();
             stronghold.Gate = formula.StrongholdGateLimit(stronghold.Lvl);
+            stronghold.GateMax = Convert.ToInt32(stronghold.Gate);
             stronghold.EndUpdate();
 
             return Error.Ok;

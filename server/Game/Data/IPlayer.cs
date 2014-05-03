@@ -53,6 +53,8 @@ namespace Game.Data
 
         bool IsInTribe { get; }
 
+        bool NeverAttacked { get; set; }
+
         void Add(ICity city);
 
         int GetCityCount(bool includeDeleted = false);

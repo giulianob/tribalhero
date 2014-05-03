@@ -27,7 +27,6 @@
             {name: "AttackPoint", method: attackPoint, message: attackPointMsg },
             {name: "PlayerAttackPoint", method: playerAttackPoint, message: playerAttackPointMsg },
             {name: "HaveUnit", method: haveUnit, message: haveUnitMsg },
-            {name: "UniqueTechnology", method: uniqueTechnology, message: uniqueTechnologyMsg },
             {name: "DistributedPointSystem", method: pointSystemTechnology, message: pointSystemTechnologyMsg },
             {name: "LessThanStructureCount", method: lessThanStructureCount }
         ];
@@ -389,33 +388,6 @@
 			return "";
 		}
 
-		/*HAVE UNIT*/
-		private static function uniqueTechnology(parentObj: GameObject, effects: Array, type: int, param2: int, param3: int, param4: int, param5:int): Boolean
-		{
-			var city: City = Global.map.cities.get(parentObj.cityId);
-
-			if (city == null) return false;
-
-			for each (var obj: CityObject in city.objects) {
-				if (ObjectFactory.getClassType(obj.type) != ObjectFactory.TYPE_STRUCTURE) continue;
-
-				// Skip the current obj
-				if (obj.objectId == parentObj.objectId) continue;
-
-				for each (var tech: TechnologyStats in obj.techManager.technologies) {
-					if (tech.techPrototype.level > 0 && tech.techPrototype.techtype == type)
-					return false;
-				}
-			}
-
-			return true;
-		}
-
-		private static function uniqueTechnologyMsg(parentObj: GameObject, type: int, param2: int, param3: int, param4: int, param5:int): String
-		{
-			return "Does not already have this technology elsewhere";
-		}
-		
 		/* CAN CREATE TRIBE */
 		public static function canCreateTribe() : Boolean {
 			for each (var city: City in Global.map.cities) {

@@ -273,7 +273,7 @@ namespace Game.Logic.Actions
             }
 
             beginTime = SystemClock.Now;
-            endTime = SystemClock.Now.AddMinutes(1);
+            endTime = SystemClock.Now.Add(formula.GetBattleDelayStartInterval());
 
             return Error.Ok;
         }

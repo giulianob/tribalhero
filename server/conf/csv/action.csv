@@ -65,7 +65,7 @@ Type,Level,Index,Max,Option,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 2110,1,0,1,,,,,,,,,
 2110,1,1,1,,structure_Upgrade,10,,,,,,
 2110,1,2,1,,labor_move,,,,,,,
-2110,2,3,1,,technology_upgrade,21101,5,,,,21101,SELF
+2110,2,3,1,,technology_upgrade,21101,5,,,,,
 2110,2,8,1,,technology_upgrade,21104,1,,,,,
 2110,3,4,1,,technology_upgrade,21102,3,,,,,
 2110,4,5,1,,technology_upgrade,21103,5,,,,,

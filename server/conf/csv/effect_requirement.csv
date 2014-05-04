@@ -54,8 +54,8 @@ Id,Method,P1,P2,P3,P4,P5,Description,Website Description,Comment
 22041,CountLessThan,id=2204,count=1,,,,Only one unit can be on diet per structure.,,
 ,,,,,,,,,
 //university,,,,,,,,,
-230171,HaveStructure,id=2302,minlvl=3,maxlvl=10,,,,Requires Armory (Level 3).,Require Armory level 3.
-230171,HaveStructure,id=2303,minlvl=3,maxlvl=10,,,,Requires Blacksmith (Level 3).,Require Blacksmith level 3.
+230171,HaveStructure,id=2302,minlvl=1,maxlvl=10,,,,Requires Armory (Level 1).,Require Armory level 1.
+230171,HaveStructure,id=2303,minlvl=1,maxlvl=10,,,,Requires Blacksmith (Level 1).,Require Blacksmith level 1.
 ,,,,,,,,,
 //tribal festival,,,,,,,,,
 21031,HaveNoStructure,3002,minlvl=0,maxlvl=15,count=1,,,,1 festival per city

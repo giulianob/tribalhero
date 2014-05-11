@@ -45,7 +45,7 @@ namespace Game.Data.Stronghold
             // basic radius 200, then every each level is 50 radius
             int count = level * CitiesPerLevel;
 
-            return mapFactory.Locations().Count(loc => tileLocator.TileDistance(new Position(x, y), 1, loc, 1) < radius) > count;
+            return mapFactory.Locations.Count(loc => tileLocator.TileDistance(new Position(x, y), 1, loc, 1) < radius) > count;
         }
         
         private bool TooCloseToStrongholds(uint x, uint y, int minDistance)

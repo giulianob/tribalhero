@@ -52,13 +52,19 @@ namespace Testing.CommTests
                 var packetToSend1 = new Packet(Command.MarketSell);
                 packetToSend1.AddString("Hello");                
                 var bytesToSendOnConnect = packetToSend1.GetBytes();
+
                 await socket.ConnectAsync(new SocketAwaitable
                 {
-                    RemoteEndPoint = new IPEndPoint(IPAddress.Loopback, server.LocalEndPoint.Port),
+                    RemoteEndPoint = server.LocalEndPoint
+                });
+
+                await Task.Delay(1000);
+
+                await socket.SendAsync(new SocketAwaitable
+                {
                     Buffer = new ArraySegment<byte>(bytesToSendOnConnect, 0, bytesToSendOnConnect.Length)
                 });
 
-                // Give time for the connection to happen
                 await Task.Delay(1000);
 
                 server.GetSessionCount().Should().Be(1);

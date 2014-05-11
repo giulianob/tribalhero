@@ -62,7 +62,7 @@ namespace Game.Comm
 
         private string CmdStrongholdFindNearbyCities(Session session, string[] parms)
         {
-            var list = new List<Position>(mapFactory.Locations().Take(mapFactory.Index));
+            var list = new List<Position>(mapFactory.Locations.Take(mapFactory.Index));
             foreach (var stronghold in strongholdManager.Where(s => s.StrongholdState == StrongholdState.Inactive))
             {
                 locker.Lock(stronghold).Do(() =>

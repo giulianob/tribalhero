@@ -46,6 +46,7 @@ namespace Testing.CommTests
             await serverSocketAccept;
 
             var serverSocket = serverSocketAccept.Result;
+            socket.NoDelay = true;
 
             var session = new AsyncSocketSession(Guid.NewGuid().ToString(),
                                                  socket,
@@ -76,7 +77,7 @@ namespace Testing.CommTests
                 int bytesRead = serverSocket.Receive(receiveBuffer, totalBytesRead, 1000, SocketFlags.None);
 
                 totalBytesRead += bytesRead;
-                Thread.Sleep(10);
+                Thread.Sleep(100);
             }
 
             return new ArraySegment<byte>(receiveBuffer, 0, totalBytesRead);

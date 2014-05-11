@@ -90,7 +90,7 @@ You have several things you can do to help protect your city from attacks. The f
 Another option is increase your cities defenses. The best way to do this early in the game is to build some towers. Towers are built from the training ground or barrack and provide defense for structures within its radius. Any units in your city will also join the battle but be careful since an attacker may kill your entire army in a battle. You can hide your units if you don't want them to defend your town when you get attacked.
 Good luck and feel free to ask for help in the chat if you have any questions.";
 
-                    targetCity.Owner.SendSystemMessage(null, "Our city has been attacked", warnMessage);
+                    targetCity.Owner.SendSystemMessage(null, "Your city has been attacked", warnMessage);
                     targetCity.Owner.NeverAttacked = false;
                     dbManager.Save(targetCity.Owner);
                 }

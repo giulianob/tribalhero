@@ -59,7 +59,7 @@ namespace Game.Setup
 
         #region Database Settings
 
-        public static string database_schema_version = "20140406214620";
+        public static string database_schema_version = "20140427161120";
         public static bool database_verbose;
         public static bool database_empty;
         public static bool database_load_players = true;
@@ -121,6 +121,7 @@ namespace Game.Setup
         public static int battle_loot_resource_wood_ratio = 1;
         public static int battle_loot_resource_gold_ratio = 2;
         public static int battle_loot_resource_iron_ratio = 5;
+        public static int battle_delay_start_interval = 60;
 
         #endregion
 

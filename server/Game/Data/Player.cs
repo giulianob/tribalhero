@@ -59,6 +59,7 @@ namespace Game.Data
             Rights = playerRights;
             ChatState.ChatFloodTime = DateTime.MinValue;
             this.description = description;
+            NeverAttacked = true;
         }
 
         public Session Session { get; set; }
@@ -188,6 +189,8 @@ namespace Game.Data
             }
         }
 
+        public bool NeverAttacked { get; set; }
+
         public void Add(ICity city)
         {
             list.Add(city);
@@ -295,6 +298,7 @@ namespace Game.Data
                     new DbColumn("tutorial_step", TutorialStep, DbType.UInt32),
                     new DbColumn("last_deleted_tribe", LastDeletedTribe, DbType.DateTime),
                     new DbColumn("sound_muted", SoundMuted, DbType.Boolean),
+                    new DbColumn("never_attacked", NeverAttacked, DbType.Boolean),
                 };
             }
         }

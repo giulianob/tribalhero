@@ -92,7 +92,7 @@ namespace Game.Battle
             uint lowestRow = objsInRange.Min(target => target.CombatObject.Stats.Stl);
 
             Target bestTarget = null;
-            int bestTargetScore = 0;
+            decimal bestTargetScore = 0;
             foreach (var target in objsInRange)
             {
                 if (!attacker.CanSee(target.CombatObject, lowestRow))
@@ -101,7 +101,7 @@ namespace Game.Battle
                 }
 
                 // Calculate dmg against each target as base score
-                int score = battleFormulas.GetAttackScore(attacker, target.CombatObject, round);
+                decimal score = battleFormulas.GetAttackScore(attacker, target.CombatObject, round);
 
                 if (bestTarget == null || score > bestTargetScore)
                 {
@@ -151,7 +151,7 @@ namespace Game.Battle
 
         private class CombatScoreItem
         {
-            public int Score { get; set; }
+            public decimal Score { get; set; }
 
             public Target Target { get; set; }
         }

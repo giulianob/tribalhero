@@ -9,6 +9,7 @@ using Game.Data.Troop;
 using Game.Logic.Actions;
 using Game.Map;
 using Game.Setup;
+using Persistance;
 
 namespace Game.Logic.Procedures
 {
@@ -51,6 +52,7 @@ namespace Game.Logic.Procedures
 
         public virtual void JoinOrCreateCityBattle(ICity targetCity,
                                                    ITroopObject attackerTroopObject,
+                                                   IDbManager dbManager,
                                                    out ICombatGroup combatGroup,
                                                    out uint battleId)
         {
@@ -77,6 +79,20 @@ namespace Game.Logic.Procedures
                 if (result != Error.Ok)
                 {
                     throw new Exception(string.Format("Failed to start a battle due to error {0}", result));
+                }
+
+                // send message to player telling them to build tower and basement
+                if (targetCity.Owner.NeverAttacked)
+                {
+                    const string warnMessage =
+                            @"Now that you are out of newbie protection, other players are able to attack you. Someone has just finished attacking your town and has probably taken some resources from you. You can see how strong the attack was and how much resources they took in the battle report that was generated for this battle. 
+You have several things you can do to help protect your city from attacks. The first is to build a basement which can be done from your lumbermill. Basements will protect up to a certain amount of resources from being looted. If you plan on going offline for a while, your basements can also build temporary basements which will extend the amount of protected resources. 
+Another option is increase your cities defenses. The best way to do this early in the game is to build some towers. Towers are built from the training ground or barrack and provide defense for structures within its radius. Any units in your city will also join the battle but be careful since an attacker may kill your entire army in a battle. You can hide your units if you don't want them to defend your town when you get attacked.
+Good luck and feel free to ask for help in the chat if you have any questions.";
+
+                    targetCity.Owner.SendSystemMessage(null, "Your city has been attacked", warnMessage);
+                    targetCity.Owner.NeverAttacked = false;
+                    dbManager.Save(targetCity.Owner);
                 }
             }
 

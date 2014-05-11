@@ -467,7 +467,8 @@ namespace Game.Database
                             TribeRequest = (uint)reader["invitation_tribe_id"],
                             Muted = DateTime.SpecifyKind((DateTime)reader["muted"], DateTimeKind.Utc),
                             LastDeletedTribe = DateTime.SpecifyKind((DateTime)reader["last_deleted_tribe"], DateTimeKind.Utc),
-                            Banned = (bool)reader["banned"]
+                            Banned = (bool)reader["banned"],
+                            NeverAttacked = (bool)reader["never_attacked"]
                     };
 
                     if (!World.Players.TryAdd(player.PlayerId, player))

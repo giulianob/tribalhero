@@ -18,7 +18,7 @@ using NDesk.Options;
 
 namespace Game.Comm
 {
-    class StrongholdCommandLineModule : CommandLineModule
+    class StrongholdCommandLineModule : ICommandLineModule
     {
         private readonly ILocker locker;
 
@@ -51,7 +51,7 @@ namespace Game.Comm
             this.tileLocator = tileLocator;
         }
 
-        public override void RegisterCommands(CommandLineProcessor processor)
+        public void RegisterCommands(CommandLineProcessor processor)
         {
             processor.RegisterCommand("StrongholdTransfer", CmdStrongholdTransfer, PlayerRights.Admin);
             processor.RegisterCommand("StrongholdAddTroop", CmdStrongholdAddTroop, PlayerRights.Admin);

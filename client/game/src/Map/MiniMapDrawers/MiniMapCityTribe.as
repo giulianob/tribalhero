@@ -27,7 +27,7 @@ public class MiniMapCityTribe implements IMiniMapObjectDrawer
                 if(cityButton.isSelected()) return;
                 obj.setIcon(new DOT_SPRITE);
 				obj.transform.colorTransform = new ColorTransform();
-			} else if(Constants.tribe.isInTribe(obj.extraProps.tribeId)) {
+			} else if(Constants.session.tribe.isInTribe(obj.extraProps.tribeId)) {
                 if(selfButton.isSelected()) return;
                 obj.setIcon(new DOT_SPRITE);
 				obj.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[1].r, DEFAULT_COLORS[1].g, DEFAULT_COLORS[1].b);

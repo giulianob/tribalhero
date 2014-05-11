@@ -194,12 +194,12 @@
 
 		public function onLogoutClick(e: Event): void
 		{
-			navigateToURL(new URLRequest(Constants.mainWebsite + "players/logout/session:" + Constants.sessionId), "_self");
+			navigateToURL(new URLRequest(Constants.mainWebsite + "players/logout/session:" + Constants.session.sessionId), "_self");
 		}
 		
 		public function onProfileClick(e: Event): void
 		{
-			Global.mapComm.City.viewPlayerProfile(Constants.playerId);
+			Global.mapComm.City.viewPlayerProfile(Constants.session.playerId);
 		}		
 
 		public function onAccountOptionsClick(e: Event): void
@@ -240,7 +240,7 @@
 		
 		public function onViewTribe(e: MouseEvent) :void
 		{			
-			if (Constants.tribe.isInTribe()) {				
+			if (Constants.session.tribe.isInTribe()) {
 				var currentTribeDialog: TribeProfileDialog = findDialog(TribeProfileDialog);
             
 				if (currentTribeDialog) {
@@ -248,9 +248,9 @@
 					return;
 				}
 				
-				Global.mapComm.Tribe.viewTribeProfile(Constants.tribe.id);
+				Global.mapComm.Tribe.viewTribeProfile(Constants.session.tribe.id);
 			}
-			else if (Constants.tribeInviteId != 0) {
+			else if (Constants.session.tribeInviteId != 0) {
 				var tribeInviteDialog: TribeInviteRequestDialog = new TribeInviteRequestDialog(function(sender: TribeInviteRequestDialog) : void {
 					Global.mapComm.Tribe.invitationConfirm(sender.getResult());
 					
@@ -464,7 +464,7 @@
 
 			// Begin game tutorial
 			tutorial = new GameTutorial();
-			tutorial.start(Constants.tutorialStep, map, Global.mapComm.General);
+			tutorial.start(Constants.session.tutorialStep, map, Global.mapComm.General);
 		}
 
 		public function show() : void {
@@ -575,7 +575,7 @@
 
 			resizeManager = null;
 		}
-		
+
 		public function addCityToUI(city: City): void {
 			(lstCities.getModel() as VectorListModel).append( { id: city.id, city: city, toString: function() : String {
                 return this.city.name;

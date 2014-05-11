@@ -148,6 +148,10 @@
             return bytes.readByte() == 1;
         }
 
+        public function readDate(): Date {
+            return new Date(readUInt() * 1000);
+        }
+
 		public function hasData(): Boolean {
 			return bytes.bytesAvailable > 0;
 		}

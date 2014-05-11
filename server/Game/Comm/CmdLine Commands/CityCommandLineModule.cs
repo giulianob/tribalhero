@@ -11,17 +11,17 @@ using Game.Util;
 using Game.Util.Locking;
 using NDesk.Options;
 
-namespace Game.Comm.CmdLine_Commands
+namespace Game.Comm
 {
-    class CityCommandLineModule : CommandLineModule
+    class CityCommandLineModule : ICommandLineModule
     {
         private readonly IActionFactory actionFactory;
 
         private readonly Procedure procedure;
 
-        private IWorld world;
+        private readonly IWorld world;
 
-        private ILocker locker;
+        private readonly ILocker locker;
 
         public CityCommandLineModule(Procedure procedure,
                                      IActionFactory actionFactory,
@@ -34,7 +34,7 @@ namespace Game.Comm.CmdLine_Commands
             this.world = world;
         }
 
-        public override void RegisterCommands(CommandLineProcessor processor)
+        public void RegisterCommands(CommandLineProcessor processor)
         {
             processor.RegisterCommand("renamecity", RenameCity, PlayerRights.Admin);
             processor.RegisterCommand("removestructure", RemoveStructure, PlayerRights.Bureaucrat);

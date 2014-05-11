@@ -84,7 +84,7 @@ package src.UI.Dialog{
 			txtAddress = new JTextField();
 			txtAddress.setSize(new IntDimension(150, 25));
 			txtAddress.setPreferredSize(new IntDimension(150, 25));
-			txtAddress.setText(Constants.hostname);
+			txtAddress.setText(Constants.session.hostname);
 
 			separator14 = new JSeparator();
 			separator14.setSize(new IntDimension(220, 2));
@@ -101,7 +101,7 @@ package src.UI.Dialog{
 			txtUsername = new JTextField();
 			txtUsername.setSize(new IntDimension(150, 25));
 			txtUsername.setPreferredSize(new IntDimension(150, 25));
-			txtUsername.setText(Constants.username);
+			txtUsername.setText(Constants.session.username);
 
 			formrow10 = new FormRow();
 			formrow10.setSize(new IntDimension(194, 0));

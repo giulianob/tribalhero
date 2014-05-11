@@ -272,7 +272,7 @@ package src.UI.Dialog
 				}
 			});			
 			
-			if (Constants.tribe.hasRight(Tribe.DELETE_POST) || Constants.playerId == postData.playerId) {				
+			if (Constants.session.tribe.hasRight(Tribe.DELETE_POST) || Constants.session.playerId == postData.playerId) {
 				menuTools.addMenuItem(postData.subject ? "Delete Thread" : "Delete Post").addActionListener(function(e: Event): void {
 					InfoDialog.showMessageDialog("Delete", "Are you sure?", function(result: *):void {
 						if (result != JOptionPane.YES)
@@ -289,7 +289,7 @@ package src.UI.Dialog
 				});
 			}
             
-            if (Constants.playerId == postData.playerId) {
+            if (Constants.session.playerId == postData.playerId) {
 				menuTools.addMenuItem("Edit").addActionListener(function(e: Event): void {
                     if (postData.subject) {
                         var editDialog: MessageBoardThreadCreateDialog = new MessageBoardThreadCreateDialog(afterCreate, postData.id, postData.subject, postData.message);

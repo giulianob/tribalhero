@@ -161,7 +161,7 @@
 			
 			pnl.append(AsWingUtils.createPaneToHold(gridList, new SoftBoxLayout(), "Center"));
 			
-			if (troop.playerId == Constants.playerId) {
+			if (troop.playerId == Constants.session.playerId) {
 				var retreatButton: JLabelButton = new JLabelButton(StringHelper.localize("STR_RETREAT"), null, AsWingConstants.LEFT);
 				retreatButton.setVerticalAlignment(AsWingConstants.TOP);
 				

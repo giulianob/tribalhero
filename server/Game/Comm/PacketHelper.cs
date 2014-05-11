@@ -384,7 +384,7 @@ namespace Game.Comm
             packet.AddUInt32(session.Player.TribeRequest);
             packet.AddByte((byte)(session.Player.Tribesman == null ? 0 : session.Player.Tribesman.Rank.Id));
             packet.AddString(session.Player.Tribesman == null ? string.Empty : session.Player.Tribesman.Tribe.Name);
-            if(session.Player.Tribesman != null)
+            if (session.Player.Tribesman != null)
             {
                 AddTribeRanksToPacket(session.Player.Tribesman.Tribe, packet);
             }
@@ -402,16 +402,6 @@ namespace Game.Comm
             foreach (var theme in session.Player.ThemePurchases)
             {
                 packet.AddString(theme.ThemeId);
-            }
-
-            // Themes available
-            var themes = themeManager.Themes;
-            packet.AddInt32(themes.Count);
-            foreach (var theme in themes)
-            {
-                packet.AddString(theme.Id);
-                packet.AddInt32(theme.Cost);
-                packet.AddUInt32(theme.Created.ToUnixTime());
             }
         }
 

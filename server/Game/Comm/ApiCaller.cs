@@ -7,6 +7,7 @@ using System.Net;
 using Flurl;
 using Game.Comm.Api;
 using Game.Data;
+using Game.Data.Store;
 using Game.Setup;
 using Game.Util;
 using Newtonsoft.Json;
@@ -45,7 +46,7 @@ namespace Game.Comm
 
             if (!Config.server_production)
             {
-                queryParameters["XDEBUG_SESSION_START"] = "eclipse";
+                queryParameters["XDEBUG_SESSION_START"] = "PHPSTORM";
             }
 
             var url = new Url("http://" + Config.api_domain)
@@ -191,7 +192,18 @@ namespace Game.Comm
 
         public static ApiResponse<IEnumerable<StoreItem>> StoreItemGetAll()
         {
-            return MakeCall<IEnumerable<StoreItem>>("storeitem", "get_all", new Dictionary<string, string>());
+            return MakeCall<IEnumerable<StoreItem>>("store_item", "get_all", new Dictionary<string, string>());
+        }
+
+        public static ApiResponse<object> AddCoins(string playerName, int coins)
+        {
+            var parms = new List<KeyValuePair<string, string>>
+            {
+                new KeyValuePair<string, string>("name", playerName),
+                new KeyValuePair<string, string>("coins", coins.ToString(CultureInfo.InvariantCulture))
+            };
+
+            return MakeCall("player", "add_coins", parms);
         }
     }
 }

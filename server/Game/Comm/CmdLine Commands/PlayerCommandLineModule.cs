@@ -22,7 +22,7 @@ using Persistance;
 
 namespace Game.Comm
 {
-    class PlayerCommandLineModule : CommandLineModule
+    class PlayerCommandLineModule : ICommandLineModule
     {
         private readonly Chat chat;
 
@@ -71,12 +71,13 @@ namespace Game.Comm
             this.technologyFactory = technologyFactory;
         }
 
-        public override void RegisterCommands(CommandLineProcessor processor)
+        public void RegisterCommands(CommandLineProcessor processor)
         {
             processor.RegisterCommand("auth", Auth, PlayerRights.Moderator);
             processor.RegisterCommand("resetauthcode", ResetAuthCode, PlayerRights.Bureaucrat);
             processor.RegisterCommand("playerinfo", Info, PlayerRights.Moderator);            
             processor.RegisterCommand("playersearch", Search, PlayerRights.Moderator);
+            processor.RegisterCommand("addcoins", AddCoins, PlayerRights.Admin);
             processor.RegisterCommand("ban", BanPlayer, PlayerRights.Moderator);
             processor.RegisterCommand("unban", UnbanPlayer, PlayerRights.Moderator);
             processor.RegisterCommand("deleteplayer", DeletePlayer, PlayerRights.Bureaucrat);
@@ -903,6 +904,42 @@ namespace Game.Comm
 
                 return "OK!";
             });
+        }
+
+        public string AddCoins(Session session, string[] parms)
+        {
+            bool help = false;
+            string playerName = string.Empty;
+            int coins = 0;
+
+            try
+            {
+                var p = new OptionSet
+                {
+                        {"?|help|h", v => help = true},
+                        {"player=", v => playerName = v.TrimMatchingQuotes()},
+                        {"coins=", v => coins = int.Parse(v.TrimMatchingQuotes())}
+                };
+                p.Parse(parms);
+            }
+            catch(Exception)
+            {
+                help = true;
+            }
+
+            if (help || string.IsNullOrEmpty(playerName) || coins <= 0)
+            {
+                return "addcoins --player=player --coins=#";
+            }
+
+            ApiResponse<dynamic> response = ApiCaller.AddCoins(playerName, coins);
+
+            if (!response.Success)
+            {
+                return response.AllErrorMessages;
+            }
+
+            return "OK!";
         }
 
         public string SetPassword(Session session, string[] parms)

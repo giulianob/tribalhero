@@ -1,4 +1,7 @@
 package src.Objects {
+    import flash.display.Bitmap;
+
+    import src.Assets;
     import src.Util.StringHelper;
 
     public class Theme {

@@ -36,7 +36,7 @@
 		}
 
 		public function load(path: String, params: Array, includeLoginInfo: Boolean = true, showLoadingMessage: Boolean = true) : void {			
-			var request: URLRequest = new URLRequest("http://" + Constants.hostname + path);			
+			var request: URLRequest = new URLRequest("http://" + Constants.session.hostname + path);
 			var variables :URLVariables = new URLVariables();
 			
 			request.data = variables;
@@ -53,8 +53,8 @@
             }
 
 			if (includeLoginInfo) {
-                variables.sessionId = Constants.sessionId;
-                variables.playerId = Constants.playerId;
+                variables.sessionId = Constants.session.sessionId;
+                variables.playerId = Constants.session.playerId;
 			}
 			
 			request.method = URLRequestMethod.POST;

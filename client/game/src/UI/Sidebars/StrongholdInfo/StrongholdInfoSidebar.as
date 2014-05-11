@@ -45,7 +45,7 @@
 
 			clear();		
 			
-			addStatRow(StringHelper.localize("STR_NAME"), new StrongholdLabel(stronghold.id, Constants.tribe.isInTribe(stronghold.tribeId)));			
+			addStatRow(StringHelper.localize("STR_NAME"), new StrongholdLabel(stronghold.id, Constants.session.tribe.isInTribe(stronghold.tribeId)));
 						
 			if (stronghold.tribeId == 0) {
 				addStatRow(StringHelper.localize("STR_TRIBE"), StringHelper.localize("STR_NOT_OCCUPIED"));
@@ -56,7 +56,7 @@
 			addStatRow(StringHelper.localize("STR_LEVEL"), stronghold.level.toString());
             addStatRow(StringHelper.localize("STR_GATEMAX"), stronghold.gateMax.toString(), null, StringHelper.localize("STRONGHOLD_GATE_MAX_HP_TOOLTIP"));
 
-			if (Constants.tribe.isInTribe(stronghold.tribeId)) {
+			if (Constants.session.tribe.isInTribe(stronghold.tribeId)) {
 				pnlGroups.append(new ViewStrongholdButton(stronghold));
 				pnlGroups.append(new SendReinforcementButton(stronghold, new Location(Location.STRONGHOLD, stronghold.id)));
 			} else {

@@ -12,7 +12,7 @@ using NDesk.Options;
 
 namespace Game.Comm
 {
-    class AssignmentCommandLineModule : CommandLineModule
+    class AssignmentCommandLineModule : ICommandLineModule
     {
         private readonly ILocker locker;
 
@@ -27,7 +27,7 @@ namespace Game.Comm
             this.locker = locker;
         }
 
-        public override void RegisterCommands(CommandLineProcessor processor)
+        public void RegisterCommands(CommandLineProcessor processor)
         {
             processor.RegisterCommand("assignmentlist", AssignmentList, PlayerRights.Bureaucrat);
             processor.RegisterCommand("assignmentcreate", AssignmentCreate, PlayerRights.Bureaucrat);

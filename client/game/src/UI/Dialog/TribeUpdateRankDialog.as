@@ -43,7 +43,7 @@ package src.UI.Dialog{
             });
             
             btnEdit.addActionListener(function():void {
-                var rank :* = Constants.tribe.ranks[comboRankId.getSelectedIndex()];
+                var rank :* = Constants.session.tribe.ranks[comboRankId.getSelectedIndex()];
                 txtRankName.setText(rank.name);
                 setPermissions(rank.rights);                
                 
@@ -107,8 +107,8 @@ package src.UI.Dialog{
 		
 		private function update(): void {
 			var rankList: Array = [];
-			for ( var i:int = 0; i < Constants.tribe.ranks.length; ++i) {
-				rankList.push((i + 1) + " - " + Constants.tribe.ranks[i].name);
+			for ( var i:int = 0; i < Constants.session.tribe.ranks.length; ++i) {
+				rankList.push((i + 1) + " - " + Constants.session.tribe.ranks[i].name);
 			}
 			comboRankId.setListData(rankList);
 			

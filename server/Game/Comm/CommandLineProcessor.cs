@@ -20,9 +20,9 @@ namespace Game.Comm
 
         private readonly Dictionary<string, ProcessorCommand> commands = new Dictionary<string, ProcessorCommand>();
 
-        public CommandLineProcessor(params CommandLineModule[] modules)
+        public CommandLineProcessor(params ICommandLineModule[] modules)
         {
-            foreach (CommandLineModule module in modules)
+            foreach (ICommandLineModule module in modules)
             {
                 module.RegisterCommands(this);
             }
@@ -54,11 +54,12 @@ namespace Game.Comm
                 return "Command not found";
             }
 
-            if (Config.database_load_players &&
+            var requireTwoFactorAuth = Config.server_production || !Config.server_admin_always;
+
+            if (requireTwoFactorAuth && 
                 cmdWorker.RightsRequired > PlayerRights.Basic &&
                 cmd != "auth" &&
-                (session.Player.HasTwoFactorAuthenticated == null ||
-                 SystemClock.Now.Subtract(session.Player.HasTwoFactorAuthenticated.Value).TotalHours > 1))
+                (session.Player.HasTwoFactorAuthenticated == null || SystemClock.Now.Subtract(session.Player.HasTwoFactorAuthenticated.Value).TotalHours > 1))
             {
                 return "You must first authenticate as a moderator by using the '/auth' command. If you have not yet set up your account for moderator authentication, visit http://tribalhero.com/mod/players/generate_auth_code";
             }

@@ -23,7 +23,7 @@ public class MiniMapTroopDrawer implements IMiniMapObjectDrawer {
     public function applyObject(obj:MiniMapRegionObject):void {
         var icon: MINIMAP_TROOP_ICON;
 
-        var friendly:Boolean = Constants.tribe.isInTribe(obj.extraProps.tribeId);
+        var friendly:Boolean = Constants.session.tribe.isInTribe(obj.extraProps.tribeId);
         if(friendly && !friendToggleButton.isSelected()) {
             icon = ObjectFactory.getIcon("MINIMAP_TROOP_ICON") as MINIMAP_TROOP_ICON;
             obj.setIcon(icon);

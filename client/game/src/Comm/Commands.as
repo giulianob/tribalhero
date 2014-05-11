@@ -25,6 +25,7 @@ package src.Comm {
 		public static const PROFILE_BY_TYPE: int = 22;
 		public static const SAVE_TUTORIAL_STEP: int = 23;
 		public static const SAVE_MUTE_SOUND: int = 24;
+		public static const PLAYER_COINS_UPDATE: int = 25;
 
 		public static const ACTION_CANCEL: int = 51;
 		public static const ACTION_COMPLETE: int = 52;
@@ -160,5 +161,7 @@ package src.Comm {
 		public static const STRONGHOLD_GATE_REPAIR: int = 1104;
 		public static const STRONGHOLD_LOCATE_BY_NAME: int = 1105;
 		public static const STRONGHOLD_LIST: int = 1106;
+
+        public static const STORE_GET_ITEMS: int = 1201;
 	}
 }

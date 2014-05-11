@@ -1,8 +1,8 @@
 package src.UI.ViewModels {
-    import src.Objects.Theme;
+    import src.Objects.Store.StoreItem;
 
     public class StoreConfirmBuyVM {
-        public function StoreConfirmBuyVM(theme: Theme) {
+        public function StoreConfirmBuyVM(item: StoreItem) {
         }
     }
 }

@@ -449,27 +449,28 @@ namespace Game.Database
         {
             #region Players
 
+            var playerFactory = Kernel.Get<IPlayerFactory>();
+
             logger.Info("Loading players...");
             using (var reader = DbManager.Select(Player.DB_TABLE))
             {
                 while (reader.Read())
                 {
-                    var player = new Player((uint)reader["id"],
-                                            DateTime.SpecifyKind((DateTime)reader["created"], DateTimeKind.Utc),
-                                            DateTime.SpecifyKind((DateTime)reader["last_login"], DateTimeKind.Utc),
-                                            (string)reader["name"],
-                                            (string)reader["description"],
-                                            PlayerRights.Basic)
-                    {
-                            DbPersisted = true,
-                            SoundMuted = (bool)reader["sound_muted"],
-                            TutorialStep = (uint)reader["tutorial_step"],
-                            TribeRequest = (uint)reader["invitation_tribe_id"],
-                            Muted = DateTime.SpecifyKind((DateTime)reader["muted"], DateTimeKind.Utc),
-                            LastDeletedTribe = DateTime.SpecifyKind((DateTime)reader["last_deleted_tribe"], DateTimeKind.Utc),
-                            Banned = (bool)reader["banned"],
-                            NeverAttacked = (bool)reader["never_attacked"]
-                    };
+                    var player = playerFactory.CreatePlayer((uint)reader["id"],
+                                                            DateTime.SpecifyKind((DateTime)reader["created"], DateTimeKind.Utc),
+                                                            DateTime.SpecifyKind((DateTime)reader["last_login"], DateTimeKind.Utc),
+                                                            (string)reader["name"],
+                                                            (string)reader["description"],
+                                                            PlayerRights.Basic,
+                                                            string.Empty);
+                    player.DbPersisted = true;
+                    player.SoundMuted = (bool)reader["sound_muted"];
+                    player.TutorialStep = (uint)reader["tutorial_step"];
+                    player.TribeRequest = (uint)reader["invitation_tribe_id"];
+                    player.Muted = DateTime.SpecifyKind((DateTime)reader["muted"], DateTimeKind.Utc);
+                    player.LastDeletedTribe = DateTime.SpecifyKind((DateTime)reader["last_deleted_tribe"], DateTimeKind.Utc);
+                    player.Banned = (bool)reader["banned"];
+                    player.NeverAttacked = (bool)reader["never_attacked"];
 
                     if (!World.Players.TryAdd(player.PlayerId, player))
                     {

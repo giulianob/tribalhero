@@ -245,7 +245,6 @@
 			pass.push(id);
 
 			session.write(packet, onReceivePlayerUsername, pass);
-		
 		}
 
         public function getPlayerUsername(id: int, callback: Function, custom: * = null) : void
@@ -395,7 +394,7 @@
 			obj.type = packet.readUShort();
 			obj.level = packet.readUByte();
 
-			if (obj.playerId == Constants.playerId) {
+			if (obj.playerId == Constants.session.playerId) {
 				obj.labor = packet.readUShort();
 				obj.hp = packet.readUShort();
 

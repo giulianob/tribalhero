@@ -302,6 +302,11 @@ namespace Game.Comm
             AddByte((byte)(value ? 1 : 0));
         }
 
+        public void AddDate(DateTime created)
+        {
+            AddUInt32(UnixDateTime.DateTimeToUnix(created.ToUniversalTime()));
+        }
+
         #endregion
 
         #region Methods

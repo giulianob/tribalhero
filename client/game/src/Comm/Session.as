@@ -1,4 +1,6 @@
 ﻿package src.Comm {
+    import com.codecatalyst.promise.Promise;
+
     import flash.events.Event;
 
     public interface Session {
@@ -8,9 +10,7 @@
 		
 		function logout(): void;
 		
-		function write(packet:Packet, callback: Function = null, custom: * = null): Boolean;
-		
-		function setReceive(callback: Function): void;
+		function write(packet:Packet, callback: Function = null, custom: * = null): Promise;
 		
 		function setConnect(callback: Function): void;
 		

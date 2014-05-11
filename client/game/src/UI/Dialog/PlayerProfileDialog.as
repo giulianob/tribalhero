@@ -179,7 +179,7 @@
 			var pnlHeader: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
 			pnlHeader.setConstraints("North");
 			
-			var lblPlayerName: JLabel = new JLabel(profileData.username + (Constants.admin ? '['+profileData.playerId+']' : ''), null, AsWingConstants.LEFT);	
+			var lblPlayerName: JLabel = new JLabel(profileData.username + (Constants.session.admin ? '['+profileData.playerId+']' : ''), null, AsWingConstants.LEFT);
 			lblPlayerName.setConstraints("Center");
 			GameLookAndFeel.changeClass(lblPlayerName, "darkHeader");			
 			
@@ -201,17 +201,17 @@
 			btnInviteTribe = new JLabelButton("Invite to Tribe");
 			
 			// Show correct buttons depending on who is viewing this profile
-			if (Constants.playerId == profileData.playerId)
+			if (Constants.session.playerId == profileData.playerId)
 				pnlActions.append(btnSetDescription);
 			else {
 				pnlActions.append(btnSendMessage);
-				if (profileData.tribeId == 0 && Constants.tribe.hasRight(Tribe.INVITE))
+				if (profileData.tribeId == 0 && Constants.session.tribe.hasRight(Tribe.INVITE))
 					pnlActions.append(btnInviteTribe);
 			}
 			
 			pnlHeader.appendAll(lblPlayerName);
-			if (Constants.playerId == profileData.playerId) {
-				var invitationCode: JLabel = new JLabel("Invitation Code: " + Constants.playerHash);
+			if (Constants.session.playerId == profileData.playerId) {
+				var invitationCode: JLabel = new JLabel("Invitation Code: " + Constants.session.playerHash);
 				new SimpleTooltip(invitationCode, StringHelper.localize("PLAYER_PROFILE_INVITATION_TOOLTIP"));
 				invitationCode.setHorizontalAlignment(AsWingConstants.LEFT);
 				pnlHeader.append(invitationCode);

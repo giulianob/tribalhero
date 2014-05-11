@@ -9,8 +9,8 @@ package src.UI.Dialog {
 
     import src.Assets;
     import src.Global;
-    import src.Objects.Store.IStoreItem;
-    import src.UI.Components.Store.StoreItemGridCell;
+    import src.Objects.Store.IStoreAsset;
+    import src.UI.Components.Store.StoreItemAssetGridCell;
     import src.UI.GameJPanel;
     import src.UI.LookAndFeel.GameLookAndFeel;
     import src.UI.Tooltips.StoreItemTooltip;
@@ -55,7 +55,7 @@ package src.UI.Dialog {
             var pnlPreviewImage: JPanel = new JPanel(new CenterLayout());
             pnlPreviewImage.appendAll(new AssetPane(Assets.getInstance(viewModel.theme.id + "_THEME_BANNER")));
 
-            var gridStoreItems: GridList = new GridList(new VectorListModel(viewModel.getThemeItems()), new GeneralGridListCellFactory(StoreItemGridCell), 5, 0);
+            var gridStoreItems: GridList = new GridList(new VectorListModel(viewModel.getThemeAssets()), new GeneralGridListCellFactory(StoreItemAssetGridCell), 5, 0);
             gridStoreItems.setTracksHeight(true);
             gridStoreItems.setTileWidth(85);
             gridStoreItems.setTileHeight(80);
@@ -82,7 +82,7 @@ package src.UI.Dialog {
 
         public function onItemRollOver(event: GridListItemEvent):void
         {
-            var storeItem: IStoreItem = IStoreItem(event.getValue());
+            var storeItem: IStoreAsset = IStoreAsset(event.getValue());
 
             onItemRollOut(event);
             this.itemTooltip = new StoreItemTooltip(storeItem);

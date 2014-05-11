@@ -119,7 +119,7 @@ namespace Game.Comm.Channel
 
         private string GetChannelName(ICity city)
         {
-            return "/PLAYER/" + city.Owner.PlayerId;
+            return city.Owner.PlayerChannel;
         }
 
         private void CityOnPropertyChanged(ICity city, PropertyChangedEventArgs propertyChangedEventArgs)

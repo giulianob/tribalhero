@@ -38,6 +38,8 @@ namespace Game.Comm
 
         SaveMuteSound = 24,
 
+        PlayerCoinsUpdate = 25,
+
         #endregion
 
         #region Action
@@ -359,6 +361,12 @@ namespace Game.Comm
         MoveObject = 1002,
 
         FooRegionMoveRight = 1003,
+
+        #endregion
+
+        #region Store
+
+        StoreGetItems = 1201,
 
         #endregion
     }

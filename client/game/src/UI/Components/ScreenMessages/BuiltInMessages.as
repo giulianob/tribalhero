@@ -28,7 +28,7 @@ package src.UI.Components.ScreenMessages
 		public function start(): void {
 			timer.start();
 			periodicMessages();
-			showTribeAssignmentIncoming(Constants.tribeAssignment, Constants.tribeIncoming, true);
+			showTribeAssignmentIncoming(Constants.session.tribeAssignment, Constants.session.tribeIncoming, true);
 		}
 		
 		public function stop(): void {
@@ -59,8 +59,8 @@ package src.UI.Components.ScreenMessages
 		}		
 		
 		public static function showNewbieProtection() : void {			
-			if (Constants.signupTime.time / 1000 + Constants.newbieProtectionSeconds > Global.map.getServerTime()) {
-				var timediff :Number = Constants.newbieProtectionSeconds + Constants.signupTime.time / 1000 - Global.map.getServerTime();
+			if (Constants.session.signupTime.time / 1000 + Constants.session.newbieProtectionSeconds > Global.map.getServerTime()) {
+				var timediff :Number = Constants.session.newbieProtectionSeconds + Constants.session.signupTime.time / 1000 - Global.map.getServerTime();
 				Global.gameContainer.screenMessage.removeMessage("/NEWBIE_PROTECTION/");
 				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/NEWBIE_PROTECTION/", StringHelper.localize("MSG_NEWBIE_PROTECTION", DateUtil.niceTime(timediff)), new AssetIcon(new ICON_STAR)));
 			}

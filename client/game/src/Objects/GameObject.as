@@ -49,7 +49,7 @@ package src.Objects {
 			if (selected)
 				return;
 				
-			if (!bool && Constants.playerId == playerId && ObjectFactory.isType("HighlightedObjects", type)) {
+			if (!bool && Constants.session.playerId == playerId && ObjectFactory.isType("HighlightedObjects", type)) {
 				filters = [new GlowFilter(0x00A2FF, 0.5, 16, 16, 2)];			
 			}
 		}

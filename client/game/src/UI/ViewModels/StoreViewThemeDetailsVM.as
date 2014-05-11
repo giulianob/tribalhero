@@ -3,28 +3,29 @@ package src.UI.ViewModels {
     import src.Constants;
     import src.Objects.Factories.StructureFactory;
     import src.Objects.Prototypes.StructurePrototype;
-    import src.Objects.Store.StructureStoreItem;
-    import src.Objects.Theme;
+    import src.Objects.Store.StoreItem;
+    import src.Objects.Store.StoreItemTheme;
+    import src.Objects.Store.StructureStoreAsset;
     import src.UI.Dialog.StoreBuyCoinsDialog;
     import src.UI.Dialog.StoreConfirmBuyDialog;
 
     public class StoreViewThemeDetailsVM {
-        private var _theme: Theme;
+        private var item: StoreItemTheme;
 
-        public function StoreViewThemeDetailsVM(theme: Theme) {
-            _theme = theme;
+        public function StoreViewThemeDetailsVM(item: StoreItemTheme) {
+            this.item = item;
         }
 
-        public function get theme(): Theme {
-            return _theme;
+        public function get theme(): StoreItem {
+            return item;
         }
 
-        public function getThemeItems(): Array {
+        public function getThemeAssets(): Array {
             var themeItems: Array = [];
 
             for each (var structurePrototype: StructurePrototype in StructureFactory.getAllStructureTypes()) {
                 if (Assets.doesSpriteExist(structurePrototype.getSpriteName(theme.id))) {
-                    themeItems.push(new StructureStoreItem(theme, structurePrototype));
+                    themeItems.push(new StructureStoreAsset(item, structurePrototype));
                 }
             }
 
@@ -33,10 +34,19 @@ package src.UI.ViewModels {
         }
 
         public function buy(): void {
-            if (Constants.coins < theme.cost) {
-                var buyCoinsDialog: StoreBuyCoinsDialog = new StoreBuyCoinsDialog(new StoreBuyCoinsVM(theme.cost));
+            if (Constants.session.coins < theme.cost) {
+                var vm: StoreBuyCoinsVM = new StoreBuyCoinsVM(theme.cost);
+                var buyCoinsDialog: StoreBuyCoinsDialog = new StoreBuyCoinsDialog(vm);
+
+                vm.purchasedCoinsPromise.then(function(): void {
+                    if (buyCoinsDialog.getFrame()) {
+                        buyCoinsDialog.getFrame().dispose();
+                    }
+
+                    buy();
+                });
+
                 buyCoinsDialog.show();
-                buyCoinsDialog.purchaseThemePromise.then(buy);
             }
             else {
                 showConfirmationDialog();
@@ -44,7 +54,7 @@ package src.UI.ViewModels {
         }
 
         private function showConfirmationDialog(): void {
-            var confirmDialog: StoreConfirmBuyDialog = new StoreConfirmBuyDialog(new StoreConfirmBuyVM(theme));
+            var confirmDialog: StoreConfirmBuyDialog = new StoreConfirmBuyDialog(new StoreConfirmBuyVM(item));
             confirmDialog.show();
         }
     }

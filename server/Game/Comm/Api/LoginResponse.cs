@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Game.Data;
+using Game.Data.Store;
 using Newtonsoft.Json;
 
 namespace Game.Comm.Api

@@ -11,8 +11,9 @@ package src.UI.Dialog {
 
     import src.Constants;
     import src.Global;
+    import src.Objects.Store.StoreItem;
     import src.Objects.Theme;
-    import src.UI.Components.Store.StoreThemeGridCell;
+    import src.UI.Components.Store.StoreItemGridCell;
     import src.UI.GameJImagePanelBackground;
     import src.UI.GameJPanel;
     import src.UI.ViewModels.StoreDialogVM;
@@ -21,7 +22,7 @@ package src.UI.Dialog {
 
     public class StoreDialog extends GameJPanel {
 
-        private var availableThemesGridList: GridList;
+        private var availableStoreItemsGridList: GridList;
         private var viewModel: StoreDialogVM;
 
         public function StoreDialog(viewModel: StoreDialogVM) {
@@ -30,30 +31,28 @@ package src.UI.Dialog {
             title = StringHelper.localize("STORE_DIALOG_TITLE");
 
             createUI();
-
-            VectorListModel(availableThemesGridList.getModel()).appendAll(viewModel.themes);
         }
 
         private function createUI(): void {
             setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
             setPreferredSize(new IntDimension(600, Math.max(600, Constants.screenH - GameJImagePanelBackground.getFrameHeight())));
 
-            availableThemesGridList = new GridList(new VectorListModel(), new GeneralGridListCellFactory(StoreThemeGridCell), 3, 0);
-            availableThemesGridList.setTileWidth(175);
-            availableThemesGridList.setTileHeight(125);
-            availableThemesGridList.setTracksWidth(true);
-            availableThemesGridList.setPreferredSize(new IntDimension(400, 400));
+            availableStoreItemsGridList = new GridList(new VectorListModel(), new GeneralGridListCellFactory(StoreItemGridCell), 3, 0);
+            availableStoreItemsGridList.setTileWidth(175);
+            availableStoreItemsGridList.setTileHeight(125);
+            availableStoreItemsGridList.setTracksWidth(true);
+            availableStoreItemsGridList.setPreferredSize(new IntDimension(400, 400));
 
-            availableThemesGridList.addEventListener(GridListItemEvent.ITEM_CLICK, viewThemeDetails);
+            availableStoreItemsGridList.addEventListener(GridListItemEvent.ITEM_CLICK, viewItemDetails);
 
             var scrollBody: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
-            scrollBody.append(availableThemesGridList);
+            scrollBody.append(availableStoreItemsGridList);
 
             appendAll(Util.createTopAlignedScrollPane(scrollBody));
         }
 
-        public function viewThemeDetails(e: GridListItemEvent): void {
-            viewModel.viewThemeDetails(Theme(e.getValue()));
+        public function viewItemDetails(e: GridListItemEvent): void {
+            viewModel.viewItemDetails(StoreItem(e.getValue()));
         }
 
         public function show(owner:* = null, modal:Boolean = true, onClose:Function = null):JFrame
@@ -64,6 +63,10 @@ package src.UI.Dialog {
             frame.pack();
 
             Global.gameContainer.showFrame(frame);
+
+            viewModel.loadItems().then(function(items: Array): void {
+                VectorListModel(availableStoreItemsGridList.getModel()).appendAll(items);
+            });
 
             return frame;
         }

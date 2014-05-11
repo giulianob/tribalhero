@@ -74,6 +74,8 @@ namespace Game
 
         private readonly StoreSync storeSync;
 
+        private readonly IQueueListener queueListener;
+
         private readonly IPolicyServer policyServer;
 
         private readonly INetworkServer server;
@@ -97,7 +99,8 @@ namespace Game
                       BarbarianTribeChecker barbarianTribeChecker,
                       ICityChannel cityChannel,
                       IStrongholdManagerLogger strongholdManagerLogger,
-                      StoreSync storeSync)
+                      StoreSync storeSync,
+                      IQueueListener queueListener)
         {
             this.server = server;
             this.policyServer = policyServer;
@@ -117,6 +120,7 @@ namespace Game
             this.cityChannel = cityChannel;
             this.strongholdManagerLogger = strongholdManagerLogger;
             this.storeSync = storeSync;
+            this.queueListener = queueListener;
         }
 
         public EngineState State { get; private set; }
@@ -263,6 +267,9 @@ _________ _______ _________ ______   _______  _
 
             // Initialize game market
             Market.Init();
+            
+            // Start listening  for queue events
+            queueListener.Start(Config.api_domain);
 
             // Start store sync
             storeSync.Start();
@@ -272,9 +279,6 @@ _________ _______ _________ ______   _______  _
 
             // Start policy server
             policyServer.Start(Config.server_listen_address, 843);
-
-            // Start listening  for queue events
-            // queueListener.Start(Config.api_domain);
 
             // Start thrift server
             ThreadPool.QueueUserWorkItem(o => thriftServer.Serve());

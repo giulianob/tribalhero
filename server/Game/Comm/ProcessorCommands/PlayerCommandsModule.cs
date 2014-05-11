@@ -24,12 +24,19 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly IActionFactory actionFactory;
 
-        public PlayerCommandsModule(ILocker locker, IWorld world, IDbManager dbManager, IActionFactory actionFactory)
+        private readonly IStructureCsvFactory structureCsvFactory;
+
+        public PlayerCommandsModule(ILocker locker,
+                                    IWorld world,
+                                    IDbManager dbManager,
+                                    IActionFactory actionFactory,
+                                    IStructureCsvFactory structureCsvFactory)
         {
             this.locker = locker;
             this.world = world;
             this.dbManager = dbManager;
             this.actionFactory = actionFactory;
+            this.structureCsvFactory = structureCsvFactory;
         }
 
         public override void RegisterCommands(IProcessor processor)
@@ -291,7 +298,7 @@ namespace Game.Comm.ProcessorCommands
                 // If actually send then we perform the action, otherwise, we send the player information about the trade.
                 if (actuallySend)
                 {
-                    Error ret = city.Worker.DoActive(Ioc.Kernel.Get<IStructureCsvFactory>().GetActionWorkerType(structure),
+                    Error ret = city.Worker.DoActive(structureCsvFactory.GetActionWorkerType(structure),
                                                      structure,
                                                      action,
                                                      structure.Technologies);

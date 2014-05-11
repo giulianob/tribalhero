@@ -57,7 +57,7 @@ package src.UI.Sidebars.ObjectInfo {
 
                 themeDropdown.append(createThemeMenuItem("DEFAULT"));
 
-                for each (var theme: String in Constants.themesPurchased) {
+                for each (var theme: String in Constants.session.themesPurchased) {
                     var newSprite: String = StructureFactory.getSpriteName(theme, obj.type, obj.level);
                     if (!Assets.doesSpriteExist(newSprite)) {
                         continue;
@@ -82,7 +82,7 @@ package src.UI.Sidebars.ObjectInfo {
                 themeDropdown.append(storeLink);
 
                 storeLink.addActionListener(function (e: Event): void {
-                    new StoreDialog(new StoreDialogVM(Constants.themesAvailable)).show();
+                    new StoreDialog(new StoreDialogVM()).show();
                 });
 
 				city.addEventListener(City.RESOURCES_UPDATE, onResourcesUpdate);
@@ -205,11 +205,11 @@ package src.UI.Sidebars.ObjectInfo {
 			var buttonsCache: Array = buttons.concat();
 			for each(var group: Object in Action.groups) {
 				var groupedButtons: Array = [];
-				for each (var type: * in group.actions) {
+				for each (var actionType: * in group.actions) {
 					var tmp: Array = [];
 					for (i = buttonsCache.length - 1; i >= 0; i--) {
 						var button: ActionButton = buttonsCache[i];
-						if (!(button is type)) continue;
+						if (!(button is actionType)) continue;
 						tmp.push(button);
 						buttonsCache.splice(i, 1);
 					}

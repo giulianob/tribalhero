@@ -214,7 +214,7 @@
             lblGate.setVerticalAlignment(AsWingConstants.TOP);
             pnlGate.append(lblGate);
 
-            if (stronghold.battleState == Stronghold.BATTLE_STATE_NONE && stronghold.gate < stronghold.gateMax && Constants.tribe.hasRight(Tribe.REPAIR)) {
+            if (stronghold.battleState == Stronghold.BATTLE_STATE_NONE && stronghold.gate < stronghold.gateMax && Constants.session.tribe.hasRight(Tribe.REPAIR)) {
                 var btnGateRepair: JLabelButton = new JLabelButton(Stronghold.gateToString(stronghold.gateMax, stronghold.gate), null, AsWingConstants.LEFT);
                 btnGateRepair.useHandCursor = true;
                 btnGateRepair.addEventListener(MouseEvent.CLICK, function(e: Event): void {
@@ -421,7 +421,7 @@
 
             pnlAssignmentHolder.appendAll(scrollAssignment, pnlFooter);
 
-            if (Constants.tribe.hasRight(Tribe.ASSIGNMENT)) {
+            if (Constants.session.tribe.hasRight(Tribe.ASSIGNMENT)) {
                 pnlFooter.append(btnCreate);
             }
 
@@ -514,7 +514,7 @@
                     modelMembers,
                     ["Player", "Rank", "Last Seen", ""],
                     [".", "rank", "date", "."],
-                    [null, new TribeRankTranslator(Constants.tribe.ranks), null]
+                    [null, new TribeRankTranslator(Constants.session.tribe.ranks), null]
             ));
             tableMembers.addEventListener(TableCellEditEvent.EDITING_STARTED, function(e: TableCellEditEvent) : void {
                 tableMembers.getCellEditor().cancelCellEditing();
@@ -626,14 +626,14 @@
             var pnlActions: JPanel = new JPanel(new FlowWrapLayout(200, AsWingConstants.LEFT, 10, 0, false));
             pnlActions.setConstraints("North");
             // Show correct buttons depending on rank
-            if (Constants.tribe.hasRight(Tribe.ALL))  /// Tribe Chief
+            if (Constants.session.tribe.hasRight(Tribe.ALL))  /// Tribe Chief
             {
                 pnlActions.appendAll(btnSetDescription, btnInvite, btnUpgrade, btnDonate, btnDismantle, btnTransfer, btnUpdateRank);
             }
             else
             {
-                if (Constants.tribe.hasRight(Tribe.ANNOUNCEMENT)) pnlActions.appendAll(btnSetDescription);
-                if (Constants.tribe.hasRight(Tribe.INVITE)) pnlActions.appendAll(btnInvite);
+                if (Constants.session.tribe.hasRight(Tribe.ANNOUNCEMENT)) pnlActions.appendAll(btnSetDescription);
+                if (Constants.session.tribe.hasRight(Tribe.INVITE)) pnlActions.appendAll(btnInvite);
                 pnlActions.appendAll(btnUpgrade, btnDonate, btnLeave);
             }
 
@@ -643,7 +643,7 @@
             btnUpgrade.addActionListener(function(e: Event): void {
                 Global.mapComm.Tribe.upgrade();
             });
-            btnUpgrade.setEnabled(Constants.tribe.hasRight(Tribe.UPGRADE));
+            btnUpgrade.setEnabled(Constants.session.tribe.hasRight(Tribe.UPGRADE));
             btnUpgrade.mouseEnabled = true;
 
             // description

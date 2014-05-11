@@ -3,13 +3,13 @@ package src.UI.Tooltips {
     import org.aswing.AssetIcon;
     import org.aswing.JLabel;
 
-    import src.Objects.Store.IStoreItem;
+    import src.Objects.Store.IStoreAsset;
     import src.UI.LookAndFeel.GameLookAndFeel;
 
     public class StoreItemTooltip extends Tooltip {
-        private var item: IStoreItem;
+        private var item: IStoreAsset;
 
-        public function StoreItemTooltip(item: IStoreItem) {
+        public function StoreItemTooltip(item: IStoreAsset) {
             this.item = item;
 
             createUI();

@@ -20,6 +20,7 @@
 		public var Tribe: TribeComm;
 		public var Stronghold: StrongholdComm;
 		public var MessageBoard: MessageBoardComm;
+		public var Store: StoreComm;
 
 		public var session: Session;
 		
@@ -41,6 +42,7 @@
 			Tribe = new TribeComm(this);
 			Stronghold = new StrongholdComm(this);
 			MessageBoard = new MessageBoardComm(this);
+            Store = new StoreComm(this);
 		}
 
 		public function dispose() : void {

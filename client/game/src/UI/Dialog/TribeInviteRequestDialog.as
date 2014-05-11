@@ -69,7 +69,7 @@ package src.UI.Dialog{
 			lblNameTitle.setText("Tribe Name");
 			lblNameTitle.setHorizontalAlignment(AsWingConstants.RIGHT);
 
-			lblName = new TribeLabel(Constants.tribeInviteId);
+			lblName = new TribeLabel(Constants.session.tribeInviteId);
 			GameLookAndFeel.changeClass(lblName, "Form.label");
 			lblName.setHorizontalAlignment(AsWingConstants.LEFT);
 

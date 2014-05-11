@@ -11,6 +11,7 @@ using Common;
 using Game.Comm.Api;
 using Game.Data;
 using Game.Data.BarbarianTribe;
+using Game.Data.Store;
 using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Procedures;
@@ -56,6 +57,8 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly IThemeManager themeManager;
 
+        private readonly IPlayerFactory playerFactory;
+
         public LoginCommandsModule(IActionFactory actionFactory,
                                    ITribeManager tribeManager,
                                    IDbManager dbManager,
@@ -67,7 +70,8 @@ namespace Game.Comm.ProcessorCommands
                                    IBarbarianTribeManager barbarianTribeManager,
                                    CallbackProcedure callbackProcedure,
                                    IChannel channel,
-                                   IThemeManager themeManager)
+                                   IThemeManager themeManager,
+                                   IPlayerFactory playerFactory)
         {
             this.actionFactory = actionFactory;
             this.tribeManager = tribeManager;
@@ -78,6 +82,7 @@ namespace Game.Comm.ProcessorCommands
             this.callbackProcedure = callbackProcedure;
             this.channel = channel;
             this.themeManager = themeManager;
+            this.playerFactory = playerFactory;
             this.cityFactory = cityFactory;
             this.locationStrategyFactory = locationStrategyFactory;
             this.barbarianTribeManager = barbarianTribeManager;
@@ -220,7 +225,7 @@ namespace Game.Comm.ProcessorCommands
                 {
                     logger.Info(string.Format("Creating new player {0}({1}) IP: {2}", playerName, loginResponseData.Player.Id, session.RemoteIP));
 
-                    player = new Player(loginResponseData.Player.Id, SystemClock.Now, SystemClock.Now, playerName, string.Empty, loginResponseData.Player.Rights, sessionId);
+                    player = playerFactory.CreatePlayer(loginResponseData.Player.Id, SystemClock.Now, SystemClock.Now, playerName, string.Empty, loginResponseData.Player.Rights, sessionId);
 
                     if (!world.Players.TryAdd(player.PlayerId, player))
                     {
@@ -424,7 +429,7 @@ namespace Game.Comm.ProcessorCommands
         private void SubscribeDefaultChannels(Session session, IPlayer player)
         {
             // Subscribe him to the player channel
-            channel.Subscribe(session, "/PLAYER/" + player.PlayerId);
+            channel.Subscribe(session, player.PlayerChannel);
 
             // Subscribe him to the tribe channel if available
             if (player.Tribesman != null)

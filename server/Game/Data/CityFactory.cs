@@ -62,7 +62,7 @@ namespace Game.Data
         public ICity CreateCity(uint id, IPlayer owner, string name, Position position, ILazyResource resource, byte radius, decimal ap, string defaultTheme)
         {
             var worker = actionWorkerFactory.CreateActionWorker(() => owner, new SimpleLocation(LocationType.City, id));
-            var notifications = notificationManagerFactory.CreateCityNotificationManager(worker, id, "/PLAYER/" + owner.PlayerId);
+            var notifications = notificationManagerFactory.CreateCityNotificationManager(worker, id, owner.PlayerChannel);
             var references = referenceManagerFactory.CreateReferenceManager(id, worker, owner);
             var technologies = technologyManagerFactory.CreateTechnologyManager(EffectLocation.City, id, id);
             var troops = troopManagerFactory.CreateTroopManager();

@@ -44,16 +44,16 @@ package src.UI.Dialog {
 
             var formBalance: Form = new Form();
             formBalance.addRow(new JLabel(StringHelper.localize("STORE_BUY_COINS_DIALOG_BALANCE"), null, AsWingConstants.LEFT),
-                               new CoinLabel(Constants.coins));
+                               new CoinLabel(Constants.session.coins));
 
             if (viewModel.itemCost > 0) {
                 formBalance.addRow(new JLabel(StringHelper.localize("STORE_BUY_COINS_DIALOG_PURCHASE_COST"), null, AsWingConstants.LEFT),
                         new CoinLabel(viewModel.itemCost));
             }
 
-            if (Constants.coins < viewModel.itemCost) {
+            if (Constants.session.coins < viewModel.itemCost) {
                 formBalance.addRow(new JLabel(StringHelper.localize("STORE_BUY_COINS_DIALOG_NEEDED"), null, AsWingConstants.LEFT),
-                        new CoinLabel(viewModel.itemCost - Constants.coins));
+                        new CoinLabel(viewModel.itemCost - Constants.session.coins));
             }
 
             append(formBalance);
@@ -97,7 +97,9 @@ package src.UI.Dialog {
 
         public function show(owner:* = null, modal:Boolean = true, onClose:Function = null):JFrame
         {
-            super.showSelf(owner, modal, onClose, null);
+            super.showSelf(owner, modal, onClose, function(): void {
+                viewModel.dispose();
+            });
 
             frame.setResizable(false);
             frame.pack();
@@ -105,10 +107,6 @@ package src.UI.Dialog {
             Global.gameContainer.showFrame(frame);
 
             return frame;
-        }
-
-        public function get purchaseThemePromise(): Promise {
-            return purchaseThemeDeferred.promise;
         }
     }
 }

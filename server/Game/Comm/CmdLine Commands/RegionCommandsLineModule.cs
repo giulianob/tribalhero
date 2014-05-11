@@ -11,7 +11,7 @@ using NDesk.Options;
 
 namespace Game.Comm
 {
-    class RegionCommandsLineModule : CommandLineModule
+    class RegionCommandsLineModule : ICommandLineModule
     {
 
         private readonly IWorld world;
@@ -21,7 +21,7 @@ namespace Game.Comm
             this.world = world;
         }
 
-        public override void RegisterCommands(CommandLineProcessor processor)
+        public void RegisterCommands(CommandLineProcessor processor)
         {
             processor.RegisterCommand("dumpregion", DumpRegion, PlayerRights.Bureaucrat);
             processor.RegisterCommand("dumpregioncache", DumpRegionCache, PlayerRights.Bureaucrat);

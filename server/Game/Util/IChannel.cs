@@ -7,6 +7,7 @@ namespace Game.Util
     {
         int SubscriberCount(string channelId);
 
+        [Obsolete("Use the one with the func instead")]
         void Post(string channelId, Packet message);
 
         void Post(string channelId, Func<Packet> message);

@@ -16,28 +16,7 @@ package src
         // Hardcoded for now
         public static var motd_helpdesk:String = 'New player? Read the <a href="http://tribalhero.wikia.com/wiki/Frequently_Asked_Questions" target="_blank">wiki FAQ</a> for answers to common questions.';
 		
-		/* SESSION VARIABLES */
-		public static var username: String = "1234";
-		public static var hostname: String = "local.tribalhero.com";
-		public static var serverPort: int = 443;
-		public static var sessionId: String;
-		public static var playerName: String;
-		public static var timeDelta: int;
-		public static var admin: Boolean;
-		public static var loginKey: String;
-		public static var playerId: int;
-		public static var playerHash: String;
-		public static var tutorialStep: int;
-		public static var tribeInviteId: int;
-		public static var tribe: Tribe = new Tribe();
-		public static var signupTime: Date;
-		public static var newbieProtectionSeconds: int;
-		public static var tribeAssignment: int;
-		public static var tribeIncoming: int;
-        public static var soundMuted: Boolean;
-        public static var themesPurchased: Array = [];
-        public static var themesAvailable: Array = [];
-        public static var coins: int = 0;
+		public static var session: SessionVariables = new SessionVariables();
 
         /* APP CONSTANTS */
 		public static var mainWebsite: String = "http://tribalhero.com/";

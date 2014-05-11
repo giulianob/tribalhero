@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Game.Comm;
+using Game.Data.Store;
 using Game.Data.Tribe;
 using Game.Util.Locking;
 using Persistance;
@@ -76,6 +77,10 @@ namespace Game.Data
 
         List<ThemePurchase> ThemePurchases { get; }
 
+        string PlayerChannel { get; }
+
         bool HasPurchasedTheme(string theme);
+
+        void UpdateCoins(int coins);
     }
 }

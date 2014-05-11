@@ -144,7 +144,7 @@ package src.UI.Dialog{
 			lblWelcome = new MultilineLabel("Welcome! Since this is your first time on this server, you have to choose a name for your first city");
 
             chkPlayMusic = new JCheckBox("Play sounds/music");
-            chkPlayMusic.setSelected(!Constants.soundMuted);
+            chkPlayMusic.setSelected(!Constants.session.soundMuted);
 
 			append(lblWelcome);
 			append(form);

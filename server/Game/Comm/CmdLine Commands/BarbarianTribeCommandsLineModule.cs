@@ -12,7 +12,7 @@ using NDesk.Options;
 
 namespace Game.Comm
 {
-    class BarbarianTribeCommandsLineModule : CommandLineModule
+    class BarbarianTribeCommandsLineModule : ICommandLineModule
     {
         private readonly IBarbarianTribeManager barbarianTribeManager;
 
@@ -29,7 +29,7 @@ namespace Game.Comm
             this.world = world;
         }
 
-        public override void RegisterCommands(CommandLineProcessor processor)
+        public void RegisterCommands(CommandLineProcessor processor)
         {
             processor.RegisterCommand("BarbarianTribeCreate", Create, PlayerRights.Admin);
         }

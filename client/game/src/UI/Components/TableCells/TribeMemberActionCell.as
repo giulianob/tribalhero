@@ -33,14 +33,14 @@
 			wrapper.removeAll();
 			
 			// Only show set rank if player is chief
-			if (Constants.tribe.hasRight(Tribe.SET_RANK)) {
+			if (Constants.session.tribe.hasRight(Tribe.SET_RANK)) {
 				btnSetRank = new SetRankIcon(value.playerId, value.rank);
 				wrapper.append(new AssetPane(btnSetRank.getAsset()));
 			}					
 			
 			// Show icons that aren't for yourself
-			if (Constants.playerId != value.playerId) {
-				if (Constants.tribe.hasRight(Tribe.KICK)) {
+			if (Constants.session.playerId != value.playerId) {
+				if (Constants.session.tribe.hasRight(Tribe.KICK)) {
 					btnKick = new KickIcon(value.playerId);
 					wrapper.append(new AssetPane(btnKick.getAsset()));					
 				}

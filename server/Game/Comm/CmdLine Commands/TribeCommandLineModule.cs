@@ -18,7 +18,7 @@ using Persistance;
 
 namespace Game.Comm
 {
-    class TribeCommandLineModule : CommandLineModule
+    class TribeCommandLineModule : ICommandLineModule
     {
         private readonly IDbManager dbManager;
 
@@ -43,7 +43,7 @@ namespace Game.Comm
             this.strongholdManager = strongholdManager;         
         }
 
-        public override void RegisterCommands(CommandLineProcessor processor)
+        public void RegisterCommands(CommandLineProcessor processor)
         {
             processor.RegisterCommand("TribeInfo", Info, PlayerRights.Admin);
             processor.RegisterCommand("TribeCreate", Create, PlayerRights.Admin);

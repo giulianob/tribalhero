@@ -209,7 +209,7 @@ namespace Game.Logic.Formulas
 
         public virtual TimeSpan GetBattleDelayStartInterval()
         {
-            return new TimeSpan(0,0,Config.battle_delay_start_interval);
+            return new TimeSpan(0, 0, Config.battle_delay_start_interval);
         }
 
         public virtual double GetLumbermillCampBuildTime(int campBuildTime, IStructure lumbermill, IForest forest, ITileLocator tileLocator)

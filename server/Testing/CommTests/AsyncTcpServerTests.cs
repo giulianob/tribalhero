@@ -45,6 +45,7 @@ namespace Testing.CommTests
 
                 // Connect and verify client connected and socket options are set
                 var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp) {NoDelay = true};
+                socket.NoDelay = true;
 
                 var packetToSend1 = new Packet(Command.MarketSell);
                 packetToSend1.AddString("Hello");                
@@ -56,7 +57,7 @@ namespace Testing.CommTests
                 });
 
                 // Give time for the connection to happen
-                await Task.Delay(500);
+                await Task.Delay(1000);
 
                 server.GetSessionCount().Should().Be(1);
                 serverSideSocket.Connected.Should().BeTrue();
@@ -72,12 +73,12 @@ namespace Testing.CommTests
                     Buffer = new ArraySegment<byte>(bytesToSecondAfterConnect, 0, bytesToSecondAfterConnect.Length)
                 });
 
-                await Task.Delay(500);
+                await Task.Delay(1000);
                 
                 // Stop server and verify it disconnect and releases resources
                 server.Stop();
 
-                await Task.Delay(500);
+                await Task.Delay(1000);
 
                 player.HasTwoFactorAuthenticated.Should().Be(null);
 

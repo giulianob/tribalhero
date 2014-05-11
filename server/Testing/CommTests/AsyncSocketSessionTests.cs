@@ -94,11 +94,9 @@ namespace Testing.CommTests
 
                 connectionHelper.CloseSessionFromServerSide(session);
 
-                Thread.Sleep(500);
-
                 session.Write(packet1);
 
-                Thread.Sleep(500);
+                Thread.Sleep(1000);
 
                 connectionHelper.BlockingBufferManager.AvailableBuffers.Should().Be(10);
                 connectionHelper.SocketAwaitablePool.Count.Should().Be(10);

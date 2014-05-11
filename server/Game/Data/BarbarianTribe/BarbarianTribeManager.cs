@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using Common;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
@@ -11,6 +12,7 @@ namespace Game.Data.BarbarianTribe
 {
     public class BarbarianTribeManager : IBarbarianTribeManager
     {
+        private readonly ILogger logger = LoggerFactory.Current.GetLogger<BarbarianTribeManager>();
         private readonly IDbManager dbManager;        
         private readonly IBarbarianTribeFactory barbarianTribeFactory;
         private readonly IBarbarianTribeConfigurator barbarianTribeConfigurator;
@@ -75,6 +77,7 @@ namespace Game.Data.BarbarianTribe
                 IBarbarianTribe barbarianTribe = barbarianTribeFactory.CreateBarbarianTribe(idGenerator.GetNext(), level, position, Config.barbariantribe_camp_count);
                 multiObjectLockFactory().Lock(new ILockable[] {barbarianTribe})
                                         .Do(() => Add(barbarianTribe));
+                logger.Info(string.Format("Added barbarianTribe[{0},{1}] Number[{2}] ", position.X, position.Y, i));
             }
         }
 

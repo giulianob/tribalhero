@@ -59,7 +59,7 @@ namespace Testing.CommTests
                 });
 
                 // Give time for the connection to happen
-                await Task.Delay(5000);
+                await Task.Delay(1000);
 
                 server.GetSessionCount().Should().Be(1);
                 serverSideSocket.Connected.Should().BeTrue();
@@ -75,7 +75,7 @@ namespace Testing.CommTests
                     Buffer = new ArraySegment<byte>(bytesToSecondAfterConnect, 0, bytesToSecondAfterConnect.Length)
                 });
 
-                await Task.Delay(5000);
+                await Task.Delay(1000);
                 
                 // Stop server and verify it disconnect and releases resources
                 server.Stop();
@@ -88,8 +88,8 @@ namespace Testing.CommTests
                 socketAwaitablePool.Count.Should().Be(10);
                 buffer.AvailableBuffers.Should().Be(15);
 
-                processor.Received(1).Execute(session, Arg.Is<Packet>(packet => packet.GetBytes().SequenceEqual(bytesToSendOnConnect)));
                 processor.Received(1).Execute(session, Arg.Is<Packet>(packet => packet.GetBytes().SequenceEqual(bytesToSecondAfterConnect)));
+                processor.Received(1).Execute(session, Arg.Is<Packet>(packet => packet.GetBytes().SequenceEqual(bytesToSendOnConnect)));                
                 processor.Received(1).ExecuteEvent(session, Arg.Is<Packet>(packet => packet.Cmd == Command.OnDisconnect));
             }
             finally

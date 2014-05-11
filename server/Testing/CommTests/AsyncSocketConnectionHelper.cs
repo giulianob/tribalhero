@@ -40,7 +40,8 @@ namespace Testing.CommTests
         {
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
             {
-                NoDelay = true
+                NoDelay = true,
+                LingerState = new LingerOption(true, 2)
             };
 
             var serverSocketAccept = listener.AcceptSocketAsync();
@@ -69,7 +70,7 @@ namespace Testing.CommTests
 
         public ArraySegment<byte> ReadDataSentFromSession(AsyncSocketSession session)
         {
-            Thread.Sleep(2000);
+            Thread.Sleep(1000);
 
             var receiveBuffer = new byte[16000];
 

@@ -94,8 +94,6 @@ namespace Testing.CommTests
 
                 connectionHelper.CloseSessionFromServerSide(session);
 
-                Thread.Sleep(1000);
-
                 session.Write(packet1);
 
                 Thread.Sleep(1000);

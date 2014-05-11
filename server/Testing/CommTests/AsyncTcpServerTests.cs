@@ -66,7 +66,7 @@ namespace Testing.CommTests
                 });
 
                 await Task.Delay(1000);
-
+                throw new Exception("Testing CI");
                 server.GetSessionCount().Should().Be(1);
                 serverSideSocket.Connected.Should().BeTrue();
                 serverSideSocket.NoDelay.Should().BeTrue();

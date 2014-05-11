@@ -44,20 +44,29 @@ namespace Testing.CommTests
                 server.Start("127.0.0.1", 0);
 
                 // Connect and verify client connected and socket options are set
-                var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp) {NoDelay = true};
+                var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
+                {
+                    NoDelay = true
+                };
 
                 var packetToSend1 = new Packet(Command.MarketSell);
                 packetToSend1.AddString("Hello");                
                 var bytesToSendOnConnect = packetToSend1.GetBytes();
+
                 await socket.ConnectAsync(new SocketAwaitable
                 {
-                    RemoteEndPoint = new IPEndPoint(IPAddress.Loopback, server.LocalEndPoint.Port),
+                    RemoteEndPoint = server.LocalEndPoint
+                });
+
+                await Task.Delay(1000);
+
+                await socket.SendAsync(new SocketAwaitable
+                {
                     Buffer = new ArraySegment<byte>(bytesToSendOnConnect, 0, bytesToSendOnConnect.Length)
                 });
 
-                // Give time for the connection to happen
-                await Task.Delay(500);
-
+                await Task.Delay(1000);
+                throw new Exception("Testing CI");
                 server.GetSessionCount().Should().Be(1);
                 serverSideSocket.Connected.Should().BeTrue();
                 serverSideSocket.NoDelay.Should().BeTrue();
@@ -72,12 +81,12 @@ namespace Testing.CommTests
                     Buffer = new ArraySegment<byte>(bytesToSecondAfterConnect, 0, bytesToSecondAfterConnect.Length)
                 });
 
-                await Task.Delay(500);
+                await Task.Delay(1000);
                 
                 // Stop server and verify it disconnect and releases resources
                 server.Stop();
 
-                await Task.Delay(500);
+                await Task.Delay(1000);
 
                 player.HasTwoFactorAuthenticated.Should().Be(null);
 
@@ -85,8 +94,8 @@ namespace Testing.CommTests
                 socketAwaitablePool.Count.Should().Be(10);
                 buffer.AvailableBuffers.Should().Be(15);
 
-                processor.Received(1).Execute(session, Arg.Is<Packet>(packet => packet.GetBytes().SequenceEqual(bytesToSendOnConnect)));
                 processor.Received(1).Execute(session, Arg.Is<Packet>(packet => packet.GetBytes().SequenceEqual(bytesToSecondAfterConnect)));
+                processor.Received(1).Execute(session, Arg.Is<Packet>(packet => packet.GetBytes().SequenceEqual(bytesToSendOnConnect)));                
                 processor.Received(1).ExecuteEvent(session, Arg.Is<Packet>(packet => packet.Cmd == Command.OnDisconnect));
             }
             finally

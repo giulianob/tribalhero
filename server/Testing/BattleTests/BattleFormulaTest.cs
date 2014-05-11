@@ -200,7 +200,7 @@ namespace Testing.BattleTests
 
             var score = battleFormulas.GetAttackScore(attacker, target, 1);
 
-            score.Should().Be(15);
+            score.Should().Be(1.5m);
         }
     }
 }

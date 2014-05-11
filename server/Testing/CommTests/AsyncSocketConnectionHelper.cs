@@ -38,15 +38,17 @@ namespace Testing.CommTests
 
         public async Task<AsyncSocketSession> GetConnectedSocket(IProcessor processor)
         {
-            var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
+            {
+                NoDelay = true
+            };
 
             var serverSocketAccept = listener.AcceptSocketAsync();
 
             socket.Connect(new IPEndPoint(IPAddress.Loopback, ((IPEndPoint)listener.LocalEndpoint).Port));
             await serverSocketAccept;
 
-            var serverSocket = serverSocketAccept.Result;
-            socket.NoDelay = true;
+            var serverSocket = serverSocketAccept.Result;            
 
             var session = new AsyncSocketSession(Guid.NewGuid().ToString(),
                                                  socket,
@@ -67,6 +69,8 @@ namespace Testing.CommTests
 
         public ArraySegment<byte> ReadDataSentFromSession(AsyncSocketSession session)
         {
+            Thread.Sleep(2000);
+
             var receiveBuffer = new byte[16000];
 
             var serverSocket = serverSocketsBySession[session];
@@ -76,8 +80,8 @@ namespace Testing.CommTests
             {
                 int bytesRead = serverSocket.Receive(receiveBuffer, totalBytesRead, 1000, SocketFlags.None);
 
-                totalBytesRead += bytesRead;
-                Thread.Sleep(100);
+                totalBytesRead += bytesRead;                
+                Thread.Sleep(1000);
             }
 
             return new ArraySegment<byte>(receiveBuffer, 0, totalBytesRead);

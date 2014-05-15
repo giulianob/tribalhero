@@ -19,6 +19,7 @@ package src.UI.Dialog {
     import src.Constants;
     import src.Global;
     import src.UI.Components.CoinLabel;
+    import src.UI.Dialog.StoreConfirmBuyDialog;
     import src.UI.GameJPanel;
     import src.UI.LookAndFeel.GameLookAndFeel;
     import src.UI.LookAndFeel.GamePanelBackgroundDecorator;
@@ -34,9 +35,16 @@ package src.UI.Dialog {
             this.purchaseThemeDeferred = new Deferred();
 
             createUI();
+
+            viewModel.on(StoreBuyCoinsVM.EVENT_COINS_PURCHASED, function(): void {
+                trace("TESTING");
+                createUI();
+            });
         }
 
         private function createUI(): void {
+            removeAll();
+
             setPreferredWidth(500);
             setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
 
@@ -91,6 +99,8 @@ package src.UI.Dialog {
             btnBuy.addActionListener(function(): void {
                 viewModel.buy(localRefRefillPackage);
             });
+
+            wrapper.pack();
 
             return wrapper;
         }

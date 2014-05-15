@@ -577,9 +577,18 @@
 		}
 
 		public function addCityToUI(city: City): void {
-			(lstCities.getModel() as VectorListModel).append( { id: city.id, city: city, toString: function() : String {
-                return this.city.name;
-            } } );
+            var listItem: * = {
+                id: city.id,
+                city: city,
+                cityName: city.name,
+                toString: function() : String {
+                    return listItem.cityName;
+                }
+            };
+
+            var model: VectorListModel = VectorListModel(lstCities.getModel());
+			model.append(listItem);
+
 			miniMap.addPointer(new MiniMapPointer(city.primaryPosition.x, city.primaryPosition.y, city.name));
 		}
 

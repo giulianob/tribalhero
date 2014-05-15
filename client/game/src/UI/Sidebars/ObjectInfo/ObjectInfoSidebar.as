@@ -22,6 +22,7 @@ package src.UI.Sidebars.ObjectInfo {
     import src.UI.Components.PlayerLabel;
     import src.UI.Components.SimpleTooltip;
     import src.UI.Dialog.StoreDialog;
+    import src.UI.Flows.StoreFlow;
     import src.UI.Sidebars.ObjectInfo.Buttons.*;
     import src.UI.Sidebars.ObjectInfo.CustomInfo.CustomInfoFactory;
     import src.UI.Sidebars.ObjectInfo.CustomInfo.ICustomInfo;
@@ -82,7 +83,7 @@ package src.UI.Sidebars.ObjectInfo {
                 themeDropdown.append(storeLink);
 
                 storeLink.addActionListener(function (e: Event): void {
-                    new StoreDialog(new StoreDialogVM()).show();
+                    new StoreFlow().showStore();
                 });
 
 				city.addEventListener(City.RESOURCES_UPDATE, onResourcesUpdate);

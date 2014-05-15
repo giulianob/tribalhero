@@ -4,12 +4,14 @@ package src.UI.ViewModels {
     import src.Global;
     import src.Objects.Store.StoreItem;
     import src.Objects.Store.StoreItemTheme;
-    import src.UI.Dialog.StoreViewThemeDetailsDialog;
+    import src.UI.ViewModel;
 
-    public class StoreDialogVM {
+    public class StoreDialogVM extends ViewModel {
+        public static const EVENT_VIEW_THEME: String = "EVENT_VIEW_THEME";
+
         public function viewItemDetails(item: StoreItem): void {
             if (item is StoreItemTheme) {
-                new StoreViewThemeDetailsDialog(new StoreViewThemeDetailsVM(StoreItemTheme(item))).show();
+                dispatch(EVENT_VIEW_THEME, item);
             }
             else {
                 throw new Error("Unknown item type");

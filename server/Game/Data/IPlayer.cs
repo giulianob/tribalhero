@@ -82,5 +82,7 @@ namespace Game.Data
         bool HasPurchasedTheme(string theme);
 
         void UpdateCoins(int coins);
+
+        void AddTheme(string themeId);
     }
 }

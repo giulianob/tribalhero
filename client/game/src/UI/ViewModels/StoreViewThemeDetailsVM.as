@@ -7,9 +7,14 @@ package src.UI.ViewModels {
     import src.Objects.Store.StructureStoreAsset;
     import src.UI.Dialog.StoreBuyCoinsDialog;
     import src.UI.Dialog.StoreConfirmBuyDialog;
+    import src.UI.ViewModel;
 
-    public class StoreViewThemeDetailsVM {
+    public class StoreViewThemeDetailsVM extends ViewModel {
+        public static const EVENT_CONFIRM_PURCHASE_ITEM: String = "EVENT_CONFIRM_PURCHASE_ITEM";
+        public static const EVENT_COIN_PURCHASE_NEEDED: String = "EVENT_COIN_PURCHASE_NEEDED";
+
         private var item: StoreItemTheme;
+
 
         public function StoreViewThemeDetailsVM(item: StoreItemTheme) {
             this.item = item;
@@ -34,27 +39,11 @@ package src.UI.ViewModels {
 
         public function buy(): void {
             if (Constants.session.coins < theme.cost) {
-                var vm: StoreBuyCoinsVM = new StoreBuyCoinsVM(theme.cost);
-                var buyCoinsDialog: StoreBuyCoinsDialog = new StoreBuyCoinsDialog(vm);
-
-                vm.purchasedCoinsPromise.then(function(): void {
-                    if (buyCoinsDialog.getFrame()) {
-                        buyCoinsDialog.getFrame().dispose();
-                    }
-
-                    buy();
-                });
-
-                buyCoinsDialog.show();
+                dispatch(EVENT_COIN_PURCHASE_NEEDED, theme);
             }
             else {
-                showConfirmationDialog();
+                dispatch(EVENT_CONFIRM_PURCHASE_ITEM, theme);
             }
-        }
-
-        private function showConfirmationDialog(): void {
-            var confirmDialog: StoreConfirmBuyDialog = new StoreConfirmBuyDialog(new StoreConfirmBuyVM(item));
-            confirmDialog.show();
         }
     }
 }

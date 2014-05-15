@@ -37,8 +37,6 @@ package src.UI.Dialog {
             createUI();
 
             btnBuy.addActionListener(function(): void {
-                getFrame().dispose();
-
                 viewModel.buy();
             });
         }

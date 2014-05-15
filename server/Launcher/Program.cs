@@ -48,6 +48,7 @@ namespace Launcher
             var kernel = Engine.CreateDefaultKernel();                        
             kernel.Get<FactoriesInitializer>().CompileAndInit();
             Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
+            Converter.WatchLanguageFiles();
             
 #if DEBUG
             // Always enable lock checking in debug mode

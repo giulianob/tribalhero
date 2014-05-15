@@ -271,6 +271,14 @@ namespace Game.Setup
 
         ThemeNotPurchased = 10000,
 
+        StoreItemNotFound = 10001,
+        
+        StoreItemAlreadyPurchased = 10002,
+
+        StoreItemPurchaseProblem = 10003,
+
+        PlayerBalanceNotEnough = 10004,
+
         #endregion
     }
 }

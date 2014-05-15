@@ -34,6 +34,11 @@ namespace Game.Comm
                 return;
             }
 
+            if (logger.IsDebugEnabled)
+            {
+                logger.Debug("Processing queue command", command);
+            }
+
             action(payload);
         }
     }

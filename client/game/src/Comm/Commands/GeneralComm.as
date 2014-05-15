@@ -45,8 +45,15 @@
                 case Commands.PLAYER_COINS_UPDATE:
                     onPlayerCoinsUpdate(e.packet);
                     break;
+                case Commands.PLAYER_THEME_PURCHASED:
+                    onPlayerThemePurchased(e.packet);
+                    break;
 			}
 		}
+
+        private function onPlayerThemePurchased(packet: Packet): void {
+            Constants.session.themesPurchased.push(packet.readString());
+        }
 
         private function onPlayerCoinsUpdate(packet: Packet): void {
             Constants.session.coins = packet.readInt();
@@ -121,6 +128,7 @@
 			Constants.session.sessionId = packet.readString();
 			Constants.session.playerName = packet.readString();
 			Constants.session.newbieProtectionSeconds = packet.readInt();
+            Constants.session.coins = packet.readInt();
 			Constants.session.signupTime = new Date(packet.readUInt() * 1000);
 			Constants.session.tribeIncoming = packet.readInt();
 			Constants.session.tribeAssignment = packet.readShort();

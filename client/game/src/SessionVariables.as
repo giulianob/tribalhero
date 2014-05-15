@@ -3,6 +3,7 @@ package src {
     import flash.events.EventDispatcher;
 
     import src.Objects.Tribe;
+    import src.Util.Util;
 
     public class SessionVariables extends EventDispatcher {
         public static const COINS_UPDATE: String = "COINS_UPDATE";
@@ -36,6 +37,7 @@ package src {
         public function set coins(value: int): void {
             _coins = value;
 
+            Util.log("Received coin update for " + value);
             dispatchEvent(new Event(COINS_UPDATE));
         }
     }

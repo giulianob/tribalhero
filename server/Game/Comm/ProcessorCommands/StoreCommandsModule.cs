@@ -1,4 +1,6 @@
-﻿using Game.Data.Store;
+﻿using System;
+using Game.Data.Store;
+using Game.Setup;
 using Game.Util;
 
 namespace Game.Comm.ProcessorCommands
@@ -15,6 +17,7 @@ namespace Game.Comm.ProcessorCommands
         public override void RegisterCommands(IProcessor processor)
         {
             processor.RegisterCommand(Command.StoreGetItems, GetItems);
+            processor.RegisterCommand(Command.StorePurchaseItem, PurchaseItem);
         }
 
         private void GetItems(Session session, Packet packet)
@@ -31,6 +34,25 @@ namespace Game.Comm.ProcessorCommands
             }
 
             session.Write(reply);
+        }
+        
+        private void PurchaseItem(Session session, Packet packet)
+        {
+            string itemId;
+
+            try
+            {
+                itemId = packet.GetString();
+            }
+            catch(Exception e)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            var response = ApiCaller.PurchaseItem(session.Player.PlayerId, itemId);
+
+            ReplyWithResult(session, packet, response.AsErrorEnumerable());
         }
     }
 }

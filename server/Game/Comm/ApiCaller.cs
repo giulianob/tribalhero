@@ -29,6 +29,22 @@ namespace Game.Comm
                 return ErrorMessages == null ? string.Empty : string.Join(",", ErrorMessages);
             }
         }
+
+        public Error AsErrorEnumerable()
+        {
+            if (Success)
+            {
+                return Error.Ok;
+            }
+
+            Error error;
+            if (ErrorMessages == null || !ErrorMessages.Any() || !Error.TryParse(ErrorMessages.First().Replace("_", ""), true, out error))
+            {
+                return Error.Unexpected;
+            }
+            
+            return error;
+        }
     }
 
     public static class ApiCaller
@@ -204,6 +220,17 @@ namespace Game.Comm
             };
 
             return MakeCall("player", "add_coins", parms);
+        }
+
+        public static ApiResponse<dynamic> PurchaseItem(uint playerId, string itemId)
+        {
+            var parms = new List<KeyValuePair<string, string>>
+            {
+                new KeyValuePair<string, string>("playerId", playerId.ToString(CultureInfo.InvariantCulture)),
+                new KeyValuePair<string, string>("itemId", itemId)
+            };
+
+            return MakeCall("store_item", "purchase_item", parms);
         }
     }
 }

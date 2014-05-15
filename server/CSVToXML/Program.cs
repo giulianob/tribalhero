@@ -101,7 +101,7 @@ namespace CSVToXML
             return split[split.Length - 1].Trim();
         }
 
-        public static void  Go(string dataOutputFolderIn, string csvDataFolderIn, string langDataFolderIn)
+        public static void Go(string dataOutputFolderIn, string csvDataFolderIn, string langDataFolderIn)
         {
             dataOutputFolder = dataOutputFolderIn;
             csvDataFolder = csvDataFolderIn;
@@ -683,6 +683,18 @@ namespace CSVToXML
             }
 
             writer.WriteEndElement();
+        }
+
+        public static void WatchLanguageFiles()
+        {
+            var languageWatcher = new FileSystemWatcher(langDataFolder, "lang.*.csv")
+            {
+                IncludeSubdirectories = false, 
+                NotifyFilter = NotifyFilters.LastWrite
+            };
+
+            languageWatcher.Changed += (sender, args) => WriteLanguageFile();
+            languageWatcher.EnableRaisingEvents = true;
         }
 
         private static void WriteLanguageFile()

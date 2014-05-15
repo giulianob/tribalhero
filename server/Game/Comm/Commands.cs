@@ -40,6 +40,8 @@ namespace Game.Comm
 
         PlayerCoinsUpdate = 25,
 
+        PlayerThemePurchased = 26,
+
         #endregion
 
         #region Action
@@ -367,6 +369,8 @@ namespace Game.Comm
         #region Store
 
         StoreGetItems = 1201,
+        
+        StorePurchaseItem = 1202,
 
         #endregion
     }

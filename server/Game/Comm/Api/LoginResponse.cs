@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using Game.Data;
 using Game.Data.Store;
-using Newtonsoft.Json;
 
 namespace Game.Comm.Api
 {
     public class LoginResponseData
     {
-        public LoginResponseData.PlayerData Player { get; set; }
+        public PlayerData Player { get; set; }
 
         public IEnumerable<Achievement> Achievements { get; set; }
 
@@ -24,6 +23,8 @@ namespace Game.Comm.Api
             public PlayerRights Rights { get; set; }
 
             public bool Banned { get; set; }
+
+            public int Balance { get; set; }
         }
     }
 }

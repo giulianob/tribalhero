@@ -286,6 +286,16 @@ namespace Game.Data
             });
         }
 
+        public void AddTheme(string themeId)
+        {
+            channel.Post(PlayerChannel, () =>
+            {
+                var packet = new Packet(Command.PlayerThemePurchased);
+                packet.AddString(themeId);
+                return packet;
+            });
+        }
+
         #region ILockable Members
 
         public int Hash

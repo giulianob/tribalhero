@@ -107,3 +107,8 @@ ERROR_813,Stronghold is inactive.
 ERROR_814,Stronghold gate is already at full health.
 ERROR_815,Stronghold gate cannot be repaired while its under attack
 ERROR_901,This barbarian tribe has already been completely defeated.
+ERROR_10000,You have not purchased this theme.
+ERROR_10001,The item you are trying to purchase is no longer available in the store.
+ERROR_10002,You have already purchased this item. Please refresh the game if this problem persists.
+ERROR_10003,There was a problem completing your purchase. Please contact us if you are continue having this issue.
+ERROR_10004,You do not have enough coins to complete this purchase. If you believe this is an error, please refresh the game and try again. Otherwise, you will need to purchase coins.

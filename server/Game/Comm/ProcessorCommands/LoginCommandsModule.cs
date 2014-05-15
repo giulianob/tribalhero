@@ -300,6 +300,7 @@ namespace Game.Comm.ProcessorCommands
                 reply.AddString(sessionId);
                 reply.AddString(player.Name);
                 reply.AddInt32(Config.newbie_protection);
+                reply.AddInt32(loginResponseData.Player.Balance);
                 reply.AddUInt32(UnixDateTime.DateTimeToUnix(player.Created.ToUniversalTime()));
                 reply.AddInt32(player.Tribesman == null
                                        ? 0

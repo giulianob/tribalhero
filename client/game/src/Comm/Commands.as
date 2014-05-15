@@ -26,6 +26,7 @@ package src.Comm {
 		public static const SAVE_TUTORIAL_STEP: int = 23;
 		public static const SAVE_MUTE_SOUND: int = 24;
 		public static const PLAYER_COINS_UPDATE: int = 25;
+		public static const PLAYER_THEME_PURCHASED: int = 26;
 
 		public static const ACTION_CANCEL: int = 51;
 		public static const ACTION_COMPLETE: int = 52;
@@ -163,5 +164,6 @@ package src.Comm {
 		public static const STRONGHOLD_LIST: int = 1106;
 
         public static const STORE_GET_ITEMS: int = 1201;
+        public static const STORE_PURCHASE_ITEM: int = 1202;
 	}
 }

@@ -53,5 +53,16 @@ package src.Comm.Commands {
 
             return deferred.promise;
         }
+
+        public function purchaseItem(itemId: String): Promise {
+            var packet: Packet = new Packet();
+            packet.cmd = Commands.STORE_PURCHASE_ITEM;
+            packet.writeString(itemId);
+
+            return session.write(packet)
+                          .otherwise(function(result: Packet): void {
+                                mapComm.catchAllErrors(result);
+                          });
+        }
     }
 }

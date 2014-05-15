@@ -2,6 +2,7 @@ package src.Objects.Store {
     import flash.display.Bitmap;
 
     import src.Assets;
+    import src.Constants;
     import src.Util.StringHelper;
 
     public class StoreItemTheme extends StoreItem {
@@ -23,6 +24,10 @@ package src.Objects.Store {
 
         override public function thumbnail(): Bitmap {
             return Assets.getInstance(id + "_THEME_THUMBNAIL")
+        }
+
+        override public function markAsPurchased(): void {
+            Constants.session.themesPurchased.push(themeId);
         }
     }
 }

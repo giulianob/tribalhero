@@ -233,7 +233,8 @@
 							{
 								var pendingPacket: PendingPacket = pending[i];
 								pending.splice(i, 1);
-								if (pendingPacket.callback != null)				 {
+								if (pendingPacket.callback != null)
+                                {
 									pendingPacket.callback(incomingPacket, pendingPacket.custom);
                                 }
 

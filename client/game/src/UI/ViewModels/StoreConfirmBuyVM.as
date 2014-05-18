@@ -3,8 +3,11 @@ package src.UI.ViewModels {
 
     import src.Global;
     import src.Objects.Store.StoreItem;
+    import src.UI.ViewModel;
 
-    public class StoreConfirmBuyVM {
+    public class StoreConfirmBuyVM extends ViewModel {
+        public static const EVENT_CONFIRM_BUY_ITEM: String = "EVENT_CONFIRM_BUY_ITEM";
+
         private var _item: StoreItem;
 
         public function StoreConfirmBuyVM(item: StoreItem) {
@@ -16,8 +19,8 @@ package src.UI.ViewModels {
         }
 
         public function buyItem(): Promise {
-            return Global.mapComm.Store.purchaseItem(item.id).then(function(): void {
-                item.markAsPurchased();
+            return Global.mapComm.Store.purchaseItem(item.id).always(function(): void {
+                dispatch(EVENT_CONFIRM_BUY_ITEM, item);
             });
         }
     }

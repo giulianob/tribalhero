@@ -1,5 +1,8 @@
 ﻿package src.Map {
 
+    import com.codecatalyst.promise.Deferred;
+    import com.codecatalyst.promise.Promise;
+
     import src.Comm.*;
     import src.Comm.Commands.*;
     import src.Objects.*;
@@ -107,6 +110,25 @@
 			pnlLoading.getFrame().dispose();
 			pnlLoading = null;
 		}
-	}
+
+        public function send(session: Session, packet: Packet): Promise {
+            var deferred: Deferred = new Deferred();
+            showLoading();
+
+            session.write(packet)
+                .then(function(result: Packet): void {
+                    deferred.resolve(result);
+                })
+                .otherwise(function(result: Packet): void {
+                    deferred.reject(result);
+                    catchAllErrors(result);
+                })
+                .always(function(): void {
+                    hideLoading();
+                });
+
+            return deferred.promise;
+        }
+    }
 }
 

@@ -7,6 +7,7 @@ package src {
 
     public class SessionVariables extends EventDispatcher {
         public static const COINS_UPDATE: String = "COINS_UPDATE";
+        public static const THEME_PURCHASED: String = "THEME_PURCHASED";
 
         public var username: String = "1234";
         public var hostname: String = "local.tribalhero.com";
@@ -39,6 +40,13 @@ package src {
 
             Util.log("Received coin update for " + value);
             dispatchEvent(new Event(COINS_UPDATE));
+        }
+
+        public function addThemePurchased(themeId: String): void {
+            themesPurchased.push(themeId);
+
+            Util.log("Received theme purchased " + themeId);
+            dispatchEvent(new Event(THEME_PURCHASED));
         }
     }
 }

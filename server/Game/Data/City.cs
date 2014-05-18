@@ -129,6 +129,8 @@ namespace Game.Data
 
         private readonly BattleProcedure battleProcedure;
 
+        private string defaultTheme;
+
         /// <summary>
         ///     Enumerates only through structures in this city
         /// </summary>
@@ -212,8 +214,21 @@ namespace Game.Data
         public ITechnologyManager Technologies { get; private set; }
 
         public Position PrimaryPosition { get; private set; }
-        
-        public string DefaultTheme { get; set; }
+
+        public string DefaultTheme
+        {
+            get
+            {
+                return defaultTheme;
+            }
+            set
+            {
+                CheckUpdateMode();
+
+                defaultTheme = value;
+                PropertyChanged(this, new PropertyChangedEventArgs("DefaultTheme"));
+            }
+        }
 
         /// <summary>
         ///     Returns the local troop

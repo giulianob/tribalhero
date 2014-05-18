@@ -1,7 +1,8 @@
 ﻿using System;
+using Game.Data;
 using Game.Data.Store;
 using Game.Setup;
-using Game.Util;
+using Game.Util.Locking;
 
 namespace Game.Comm.ProcessorCommands
 {
@@ -9,15 +10,85 @@ namespace Game.Comm.ProcessorCommands
     {
         private readonly IStoreManager storeManager;
 
-        public StoreCommandsModule(IStoreManager storeManager)
+        private readonly IThemeManager themeManager;
+
+        private readonly ILocker locker;
+
+        public StoreCommandsModule(IStoreManager storeManager, IThemeManager themeManager, ILocker locker)
         {
             this.storeManager = storeManager;
+            this.themeManager = themeManager;
+            this.locker = locker;
         }
 
         public override void RegisterCommands(IProcessor processor)
         {
             processor.RegisterCommand(Command.StoreGetItems, GetItems);
             processor.RegisterCommand(Command.StorePurchaseItem, PurchaseItem);
+            processor.RegisterCommand(Command.StoreSetDefaultTheme, SetDefaultTheme);
+            processor.RegisterCommand(Command.StoreApplyThemeToAll, ApplyThemeToAll);
+        }
+
+        private void ApplyThemeToAll(Session session, Packet packet)
+        {
+            uint cityId;
+            string itemId;
+
+            try
+            {
+                cityId = packet.GetUInt32();
+                itemId = packet.GetString();
+            }
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            locker.Lock(session.Player).Do(() =>
+            {
+                var city = session.Player.GetCity(cityId);
+                if (city == null)
+                {
+                    ReplyError(session, packet, Error.CityNotFound);
+                    return;
+                }
+
+                var result = themeManager.ApplyToAll(city, itemId);
+
+                ReplyWithResult(session, packet, result);
+            });
+        }
+
+        private void SetDefaultTheme(Session session, Packet packet)
+        {
+            uint cityId;
+            string itemId;
+
+            try
+            {
+                cityId = packet.GetUInt32();
+                itemId = packet.GetString();
+            }
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            locker.Lock(session.Player).Do(() =>
+            {
+                var city = session.Player.GetCity(cityId);
+                if (city == null)
+                {
+                    ReplyError(session, packet, Error.CityNotFound);
+                    return;
+                }
+
+                var result = themeManager.SetDefaultTheme(city, itemId);
+
+                ReplyWithResult(session, packet, result);
+            });
         }
 
         private void GetItems(Session session, Packet packet)
@@ -44,7 +115,7 @@ namespace Game.Comm.ProcessorCommands
             {
                 itemId = packet.GetString();
             }
-            catch(Exception e)
+            catch(Exception)
             {
                 ReplyError(session, packet, Error.Unexpected);
                 return;

@@ -29,11 +29,7 @@ package src.UI.Dialog {
             createUI();
 
             btnConfirm.addActionListener(function(e: Event): void {
-               viewModel.buyItem().then(function():void {
-                   if (getFrame()) {
-                    getFrame().dispose();
-                   }
-               });
+               viewModel.buyItem();
             });
         }
 

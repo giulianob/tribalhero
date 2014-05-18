@@ -15,6 +15,10 @@ package src.Objects.Store {
             this.created = created;
         }
 
+        public function hasPurchased(): Boolean {
+            throw new Error("Not implemented in child class");
+        }
+
         public function get localizedName(): String {
             throw new Error("Not implemented in child class");
         }
@@ -24,10 +28,6 @@ package src.Objects.Store {
         }
 
         public function thumbnail(): Bitmap {
-            throw new Error("Not implemented in child class");
-        }
-
-        public function markAsPurchased(): void {
             throw new Error("Not implemented in child class");
         }
     }

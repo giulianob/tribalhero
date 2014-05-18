@@ -52,7 +52,7 @@
 		}
 
         private function onPlayerThemePurchased(packet: Packet): void {
-            Constants.session.themesPurchased.push(packet.readString());
+            Constants.session.addThemePurchased(packet.readString());
         }
 
         private function onPlayerCoinsUpdate(packet: Packet): void {
@@ -169,7 +169,7 @@
             }
 
             // Themes purchased
-            Constants.session.themesPurchased = [];
+            Constants.session.themesPurchased = ["DEFAULT"];
             var themesPurchasedCnt: int = packet.readInt();
             for (i = 0; i < themesPurchasedCnt; i++) {
                 Constants.session.themesPurchased.push(packet.readString());

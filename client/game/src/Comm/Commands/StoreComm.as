@@ -59,10 +59,25 @@ package src.Comm.Commands {
             packet.cmd = Commands.STORE_PURCHASE_ITEM;
             packet.writeString(itemId);
 
-            return session.write(packet)
-                          .otherwise(function(result: Packet): void {
-                                mapComm.catchAllErrors(result);
-                          });
+            return mapComm.send(session, packet);
+        }
+
+        public function setDefaultTheme(cityId: int, theme: String): Promise {
+            var packet: Packet = new Packet();
+            packet.cmd = Commands.STORE_SET_DEFAULT_THEME;
+            packet.writeUInt(cityId);
+            packet.writeString(theme);
+
+            return mapComm.send(session, packet);
+        }
+
+        public function applyThemeToAll(cityId: int, theme: String): Promise {
+            var packet: Packet = new Packet();
+            packet.cmd = Commands.STORE_THEME_APPLY_TO_ALL;
+            packet.writeUInt(cityId);
+            packet.writeString(theme);
+
+            return mapComm.send(session, packet);
         }
     }
 }

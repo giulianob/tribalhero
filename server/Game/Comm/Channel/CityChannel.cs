@@ -148,6 +148,9 @@ namespace Game.Comm.Channel
                 case "Value":
                     PointUpdate(city);
                     break;
+                case "DefaultTheme":
+                    DefaultThemeUpdate(city);
+                    break;
             }
         }
 
@@ -263,6 +266,22 @@ namespace Game.Comm.Channel
                     packet.AddInt32(city.DefensePoint);
                     packet.AddUInt16(city.Value);
                     packet.AddFloat((float)city.AlignmentPoint);
+                    return packet;
+                });
+        }
+
+        private void DefaultThemeUpdate(ICity city)
+        {
+            if (!ShouldUpdate(city))
+            {
+                return;
+            }
+
+            channel.Post(GetChannelName(city), () =>
+                {
+                    var packet = new Packet(Command.CityDefaultThemeUpdate);
+                    packet.AddUInt32(city.Id);
+                    packet.AddString(city.DefaultTheme);
                     return packet;
                 });
         }

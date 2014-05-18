@@ -186,6 +186,8 @@ namespace Game.Comm
 
         CityHasApBonus = 469,
 
+        CityDefaultThemeUpdate = 470,
+
         CityBattleStarted = 490,
 
         CityBattleEnded = 491,
@@ -371,6 +373,10 @@ namespace Game.Comm
         StoreGetItems = 1201,
         
         StorePurchaseItem = 1202,
+
+        StoreSetDefaultTheme = 1203,
+
+        StoreApplyThemeToAll = 1204,
 
         #endregion
     }

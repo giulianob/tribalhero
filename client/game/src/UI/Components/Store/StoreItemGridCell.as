@@ -51,6 +51,7 @@ package src.UI.Components.Store {
             var lblCost: CoinLabel = new CoinLabel(item.cost);
             GameLookAndFeel.changeClass(lblCost, "darkSmallHeader");
             lblCost.setConstraints("East");
+            lblCost.setVisible(!this.item.hasPurchased());
 
             var footer: JPanel = new JPanel(new BorderLayout(5));
             footer.setConstraints("South");

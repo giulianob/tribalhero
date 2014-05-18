@@ -13,6 +13,7 @@ package src.UI.Flows {
     public class StoreFlow {
         public function showStore(): void {
             var storeVm: StoreDialogVM = new StoreDialogVM();
+
             storeVm.on(StoreDialogVM.EVENT_VIEW_THEME, viewThemeDetails);
 
             new StoreDialog(storeVm).show();
@@ -36,7 +37,14 @@ package src.UI.Flows {
         }
 
         private function confirmPurchaseItem(item: StoreItem): void {
-            new StoreConfirmBuyDialog(new StoreConfirmBuyVM(item)).show();
+            var vm: StoreConfirmBuyVM = new StoreConfirmBuyVM(item);
+            var confirmDialog: StoreConfirmBuyDialog = new StoreConfirmBuyDialog(vm);
+
+            vm.on(StoreConfirmBuyVM.EVENT_CONFIRM_BUY_ITEM, function (item: StoreItem): void {
+                confirmDialog.getFrame().dispose();
+            });
+
+            confirmDialog.show();
         }
 
         private function needToPurchaseCoins(item: StoreItem): void {

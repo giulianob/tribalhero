@@ -91,23 +91,15 @@ namespace Game.Comm.ProcessorCommands
             IStructure structure;
             locker.Lock(cityId, structureId, out city, out structure).Do(() =>
             {
-                if (city == null || structure == null)
+                if (city == null || structure == null || city.Owner != session.Player)
                 {
                     ReplyError(session, packet, Error.ObjectNotFound);
                     return;
                 }
 
-                if (!session.Player.HasPurchasedTheme(theme) || !themeManager.HasTheme(theme))
-                {
-                    ReplyError(session, packet, Error.ThemeNotPurchased);
-                    return;
-                }
-                
-                structure.BeginUpdate();
-                structure.Theme = theme;
-                structure.EndUpdate();
+                var result = themeManager.SetStructureTheme(structure, theme);
 
-                ReplySuccess(session, packet);
+                ReplyWithResult(session, packet, result);
             });
         }
 

@@ -31,7 +31,7 @@ package src.Map {
 		public var value: int = 0;
 		public var ap: Number = 0;
         public var defaultTheme: String;
-		
+
 		public var hideNewUnits: Boolean;
 
 		public var inBattle: Boolean;

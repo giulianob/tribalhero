@@ -14,6 +14,10 @@ package src.Objects.Store {
             return id;
         }
 
+        override public function hasPurchased(): Boolean {
+            return Constants.session.themesPurchased.indexOf(themeId) > -1;
+        }
+
         override public function get localizedName(): String {
             return StringHelper.localize(id + "_THEME_NAME");
         }
@@ -24,10 +28,6 @@ package src.Objects.Store {
 
         override public function thumbnail(): Bitmap {
             return Assets.getInstance(id + "_THEME_THUMBNAIL")
-        }
-
-        override public function markAsPurchased(): void {
-            Constants.session.themesPurchased.push(themeId);
         }
     }
 }

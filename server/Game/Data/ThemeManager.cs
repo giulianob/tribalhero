@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using Game.Setup;
+using Game.Util.Locking;
 
 namespace Game.Data
 {
@@ -10,6 +11,13 @@ namespace Game.Data
         private readonly List<Theme> themes = new List<Theme>();
 
         private readonly ReaderWriterLockSlim updateLock = new ReaderWriterLockSlim();
+
+        private readonly ILocker locker;
+
+        public ThemeManager(ILocker locker)
+        {
+            this.locker = locker;
+        }
 
         public List<Theme> Themes
         {
@@ -31,7 +39,7 @@ namespace Game.Data
             updateLock.ExitWriteLock();
         }
 
-        public bool HasTheme(string id)
+        public bool HasTheme(IPlayer player, string id)
         {
             if (id == "DEFAULT")
             {
@@ -42,7 +50,57 @@ namespace Game.Data
             var result = themes.Any(theme => theme.Id == id);
             updateLock.ExitReadLock();
 
-            return result;
+            if (!result)
+            {
+                return false;
+            }
+
+            return player.HasPurchasedTheme(id);
+        }
+
+        public Error SetDefaultTheme(ICity city, string id)
+        {
+            if (!HasTheme(city.Owner, id))
+            {
+                return Error.ThemeNotPurchased;
+            }
+
+            city.BeginUpdate();
+            city.DefaultTheme = id;
+            city.EndUpdate();
+
+            return Error.Ok;
+        }
+
+        public Error ApplyToAll(ICity city, string id)
+        {
+            if (!HasTheme(city.Owner, id))
+            {
+                return Error.ThemeNotPurchased;
+            }
+
+            foreach (var structure in city)
+            {
+                structure.BeginUpdate();
+                structure.Theme = id;
+                structure.EndUpdate();
+            }
+
+            return Error.Ok;
+        }
+
+        public Error SetStructureTheme(IStructure structure, string id)
+        {
+            if (!HasTheme(structure.City.Owner, id))
+            {
+                return Error.ThemeNotPurchased;
+            }
+
+            structure.BeginUpdate();
+            structure.Theme = id;
+            structure.EndUpdate();
+
+            return Error.Ok;
         }
     }
 }

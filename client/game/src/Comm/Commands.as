@@ -84,6 +84,7 @@ package src.Comm {
 		public static const CITY_POINTS_UPDATE: int = 467;
 		public static const CITY_HIDE_NEW_UNITS_UPDATE: int = 468;
 		public static const CITY_HAS_AP_BONUS: int = 469;
+		public static const CITY_DEFAULT_THEME_UPDATE: int = 470;
 		public static const CITY_BATTLE_STARTED: int = 490;
 		public static const CITY_BATTLE_ENDED: int = 491;
 		public static const CITY_NEW_UPDATE: int = 497;
@@ -165,5 +166,7 @@ package src.Comm {
 
         public static const STORE_GET_ITEMS: int = 1201;
         public static const STORE_PURCHASE_ITEM: int = 1202;
+        public static const STORE_SET_DEFAULT_THEME: int = 1203;
+        public static const STORE_THEME_APPLY_TO_ALL: int = 1204;
 	}
 }

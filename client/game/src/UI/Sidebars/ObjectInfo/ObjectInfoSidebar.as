@@ -56,8 +56,6 @@ package src.UI.Sidebars.ObjectInfo {
 			{
                 themeDropdown = new JPopupMenu();
 
-                themeDropdown.append(createThemeMenuItem("DEFAULT"));
-
                 for each (var theme: String in Constants.session.themesPurchased) {
                     var newSprite: String = StructureFactory.getSpriteName(theme, obj.type, obj.level);
                     if (!Assets.doesSpriteExist(newSprite)) {

@@ -335,10 +335,15 @@ PIRATES_THEME_NAME,Shipwrecked Pirates
 PIRATES_THEME_DESCRIPTION,Bring a spring upon her cable rum mutiny belay gunwalls tackle Arr yawl coxswain provost. Belay draught keel sutler carouser topgallant Corsair gabion Shiver me timbers ballast. Brig keelhaul mizzenmast aft wherry haul wind Yellow Jack hogshead bowsprit lookout.
 ,
 STORE_DIALOG_TITLE,Store
+STORE_DIALOG_PURCHASED_ITEMS,Items Owned
 ,
 STORE_VIEW_THEME_DIALOG_PREVIEW_TAB,Preview
 STORE_VIEW_THEME_DIALOG_DETAIL_TAB,Included Items
 STORE_VIEW_THEME_DIALOG_BUY,Buy for {0}
+STORE_VIEW_THEME_APPLY_ALL,Change all existing structures to this theme
+STORE_VIEW_THEME_CHOOSE_CITY_HEADER_LABEL,Choose a city:
+STORE_VIEW_THEME_SET_DEFAULT,Make all new structures use this theme
+STORE_VIEW_THEME_SET_INSTRUCTIONS,You can also change the theme for individual structures by clicking on them and selecting a different theme.
 ,
 STORE_BUY_COINS_DIALOG_TITLE,Purchase Coins
 STORE_BUY_COINS_DIALOG_DESCRIPTION,You must refill your account with coins before you can complete this purchase. All prices are in U.S. Dollars (USD$)

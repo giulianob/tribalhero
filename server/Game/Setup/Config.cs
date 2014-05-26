@@ -30,6 +30,7 @@ namespace Game.Setup
         public static bool server_admin_always;
         public static int scheduler_threads = 25;
         public static bool server_production = true;
+        public static bool xdebug_enabled = false;
         public static string flash_domain = "tribalhero.com";
         public static string api_domain = "tribalhero.com";
         public static string api_id = string.Empty;

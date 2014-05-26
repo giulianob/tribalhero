@@ -331,11 +331,19 @@ STRUCTURE_PROPERTY_LABOR,Laborers
 STRUCTURE_PROPERTY_POINTS_USED,Points Used
 STRUCTURE_PROPERTY_POINTS_AVAILABLE,Points Available
 ,
+ACHIEVEMENT_PURCHASED_MESSAGE,Thank you for your support. Your name will now feature your new achievement in chat and in your profile. You may purchase additional  achievements as well.
+,
+THEME_PURCHASED_MESSAGE,You may start using your new theme in two different ways. In the Items Owned section of the store you can apply the theme to all of your existing structures and set it as your default theme for new structures. You can also click on individual structures and apply your new theme there.
+,
+DEFAULT_THEME_NAME,Tribal Hero
+DEFAULT_THEME_DESCRIPTION,The original Tribal Hero theme.
+,
 PIRATES_THEME_NAME,Shipwrecked Pirates
 PIRATES_THEME_DESCRIPTION,Bring a spring upon her cable rum mutiny belay gunwalls tackle Arr yawl coxswain provost. Belay draught keel sutler carouser topgallant Corsair gabion Shiver me timbers ballast. Brig keelhaul mizzenmast aft wherry haul wind Yellow Jack hogshead bowsprit lookout.
 ,
 STORE_DIALOG_TITLE,Store
 STORE_DIALOG_PURCHASED_ITEMS,Items Owned
+STORE_DIALOG_CURRENT_BALANCE,Current Balance:
 ,
 STORE_VIEW_THEME_DIALOG_PREVIEW_TAB,Preview
 STORE_VIEW_THEME_DIALOG_DETAIL_TAB,Included Items
@@ -358,3 +366,15 @@ STORE_CONFIRM_DIALOG_CURRENT_BALANCE,Current balance
 STORE_CONFIRM_DIALOG_ITEM_COST,{0} cost
 STORE_CONFIRM_DIALOG_REMAINING_BALANCE,Balance after purchase
 STORE_CONFIRM_DIALOG_DESCRIPTION,Please confirm your purchase:
+,
+STORE_VIEW_ACHIEVEMENT_DIALOG_MULTIPLE_PURCHASES,This item can be purchased multiple times.
+STORE_VIEW_ACHIEVEMENT_DIALOG_BUY,Buy for {0}
+,
+STORE_BUY_ITEM_CONFIRMATION_TITLE,Purchase Complete
+,
+BRONZE_ACHIEVEMENT_NAME,Bronze Achievement
+BRONZE_ACHIEVEMENT_DESCRIPTION,Show your support by purchasing a bronze achievement. It will make your name look great in chat and your profile will sport a new badge. Every 3 achievements of the same tier will show as a diamond next to your name in chat, up to 3 diamonds.
+SILVER_ACHIEVEMENT_NAME,Silver Achievement
+SILVER_ACHIEVEMENT_DESCRIPTION,Show your support by purchasing a bronze achievement. It will make your name look great in chat and your profile will sport a new badge. Every 3 achievements of the same tier will show as a diamond next to your name in chat, up to 3 diamonds.
+GOLD_ACHIEVEMENT_NAME,Gold Achievement
+GOLD_ACHIEVEMENT_DESCRIPTION,Show your support by purchasing a bronze achievement. It will make your name look great in chat and your profile will sport a new badge. Every 3 achievements of the same tier will show as a diamond next to your name in chat, up to 3 diamonds.

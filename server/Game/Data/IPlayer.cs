@@ -84,5 +84,7 @@ namespace Game.Data
         void UpdateCoins(int coins);
 
         void AddTheme(string themeId);
+        
+        void AddAchievement(Achievement achievement);
     }
 }

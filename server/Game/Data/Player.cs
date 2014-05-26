@@ -295,6 +295,11 @@ namespace Game.Data
             });
         }
 
+        public void AddAchievement(Achievement achievement)
+        {
+            Achievements.Add(achievement);
+        }
+
         #region ILockable Members
 
         public int Hash

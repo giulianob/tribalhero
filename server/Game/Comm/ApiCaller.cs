@@ -60,7 +60,7 @@ namespace Game.Comm
             queryParameters["apiId"] = Config.api_id;
             queryParameters["apiKey"] = Config.api_key;
 
-            if (!Config.server_production)
+            if (Config.xdebug_enabled)
             {
                 queryParameters["XDEBUG_SESSION_START"] = "PHPSTORM";
             }

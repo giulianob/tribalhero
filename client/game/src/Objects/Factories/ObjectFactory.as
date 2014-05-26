@@ -160,14 +160,14 @@
 		public static function getNewCityPlaceholderSprite() : DisplayObjectContainer
 		{
 			var obj: Sprite = new Sprite();
-			obj.addChild(Assets.getInstance("FOUNDATION"));
+			obj.addChild(Assets.getInstance("DEFAULT_FOUNDATION"));
 			return obj;
 		}
 		
 		public static function getNewCityPlaceholderInstance(x: int, y: int) : NewCityPlaceholder
 		{
 			var obj: NewCityPlaceholder = new NewCityPlaceholder(x, y);
-			obj.setSprite(Assets.getInstance("FOUNDATION", "map"), Assets.getPosition("FOUNDATION", "map"));
+			obj.setSprite(Assets.getInstance("DEFAULT_FOUNDATION", "map"), Assets.getPosition("DEFAULT_FOUNDATION", "map"));
 			return obj;
 		}
 	}

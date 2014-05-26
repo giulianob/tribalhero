@@ -27,13 +27,10 @@ package src.UI.Dialog {
 
         private var itemTooltip: StoreItemTooltip;
 
-        private var buyDeferred: Deferred;
-
         private var viewModel: StoreViewThemeDetailsVM;
 
         public function StoreViewThemeDetailsDialog(viewModel: StoreViewThemeDetailsVM) {
             this.viewModel = viewModel;
-            this.buyDeferred = new Deferred();
             this.title = viewModel.theme.localizedName;
 
             createUI();
@@ -43,7 +40,7 @@ package src.UI.Dialog {
             setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
             setPreferredWidth(540);
 
-            var lblTitle: JLabel = new JLabel(viewModel.theme.localizedName);
+            var lblTitle: JLabel = new JLabel(viewModel.theme.localizedName, null, AsWingConstants.LEFT);
             GameLookAndFeel.changeClass(lblTitle, "darkHeader");
 
             lblDescription = new MultilineLabel(viewModel.theme.localizedDescription, 0, 100);
@@ -116,8 +113,12 @@ package src.UI.Dialog {
                 var pnlSetThemeRow: JPanel = new JPanel(new FlowLayout(AsWingConstants.CENTER, 15, 0, false));
                 pnlSetThemeRow.appendAll(btnApplyAll, btnSetDefault);
 
+                var helpLabel: MultilineLabel = new MultilineLabel(t("STORE_VIEW_THEME_SET_INSTRUCTIONS"), 0, 100);
+
                 append(pnlSetThemeRow);
-                append(new JLabel(t("STORE_VIEW_THEME_SET_INSTRUCTIONS")));
+                append(helpLabel);
+
+                helpLabel.pack();
             }
 
             lblDescription.pack();
@@ -137,7 +138,7 @@ package src.UI.Dialog {
 
         private function createChooseCityHeaderLabel(): Component {
             var label: JLabel = new JLabel(t("STORE_VIEW_THEME_CHOOSE_CITY_HEADER_LABEL"));
-            GameLookAndFeel.changeClass(label, "darkHeader");
+            GameLookAndFeel.changeClass(label, "darkText");
             return label;
         }
 

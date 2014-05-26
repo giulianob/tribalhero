@@ -3,6 +3,7 @@ using Common;
 using Game.Data;
 using Game.Util;
 using Game.Util.Locking;
+using Newtonsoft.Json;
 
 namespace Game.Comm.QueueCommands
 {
@@ -12,7 +13,7 @@ namespace Game.Comm.QueueCommands
 
         private readonly ILogger logger = LoggerFactory.Current.GetLogger<PlayerQueueCommandsModule>();
 
-        public PlayerQueueCommandsModule(ILocker locker, IChannel channel)
+        public PlayerQueueCommandsModule(ILocker locker)
         {
             this.locker = locker;
         }
@@ -21,6 +22,7 @@ namespace Game.Comm.QueueCommands
         {
             processor.RegisterCommand("player.add_coins", AddCoins);
             processor.RegisterCommand("store.theme_purchased", StoreThemePurchased);
+            processor.RegisterCommand("store.achievement_purchased", StoreAchievementPurchased);
         }
 
         private void StoreThemePurchased(dynamic payload)
@@ -48,6 +50,41 @@ namespace Game.Comm.QueueCommands
                 }
 
                 player.AddTheme(themeId);
+            });            
+        }
+        
+        private void StoreAchievementPurchased(dynamic payload)
+        {
+            Achievement achievement;
+
+            try
+            {
+                achievement = new Achievement
+                {
+                    Id = payload.id,
+                    Icon = payload.icon,
+                    Description = payload.description,
+                    PlayerId = payload.player_id,
+                    Tier = (AchievementTier)payload.tier,
+                    Title = payload.title,
+                    Type = payload.type
+                };
+            }
+            catch(Exception e)
+            {
+                logger.Error(e, "Failed to process AddCoins");
+                return;
+            }
+
+            IPlayer player;
+            locker.Lock(achievement.PlayerId, out player).Do(() =>
+            {
+                if (player == null)
+                {                    
+                    return;
+                }
+
+                player.AddAchievement(achievement);
             });            
         }
 

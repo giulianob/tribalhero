@@ -10,6 +10,7 @@ package src.Comm.Commands {
 
     import src.Map.MapComm;
     import src.Objects.Store.StoreItem;
+    import src.Objects.Store.StoreItemAchievement;
     import src.Objects.Store.StoreItemTheme;
 
     public class StoreComm {
@@ -38,6 +39,9 @@ package src.Comm.Commands {
                             switch(itemType) {
                                 case StoreItem.STORE_ITEM_THEME:
                                     items.push(new StoreItemTheme(result.readString(), result.readInt(), result.readDate()));
+                                    break;
+                                case StoreItem.STORE_ITEM_ACHIEVEMENT:
+                                    items.push(new StoreItemAchievement(result.readString(), result.readInt(), result.readDate()));
                                     break;
                                 default:
                                     throw new Error("Unknown item type in storeComm getItems");

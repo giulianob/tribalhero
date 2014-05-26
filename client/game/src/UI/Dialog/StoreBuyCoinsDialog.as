@@ -44,23 +44,25 @@ package src.UI.Dialog {
         private function createUI(): void {
             removeAll();
 
+            title = t("STORE_BUY_COINS_DIALOG_TITLE");
+
             setPreferredWidth(500);
             setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
-
-            append(new MultilineLabel(StringHelper.localize("STORE_BUY_COINS_DIALOG_DESCRIPTION"), 0, 50));
 
             var formBalance: Form = new Form();
             formBalance.addRow(new JLabel(StringHelper.localize("STORE_BUY_COINS_DIALOG_BALANCE"), null, AsWingConstants.LEFT),
                                new CoinLabel(Constants.session.coins));
 
             if (viewModel.itemCost > 0) {
+                append(new MultilineLabel(StringHelper.localize("STORE_BUY_COINS_DIALOG_DESCRIPTION"), 0, 50));
+
                 formBalance.addRow(new JLabel(StringHelper.localize("STORE_BUY_COINS_DIALOG_PURCHASE_COST"), null, AsWingConstants.LEFT),
                         new CoinLabel(viewModel.itemCost));
-            }
 
-            if (Constants.session.coins < viewModel.itemCost) {
-                formBalance.addRow(new JLabel(StringHelper.localize("STORE_BUY_COINS_DIALOG_NEEDED"), null, AsWingConstants.LEFT),
+                if (Constants.session.coins < viewModel.itemCost) {
+                    formBalance.addRow(new JLabel(StringHelper.localize("STORE_BUY_COINS_DIALOG_NEEDED"), null, AsWingConstants.LEFT),
                         new CoinLabel(viewModel.itemCost - Constants.session.coins));
+                }
             }
 
             append(formBalance);

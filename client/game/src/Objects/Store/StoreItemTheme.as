@@ -14,6 +14,14 @@ package src.Objects.Store {
             return id;
         }
 
+        override public function get itemType(): int {
+            return STORE_ITEM_THEME;
+        }
+
+        override public function get localizedPurchasedMessage(): String {
+            return StringHelper.localize("THEME_PURCHASED_MESSAGE");
+        }
+
         override public function hasPurchased(): Boolean {
             return Constants.session.themesPurchased.indexOf(themeId) > -1;
         }

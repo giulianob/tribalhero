@@ -41,6 +41,8 @@ namespace Game.Comm
         PlayerCoinsUpdate = 25,
 
         PlayerThemePurchased = 26,
+        
+        PlayerAchievementPurchased = 27,
 
         #endregion
 

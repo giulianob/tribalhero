@@ -297,31 +297,35 @@
         [EmbedPosition(name = "map", x = "2", y = "-8")]
         public static const FOREST_LVL_4_SHADOW: Class;
 
+        // Store Achievement Icons
+        [Embed(source = "../../../graphics/icons/achievements/coins-gold.png")]
+        public static const GOLD_ACHIEVEMENT_THUMBNAIL: Class;
+
+        [Embed(source = "../../../graphics/icons/achievements/coins-silver.png")]
+        public static const SILVER_ACHIEVEMENT_THUMBNAIL: Class;
+
+        [Embed(source = "../../../graphics/icons/achievements/coins-bronze.png")]
+        public static const BRONZE_ACHIEVEMENT_THUMBNAIL: Class;
+
         // Common structures
         [Embed(source = "../../../graphics/themes/default/BARBARIAN_TRIBE_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = "66", y = "-41")]
         public static const BARBARIAN_TRIBE_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/BARBARIAN_TRIBE_STRUCTURE_SHADOW.png")]
-        [EmbedPosition(name = "map", x = "73", y = "19")]
-        public static const BARBARIAN_TRIBE_STRUCTURE_SHADOW: Class;
-
         // Default Structure Pack
+        [Embed(source = "../../../graphics/themes/default/THUMBNAIL.png")]
+        public static const DEFAULT_THEME_THUMBNAIL: Class;
+
+        [Embed(source = "../../../graphics/themes/default/BANNER.png")]
+        public static const DEFAULT_THEME_BANNER: Class;
+
         [Embed(source = "../../../graphics/themes/default/TROOP.png")]
         [EmbedPosition(name = "map", x = "7", y = "2")]
         public static const DEFAULT_TROOP: Class;
 
-        [Embed(source = "../../../graphics/themes/default/TROOP_SHADOW.png")]
-        [EmbedPosition(name = "map", x = "0", y = "12")]
-        public static const DEFAULT_TROOP_SHADOW: Class;
-
         [Embed(source = "../../../graphics/themes/default/ARMORY_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = "15", y = "-11")]
         public static const DEFAULT_ARMORY_STRUCTURE: Class;
-
-        [Embed(source = "../../../graphics/themes/default/ARMORY_STRUCTURE_SHADOW.png")]
-        [EmbedPosition(name = "map", x = "11", y = "13")]
-        public static const DEFAULT_ARMORY_STRUCTURE_SHADOW: Class;
 
         [Embed(source = "../../../graphics/themes/default/FIELD_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = "25", y = "4")]
@@ -330,10 +334,6 @@
         [Embed(source = "../../../graphics/themes/default/BARRACK_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = 93, y = "-16")]
         public static const DEFAULT_BARRACK_STRUCTURE: Class;
-
-        [Embed(source = "../../../graphics/themes/default/BARRACK_STRUCTURE_SHADOW.png")]
-        [EmbedPosition(name = "map", x = 84, y = "10")]
-        public static const DEFAULT_BARRACK_STRUCTURE_SHADOW: Class;
 
         [Embed(source = "../../../graphics/themes/default/FOUNDATION.png")]
         [EmbedPosition(name = "map", x = 42, y = "-24")]
@@ -365,41 +365,21 @@
         [EmbedPosition(name = "map", x = 29, y = "-3")]
         public static const DEFAULT_FOUNDRY_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/FOUNDRY_STRUCTURE_SHADOW.png")]
-        [EmbedPosition(name = "map", x = 28, y = "24")]
-        public static const DEFAULT_FOUNDRY_STRUCTURE_SHADOW: Class;
-
         [Embed(source = "../../../graphics/themes/default/TRIBAL_CARNIVAL_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = 39, y = "14")]
         public static const DEFAULT_TRIBAL_CARNIVAL_STRUCTURE: Class;
-
-        [Embed(source = "../../../graphics/themes/default/TRIBAL_CARNIVAL_STRUCTURE_SHADOW.png")]
-        [EmbedPosition(name = "map", x = 39, y = "21")]
-        public static const DEFAULT_TRIBAL_CARNIVAL_STRUCTURE_SHADOW: Class;
 
         [Embed(source = "../../../graphics/themes/default/TRIBAL_FAIR_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = 38, y = "13")]
         public static const DEFAULT_TRIBAL_FAIR_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/TRIBAL_FAIR_STRUCTURE_SHADOW.png")]
-        [EmbedPosition(name = "map", x = 36, y = "20")]
-        public static const DEFAULT_TRIBAL_FAIR_STRUCTURE_SHADOW: Class;
-
         [Embed(source = "../../../graphics/themes/default/TRIBAL_FESTIVAL_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = 35, y = "1")]
         public static const DEFAULT_TRIBAL_FESTIVAL_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/TRIBAL_FESTIVAL_STRUCTURE_SHADOW.png")]
-        [EmbedPosition(name = "map", x = 34, y = "11")]
-        public static const DEFAULT_TRIBAL_FESTIVAL_STRUCTURE_SHADOW: Class;
-
         [Embed(source = "../../../graphics/themes/default/STRONGHOLD_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = 26, y = "-46")]
         public static const DEFAULT_STRONGHOLD_STRUCTURE: Class;
-
-        [Embed(source = "../../../graphics/themes/default/STRONGHOLD_STRUCTURE_SHADOW.png")]
-        [EmbedPosition(name = "map", x = 20, y = "20")]
-        public static const DEFAULT_STRONGHOLD_STRUCTURE_SHADOW: Class;
 
         [Embed(source = "../../../graphics/themes/default/TRIBAL_GATHERING_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = 24, y = "6")]
@@ -409,33 +389,17 @@
         [EmbedPosition(name = "map", x = 13, y = "1")]
         public static const DEFAULT_FARM_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/FARM_STRUCTURE_SHADOW.png")]
-        [EmbedPosition(name = "map", x = 76, y = "15")]
-        public static const DEFAULT_FARM_STRUCTURE_SHADOW: Class;
-
         [Embed(source = "../../../graphics/themes/default/MARKET_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = 31, y = "6")]
         public static const DEFAULT_MARKET_STRUCTURE: Class;
-
-        [Embed(source = "../../../graphics/themes/default/MARKET_STRUCTURE_SHADOW.png")]
-        [EmbedPosition(name = "map", x = 33, y = "34")]
-        public static const DEFAULT_MARKET_STRUCTURE_SHADOW: Class;
 
         [Embed(source = "../../../graphics/themes/default/REFINERY_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = 28, y = "0")]
         public static const DEFAULT_REFINERY_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/REFINERY_STRUCTURE_SHADOW.png")]
-        [EmbedPosition(name = "map", x = 21, y = "25")]
-        public static const DEFAULT_REFINERY_STRUCTURE_SHADOW: Class;
-
         [Embed(source = "../../../graphics/themes/default/STABLE_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = 78, y = "-26")]
         public static const DEFAULT_STABLE_STRUCTURE: Class;
-
-        [Embed(source = "../../../graphics/themes/default/STABLE_STRUCTURE_SHADOW.png")]
-        [EmbedPosition(name = "map", x = 74, y = "29")]
-        public static const DEFAULT_STABLE_STRUCTURE_SHADOW: Class;
 
         [Embed(source = "../../../graphics/themes/default/TOWER_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = 46, y = "-18")]
@@ -445,49 +409,25 @@
         [EmbedPosition(name = "map", x = 124, y = "-50")]
         public static const DEFAULT_TOWNCENTER_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/TOWNCENTER_STRUCTURE_SHADOW.png")]
-        [EmbedPosition(name = "map", x = "107", y = "5")]
-        public static const DEFAULT_TOWNCENTER_STRUCTURE_SHADOW: Class;
-
         [Embed(source = "../../../graphics/themes/default/TRADING_POST_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = "66", y = "-23")]
         public static const DEFAULT_TRADING_POST_STRUCTURE: Class;
-
-        [Embed(source = "../../../graphics/themes/default/TRADING_POST_STRUCTURE_SHADOW.png")]
-        [EmbedPosition(name = "map", x = "67", y = "13")]
-        public static const DEFAULT_TRADING_POST_STRUCTURE_SHADOW: Class;
 
         [Embed(source = "../../../graphics/themes/default/UNIVERSITY_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = 46, y = "-52")]
         public static const DEFAULT_UNIVERSITY_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/UNIVERSITY_STRUCTURE_SHADOW.png")]
-        [EmbedPosition(name = "map", x = 33, y = "-4")]
-        public static const DEFAULT_UNIVERSITY_STRUCTURE_SHADOW: Class;
-
         [Embed(source = "../../../graphics/themes/default/LUMBERMILL_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = 17, y = "-10")]
         public static const DEFAULT_LUMBERMILL_STRUCTURE: Class;
-
-        [Embed(source = "../../../graphics/themes/default/LUMBERMILL_STRUCTURE_SHADOW.png")]
-        [EmbedPosition(name = "map", x = 14, y = "26")]
-        public static const DEFAULT_LUMBERMILL_STRUCTURE_SHADOW: Class;
 
         [Embed(source = "../../../graphics/themes/default/WORKSHOP_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = 76, y = "-46")]
         public static const DEFAULT_WORKSHOP_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/WORKSHOP_STRUCTURE_SHADOW.png")]
-        [EmbedPosition(name = "map", x = 70, y = "13")]
-        public static const DEFAULT_WORKSHOP_STRUCTURE_SHADOW: Class;
-
         [Embed(source = "../../../graphics/themes/default/TRAINING_GROUND_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = 53, y = "-24")]
         public static const DEFAULT_TRAINING_GROUND_STRUCTURE: Class;
-
-        [Embed(source = "../../../graphics/themes/default/TRAINING_GROUND_STRUCTURE_SHADOW.png")]
-        [EmbedPosition(name = "map", x = 51, y = "4")]
-        public static const DEFAULT_TRAINING_GROUND_STRUCTURE_SHADOW: Class;
 
         [Embed(source = "../../../graphics/themes/default/CANNON_TOWER_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = 46, y = "-18")]
@@ -496,10 +436,6 @@
         [Embed(source = "../../../graphics/themes/default/BLACKSMITH_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = 14, y = "-19")]
         public static const DEFAULT_BLACKSMITH_STRUCTURE: Class;
-
-        [Embed(source = "../../../graphics/themes/default/BLACKSMITH_STRUCTURE_SHADOW.png")]
-        [EmbedPosition(name = "map", x = 12, y = "21")]
-        public static const DEFAULT_BLACKSMITH_STRUCTURE_SHADOW: Class;
 
         [Embed(source = "../../../graphics/themes/default/BASEMENT_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = 30, y = "6")]
@@ -512,10 +448,6 @@
         [Embed(source = "../../../graphics/themes/default/FOREST_CAMP_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = 36, y = "4")]
         public static const DEFAULT_FOREST_CAMP_STRUCTURE: Class;
-
-        [Embed(source = "../../../graphics/themes/default/FOREST_CAMP_STRUCTURE_SHADOW.png")]
-        [EmbedPosition(name = "map", x = 34, y = "27")]
-        public static const DEFAULT_FOREST_CAMP_STRUCTURE_SHADOW: Class;
 
         [Embed(source = "../../../graphics/themes/default/DEAD_FIELD_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = "25", y = "4")]

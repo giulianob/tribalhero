@@ -927,7 +927,7 @@ namespace Game.Comm
                 help = true;
             }
 
-            if (help || string.IsNullOrEmpty(playerName) || coins <= 0)
+            if (help || string.IsNullOrEmpty(playerName) || coins == 0)
             {
                 return "addcoins --player=player --coins=#";
             }

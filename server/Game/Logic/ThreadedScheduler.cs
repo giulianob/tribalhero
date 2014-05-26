@@ -15,7 +15,7 @@ namespace Game.Logic
 {
     public class ThreadedScheduler : IScheduler
     {
-        private readonly ILogger logger = LoggerFactory.Current.GetLogger<ThreadedScheduler>();
+        private static readonly ILogger Logger = LoggerFactory.Current.GetLogger<ThreadedScheduler>();
 
         private readonly ScheduleComparer comparer = new ScheduleComparer();
 
@@ -94,7 +94,7 @@ namespace Game.Logic
             lock (schedulesLock)
             {
                 Paused = true;
-                logger.Info("Scheduler paused");
+                Logger.Info("Scheduler paused");
                 SetTimer(Timeout.Infinite);
                 events = new ManualResetEvent[doneEvents.Count];
                 doneEvents.Values.CopyTo(events, 0);
@@ -111,7 +111,7 @@ namespace Game.Logic
             lock (schedulesLock)
             {
                 Paused = false;
-                logger.Info("Scheduler resumed");
+                Logger.Info("Scheduler resumed");
                 SetNextActionTime();
             }
         }
@@ -139,9 +139,9 @@ namespace Game.Logic
 
                 schedule.IsScheduled = true;
 
-                if (logger.IsTraceEnabled)
+                if (Logger.IsTraceEnabled)
                 {
-                    logger.Trace(String.Format("Schedule added index[{0}] total[{1}].", index, schedules.Count));
+                    Logger.Trace(String.Format("Schedule added index[{0}] total[{1}].", index, schedules.Count));
                 }
 
                 if (index == 0)
@@ -167,7 +167,7 @@ namespace Game.Logic
                     return true;
                 }
 
-                logger.Warn("Action was said to be scheduled but was not found in scheduler during a remove");
+                Logger.Warn("Action was said to be scheduled but was not found in scheduler during a remove");
 
                 return false;
             }
@@ -177,14 +177,14 @@ namespace Game.Logic
         {
             if (ms == Timeout.Infinite)
             {
-                logger.Trace(String.Format("Timer sleeping"));
+                Logger.Trace(String.Format("Timer sleeping"));
                 nextFire = DateTime.MinValue;
             }
             else
             {
-                if (logger.IsTraceEnabled && ms > 0)
+                if (Logger.IsTraceEnabled && ms > 0)
                 {
-                    logger.Trace(String.Format("Next schedule in {0} milliseconds.", ms));
+                    Logger.Trace(String.Format("Next schedule in {0} milliseconds.", ms));
                 }
 
                 nextFire = SystemClock.Now.AddMilliseconds(ms);
@@ -200,7 +200,7 @@ namespace Game.Logic
             {
                 if (schedules.Count == 0 || Paused)
                 {
-                    logger.Trace("In DispatchAction but no schedules");
+                    Logger.Trace("In DispatchAction but no schedules");
                     return;
                 }
                 
@@ -247,14 +247,14 @@ namespace Game.Logic
                 var gameAction = job.Schedule as GameAction;
                 if (gameAction == null)
                 {
-                    logger.Warn("Slow action took {0}ms to complete. ScheduleType[{1}] ScheduleTime[{2}]",
+                    Logger.Warn("Slow action took {0}ms to complete. ScheduleType[{1}] ScheduleTime[{2}]",
                                 deltaTicks,
                                 job.Schedule.GetType().FullName,
                                 job.Schedule.Time);
                 }
                 else
                 {
-                    logger.Warn("Slow action took {0}ms to complete. ScheduleType[{1}] ScheduleTime[{2}] LocationType[{3}] LocationId[{4}] ActionId[{5}]",
+                    Logger.Warn("Slow action took {0}ms to complete. ScheduleType[{1}] ScheduleTime[{2}] LocationType[{3}] LocationId[{4}] ActionId[{5}]",
                                 deltaTicks,
                                 job.Schedule.GetType().FullName,
                                 job.Schedule.Time,
@@ -288,7 +288,7 @@ namespace Game.Logic
 
             if (schedules.Count == 0)
             {
-                logger.Trace("No actions available.");
+                Logger.Trace("No actions available.");
                 SetTimer(Timeout.Infinite);
                 return;
             }
@@ -353,9 +353,12 @@ namespace Game.Logic
                 // delegates currently queued or running to process tasks, schedule another.
                 lock (_tasks)
                 {
-                    task.ContinueWith(continuation => 
-                        Engine.UnhandledExceptionHandler(continuation.Exception), 
-                        TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.OnlyOnFaulted);
+                    task.ContinueWith(continuation =>
+                    {
+                        Logger.Error("Got error in LimitedConcurrencyLevelTaskScheduler.QueueTask");
+
+                        Engine.UnhandledExceptionHandler(continuation.Exception);
+                    }, TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.OnlyOnFaulted);
 
                     _tasks.AddLast(task);
                     if (_delegatesQueuedOrRunning < _maxDegreeOfParallelism)

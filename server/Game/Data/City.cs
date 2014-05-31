@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Game.Battle;
 using Game.Data.Events;
 using Game.Data.Troop;
@@ -159,7 +160,7 @@ namespace Game.Data
                 }
 
                 radius = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("Radius"));
+                RaisePropertyChanged();
             }
         }
 
@@ -188,7 +189,7 @@ namespace Game.Data
             {
                 battle = value;
 
-                PropertyChanged(this, new PropertyChangedEventArgs("Battle"));
+                RaisePropertyChanged();
             }
         }
 
@@ -226,7 +227,7 @@ namespace Game.Data
                 CheckUpdateMode();
 
                 defaultTheme = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("DefaultTheme"));
+                RaisePropertyChanged();
             }
         }
 
@@ -324,8 +325,7 @@ namespace Game.Data
             {
                 CheckUpdateMode();
                 hideNewUnits = value;
-
-                PropertyChanged(this, new PropertyChangedEventArgs("HideNewUnits"));
+                RaisePropertyChanged();
             }
         }
 
@@ -342,7 +342,7 @@ namespace Game.Data
             {
                 CheckUpdateMode();
                 attackPoint = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("AttackPoint"));
+                RaisePropertyChanged();
             }
         }
 
@@ -359,7 +359,7 @@ namespace Game.Data
             {
                 CheckUpdateMode();
                 defensePoint = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("DefensePoint"));
+                RaisePropertyChanged();
             }
         }
 
@@ -378,7 +378,7 @@ namespace Game.Data
 
                 CheckUpdateMode();
                 alignmentPoint = Math.Min(100m, Math.Max(0m, value));
-                PropertyChanged(this, new PropertyChangedEventArgs("AlignmentPoint"));
+                RaisePropertyChanged();
             }
         }
 
@@ -392,8 +392,7 @@ namespace Game.Data
             {
                 CheckUpdateMode();
                 this.value = value;
-
-                PropertyChanged(this, new PropertyChangedEventArgs("Value"));                
+                RaisePropertyChanged();
             }
         }
 
@@ -918,6 +917,11 @@ namespace Game.Data
             {
                 return LocationType.City;
             }
+        }
+
+        private void RaisePropertyChanged([CallerMemberName] string caller = "")
+        {
+            PropertyChanged(this, new PropertyChangedEventArgs(caller));
         }
     }
 }

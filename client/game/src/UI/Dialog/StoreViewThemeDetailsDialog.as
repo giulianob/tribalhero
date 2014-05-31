@@ -43,7 +43,7 @@ package src.UI.Dialog {
             var lblTitle: JLabel = new JLabel(viewModel.theme.localizedName, null, AsWingConstants.LEFT);
             GameLookAndFeel.changeClass(lblTitle, "darkHeader");
 
-            lblDescription = new MultilineLabel(viewModel.theme.localizedDescription, 0, 100);
+            lblDescription = new MultilineLabel(viewModel.theme.localizedDescription, 3, 100);
 
             var pnlPreviewImage: JPanel = new JPanel(new CenterLayout());
             pnlPreviewImage.appendAll(new AssetPane(Assets.getInstance(viewModel.theme.id + "_THEME_BANNER")));

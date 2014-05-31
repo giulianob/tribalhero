@@ -46,7 +46,7 @@ package src.UI.Dialog {
             var lblTitle: JLabel = new JLabel(viewModel.achievement.localizedName, new AssetIcon(viewModel.achievement.thumbnail()), AsWingConstants.LEFT);
             GameLookAndFeel.changeClass(lblTitle, "darkHeader");
 
-            lblDescription = new MultilineLabel(viewModel.achievement.localizedDescription, 0, 100);
+            lblDescription = new MultilineLabel(viewModel.achievement.localizedDescription, 5, 100);
 
             appendAll(lblTitle, lblDescription, new JLabel(t("STORE_VIEW_ACHIEVEMENT_DIALOG_MULTIPLE_PURCHASES"), null, AsWingConstants.RIGHT), pnlBuyRow);
 

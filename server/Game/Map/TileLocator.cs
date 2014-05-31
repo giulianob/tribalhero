@@ -12,10 +12,7 @@ namespace Game.Map
         private readonly ConcurrentDictionary<RadiusCache, bool> overlappingCache = new ConcurrentDictionary<RadiusCache, bool>();
 
         private readonly GetRandom getRandom;
-
-        [Obsolete("Inject TileLocator instead")]
-        public static ITileLocator Current { get; set; }
-
+        
         public ConcurrentDictionary<RadiusCache, bool> OverlappingCache
         {
             get

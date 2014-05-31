@@ -4,6 +4,7 @@ using Game.Battle;
 using Game.Battle.CombatGroups;
 using Game.Data;
 using Game.Data.BarbarianTribe;
+using Game.Setup;
 
 namespace Game.Logic.Formulas
 {
@@ -20,34 +21,30 @@ namespace Game.Logic.Formulas
                                            new SlotMachineCalculator(new[] {92, 208, 461, 864, 1423, 2142, 3027, 4081, 5308, 6709},
                                                                      new[] {138, 311, 692, 1296, 2134, 3213, 4540, 6122, 7961, 10064},
                                                                      new[] {1.0, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                                                                     new[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                                                     new Random());
+                                                                     new[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
 
             barbarianTribeWoodCalculator = barbarianTribeWoodCalculator ??
                                            new SlotMachineCalculator(new[] {92, 208, 461, 864, 1423, 2142, 3027, 4081, 5308, 6709},
                                                                      new[] {138, 311, 692, 1296, 2134, 3213, 4540, 6122, 7961, 10064},
                                                                      new[] {1.0, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                                                                     new[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                                                     new Random());
+                                                                     new[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
 
             barbarianTribeGoldCalculator = barbarianTribeGoldCalculator ??
                                            new SlotMachineCalculator(new[] {1, 1, 1, 207, 279, 314, 264, 498, 578, 531},
                                                                      new[] {50, 75, 100, 257, 379, 464, 464, 748, 888, 921},
                                                                      new[] {0.01, 0.05, 0.1, 0.25, 0.35, 0.45, 0.55, 0.65, 0.75, 0.95},
-                                                                     new[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                                                     new Random());
+                                                                     new[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
 
             barbarianTribeIronCalculator = barbarianTribeIronCalculator ??
                                            new SlotMachineCalculator(new[] {1, 1, 1, 1, 1, 18, 16, 27, 40, 65},
                                                                      new[] {20, 30, 50, 50, 50, 28, 32, 57, 80, 135},
                                                                      new[] {0.0001, 0.001, 0.01, 0.05, 0.1, 0.3, 0.5, 0.6, 0.75, 0.9},
-                                                                     new[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                                                     new Random());
+                                                                     new[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
 
-            return new Resource(barbarianTribeCropCalculator.Roll(level),
-                                barbarianTribeGoldCalculator.Roll(level),
-                                barbarianTribeIronCalculator.Roll(level),
-                                barbarianTribeWoodCalculator.Roll(level));
+            return new Resource(barbarianTribeCropCalculator.Roll(level, Config.Random),
+                                barbarianTribeGoldCalculator.Roll(level, Config.Random),
+                                barbarianTribeIronCalculator.Roll(level, Config.Random),
+                                barbarianTribeWoodCalculator.Roll(level, Config.Random));
         }
 
         public virtual void BarbarianTribeUpkeep(byte level, out int upkeep, out byte unitLevel)

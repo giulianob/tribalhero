@@ -24,23 +24,38 @@ namespace Game.Module
 
         private IConnection connection;
 
+        private bool isEnabled;
+
         public QueueListener(IQueueCommandProcessor queueCommandProcessor)
         {
             this.queueCommandProcessor = queueCommandProcessor;
 
-            reconnectTimer = new System.Timers.Timer(60000);
+            reconnectTimer = new System.Timers.Timer(15000);
             reconnectTimer.AutoReset = false;
-            reconnectTimer.Elapsed += (sender, args) => ConnectToRabbitMq();
+            reconnectTimer.Elapsed += (sender, args) => ReconnectToRabbitMq();
         }
 
         public void Start(string hostname)
         {
+            logger.Info("Starting QueueListener");
+            
+            isEnabled = true;
             ConnectToRabbitMq();            
+        }
+
+        public void Stop()
+        {
+            logger.Info("Stopping QueueListener");
+
+            isEnabled = false;
+            DisposeConnection();
         }
 
         private bool ConnectToRabbitMq()
         {
-            reconnectTimer.Enabled = false;
+            logger.Info("Connecting to RabbitMq");
+
+            reconnectTimer.Stop();
 
             int attempts = 0;
             
@@ -55,7 +70,7 @@ namespace Game.Module
                         HostName = Config.api_domain,
                         UserName = "guest",
                         Password = "guest",
-                        RequestedHeartbeat = 60
+                        RequestedHeartbeat = 60,                        
                     };
 
                     connection = connectionFactory.CreateConnection();
@@ -67,32 +82,66 @@ namespace Game.Module
                 }
                 catch(System.IO.EndOfStreamException ex)
                 {
-                    logger.Error(ex, "Failed to connect to RabbitMq");
-                    return false;
+                    logger.Error(ex, "Failed to connect to RabbitMq");                    
                 }
                 catch(BrokerUnreachableException ex)
                 {
-                    logger.Error(ex, "Failed to connect to RabbitMq");
-                    return false;
+                    logger.Error(ex, "Failed to connect to RabbitMq");                    
                 }
                 catch(Exception ex)
                 {
-                    logger.Warn(ex, "Failed to connect to RabbitMq");
-
-                    Thread.Sleep(1000);
+                    logger.Error(ex, "Failed to connect to RabbitMq");                    
                 }
+
+                DisposeConnection();
+                Thread.Sleep(1000);
             }
+            
+            logger.Error("Failed to connect to RabbitMq after all attempts. Trying later.");
 
-            if (connection != null)
-            {
-                connection.Dispose();
-            }
-
-            logger.Error("Failed to connect to RabbitMq after all attempts. Giving up for a few minutes.");
-
-            reconnectTimer.Enabled = true;
+            reconnectTimer.Start();            
 
             return false;
+        }
+
+        private void DisposeConnection()
+        {
+            if (connection == null)
+            {
+                return;
+            }
+
+            try
+            {
+                if (connection.IsOpen)
+                {
+                    connection.Close(500);
+                }                                
+            }
+            catch { }
+
+            connection = null;
+        }
+
+        private void ReconnectToRabbitMq()
+        {
+            if (!isEnabled)
+            {
+                return;
+            }
+
+            try
+            {                
+                if (ConnectToRabbitMq())
+                {
+                    logger.Info("Reconnected to RabbitMq");
+                }
+            }
+            catch(Exception e)
+            {
+                logger.Error("Unhandled exception while reconnecting to Rabbit");
+                Engine.UnhandledExceptionHandler(e);
+            }
         }
 
         private void CreateModel()
@@ -131,12 +180,24 @@ namespace Game.Module
                     return;
                 }
 
-                queueCommandProcessor.Execute(command, data);
+                try
+                {
+                    queueCommandProcessor.Execute(command, data);
+                }
+                catch(Exception e)
+                {
+                    logger.Error("Unhandled queue receive error");
+                    Engine.UnhandledExceptionHandler(e);
+                }
             };
  
-            consumer.Shutdown += (o, e) => ConnectToRabbitMq();
+            consumer.Shutdown += (o, ev) =>
+            {
+                logger.Warn("Connection to RabbitMq lost");
+                ReconnectToRabbitMq();
+            };
 
-            model.BasicConsume(queueName, true, consumer);
+            model.BasicConsume(queueName, true, consumer);            
         }
     }
 }

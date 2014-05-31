@@ -308,7 +308,6 @@ _________ _______ _________ ______   _______  _
             PacketHelper.RegionLocator = Ioc.Kernel.Get<IRegionLocator>();
             Global.Current = Ioc.Kernel.Get<Global>();
             SystemVariablesUpdater.Current = Ioc.Kernel.Get<SystemVariablesUpdater>();
-            TileLocator.Current = Ioc.Kernel.Get<TileLocator>();
             World.Current = Ioc.Kernel.Get<IWorld>();
             Scheduler.Current = Ioc.Kernel.Get<IScheduler>();
             DbPersistance.Current = Ioc.Kernel.Get<IDbManager>();
@@ -325,6 +324,7 @@ _________ _______ _________ ______   _______  _
 
             State = EngineState.Stopping;
 
+            queueListener.Stop();
             systemVariablesUpdater.Pause();
             Logger.Info("Stopping TCP server...");
             server.Stop();

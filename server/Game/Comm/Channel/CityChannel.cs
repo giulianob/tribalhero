@@ -7,6 +7,7 @@ using Game.Logic;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
+using Game.Util;
 
 namespace Game.Comm.Channel
 {
@@ -122,35 +123,38 @@ namespace Game.Comm.Channel
             return city.Owner.PlayerChannel;
         }
 
-        private void CityOnPropertyChanged(ICity city, PropertyChangedEventArgs propertyChangedEventArgs)
+        private void CityOnPropertyChanged(ICity city, PropertyChangedEventArgs ev)
         {
-            switch(propertyChangedEventArgs.PropertyName)
+            if (ev.PropertyName == city.GetProperty(c => c.Radius))
             {
-                case "Radius":
-                    RadiusUpdateEvent(city);
-                    break;
-                case "Battle":
-                    if (city.Battle == null)
-                    {
-                        BattleEnded(city);
-                    }
-                    else
-                    {
-                        BattleStarted(city);
-                    }
-                    break;
-                case "HideNewUnits":
-                    HideNewUnitsUpdate(city);
-                    break;
-                case "AttackPoint":
-                case "DefensePoint":
-                case "AlignmentPoint":
-                case "Value":
-                    PointUpdate(city);
-                    break;
-                case "DefaultTheme":
-                    DefaultThemeUpdate(city);
-                    break;
+                RadiusUpdateEvent(city);
+            }
+            else if (ev.PropertyName == city.GetProperty(c => c.Battle))
+            {
+                if (city.Battle == null)
+                {
+                    BattleEnded(city);
+                }
+                else
+                {
+                    BattleStarted(city);
+                }
+            }
+            else if (ev.PropertyName == city.GetProperty(c => c.HideNewUnits))
+            {
+                HideNewUnitsUpdate(city);
+            }
+            else if (ev.PropertyName == city.GetProperty(c => c.AttackPoint) ||
+                     ev.PropertyName == city.GetProperty(c => c.DefensePoint) ||
+                     ev.PropertyName == city.GetProperty(c => c.AlignmentPoint) ||
+                     ev.PropertyName == city.GetProperty(c => c.Value))
+            {
+                PointUpdate(city);
+
+            }
+            else if (ev.PropertyName == city.GetProperty(c => c.DefaultTheme))
+            {
+                DefaultThemeUpdate(city);
             }
         }
 

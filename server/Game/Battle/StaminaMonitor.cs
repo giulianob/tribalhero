@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Battle.Reporting;
@@ -41,7 +42,7 @@ namespace Game.Battle
             set
             {
                 stamina = Math.Max(value, (short)0);
-                PropertyChanged(this, new PropertyChangedEventArgs("Stamina"));
+                RaisePropertyChanged();
             }
         }
 
@@ -107,6 +108,11 @@ namespace Game.Battle
             {
                 battle.Remove(CombatGroup, BattleManager.BattleSide.Attack, ReportState.OutOfStamina);
             }
+        }
+
+        private void RaisePropertyChanged([CallerMemberName] string caller = "")
+        {
+            PropertyChanged(this, new PropertyChangedEventArgs(caller));
         }
     }
 }

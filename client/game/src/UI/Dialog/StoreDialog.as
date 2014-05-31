@@ -5,27 +5,30 @@ package src.UI.Dialog {
     import flash.events.Event;
 
     import org.aswing.AsWingConstants;
+    import org.aswing.AsWingUtils;
     import org.aswing.AssetIcon;
     import org.aswing.BorderLayout;
+    import org.aswing.CenterLayout;
     import org.aswing.FlowLayout;
+    import org.aswing.Insets;
     import org.aswing.JFrame;
     import org.aswing.JLabel;
     import org.aswing.JLabelButton;
     import org.aswing.JPanel;
+    import org.aswing.JScrollPane;
     import org.aswing.SoftBoxLayout;
     import org.aswing.VectorListModel;
+    import org.aswing.border.EmptyBorder;
     import org.aswing.ext.GeneralGridListCellFactory;
     import org.aswing.ext.GridList;
     import org.aswing.ext.GridListItemEvent;
     import org.aswing.geom.IntDimension;
 
     import src.Assets;
-
     import src.Constants;
     import src.Global;
     import src.Objects.Store.StoreItem;
     import src.SessionVariables;
-    import src.UI.Components.CoinLabel;
     import src.UI.Components.Store.StoreItemGridCell;
     import src.UI.GameJImagePanelBackground;
     import src.UI.GameJPanel;
@@ -40,7 +43,9 @@ package src.UI.Dialog {
         private var availableStoreItemsGridList: GridList;
         private var purchasedStoreItemsGridList: GridList;
         private var currentBalance: JLabelButton;
-        
+        private var scrollBody: JPanel;
+        private var scroll: JScrollPane;
+
         private var viewModel: StoreDialogVM;
 
         public function StoreDialog(viewModel: StoreDialogVM) {
@@ -65,8 +70,8 @@ package src.UI.Dialog {
         }
 
         private function createUI(): void {
-            setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
-            setPreferredSize(new IntDimension(700, Math.max(600, Constants.screenH - GameJImagePanelBackground.getFrameHeight())));
+            setLayout(new BorderLayout());
+            setPreferredSize(new IntDimension(675, Math.min(400, Constants.screenH - GameJImagePanelBackground.getFrameHeight())));
 
             var balanceLabel:JLabel = new JLabel(t("STORE_DIALOG_CURRENT_BALANCE"), null);
 
@@ -89,8 +94,6 @@ package src.UI.Dialog {
             availableStoreItemsGridList = new GridList(new VectorListModel(), new GeneralGridListCellFactory(StoreItemGridCell), 3, 0);
             availableStoreItemsGridList.setTileWidth(200);
             availableStoreItemsGridList.setTileHeight(125);
-            availableStoreItemsGridList.setTracksWidth(true);
-            availableStoreItemsGridList.setPreferredWidth(400);
             availableStoreItemsGridList.addEventListener(GridListItemEvent.ITEM_CLICK, viewItemDetails);
 
             var itemsPurchased: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
@@ -99,16 +102,20 @@ package src.UI.Dialog {
             purchasedStoreItemsGridList = new GridList(new VectorListModel(), new GeneralGridListCellFactory(StoreItemGridCell), 3, 0);
             purchasedStoreItemsGridList.setTileWidth(200);
             purchasedStoreItemsGridList.setTileHeight(125);
-            purchasedStoreItemsGridList.setTracksWidth(true);
-            purchasedStoreItemsGridList.setPreferredWidth(400);
             purchasedStoreItemsGridList.addEventListener(GridListItemEvent.ITEM_CLICK, viewItemDetails);
 
             itemsPurchased.appendAll(lblPurchasedItemsHeader, purchasedStoreItemsGridList);
 
-            var scrollBody: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 15));
-            scrollBody.appendAll(availableStoreItemsGridList, itemsPurchased);
+            scrollBody = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 15));
+            scrollBody.appendAll(headerPnl, availableStoreItemsGridList, itemsPurchased);
 
-            appendAll(headerPnl, Util.createTopAlignedScrollPane(scrollBody));
+            scroll = new JScrollPane(scrollBody, JScrollPane.SCROLLBAR_AS_NEEDED, JScrollPane.SCROLLBAR_NEVER);
+            scroll.setConstraints(AsWingConstants.CENTER);
+
+            scrollBody.pack();
+            scroll.pack();
+
+            appendAll(scroll);
         }
 
         public function viewItemDetails(e: GridListItemEvent): void {
@@ -119,7 +126,6 @@ package src.UI.Dialog {
         {
             super.showSelf(owner, modal, onClose, null);
 
-            frame.setResizable(false);
             frame.pack();
 
             Global.gameContainer.showFrame(frame);
@@ -158,6 +164,8 @@ package src.UI.Dialog {
             }
 
             getFrame().pack();
+
+            Util.centerFrame(getFrame());
         }
     }
 }

@@ -290,8 +290,8 @@ namespace Game.Comm
                 packet.AddUInt16(stats.Key);
                 packet.AddByte(stats.Value.Base.Lvl);
 
-                packet.AddUInt16((ushort)stats.Value.MaxHp);
-                packet.AddUInt16((ushort)stats.Value.Atk);
+                packet.AddFloat((float)stats.Value.MaxHp);
+                packet.AddFloat((float)stats.Value.Atk);
                 packet.AddByte(stats.Value.Splash);
                 // Await client update
                 packet.AddUInt16(0);
@@ -374,7 +374,7 @@ namespace Game.Comm
 
         internal static void AddToPacket(ICombatObject combatObject, Packet packet)
         {
-            combatObject.AddPacketInfo(packet);
+            combatObject.AddPacketInfo(packet);            
         }
 
         public static void AddLoginToPacket(Session session, IThemeManager themeManager, Packet packet)

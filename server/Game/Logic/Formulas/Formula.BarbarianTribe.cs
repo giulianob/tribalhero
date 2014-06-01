@@ -49,8 +49,8 @@ namespace Game.Logic.Formulas
 
         public virtual void BarbarianTribeUpkeep(byte level, out int upkeep, out byte unitLevel)
         {
-            int[] btUnitLevel = new[] {1, 1, 1, 2, 2, 3, 3, 4, 5, 6};
-            int[] btUnitUpkeep = new[] {10, 20, 41, 73, 117, 171, 237, 313, 401, 500};
+            int[] btUnitLevel = {1, 1, 1, 2, 2, 3, 3, 4, 5, 6};
+            int[] btUnitUpkeep = {5, 20, 41, 73, 117, 171, 237, 313, 401, 500};
 
             unitLevel = (byte)btUnitLevel[level-1];
             upkeep = btUnitUpkeep[level-1];

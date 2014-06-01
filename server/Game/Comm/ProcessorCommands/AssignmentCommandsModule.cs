@@ -47,6 +47,7 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.TribeCityAssignmentCreate, CreateCityAssignment);
             processor.RegisterCommand(Command.TribeStrongholdAssignmentCreate, CreateStrongholdAssignment);
             processor.RegisterCommand(Command.TribeAssignmentJoin, Join);
+            processor.RegisterCommand(Command.TribeAssignmentEdit, Edit);
         }
 
         private void CreateStrongholdAssignment(Session session, Packet packet)
@@ -271,6 +272,30 @@ namespace Game.Comm.ProcessorCommands
 
                 Error result = tribe.JoinAssignment(assignmentId, city, stub);
 
+                ReplyWithResult(session, packet, result);
+            });
+        }
+
+        private void Edit(Session session, Packet packet)
+        {
+            int assignmentId;
+            string description;
+
+            try
+            {
+                assignmentId = packet.GetInt32();
+                description = packet.GetString();
+            }
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            ITribe tribe = session.Player.Tribesman.Tribe;
+            locker.Lock(session.Player, tribe).Do(() =>
+            {
+                Error result = tribe.EditAssignment(session.Player, assignmentId, description);
                 ReplyWithResult(session, packet, result);
             });
         }

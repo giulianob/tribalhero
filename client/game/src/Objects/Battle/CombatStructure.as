@@ -10,9 +10,9 @@
 
         public var theme: String;
 		
-		public function CombatStructure(combatObjectId: int, theme: String, type: int, level: int, hp: Number, maxHp: Number)
+		public function CombatStructure(combatObjectId: int, theme: String, type: int, level: int, hp: Number, maxHp: Number, count: int)
 		{
-			super(combatObjectId, type, level, hp, maxHp);
+			super(combatObjectId, type, level, hp, maxHp, count);
             this.theme = theme;
 
             structurePrototype = StructureFactory.getPrototype(type, level);

@@ -197,6 +197,7 @@
 			var level: int = packet.readUByte();
 			var hp: Number = packet.readFloat();
 			var maxHp: Number = packet.readFloat();
+            var count: int = packet.readUShort();
 			
 			var combatObj: CombatObject;
 			if (classType == BattleManager.UNIT) {

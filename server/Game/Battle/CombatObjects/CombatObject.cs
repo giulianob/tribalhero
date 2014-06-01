@@ -186,6 +186,7 @@ namespace Game.Battle.CombatObjects
             packet.AddByte(Lvl);
             packet.AddFloat((float)Hp);
             packet.AddFloat((float)Stats.MaxHp);
+            packet.AddUInt16(Count);
         }
 
         #endregion

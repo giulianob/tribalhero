@@ -86,6 +86,8 @@ namespace Game.Data.Tribe
 
         Error JoinAssignment(int id, ICity city, ISimpleStub stub);
 
+        Error EditAssignment(IPlayer player, int assignmentId, string description);
+
         Error Transfer(uint newOwnerPlayerId);
 
         void DbLoaderAddAssignment(Assignment assignment);

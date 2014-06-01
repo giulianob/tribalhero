@@ -49,6 +49,7 @@ package src.UI.Dialog {
         private var viewModel: StoreDialogVM;
 
         public function StoreDialog(viewModel: StoreDialogVM) {
+            this.allowMultipleInstances = false;
             this.viewModel = viewModel;
 
             title = StringHelper.localize("STORE_DIALOG_TITLE");

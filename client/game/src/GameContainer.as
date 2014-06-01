@@ -17,6 +17,7 @@
     import src.UI.Components.*;
     import src.UI.Components.ScreenMessages.*;
     import src.UI.Dialog.*;
+    import src.UI.Flows.StoreFlow;
     import src.UI.Tutorial.GameTutorial;
     import src.Util.*;
 
@@ -142,6 +143,9 @@
 
 			new SimpleTooltip(btnRanking, "View world ranking");
 			btnRanking.addEventListener(MouseEvent.CLICK, onViewRanking);
+
+			new SimpleTooltip(btnRanking, "View store");
+			btnStore.addEventListener(MouseEvent.CLICK, onViewStore);
 
 			new SimpleTooltip(btnCityInfo, "View city details");
 			btnCityInfo.addEventListener(MouseEvent.CLICK, onViewCityInfo);
@@ -281,10 +285,22 @@
 			new CityEventDialog(selectedCity).show(null, false);
 		}
 
+        public function onViewStore(e: MouseEvent): void {
+            var currentDialog: StoreDialog = findDialog(StoreDialog);
+
+            if (currentDialog) {
+                currentDialog.getFrame().dispose();
+                return;
+            }
+
+            new StoreFlow().showStore();
+        }
+
 		public function onViewRanking(e: MouseEvent) :void
 		{
-			if (!selectedCity)
-			return;
+			if (!selectedCity) {
+			    return;
+            }
 
 			var rankingDialog: RankingDialog = new RankingDialog();
 			rankingDialog.show();

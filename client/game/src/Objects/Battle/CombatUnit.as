@@ -5,13 +5,13 @@
     import src.Objects.Prototypes.UnitPrototype;
 
     public class CombatUnit extends CombatObject
-	{		
+	{
 		private var unitPrototype: UnitPrototype;
 		
-		public function CombatUnit(combatObjectId: int, type: int, level: int, hp: Number, maxHp: Number)
+		public function CombatUnit(combatObjectId: int, type: int, level: int, hp: Number, maxHp: Number, count: int)
 		{
-			super(combatObjectId, type, level, hp, maxHp);
-			
+			super(combatObjectId, type, level, hp, maxHp, count);
+
 			unitPrototype = UnitFactory.getPrototype(type, level);
 		}
 

@@ -9,14 +9,16 @@
 		public var level: int;
 		public var hp: Number;
 		public var maxHp: Number;
+        public var count: int;
 		
-		public function CombatObject(combatObjectId: int, type: int, level: int, hp: Number, maxHp: Number)
+		public function CombatObject(combatObjectId: int, type: int, level: int, hp: Number, maxHp: Number, count: int)
 		{
 			this.combatObjectId = combatObjectId;
             this.type = type;
 			this.level = level;
 			this.hp = hp;
 			this.maxHp = maxHp;
+            this.count = count;
 		}
 		
 		public function get name(): String {

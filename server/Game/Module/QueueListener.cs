@@ -68,8 +68,8 @@ namespace Game.Module
                     var connectionFactory = new ConnectionFactory
                     {
                         HostName = Config.api_domain,
-                        UserName = "guest",
-                        Password = "guest",
+                        UserName = Config.queue_username,
+                        Password = Config.queue_password,
                         RequestedHeartbeat = 60,                        
                     };
 

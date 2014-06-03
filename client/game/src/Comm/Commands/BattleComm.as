@@ -201,10 +201,10 @@
 			
 			var combatObj: CombatObject;
 			if (classType == BattleManager.UNIT) {
-				combatObj = new CombatUnit(combatObjId, objType, level, hp, maxHp);
+				combatObj = new CombatUnit(combatObjId, objType, level, hp, maxHp, count);
 			}
 			else if (classType == BattleManager.STRUCTURE) {
-				combatObj = new CombatStructure(combatObjId, packet.readString(), objType, level, hp, maxHp);
+				combatObj = new CombatStructure(combatObjId, packet.readString(), objType, level, hp, maxHp, count);
 			}
 			else {
 				throw new Error("Unknown class type " + classType);

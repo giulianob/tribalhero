@@ -382,7 +382,7 @@
 
             var pnlButtons: JPanel = new JPanel(new FlowLayout());
 
-            if (Constants.tribe.hasRight(Tribe.ASSIGNMENT)) {
+            if (Constants.session.tribe.hasRight(Tribe.ASSIGNMENT)) {
                 var btnEdit: JLabelButton = new JLabelButton("Edit Description", null, AsWingConstants.LEFT);
 
                 btnEdit.addActionListener(function(e:Event): void {

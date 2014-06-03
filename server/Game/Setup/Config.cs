@@ -74,8 +74,15 @@ namespace Game.Setup
 
         #endregion
 
+        #region Queue Settings
+
+        public static string queue_username = "guest";
+        public static string queue_password = "guest";
+
+        #endregion
+
         #region Chat Settings
- 
+
         public static string welcome_motd = string.Empty;
         public static PlayerRights chat_min_level = PlayerRights.Basic;
 

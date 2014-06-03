@@ -10,7 +10,18 @@ to be relative and use forward slashes.
   <target-player>11.9</target-player>
   <benchmark>false</benchmark>
   <static-link-runtime-shared-libraries>true</static-link-runtime-shared-libraries>
+  <frames>
+    <frame>
+        <label>start</label>
+        <classname>src.Main</classname>
+    </frame>
+  </frames>
   <compiler>
+    <as3>true</as3>
+    <incremental>true</incremental>
+    <keep-as3-metadata>
+      <name>EmbedPosition</name>
+    </keep-as3-metadata>
     <define append="true">
       <name>CONFIG::debug</name>
       <value>false</value>
@@ -45,7 +56,7 @@ to be relative and use forward slashes.
     </library-path>
   </compiler>
   <file-specs>
-    <path-element>game/src/Preloader.as</path-element>
+    <path-element>game/src/Preloader.as</path-element>    
   </file-specs>
   <default-background-color>#E8E2BE</default-background-color>
   <default-frame-rate>30</default-frame-rate>

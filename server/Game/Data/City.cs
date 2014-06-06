@@ -120,6 +120,19 @@ namespace Game.Data
             }
         }
 
+        public string WallTheme
+        {
+            get
+            {
+                return wallTheme;
+            }
+            set
+            {
+                CheckUpdateMode();
+                wallTheme = value;                
+            }
+        }
+
         private readonly ITroopStubFactory troopStubFactory;
 
         private readonly IDbManager dbManager;
@@ -131,6 +144,8 @@ namespace Game.Data
         private readonly BattleProcedure battleProcedure;
 
         private string defaultTheme;
+
+        private string wallTheme;
 
         /// <summary>
         ///     Enumerates only through structures in this city
@@ -581,6 +596,7 @@ namespace Game.Data
                     byte radius,
                     decimal ap,
                     string defaultTheme,
+                    string wallTheme,
                     IActionWorker worker,
                     CityNotificationManager notifications,
                     IReferenceManager references,
@@ -606,6 +622,7 @@ namespace Game.Data
             PrimaryPosition = position;
             AlignmentPoint = ap;
             DefaultTheme = defaultTheme;
+            WallTheme = wallTheme;
             Resource = resource;
 
             Worker = worker;
@@ -831,6 +848,7 @@ namespace Game.Data
                         new DbColumn("y", PrimaryPosition.Y, DbType.UInt32),
                         new DbColumn("deleted", Deleted, DbType.Int32),
                         new DbColumn("default_theme_id", DefaultTheme, DbType.String),
+                        new DbColumn("wall_theme_id", WallTheme, DbType.String),
                 };
             }
         }

@@ -202,13 +202,16 @@
     <Compile Include="Comm\CmdLine Commands\ResourcesCommandLineModule.cs" />
     <Compile Include="Comm\CommandLineProcessor.cs" />
     <Compile Include="Comm\Commands.cs" />
+    <Compile Include="Comm\DummyLoginHandler.cs" />
     <Compile Include="Comm\ICommandLineModule.cs" />
+    <Compile Include="Comm\ILoginHandler.cs" />
     <Compile Include="Comm\IPolicyServer.cs" />
     <Compile Include="Comm\IProcessor.cs" />
     <Compile Include="Comm\IQueueCommandModule.cs" />
     <Compile Include="Comm\IQueueCommandProcessor.cs" />
     <Compile Include="Comm\ISocketSessionFactory.cs" />
     <Compile Include="Comm\INetworkServer.cs" />
+    <Compile Include="Comm\MainSiteLoginHandler.cs" />
     <Compile Include="Comm\PacketMaker.cs" />
     <Compile Include="Comm\PolicyServer.cs" />
     <Compile Include="Comm\Packet.cs" />

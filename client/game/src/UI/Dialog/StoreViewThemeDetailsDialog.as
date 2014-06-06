@@ -88,11 +88,36 @@ package src.UI.Dialog {
                         viewModel.applyAllTheme(Global.map.cities.getByIndex(0));
                     }
                     else {
-                        applyAllDropDown.show(btnApplyAll, 0, btnApplyAll.getHeight());
+                        if (applyAllDropDown.isVisible()) {
+                            applyAllDropDown.setVisible(false);
+                        }
+                        else {
+                            applyAllDropDown.show(btnApplyAll, 0, btnApplyAll.getHeight());
+                        }
                     }
                 });
 
+                var applyWallDropDown: JPopupMenu = new JPopupMenu();
+                applyWallDropDown.append(createChooseCityHeaderLabel());
 
+                for each (city in Global.map.cities) {
+                    applyWallDropDown.append(createSetWallThemeMenuItem(city));
+                }
+
+                var btnSetWallTheme: JButton = new JButton(t("STORE_VIEW_THEME_APPLY_WALL"));
+                btnSetWallTheme.addActionListener(function(e: Event): void {
+                    if (Global.map.cities.size() == 1) {
+                        viewModel.applyWallTheme(Global.map.cities.getByIndex(0));
+                    }
+                    else {
+                        if (applyWallDropDown.isVisible()) {
+                            applyWallDropDown.setVisible(false);
+                        }
+                        else {
+                            applyWallDropDown.show(btnSetWallTheme, 0, btnSetWallTheme.getHeight());
+                        }
+                    }
+                });
 
                 var setDefaultThemeDropDown: JPopupMenu = new JPopupMenu();
                 setDefaultThemeDropDown.append(createChooseCityHeaderLabel());
@@ -106,12 +131,18 @@ package src.UI.Dialog {
                         viewModel.setDefaultTheme(Global.map.cities.getByIndex(0));
                     }
                     else {
-                        setDefaultThemeDropDown.show(btnSetDefault, 0, btnSetDefault.getHeight());
+                        if (setDefaultThemeDropDown.isVisible()) {
+                            setDefaultThemeDropDown.setVisible(false);
+                        }
+                        else {
+                            setDefaultThemeDropDown.show(btnSetDefault, 0, btnSetDefault.getHeight());
+                        }
                     }
                 });
 
-                var pnlSetThemeRow: JPanel = new JPanel(new FlowLayout(AsWingConstants.CENTER, 15, 0, false));
-                pnlSetThemeRow.appendAll(btnApplyAll, btnSetDefault);
+                var pnlSetThemeRow: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5, AsWingConstants.CENTER));
+                pnlSetThemeRow.setPreferredWidth(300);
+                pnlSetThemeRow.appendAll(btnApplyAll, btnSetWallTheme, btnSetDefault);
 
                 var helpLabel: MultilineLabel = new MultilineLabel(t("STORE_VIEW_THEME_SET_INSTRUCTIONS"), 0, 100);
 
@@ -146,6 +177,15 @@ package src.UI.Dialog {
             var menuItem: JMenuItem = new JMenuItem(city.name);
             menuItem.addActionListener(function(): void {
                 viewModel.applyAllTheme(city);
+            });
+
+            return menuItem;
+        }
+
+        private function createSetWallThemeMenuItem(city: City): Component {
+            var menuItem: JMenuItem = new JMenuItem(city.name);
+            menuItem.addActionListener(function(): void {
+                viewModel.applyWallTheme(city);
             });
 
             return menuItem;

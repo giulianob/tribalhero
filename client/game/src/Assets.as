@@ -1,6 +1,8 @@
 ﻿package src 
 {
     import flash.display.Bitmap;
+    import flash.display.Sprite;
+    import flash.events.Event;
     import flash.geom.Point;
     import flash.utils.Dictionary;
     import flash.utils.describeType;
@@ -82,6 +84,8 @@
 
         private static var embedPositionCache: Dictionary;
 
+        private static var sharedInstanceCache: Dictionary = new Dictionary(false);
+
         public static function doesSpriteExist(spriteName: String): Boolean {
             spriteName = spriteName.replace('-', '_').toUpperCase();
             var spriteClass: Class = Assets[spriteName] as Class;
@@ -146,6 +150,24 @@
 			Util.log("Could not find sprite: " + spriteName);
 			return new Bitmap();
 		}
+
+        // Returns the same instance to everyone. This is good for things like Tilesets where
+        // you wont add it to the stage. An error will be thrown if you try to add it to the stage.
+        public static function getSharedInstance(spriteName: String): Bitmap
+        {
+            var sprite: Bitmap = sharedInstanceCache[spriteName];
+            if (!sprite) {
+                sprite = Assets.getInstance(spriteName);
+
+                sprite.addEventListener(Event.ADDED_TO_STAGE, function(e: Event): void {
+                    throw new Error("Shared instance was added to the stage.")
+                });
+
+                sharedInstanceCache[spriteName] = sprite;
+            }
+
+            return sprite;
+        }
 
         // Tileset
         [Embed(source = "../../../graphics/MaskTile.png")]
@@ -313,6 +335,9 @@
         public static const BARBARIAN_TRIBE_STRUCTURE: Class;
 
         // Default Structure Pack
+        [Embed(source = "../../../graphics/themes/default/WALL.png")]
+        public static const DEFAULT_WALL_TILESET: Class;
+
         [Embed(source = "../../../graphics/themes/default/THUMBNAIL.png")]
         public static const DEFAULT_THEME_THUMBNAIL: Class;
 
@@ -458,6 +483,9 @@
         public static const DEFAULT_GRAPE_FIELD_STRUCTURE: Class;
 
         // Pirates structure pack
+        [Embed(source = "../../../graphics/themes/pirates/WALL.png")]
+        public static const PIRATES_WALL_TILESET: Class;
+
         [Embed(source = "../../../graphics/themes/pirates/THUMBNAIL.png")]
         public static const PIRATES_THEME_THUMBNAIL: Class;
 
@@ -497,7 +525,7 @@
         public static const PIRATES_REFINERY_STRUCTURE: Class;
 
         [Embed(source = "../../../graphics/themes/pirates/STABLE_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "99", y = "-18")]
+        [EmbedPosition(name = "map", x = "99", y = "-37")]
         public static const PIRATES_STABLE_STRUCTURE: Class;
 
         [Embed(source = "../../../graphics/themes/pirates/TOWER_STRUCTURE.png")]

@@ -348,9 +348,10 @@ STORE_DIALOG_CURRENT_BALANCE,Current Balance:
 STORE_VIEW_THEME_DIALOG_PREVIEW_TAB,Preview
 STORE_VIEW_THEME_DIALOG_DETAIL_TAB,Included Items
 STORE_VIEW_THEME_DIALOG_BUY,Buy for {0}
-STORE_VIEW_THEME_APPLY_ALL,Change all existing structures to this theme
+STORE_VIEW_THEME_APPLY_ALL,Change all structures to this theme
+STORE_VIEW_THEME_APPLY_WALL,Change wall to this theme
 STORE_VIEW_THEME_CHOOSE_CITY_HEADER_LABEL,Choose a city:
-STORE_VIEW_THEME_SET_DEFAULT,Make all new structures use this theme
+STORE_VIEW_THEME_SET_DEFAULT,Make new structures use this theme
 STORE_VIEW_THEME_SET_INSTRUCTIONS,You can also change the theme for individual structures by clicking on them and selecting a different theme.
 ,
 STORE_BUY_COINS_DIALOG_TITLE,Purchase Coins

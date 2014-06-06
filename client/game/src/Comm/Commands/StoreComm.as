@@ -83,5 +83,14 @@ package src.Comm.Commands {
 
             return mapComm.send(session, packet);
         }
+
+        public function setWallTheme(cityId: int, theme: String): Promise {
+            var packet: Packet = new Packet();
+            packet.cmd = Commands.WALL_SET_THEME;
+            packet.writeUInt(cityId);
+            packet.writeString(theme);
+
+            return mapComm.send(session, packet);
+        }
     }
 }

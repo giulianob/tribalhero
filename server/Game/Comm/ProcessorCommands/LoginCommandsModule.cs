@@ -59,6 +59,8 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly IPlayerFactory playerFactory;
 
+        private readonly ILoginHandler loginHandler;
+
         public LoginCommandsModule(IActionFactory actionFactory,
                                    ITribeManager tribeManager,
                                    IDbManager dbManager,
@@ -71,7 +73,8 @@ namespace Game.Comm.ProcessorCommands
                                    CallbackProcedure callbackProcedure,
                                    IChannel channel,
                                    IThemeManager themeManager,
-                                   IPlayerFactory playerFactory)
+                                   IPlayerFactory playerFactory,
+                                   ILoginHandler loginHandler)
         {
             this.actionFactory = actionFactory;
             this.tribeManager = tribeManager;
@@ -83,6 +86,7 @@ namespace Game.Comm.ProcessorCommands
             this.channel = channel;
             this.themeManager = themeManager;
             this.playerFactory = playerFactory;
+            this.loginHandler = loginHandler;
             this.cityFactory = cityFactory;
             this.locationStrategyFactory = locationStrategyFactory;
             this.barbarianTribeManager = barbarianTribeManager;
@@ -108,25 +112,17 @@ namespace Game.Comm.ProcessorCommands
 
             short clientVersion;
             short clientRevision;
-            byte loginMode;
-            string loginKey = string.Empty;
+            LoginHandlerMode loginMode;
             string playerName;
-            string playerPassword = string.Empty;
-            
+            string loginKey;
+
             try
             {
                 clientVersion = packet.GetInt16();
                 clientRevision = packet.GetInt16();
-                loginMode = packet.GetByte();
+                loginMode = (LoginHandlerMode)packet.GetByte();
                 playerName = packet.GetString();
-                if (loginMode == 0)
-                {
-                    loginKey = packet.GetString();
-                }
-                else
-                {
-                    playerPassword = packet.GetString();
-                }
+                loginKey = packet.GetString();
             }
             catch(Exception)
             {
@@ -143,63 +139,21 @@ namespace Game.Comm.ProcessorCommands
             }
 
             LoginResponseData loginResponseData;
-            if (Config.database_load_players)
+            var loginResult = loginHandler.Login(loginMode, playerName, loginKey, out loginResponseData);
+
+            if (loginResult != Error.Ok)
             {
-                ApiResponse<LoginResponseData> response;
-                try
-                {
-                    response = loginMode == 0
-                                       ? ApiCaller.CheckLoginKey(playerName, loginKey)
-                                       : ApiCaller.CheckLogin(playerName, playerPassword);
-                }
-                catch(Exception e)
-                {
-                    logger.Error("Error loading player", e);
-                    ReplyError(session, packet, Error.Unexpected);
-                    session.CloseSession();
-                    return;
-                }
-
-                if (!response.Success)
-                {
-                    ReplyError(session, packet, Error.InvalidLogin);
-                    session.CloseSession();
-                    return;
-                }
-
-                loginResponseData = response.Data;
-
-                // If we are under admin only mode then kick out non admin
-                if (Config.server_admin_only && loginResponseData.Player.Rights == PlayerRights.Basic)
-                {
-                    ReplyError(session, packet, Error.UnderMaintenance);
-                    session.CloseSession();
-                    return;
-                }
+                ReplyError(session, packet, loginResult);
+                session.CloseSession();
+                return;
             }
-            else
+            
+            // If we are under admin only mode then kick out non admin
+            if (Config.server_admin_only && loginResponseData.Player.Rights == PlayerRights.Basic)
             {
-                // This is a fake login for testing only
-                uint playerId;
-                if (!uint.TryParse(playerName, out playerId))
-                {
-                    ReplyError(session, packet, Error.PlayerNotFound);
-                    session.CloseSession();
-                    return;
-                }
-
-                loginResponseData = new LoginResponseData
-                {
-                    Player = new LoginResponseData.PlayerData
-                    {
-                        Banned = false,
-                        Id = playerId,
-                        Name = "Player " + playerId,
-                        Rights = PlayerRights.Basic
-                    },
-                    Achievements = new List<Achievement>(),
-                    ThemePurchases = new List<ThemePurchase>(),
-                };
+                ReplyError(session, packet, Error.UnderMaintenance);
+                session.CloseSession();
+                return;
             }
 
             //Create the session id that will be used for the calls to the web server

@@ -13,6 +13,7 @@ package src.UI.ViewModels {
         public static const EVENT_CONFIRM_PURCHASE_ITEM: String = "EVENT_CONFIRM_PURCHASE_ITEM";
         public static const EVENT_COIN_PURCHASE_NEEDED: String = "EVENT_COIN_PURCHASE_NEEDED";
         public static const EVENT_COMPLETED_APPLY_ALL_THEME: String = "EVENT_COMPLETED_APPLY_ALL_THEME";
+        public static const EVENT_COMPLETED_APPLY_WALL_THEME: String = "EVENT_COMPLETED_APPLY_WALL_THEME";
         public static const EVENT_COMPLETED_SET_DEFAULT_THEME: String = "EVENT_COMPLETED_SET_DEFAULT_THEME";
 
         private var item: StoreItemTheme;
@@ -50,6 +51,12 @@ package src.UI.ViewModels {
         public function applyAllTheme(city: City): void {
             Global.mapComm.Store.applyThemeToAll(city.id, theme.themeId).then(function(): void {
                dispatch(EVENT_COMPLETED_APPLY_ALL_THEME);
+            });
+        }
+
+        public function applyWallTheme(city: City): void {
+            Global.mapComm.Store.setWallTheme(city.id, theme.themeId).then(function(): void {
+               dispatch(EVENT_COMPLETED_APPLY_WALL_THEME);
             });
         }
 

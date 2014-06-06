@@ -32,7 +32,7 @@
             <entry key="compiler.define" value="" />
           </map>
           <option name="additionalConfigFilePath" value="$MODULE_DIR$/GameConfig.xml" />
-          <option name="additionalOptions" value="-define=CONFIG::debug,true -debug=true" />
+          <option name="additionalOptions" value="-define=CONFIG::debug,true -debug=true -incremental=true" />
         </compiler-options>
         <packaging-air-desktop />
         <packaging-android />

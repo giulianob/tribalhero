@@ -140,6 +140,8 @@ namespace Game.Comm
         
         StructureSetTheme = 307,
 
+        WallSetTheme = 308,
+
         TechAdded = 311,
 
         TechUpgrade = 312,

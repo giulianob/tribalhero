@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading;
 using Game.Setup;
-using Game.Util.Locking;
 
 namespace Game.Data
 {
@@ -11,14 +10,7 @@ namespace Game.Data
         private readonly List<Theme> themes = new List<Theme>();
 
         private readonly ReaderWriterLockSlim updateLock = new ReaderWriterLockSlim();
-
-        private readonly ILocker locker;
-
-        public ThemeManager(ILocker locker)
-        {
-            this.locker = locker;
-        }
-
+        
         public List<Theme> Themes
         {
             get
@@ -41,7 +33,7 @@ namespace Game.Data
 
         public bool HasTheme(IPlayer player, string id)
         {
-            if (id == "DEFAULT")
+            if (id == Theme.DEFAULT_THEME_ID)
             {
                 return true;
             }
@@ -79,6 +71,10 @@ namespace Game.Data
                 return Error.ThemeNotPurchased;
             }
 
+            city.BeginUpdate();
+            city.WallTheme = id;
+            city.EndUpdate();
+
             foreach (var structure in city)
             {
                 structure.BeginUpdate();
@@ -99,6 +95,24 @@ namespace Game.Data
             structure.BeginUpdate();
             structure.Theme = id;
             structure.EndUpdate();
+
+            return Error.Ok;
+        }
+
+        public Error SetWallTheme(ICity city, string id)
+        {
+            if (!HasTheme(city.Owner, id))
+            {
+                return Error.ThemeNotPurchased;
+            }
+            
+            city.BeginUpdate();
+            city.WallTheme = id;
+            city.EndUpdate();
+
+            // Due to how the client gets wall updates we need to do force the main structure to update
+            city.MainBuilding.BeginUpdate();
+            city.MainBuilding.EndUpdate();
 
             return Error.Ok;
         }

@@ -8,20 +8,18 @@ package src.Graphics {
     import src.Constants;
     import src.Objects.SimpleObject;
 
-    [Embed(source = "../../../../graphics/WallTilemap.png")]
-    public class WallTileset extends Bitmap {
-        public function WallTileset() { }
-
-        public function getTile(tileId: int): Bitmap {
+    public class WallTileset {
+        public static function getTile(wallTileset: Bitmap, tileId: int): Bitmap {
             var tilesetsrcX:int = int(tileId % Constants.tileSetTileW) * Constants.tileW;
             var tilesetsrcY:int = int(tileId / Constants.tileSetTileW) * Constants.tileH * 2;
 
-            var tile: Bitmap = new Bitmap(new BitmapData(Constants.tileW, Constants.tileH, true, 0));
+            var tile: Bitmap = new Bitmap(new BitmapData(Constants.tileW, Constants.tileH * 2, true, 0));
+            tile.y = Constants.tileH * -1;
 
             tile.bitmapData.copyPixels(
-                    Constants.wallTileset.bitmapData,
+                    wallTileset.bitmapData,
                     new Rectangle(tilesetsrcX, tilesetsrcY, Constants.tileW, Constants.tileH * 2),
-                    new Point(0, -Constants.tileH),
+                    new Point(0, 0),
                     null,
                     null,
                     true);

@@ -67,6 +67,38 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.CityUsernameGet, GetCityUsername);
             processor.RegisterCommand(Command.CityHasApBonus, GetCityHasApBonus);
             processor.RegisterCommand(Command.StructureSetTheme, StructureSetTheme);
+            processor.RegisterCommand(Command.WallSetTheme, WallSetTheme);
+        }
+        
+        private void WallSetTheme(Session session, Packet packet)
+        {
+            uint cityId;
+            string theme;
+
+            try
+            {
+                cityId = packet.GetUInt32();
+                theme = packet.GetString();
+            }
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            ICity city;
+            locker.Lock(cityId, out city).Do(() =>
+            {
+                if (city == null || city.Owner != session.Player)
+                {
+                    ReplyError(session, packet, Error.ObjectNotFound);
+                    return;
+                }
+
+                var result = themeManager.SetWallTheme(city, theme);
+
+                ReplyWithResult(session, packet, result);
+            });
         }
 
         private void StructureSetTheme(Session session, Packet packet)

@@ -4,7 +4,6 @@ using Game.Logic.Actions;
 using Game.Logic.Notifications;
 using Game.Logic.Procedures;
 using Game.Map;
-using Game.Setup;
 using Game.Setup.DependencyInjection;
 using Persistance;
 
@@ -43,7 +42,7 @@ namespace Game.Data
             this.unitTemplateFactory = unitTemplateFactory;
         }
 
-        public ICity CreateCity(uint id, IPlayer owner, string name, Position position, Resource resource, byte radius, decimal ap, string defaultTheme)
+        public ICity CreateCity(uint id, IPlayer owner, string name, Position position, Resource resource, byte radius, decimal ap, string defaultTheme, string wallTheme)
         {
             return CreateCity(id,
                               owner,
@@ -56,10 +55,11 @@ namespace Game.Data
                                                labor: resource.Labor),
                               radius,
                               ap,
-                              defaultTheme);
+                              defaultTheme,
+                              wallTheme);
         }
 
-        public ICity CreateCity(uint id, IPlayer owner, string name, Position position, ILazyResource resource, byte radius, decimal ap, string defaultTheme)
+        public ICity CreateCity(uint id, IPlayer owner, string name, Position position, ILazyResource resource, byte radius, decimal ap, string defaultTheme, string wallTheme)
         {
             var worker = actionWorkerFactory.CreateActionWorker(() => owner, new SimpleLocation(LocationType.City, id));
             var notifications = notificationManagerFactory.CreateCityNotificationManager(worker, id, owner.PlayerChannel);
@@ -77,6 +77,7 @@ namespace Game.Data
                                 radius,
                                 ap,
                                 defaultTheme,
+                                wallTheme,
                                 worker,
                                 notifications,
                                 references,

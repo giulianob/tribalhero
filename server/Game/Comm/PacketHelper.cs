@@ -114,6 +114,7 @@ namespace Game.Comm
                 if (structure.IsMainBuilding)
                 {
                     packet.AddByte(gameObj.City.Radius);
+                    packet.AddString(gameObj.City.WallTheme);
                 }
             }
 

@@ -16,5 +16,7 @@ namespace Game.Data
         Error ApplyToAll(ICity city, string id);
 
         Error SetStructureTheme(IStructure structure, string id);
+
+        Error SetWallTheme(ICity city, string theme);
     }
 }

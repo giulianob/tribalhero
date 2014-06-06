@@ -81,7 +81,16 @@ namespace Game
             container.Register<ICityTriggerManager, CityTriggerManager>(Lifestyle.Singleton);
 
             container.Register<IQueueListener, QueueListener>(Lifestyle.Singleton);
-            container.Register<IQueueCommandProcessor>(() => new QueueCommandProcessor(container.GetInstance<PlayerQueueCommandsModule>()), Lifestyle.Singleton);            
+            container.Register<IQueueCommandProcessor>(() => new QueueCommandProcessor(container.GetInstance<PlayerQueueCommandsModule>()), Lifestyle.Singleton);
+
+            if (Config.database_load_players)
+            {
+                container.Register<ILoginHandler, MainSiteLoginHandler>(Lifestyle.Singleton);
+            }
+            else
+            {
+                container.Register<ILoginHandler, DummyLoginHandler>(Lifestyle.Singleton);
+            }
 
             #endregion
             
@@ -278,8 +287,6 @@ namespace Game
                 }
 
                 container.Register(factoryInterfaceType, implementingTypes.First(), Lifestyle.Singleton);
-
-                // Console.Out.WriteLine("Registering {0} to {1}", factoryInterfaceType.Name, implementingTypes.First().Name);
             }                
         }
     }

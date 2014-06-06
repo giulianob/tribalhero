@@ -143,11 +143,13 @@ namespace Game.Data
         /// </summary>
         int DefensePoint { get; set; }
 
+        decimal AlignmentPoint { get; set; }
+
         ushort Value { get; set; }
 
         IStructure MainBuilding { get; }
 
-        decimal AlignmentPoint { get; set; }
+        string WallTheme { get; set; }
 
         City.DeletedState Deleted { get; set; }
 

@@ -8,7 +8,6 @@ to be relative and use forward slashes.
  -->
 <flex-config>
   <target-player>11.9</target-player>
-  <benchmark>false</benchmark>
   <static-link-runtime-shared-libraries>true</static-link-runtime-shared-libraries>
   <frames>
     <frame>
@@ -20,6 +19,11 @@ to be relative and use forward slashes.
     <as3>true</as3>
     <incremental>true</incremental>
     <keep-as3-metadata>
+      <name>Bindable</name>
+      <name>Managed</name>
+      <name>ChangeEvent</name>
+      <name>NonCommittingChangeEvent</name>
+      <name>Transient</name>
       <name>EmbedPosition</name>
     </keep-as3-metadata>
     <define append="true">

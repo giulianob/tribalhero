@@ -1,9 +1,7 @@
 package src
 {
     import src.Graphics.Tileset;
-    import src.Graphics.WallTileset;
     import src.Map.MiniMap.MiniMapLegend;
-    import src.Objects.Tribe;
 
     public class Constants
 	{
@@ -63,7 +61,6 @@ package src
 		public static var screenH:int = origScreenH;
 		
 		public static const tileset: Tileset = new Tileset();
-		public static const wallTileset: WallTileset = new WallTileset();
 
 		public static const cityStartTile: int = 16;
 

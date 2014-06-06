@@ -108,7 +108,7 @@ package src.UI.Sidebars.ObjectInfo {
 
             var capturedTheme: String = theme;
             menuItem.addActionListener(function(e: Event): void {
-                Global.mapComm.Objects.updateTheme(gameObject.groupId, gameObject.objectId, capturedTheme);
+                Global.mapComm.Objects.setStructureTheme(gameObject.groupId, gameObject.objectId, capturedTheme);
             });
 
             return menuItem

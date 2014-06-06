@@ -566,7 +566,8 @@ namespace Game.Database
                                                         resource,
                                                         (byte)reader["radius"],
                                                         (decimal)reader["alignment_point"],
-                                                        (string)reader["default_theme_id"]);
+                                                        (string)reader["default_theme_id"],
+                                                        (string)reader["wall_theme_id"]);
 
                     city.DbPersisted = true;
                     city.LootStolen = (uint)reader["loot_stolen"];

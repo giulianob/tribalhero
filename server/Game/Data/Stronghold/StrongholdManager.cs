@@ -159,7 +159,8 @@ namespace Game.Data.Stronghold
                                                                             x, 
                                                                             y, 
                                                                             limit, 
-                                                                            Convert.ToInt32(limit));
+                                                                            Convert.ToInt32(limit),
+                                                                            Theme.DEFAULT_THEME_ID);
                 using (dbManager.GetThreadTransaction())
                 {
                     Add(stronghold);

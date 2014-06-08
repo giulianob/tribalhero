@@ -27,9 +27,24 @@ namespace Game.Data.Stronghold
 
         private ITribe tribe;
 
+        private string theme;
+
         public event EventHandler<EventArgs> GateStatusChanged = (sender, args) => { };
 
         public string Name { get; private set; }
+
+        public string Theme
+        {
+            get
+            {
+                return theme;
+            }
+            set
+            {
+                CheckUpdateMode();
+                theme = value;
+            }
+        }
 
         public StrongholdState StrongholdState { get; set; }
 
@@ -61,33 +76,6 @@ namespace Game.Data.Stronghold
 
         public NotificationManager Notifications { get; private set; }
 
-        public IEnumerable<ILockable> LockList
-        {
-            get
-            {
-                var locks = new List<ILockable> {this};
-
-                if (Tribe != null)
-                {
-                    locks.Add(Tribe);
-                }
-
-                if (GateBattle != null)
-                {
-                    locks.AddRange(GateBattle.LockList);
-                }
-
-                if (MainBattle != null)
-                {
-                    locks.AddRange(MainBattle.LockList);
-                }
-
-                locks.AddRange(Troops.StationedHere());
-
-                return locks.Distinct();
-            }
-        }
-
         public byte Lvl { get; set; }
 
         public uint WorkerId
@@ -108,6 +96,7 @@ namespace Game.Data.Stronghold
             }
             set
             {
+                CheckUpdateMode();
                 StrongholdState = value != null ? StrongholdState.Occupied : StrongholdState.Neutral;
                 tribe = value;
             }
@@ -121,12 +110,11 @@ namespace Game.Data.Stronghold
             }
             set
             {
+                CheckUpdateMode();
                 gateOpenTo = value;
                 GateStatusChanged(this, new EventArgs());
             }
         }
-
-        #region Constructor
 
         public Stronghold(uint id,
                           string name,
@@ -135,6 +123,7 @@ namespace Game.Data.Stronghold
                           uint y,
                           decimal gate,
                           int gateMax,
+                          string theme,
                           IDbManager dbManager,
                           NotificationManager notificationManager,
                           ITroopManager troopManager,
@@ -152,6 +141,7 @@ namespace Game.Data.Stronghold
             Troops = troopManager;
             Gate = gate;
             GateMax = gateMax;
+            Theme = theme;
 
             Notifications.NotificationAdded += NotificationsUpdate;
             Notifications.NotificationRemoved += NotificationsUpdate;
@@ -165,8 +155,6 @@ namespace Game.Data.Stronghold
                 Tribe.SendUpdate();
             }
         }
-
-        #endregion
 
         public MiniMapRegion.ObjectType MiniMapObjectType
         {
@@ -213,8 +201,6 @@ namespace Game.Data.Stronghold
             }
         }
 
-        #region Implementation of ILockable
-
         public override int Hash
         {
             get
@@ -230,10 +216,6 @@ namespace Game.Data.Stronghold
                 return this;
             }
         }
-
-        #endregion
-
-        #region Overrides of SimpleGameObject
 
         public override byte Size
         {
@@ -257,6 +239,35 @@ namespace Game.Data.Stronghold
             {
                 return (uint)SystemGroupIds.Stronghold;
             }
+        }
+
+        public IEnumerable<ILockable> LockList()
+        {
+            var locks = new List<ILockable> {this};
+
+            if (Tribe != null)
+            {
+                locks.Add(Tribe);
+            }
+
+            if (GateBattle != null)
+            {
+                locks.AddRange(GateBattle.LockList);
+            }
+
+            if (MainBattle != null)
+            {
+                locks.AddRange(MainBattle.LockList);
+            }
+
+            locks.AddRange(Troops.StationedHere());
+
+            return locks.Distinct();
+        }
+
+        public bool BelongsTo(ITribe tribe)
+        {
+            return StrongholdState == StrongholdState.Occupied && tribe == Tribe;
         }
 
         protected override void CheckUpdateMode()
@@ -286,10 +297,6 @@ namespace Game.Data.Stronghold
             return updated;
         }
 
-        #endregion
-
-        #region Implementation of ILocation
-
         public uint LocationId
         {
             get
@@ -306,10 +313,6 @@ namespace Game.Data.Stronghold
             }
         }
 
-        #endregion
-
-        #region Implementation of IPersistable
-
         public string DbTable
         {
             get
@@ -325,7 +328,7 @@ namespace Game.Data.Stronghold
                 return new[] {new DbColumn("id", ObjectId, DbType.UInt32)};
             }
         }
-
+        
         public IEnumerable<DbDependency> DbDependencies
         {
             get
@@ -357,16 +360,11 @@ namespace Game.Data.Stronghold
                         new DbColumn("nearby_cities", NearbyCitiesCount, DbType.UInt16),
                         new DbColumn("bonus_days", BonusDays, DbType.Decimal),
                         new DbColumn("gate_max", GateMax, DbType.Int32),
+                        new DbColumn("theme_id", Theme, DbType.String),
                 };
             }
         }
 
-        #endregion
-
-        #region Implementation of IPersistableObject
-
         public bool DbPersisted { get; set; }
-
-        #endregion
     }
 }

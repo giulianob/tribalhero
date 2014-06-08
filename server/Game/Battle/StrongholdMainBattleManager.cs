@@ -39,7 +39,7 @@ namespace Game.Battle
                 return Error.BattleNotViewable;
             }
 
-            if (stronghold.StrongholdState == StrongholdState.Occupied && player.IsInTribe && stronghold.Tribe.Id == player.Tribesman.Tribe.Id)
+            if (player.IsInTribe && stronghold.BelongsTo(player.Tribesman.Tribe))
             {
                 return Error.Ok;
             }

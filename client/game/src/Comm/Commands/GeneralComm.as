@@ -169,7 +169,7 @@
             }
 
             // Themes purchased
-            Constants.session.themesPurchased = ["DEFAULT"];
+            Constants.session.themesPurchased = [Theme.DEFAULT_THEME_ID];
             var themesPurchasedCnt: int = packet.readInt();
             for (i = 0; i < themesPurchasedCnt; i++) {
                 Constants.session.themesPurchased.push(packet.readString());

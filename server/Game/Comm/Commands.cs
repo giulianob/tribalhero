@@ -354,6 +354,8 @@ namespace Game.Comm
 
         StrongholdList = 1106,
 
+        StrongholdSetTheme = 1107,
+
         #endregion
 
         #region Internal Messages

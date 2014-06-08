@@ -1,4 +1,5 @@
 ﻿package src.UI.Sidebars.StrongholdInfo {
+    import flash.display.DisplayObject;
     import flash.events.*;
 
     import org.aswing.*;
@@ -9,12 +10,15 @@
     import src.*;
     import src.Map.Position;
     import src.Objects.*;
+    import src.Objects.Factories.StrongholdFactory;
     import src.Objects.Stronghold.*;
     import src.UI.*;
     import src.UI.Components.*;
+    import src.UI.Flows.StoreFlow;
     import src.UI.Sidebars.ObjectInfo.Buttons.*;
     import src.UI.Sidebars.StrongholdInfo.Buttons.*;
     import src.Util.StringHelper;
+    import src.Util.Util;
 
     public class StrongholdInfoSidebar extends GameJSidebar
 	{
@@ -22,6 +26,9 @@
 		private var lblName:JLabel;
 		private var pnlStats:Form;
 		private var pnlGroups:JPanel;
+
+        private var themeLink: JLabelButton;
+        private var themeDropdown: JPopupMenu;
 
 		private var stronghold: Stronghold;
 
@@ -45,20 +52,56 @@
 
 			clear();		
 			
-			addStatRow(StringHelper.localize("STR_NAME"), new StrongholdLabel(stronghold.id, Constants.session.tribe.isInTribe(stronghold.tribeId)));
+			addStatRow(t("STR_NAME"), new StrongholdLabel(stronghold.id, Constants.session.tribe.isInTribe(stronghold.tribeId)));
 						
 			if (stronghold.tribeId == 0) {
-				addStatRow(StringHelper.localize("STR_TRIBE"), StringHelper.localize("STR_NOT_OCCUPIED"));
+				addStatRow(t("STR_TRIBE"), t("STR_NOT_OCCUPIED"));
 			} else {
-				addStatRow(StringHelper.localize("STR_TRIBE"), new TribeLabel(stronghold.tribeId));
+				addStatRow(t("STR_TRIBE"), new TribeLabel(stronghold.tribeId));
 			}
 			
-			addStatRow(StringHelper.localize("STR_LEVEL"), stronghold.level.toString());
-            addStatRow(StringHelper.localize("STR_GATEMAX"), stronghold.gateMax.toString(), null, StringHelper.localize("STRONGHOLD_GATE_MAX_HP_TOOLTIP"));
+			addStatRow(t("STR_LEVEL"), stronghold.level.toString());
+            addStatRow(t("STR_GATEMAX"), stronghold.gateMax.toString(), null, t("STRONGHOLD_GATE_MAX_HP_TOOLTIP"));
 
 			if (Constants.session.tribe.isInTribe(stronghold.tribeId)) {
 				pnlGroups.append(new ViewStrongholdButton(stronghold));
 				pnlGroups.append(new SendReinforcementButton(stronghold, new Location(Location.STRONGHOLD, stronghold.id)));
+
+                if (Constants.session.tribe.hasRight(Tribe.SET_THEME)) {
+                    themeDropdown = new JPopupMenu();
+
+                    for each (var theme: String in Constants.session.themesPurchased) {
+                        var newSprite: String = StrongholdFactory.getSpriteName(theme);
+                        if (!Assets.doesSpriteExist(newSprite)) {
+                            continue;
+                        }
+
+                        themeDropdown.append(createThemeMenuItem(theme));
+                    }
+
+                    themeDropdown.append(new JSeparator());
+
+                    themeLink = new JLabelButton("", null, AsWingConstants.LEFT);
+                    themeLink.addActionListener(function (e: Event): void {
+                        if (!themeDropdown.isVisible()) {
+                            themeDropdown.show(themeLink, 0, themeLink.getHeight());
+                        }
+                        else {
+                            themeDropdown.setVisible(false);
+                        }
+                    });
+
+                    themeLink.setText(t("THEME_" + stronghold.theme));
+                    addStatRow(t("OBJECT_INFO_SIDEBAR_THEME_LABEL"), themeLink);
+
+                    var storeLink: JLabelButton = new JLabelButton(t("OBJECT_INFO_SIDEBAR_BUY_MORE_THEMES"), null, AsWingConstants.LEFT);
+                    themeDropdown.append(storeLink);
+
+                    storeLink.addActionListener(function (e: Event): void {
+                        new StoreFlow().showStore();
+                    });
+                }
+
 			} else {
 				pnlGroups.append(new SendAttackButton(stronghold,new Location(Location.STRONGHOLD, stronghold.id)));
 			}
@@ -75,7 +118,21 @@
 			}		
 		}
 
-		private function addStatRow(title: String, textOrComponent: *, icon: Icon = null, tooltip: String = null) : Component {
+        private function createThemeMenuItem(theme: String): JMenuItem {
+            var sprite: DisplayObject = StrongholdFactory.getSprite(theme);
+            Util.resizeSprite(sprite, 85, 85);
+
+            var menuItem: JMenuItem = new JMenuItem(t("THEME_" + theme), new AssetIcon(sprite));
+
+            var capturedTheme: String = theme;
+            menuItem.addActionListener(function(e: Event): void {
+                Global.mapComm.Stronghold.setTheme(stronghold.id, capturedTheme);
+            });
+
+            return menuItem
+        }
+
+        private function addStatRow(title: String, textOrComponent: *, icon: Icon = null, tooltip: String = null) : Component {
 			var rowTitle: JLabel = new JLabel(title);
 			rowTitle.setHorizontalAlignment(AsWingConstants.LEFT);
 			rowTitle.setName("title");

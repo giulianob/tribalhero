@@ -2,6 +2,7 @@ package src
 {
     import src.Graphics.Tileset;
     import src.Map.MiniMap.MiniMapLegend;
+    import src.Objects.Store.CoinPrice;
 
     public class Constants
 	{
@@ -140,7 +141,13 @@ package src
             displayObject: 10
         };
 
-        public static const shadowAlpha: Number = 0.5;
+        public static const coinPrices: Array = [
+            new CoinPrice("REFILL3", 3, 115, 0),
+            new CoinPrice("REFILL6", 6, 240, 4),
+            new CoinPrice("REFILL10", 10, 450, 15),
+            new CoinPrice("REFILL15", 15, 700, 18),
+            new CoinPrice("REFILL20", 20, 1000, 23)
+        ];
 	}
 }
 

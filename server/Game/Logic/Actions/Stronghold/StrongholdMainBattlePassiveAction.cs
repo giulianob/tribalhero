@@ -358,7 +358,7 @@ namespace Game.Logic.Actions
                 throw new Exception("Stronghold is missing");
             }
 
-            CallbackLock.CallbackLockHandler lockHandler = delegate { return stronghold.LockList.ToArray(); };
+            CallbackLock.CallbackLockHandler lockHandler = delegate { return stronghold.LockList().ToArray(); };
 
             locker.Lock(lockHandler, null, stronghold).Do(() =>
             {

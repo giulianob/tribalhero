@@ -15,5 +15,6 @@ namespace Game.Data.Tribe
         AssignmentCreate = 0x40,
         DeletePost = 0x80,
         SetAnnouncement = 0x100,
+        SetStrongholdTheme = 0x200,
     }
 }

@@ -29,7 +29,7 @@ namespace Game.Data.Stronghold
             this.notificationManagerFactory = notificationManagerFactory;
         }
 
-        public IStronghold CreateStronghold(uint id, string name, byte level, uint x, uint y, decimal gate, int gateMax)
+        public IStronghold CreateStronghold(uint id, string name, byte level, uint x, uint y, decimal gate, int gateMax, string themeId)
         {
             IStronghold stronghold;
 
@@ -43,7 +43,8 @@ namespace Game.Data.Stronghold
                                         x,
                                         y,
                                         gate,
-                                            gateMax,
+                                        gateMax,
+                                        themeId,
                                         kernel.Get<IDbManager>(),
                                         notificationManager,
                                         troopManager,

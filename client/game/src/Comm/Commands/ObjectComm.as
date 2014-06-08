@@ -88,6 +88,7 @@
 					obj.lvl = packet.readUByte();
 					obj.tribeId = packet.readUInt();
                     obj.gateMax = packet.readInt();
+                    obj.themeId = packet.readString();
 					break;
 				case ObjectFactory.TYPE_BARBARIAN_TRIBE:
 					obj.lvl = packet.readUByte();
@@ -113,7 +114,7 @@
 				case ObjectFactory.TYPE_TROOP_OBJ:
 					return TroopFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.size, obj.playerId, obj.groupId, obj.id);
 				case ObjectFactory.TYPE_STRONGHOLD:
-					return StrongholdFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.size, obj.groupId, obj.id, obj.lvl, obj.tribeId, obj.gateMax);
+					return StrongholdFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.size, obj.groupId, obj.id, obj.lvl, obj.tribeId, obj.gateMax, obj.themeId);
 				case ObjectFactory.TYPE_BARBARIAN_TRIBE:
 					return BarbarianTribeFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.size, obj.groupId, obj.id, obj.lvl, obj.count);
 				default:

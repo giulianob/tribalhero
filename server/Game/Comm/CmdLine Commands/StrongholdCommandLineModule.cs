@@ -283,7 +283,7 @@ namespace Game.Comm
                 return "Stronghold not found";
             }
 
-            locker.Lock(custom => stronghold.LockList.ToArray(), null, tribe, stronghold)
+            locker.Lock(custom => stronghold.LockList().ToArray(), null, tribe, stronghold)
                   .Do(() => strongholdManager.TransferTo(stronghold, tribe));
 
             return "OK!";

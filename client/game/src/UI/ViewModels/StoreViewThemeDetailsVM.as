@@ -1,12 +1,19 @@
 package src.UI.ViewModels {
+    import System.Linq.Enumerable;
+
     import src.Assets;
     import src.Constants;
     import src.Global;
+    import src.Graphics.WallTileset;
     import src.Map.City;
+    import src.Objects.Factories.StrongholdFactory;
     import src.Objects.Factories.StructureFactory;
     import src.Objects.Prototypes.StructurePrototype;
+    import src.Objects.Store.IStoreAsset;
     import src.Objects.Store.StoreItemTheme;
+    import src.Objects.Store.StrongholdStoreAsset;
     import src.Objects.Store.StructureStoreAsset;
+    import src.Objects.Store.WallStoreAsset;
     import src.UI.ViewModel;
 
     public class StoreViewThemeDetailsVM extends ViewModel {
@@ -26,8 +33,24 @@ package src.UI.ViewModels {
             return item;
         }
 
+        public function isStrongholdIncluded(): Boolean {
+            return Assets.doesSpriteExist(StrongholdFactory.getSpriteName(theme.id));
+        }
+
+        public function isWallIncluded(): Boolean {
+            return Assets.doesSpriteExist(WallTileset.getSpriteName(theme.id));
+        }
+
         public function getThemeAssets(): Array {
             var themeItems: Array = [];
+
+            if (isStrongholdIncluded()) {
+                themeItems.push(new StrongholdStoreAsset(item));
+            }
+
+            if (isWallIncluded()) {
+                themeItems.push(new WallStoreAsset(item));
+            }
 
             for each (var structurePrototype: StructurePrototype in StructureFactory.getAllStructureTypes()) {
                 if (Assets.doesSpriteExist(structurePrototype.getSpriteName(theme.id))) {
@@ -35,8 +58,9 @@ package src.UI.ViewModels {
                 }
             }
 
-            themeItems.sortOn("title", Array.CASEINSENSITIVE);
-            return themeItems;
+            return Enumerable.from(themeItems).orderBy(function(themeItem: IStoreAsset): String {
+                return themeItem.title();
+            }).toArray();
         }
 
         public function buy(): void {

@@ -20,13 +20,13 @@ package src.Objects {
 
             mapPriority = Constants.mapObjectPriority.wallPriority;
 
-            this.standardAsset = WallTileset.getTile(Assets.getSharedInstance(theme + "_WALL_TILESET"), tileId);
+            this.standardAsset = WallTileset.getTile(theme, tileId);
 
             setSprite(standardAsset, new Point());
         }
 
         public function getTroopOverlappingAsset(): Bitmap {
-            return WallTileset.getTile(Assets.getSharedInstance(theme + "_WALL_TILESET"), tileId + 12);
+            return WallTileset.getTile(theme, tileId + 12);
         }
 
         override public function dispose(): void {

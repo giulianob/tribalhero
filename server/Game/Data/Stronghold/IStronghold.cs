@@ -52,11 +52,14 @@ namespace Game.Data.Stronghold
 
         IBattleManager MainBattle { get; set; }
 
-        IEnumerable<ILockable> LockList { get; }
+        IEnumerable<ILockable> LockList();
 
         IActionWorker Worker { get; }
 
+        string Theme { get; set; }
+
         event EventHandler<EventArgs> GateStatusChanged;
 
+        bool BelongsTo(ITribe tribe);
     }
 }

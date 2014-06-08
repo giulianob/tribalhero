@@ -37,7 +37,7 @@
 
 			var templateCnt: int = packet.readUByte();
 			for (var templateI: int = 0; templateI < templateCnt; templateI++) {
-				troop.template.add(new TroopTemplate(packet.readUShort(), packet.readUByte(), packet.readUShort(), packet.readUShort(), packet.readUByte(), packet.readUShort(), packet.readUByte(), packet.readUByte(), packet.readUByte()), false);
+				troop.template.add(new TroopTemplate(packet.readUShort(), packet.readUByte(), packet.readFloat(), packet.readFloat(), packet.readUByte(), packet.readUShort(), packet.readUByte(), packet.readUByte(), packet.readUByte()), false);
 			}
 			troop.template.sort();
 

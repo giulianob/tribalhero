@@ -24,6 +24,8 @@ namespace Game.Setup
         private const int INITIAL_INDEX = 200;
 
         private readonly List<Position> cityLocations = new List<Position>();
+        
+        private readonly HashSet<Position> cityLocationsByPosition = new HashSet<Position>();
 
         public MapFactory(IDbManager dbManager, ISystemVariableManager systemVariableManager, ITileLocator tileLocator)
         {            
@@ -44,13 +46,17 @@ namespace Game.Setup
                     uint y = uint.Parse(strs[1]);
 
                     cityLocations.Add(new Position(x, y));
+                    cityLocationsByPosition.Add(new Position(x, y));
                 }
             }
         }
 
-        public IEnumerable<Position> Locations()
+        public List<Position> Locations
         {
-            return cityLocations.AsReadOnly();
+            get
+            {
+                return cityLocations;
+            }
         }
 
         private SystemVariable index;
@@ -78,7 +84,7 @@ namespace Game.Setup
         
         public bool TooCloseToCities(Position position)
         {
-            return Locations().Any(loc => tileLocator.TileDistance(position, 1, loc, 1) <= MIN_DISTANCE_AWAY_FROM_CITIES);
+            return tileLocator.ForeachMultitile(position.X, position.Y, MIN_DISTANCE_AWAY_FROM_CITIES).Any(eachPosition => cityLocationsByPosition.Contains(eachPosition));
         }
     }
 }

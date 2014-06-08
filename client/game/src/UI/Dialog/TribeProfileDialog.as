@@ -381,7 +381,26 @@
                 new SimpleTooltip(lblDescription, assignment.description);
 
             var pnlButtons: JPanel = new JPanel(new FlowLayout());
-            pnlButtons.appendAll(btnDetails, btnJoin);
+
+            if (Constants.tribe.hasRight(Tribe.ASSIGNMENT)) {
+                var btnEdit: JLabelButton = new JLabelButton("Edit Description", null, AsWingConstants.LEFT);
+
+                btnEdit.addActionListener(function(e:Event): void {
+                    var edit: AssignmenetEditDescriptionDialog = new AssignmenetEditDescriptionDialog(assignment, function(desc:String):void {
+                        Global.mapComm.Tribe.editAssignment(assignment, desc);
+                        edit.getFrame().dispose();
+
+                        lblDescription.setText(desc);
+                        if (desc != "")
+                            new SimpleTooltip(lblDescription, desc);
+                    });
+                    edit.show();
+                });
+
+                pnlButtons.appendAll(btnEdit, btnDetails, btnJoin);
+            } else {
+                pnlButtons.appendAll(btnDetails, btnJoin);
+            }
             pnlButtons.setConstraints("East");
 
             pnlBottom.appendAll(lblDescription, pnlButtons);

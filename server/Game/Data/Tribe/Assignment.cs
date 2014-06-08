@@ -189,7 +189,7 @@ namespace Game.Data.Tribe
         /// <summary>
         ///     Description of assignement
         /// </summary>
-        public string Description { get; private set; }
+        public string Description { get; set; }
 
         /// <summary>
         ///     Number of stubs that have already been dispatched

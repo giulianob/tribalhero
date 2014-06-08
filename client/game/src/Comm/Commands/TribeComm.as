@@ -511,6 +511,20 @@
             loader.load("/tribe_logs/listing", [ { key: "page", value: page }]);
         }
 
+        public function onEditAssignment(packet: Packet, custom: * ):void {
+            if (MapComm.tryShowError(packet))
+                return;
+        }
+
+        public function editAssignment(assignment: *, description: String): void {
+            var packet: Packet = new Packet();
+            packet.cmd = Commands.TRIBE_ASSIGNMENT_EDIT;
+            packet.writeInt(assignment.id);
+            packet.writeString(description);
+
+            session.write(packet, onEditAssignment, null );
+        }
+
     }
 
 }

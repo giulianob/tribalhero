@@ -149,6 +149,7 @@ package src.Comm {
 		public static const TRIBE_CITY_ASSIGNMENT_CREATE: int = 1022;
 		public static const TRIBE_ASSIGNMENT_JOIN: int = 1023;
 		public static const TRIBE_STRONGHOLD_ASSIGNMENT_CREATE: int = 1024;
+        public static const TRIBE_ASSIGNMENT_EDIT: int = 1025;
 		public static const TRIBE_UPDATE_NOTIFICATIONS: int = 1031;
 		public static const TRIBE_UPDATE_CHANNEL: int = 1051;
 		public static const TRIBE_RANKS_UPDATE_CHANNEL: int = 1052;

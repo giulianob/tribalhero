@@ -8,7 +8,7 @@ namespace Testing.FormulaTests
     public class BarbarianTribeFormulaTest
     {
         [Theory]
-        [InlineAutoNSubstituteData(1, 1, 10)]
+        [InlineAutoNSubstituteData(1, 1, 5)]
         [InlineAutoNSubstituteData(2, 1, 20)]
         [InlineAutoNSubstituteData(3, 1, 41)]
         [InlineAutoNSubstituteData(4, 2, 73)]

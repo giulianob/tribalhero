@@ -197,13 +197,14 @@
 			var level: int = packet.readUByte();
 			var hp: Number = packet.readFloat();
 			var maxHp: Number = packet.readFloat();
+            var count: int = packet.readUShort();
 			
 			var combatObj: CombatObject;
 			if (classType == BattleManager.UNIT) {
-				combatObj = new CombatUnit(combatObjId, type, level, hp, maxHp);
+				combatObj = new CombatUnit(combatObjId, type, level, hp, maxHp, count);
 			}
 			else if (classType == BattleManager.STRUCTURE) {
-				combatObj = new CombatStructure(combatObjId, type, level, hp, maxHp);
+				combatObj = new CombatStructure(combatObjId, type, level, hp, maxHp, count);
 			}
 			else {
 				throw new Error("Unknown class type " + classType);

@@ -413,6 +413,24 @@ namespace Game.Data.Tribe
             return Error.Ok;
         }
 
+        public Error EditAssignment(IPlayer player, int assignmentId, string desc)
+        {
+            // Make sure this player is ranked high enough
+            if (player.Tribesman == null ||
+                !player.Tribesman.Tribe.HasRight(player.PlayerId, TribePermission.AssignmentCreate))
+                return Error.TribesmanNotAuthorized;
+
+            // TODO: Clean this up
+            Assignment assignment = player.Tribesman.Tribe.Assignments.FirstOrDefault(x => x.Id == assignmentId);
+            if (assignment == null)
+                return Error.AssignmentDone;
+
+            assignment.Description = desc;
+            dbManager.Save(assignment);
+            SendUpdate();
+            return Error.Ok;
+        }
+
         public Error Transfer(uint newOwnerPlayerId)
         {
             if (Owner.PlayerId == newOwnerPlayerId)

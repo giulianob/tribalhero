@@ -288,8 +288,8 @@ namespace Game.Comm
                 packet.AddUInt16(stats.Key);
                 packet.AddByte(stats.Value.Base.Lvl);
 
-                packet.AddUInt16((ushort)stats.Value.MaxHp);
-                packet.AddUInt16((ushort)stats.Value.Atk);
+                packet.AddFloat((float)stats.Value.MaxHp);
+                packet.AddFloat((float)stats.Value.Atk);
                 packet.AddByte(stats.Value.Splash);
                 // Await client update
                 packet.AddUInt16(0);
@@ -378,6 +378,7 @@ namespace Game.Comm
             packet.AddByte(combatObject.Lvl);
             packet.AddFloat((float)combatObject.Hp);
             packet.AddFloat((float)combatObject.Stats.MaxHp);
+            packet.AddUInt16(combatObject.Count);
         }
 
         public static void AddLoginToPacket(Session session, Packet packet)

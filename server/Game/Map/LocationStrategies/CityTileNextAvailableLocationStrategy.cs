@@ -31,10 +31,10 @@ namespace Game.Map.LocationStrategies
         public Error NextLocation(out Position position)
         {
             position = new Position();
-            var locations = mapFactory.Locations().ToList();
+            var locations = mapFactory.Locations;
             do
             {
-                if (mapFactory.Index >= mapFactory.Locations().Count())
+                if (mapFactory.Index >= locations.Count)
                 {
                     return Error.MapFull;
                 }

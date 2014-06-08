@@ -318,6 +318,8 @@ namespace Game.Comm
 
         TribeStrongholdAssignmentCreate = 1024,
 
+        TribeAssignmentEdit = 1025,
+
         TribeChannelNotification = 1031,
 
         TribeChannelUpdate = 1051,

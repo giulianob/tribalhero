@@ -8,9 +8,9 @@
 	{		
 		private var prototype: StructurePrototype;
 		
-		public function CombatStructure(combatObjectId: int, type: int, level: int, hp: Number, maxHp: Number)
+		public function CombatStructure(combatObjectId: int, type: int, level: int, hp: Number, maxHp: Number, count: int)
 		{
-			super(combatObjectId, type, level, hp, maxHp);
+			super(combatObjectId, type, level, hp, maxHp, count);
 						
 			prototype = StructureFactory.getPrototype(type, level);
 		}

@@ -144,7 +144,7 @@
 			new SimpleTooltip(btnRanking, "View world ranking");
 			btnRanking.addEventListener(MouseEvent.CLICK, onViewRanking);
 
-			new SimpleTooltip(btnRanking, "View store");
+			new SimpleTooltip(btnStore, "View store");
 			btnStore.addEventListener(MouseEvent.CLICK, onViewStore);
 
 			new SimpleTooltip(btnCityInfo, "View city details");

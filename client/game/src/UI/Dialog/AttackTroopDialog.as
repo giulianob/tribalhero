@@ -136,13 +136,13 @@
 			lblAttackStrength.setText("Attack Strength:");
 
 			rdAssault = new JRadioButton();
-			rdAssault.setSelected(true);
 			rdAssault.setLocation(new IntPoint(5, 5));
 			rdAssault.setSize(new IntDimension(54, 17));
 			rdAssault.setText("Assault");
 			new SimpleTooltip(rdAssault, "Retreat if only 1/3 of the units remain");
 
 			rdRaid = new JRadioButton();
+            rdRaid.setSelected(true);
 			rdRaid.setLocation(new IntPoint(51, 5));
 			rdRaid.setSize(new IntDimension(40, 17));
 			rdRaid.setText("Raid");

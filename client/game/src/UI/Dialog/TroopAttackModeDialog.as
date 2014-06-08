@@ -66,11 +66,11 @@ package src.UI.Dialog
 			lblAttackStrength.setText("Attack Strength:");
 
 			rdAssault = new JRadioButton("Assault");
-			rdAssault.setSelected(true);
 			rdAssault.setHorizontalAlignment(AsWingConstants.LEFT);
 			new SimpleTooltip(rdAssault, "Retreat if only 1/3 of the units remain");
 
 			rdRaid = new JRadioButton("Raid");
+            rdRaid.setSelected(true);
 			rdRaid.setHorizontalAlignment(AsWingConstants.LEFT);
 			new SimpleTooltip(rdRaid, "Retreat if only 2/3 of the units remain");
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Game.Data.Stronghold;
 using Game.Setup;
 
 namespace Game.Data
@@ -95,6 +96,20 @@ namespace Game.Data
             structure.BeginUpdate();
             structure.Theme = id;
             structure.EndUpdate();
+
+            return Error.Ok;
+        }
+
+        public Error SetStrongholdTheme(IStronghold stronghold, IPlayer player, string id)
+        {
+            if (!HasTheme(player, id))
+            {
+                return Error.ThemeNotPurchased;
+            }
+
+            stronghold.BeginUpdate();
+            stronghold.Theme = id;
+            stronghold.EndUpdate();
 
             return Error.Ok;
         }

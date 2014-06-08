@@ -1,10 +1,9 @@
 package src.Objects {
-    import flash.display.Bitmap;
-
-    import src.Assets;
     import src.Util.StringHelper;
 
     public class Theme {
+        public static const DEFAULT_THEME_ID: String = "DEFAULT";
+
         public var id: String;
         public var cost: int;
         public var created: Date;

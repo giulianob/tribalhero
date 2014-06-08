@@ -18,6 +18,7 @@ package src.UI.Dialog {
 
     import src.Constants;
     import src.Global;
+    import src.Objects.Store.CoinPrice;
     import src.UI.Components.CoinLabel;
     import src.UI.Dialog.StoreConfirmBuyDialog;
     import src.UI.GameJPanel;
@@ -46,7 +47,7 @@ package src.UI.Dialog {
 
             title = t("STORE_BUY_COINS_DIALOG_TITLE");
 
-            setPreferredWidth(500);
+            setPreferredWidth(600);
             setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
 
             var formBalance: Form = new Form();
@@ -68,10 +69,9 @@ package src.UI.Dialog {
             append(formBalance);
 
             var pricesPanel: JPanel = new JPanel(new GridLayout(1, 3, 20));
-            pricesPanel.append(createRefillItem("REFILL5", 5, 200, 0));
-            pricesPanel.append(createRefillItem("REFILL10", 10, 450, 11));
-            pricesPanel.append(createRefillItem("REFILL15", 15, 700, 16));
-            pricesPanel.append(createRefillItem("REFILL20", 20, 1000, 20));
+            for each (var coinPrice: CoinPrice in Constants.coinPrices) {
+                pricesPanel.append(createRefillItem(coinPrice.name, coinPrice.price, coinPrice.coins, coinPrice.discount));
+            }
 
             append(pricesPanel);
         }

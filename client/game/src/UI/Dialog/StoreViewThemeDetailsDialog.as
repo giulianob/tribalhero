@@ -58,7 +58,22 @@ package src.UI.Dialog {
             previewTabs.appendTab(pnlPreviewImage, t("STORE_VIEW_THEME_DIALOG_PREVIEW_TAB"));
             previewTabs.appendTab(Util.createTopAlignedScrollPane(gridStoreItems), t("STORE_VIEW_THEME_DIALOG_DETAIL_TAB"));
 
-            appendAll(lblTitle, lblDescription, previewTabs);
+            appendAll(lblTitle, lblDescription);
+
+            if (viewModel.isWallIncluded() && viewModel.isStrongholdIncluded()) {
+                var lblWallAndStrongholdIncluded: JLabel = new JLabel(t("STORE_VIEW_THEME_DIALOG_STRONGHOLD_AND_WALL_INCLUDED"), null, AsWingConstants.LEFT);
+                append(lblWallAndStrongholdIncluded);
+            }
+            else if (viewModel.isWallIncluded()) {
+                var lblWallIncluded: JLabel = new JLabel(t("STORE_VIEW_THEME_DIALOG_WALL_INCLUDED"), null, AsWingConstants.LEFT);
+                append(lblWallIncluded);
+            }
+            else if (viewModel.isStrongholdIncluded()) {
+                var lblStrongholdIncluded: JLabel = new JLabel(t("STORE_VIEW_THEME_DIALOG_STRONGHOLD_INCLUDED"), null, AsWingConstants.LEFT);
+                append(lblStrongholdIncluded);
+            }
+
+            appendAll(previewTabs);
 
             if (!viewModel.theme.hasPurchased()) {
                 btnBuy = new JButton(t("STORE_VIEW_THEME_DIALOG_BUY", viewModel.theme.cost), new AssetIcon(Assets.getInstance("ICON_COIN")));

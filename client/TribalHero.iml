@@ -28,11 +28,10 @@
         </dependencies>
         <compiler-options>
           <map>
-            <entry key="compiler.debug.swf" value="false" />
-            <entry key="compiler.define" value="" />
+            <entry key="compiler.debug.swf" value="true" />
+            <entry key="compiler.define" value="CONFIG::debug&#9;true" />
           </map>
           <option name="additionalConfigFilePath" value="$MODULE_DIR$/GameConfig.xml" />
-          <option name="additionalOptions" value="-define=CONFIG::debug,true -debug=true -incremental=true" />
         </compiler-options>
         <packaging-air-desktop />
         <packaging-android />

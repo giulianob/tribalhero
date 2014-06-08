@@ -147,8 +147,10 @@
 				sprite = ForestFactory.getSprite();
 			else if (obj is NewCityPlaceholder)
 				sprite = getNewCityPlaceholderSprite();
-			else if (obj is Stronghold)
-				sprite = StrongholdFactory.getSprite(withPosition);
+			else if (obj is Stronghold) {
+                var stronghold:Stronghold = Stronghold(obj);
+				sprite = StrongholdFactory.getSprite(stronghold.theme, withPosition);
+            }
 			else if (obj is BarbarianTribe)
 				sprite = BarbarianTribeFactory.getSprite();
 			else

@@ -18,7 +18,9 @@ package src.UI.Dialog{
 			new JCheckBox("Repair Stronghold Gate"),
 			new JCheckBox("Upgrade Tribe"),
 			new JCheckBox("Create Assignments"),
-			new JCheckBox("Delete Message Board Posts")
+			new JCheckBox("Delete Message Board Posts"),
+			new JCheckBox("Change announcement"),
+			new JCheckBox("Change Stronghold theme"),
 		];
 		
 		private var comboRankId: JComboBox;

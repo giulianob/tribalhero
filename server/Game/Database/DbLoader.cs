@@ -613,7 +613,8 @@ namespace Game.Database
                                                                         (uint)reader["x"],
                                                                         (uint)reader["y"],
                                                                         (decimal)reader["gate"],
-                                                                        (int)reader["gate_max"]);
+                                                                        (int)reader["gate_max"],
+                                                                        (string)reader["theme_id"]);
                     stronghold.StrongholdState = (StrongholdState)((byte)reader["state"]);
                     stronghold.NearbyCitiesCount = (ushort)reader["nearby_cities"];
                     stronghold.DbPersisted = true;

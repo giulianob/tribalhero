@@ -250,7 +250,7 @@ namespace Game.Logic.Actions
                     throw new Exception("Stronghold is missing");
                 }
 
-                CallbackLock.CallbackLockHandler lockAll = delegate { return targetStronghold.LockList.ToArray(); };
+                CallbackLock.CallbackLockHandler lockAll = delegate { return targetStronghold.LockList().ToArray(); };
 
                 locker.Lock(lockAll, null, city, targetStronghold).Do(() =>
                 {
@@ -341,7 +341,7 @@ namespace Game.Logic.Actions
 
             CallbackLock.CallbackLockHandler lockAll = delegate
             {
-                var locks = targetStronghold.LockList.ToList();
+                var locks = targetStronghold.LockList().ToList();
                 if (city.Owner.IsInTribe)
                 {
                     locks.Add(city.Owner.Tribesman.Tribe);
@@ -439,7 +439,7 @@ namespace Game.Logic.Actions
                 throw new Exception("Stronghold not found");
             }
 
-            CallbackLock.CallbackLockHandler lockAll = delegate { return targetStronghold.LockList.ToArray(); };
+            CallbackLock.CallbackLockHandler lockAll = delegate { return targetStronghold.LockList().ToArray(); };
 
             locker.Lock(lockAll, null, city, targetStronghold).Do(() =>
             {

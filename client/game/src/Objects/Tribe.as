@@ -16,6 +16,8 @@ package src.Objects
 		public static var ASSIGNMENT: int = 64;
 		public static var DELETE_POST: int = 128;
         public static var ANNOUNCEMENT: int = 256;
+        public static var SET_THEME: int = 512;
+
         public var id: int = 0;
 		public var rank: int = 0;
 		public var ranks: * = null;

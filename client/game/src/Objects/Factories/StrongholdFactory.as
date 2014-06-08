@@ -15,33 +15,26 @@
 		public function StrongholdFactory() {
 		}
 
-        private static function getSpriteName(): String {
-            return "DEFAULT_STRONGHOLD_STRUCTURE";
+        public static function getSpriteName(theme: String): String {
+            return theme.toUpperCase() + "_STRONGHOLD_STRUCTURE";
         }
 
-		public static function getSprite(withPosition: String, withShadow: Boolean = false): DisplayObjectContainer
+		public static function getSprite(theme: String, withPosition: String = ""): DisplayObjectContainer
 		{
-			var image: Bitmap = Assets.getInstance(getSpriteName(), withPosition);
+			var image: Bitmap = Assets.getInstance(getSpriteName(theme), withPosition);
 
             var sprite: Sprite = new Sprite();
-
-//            if (withShadow) {
-//                var shadow: Bitmap = Assets.getInstance(getSpriteName() + "_SHADOW", withPosition);
-//                shadow.alpha = Constants.shadowAlpha;
-//                shadow.name = "shadow";
-//                sprite.addChild(shadow);
-//            }
 
             sprite.addChild(image);
 
 			return sprite;
 		}
 
-		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, size: int, groupId: int, objectId: int, level: int, tribeId: int, gateMax: int): Stronghold
+		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, size: int, groupId: int, objectId: int, level: int, tribeId: int, gateMax: int, themeId: String): Stronghold
 		{
-			var strongholdObj: Stronghold = new Stronghold(type, state, objX, objY, size, groupId, objectId, level, tribeId, gateMax);
+			var strongholdObj: Stronghold = new Stronghold(type, state, objX, objY, size, groupId, objectId, level, tribeId, gateMax, themeId);
 
-			strongholdObj.setSprite(getSprite("map", true), Assets.getPosition(getSpriteName(), "map"));
+			strongholdObj.setSprite(getSprite(themeId, "map"), Assets.getPosition(getSpriteName(themeId), "map"));
 
 			strongholdObj.setOnSelect(Global.map.selectObject);
 			

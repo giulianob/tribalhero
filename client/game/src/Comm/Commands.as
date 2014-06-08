@@ -165,6 +165,7 @@ package src.Comm {
 		public static const STRONGHOLD_GATE_REPAIR: int = 1104;
 		public static const STRONGHOLD_LOCATE_BY_NAME: int = 1105;
 		public static const STRONGHOLD_LIST: int = 1106;
+		public static const STRONGHOLD_SET_THEME: int = 1107;
 
         public static const STORE_GET_ITEMS: int = 1201;
         public static const STORE_PURCHASE_ITEM: int = 1202;

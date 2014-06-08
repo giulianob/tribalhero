@@ -291,33 +291,17 @@
         [EmbedPosition(name = "map", x = "22", y = "-4")]
         public static const FOREST_LVL_1: Class;
 
-        [Embed(source = "../../../graphics/objects/FOREST_LVL_1_SHADOW.png")]
-        [EmbedPosition(name = "map", x = "36", y = "8")]
-        public static const FOREST_LVL_1_SHADOW: Class;
-
         [Embed(source = "../../../graphics/objects/FOREST_LVL_2.png")]
         [EmbedPosition(name = "map", x = "23", y = "-7")]
         public static const FOREST_LVL_2: Class;
-
-        [Embed(source = "../../../graphics/objects/FOREST_LVL_2_SHADOW.png")]
-        [EmbedPosition(name = "map", x = "33", y = "-3")]
-        public static const FOREST_LVL_2_SHADOW: Class;
 
         [Embed(source = "../../../graphics/objects/FOREST_LVL_3.png")]
         [EmbedPosition(name = "map", x = "12", y = "-3")]
         public static const FOREST_LVL_3: Class;
 
-        [Embed(source = "../../../graphics/objects/FOREST_LVL_3_SHADOW.png")]
-        [EmbedPosition(name = "map", x = "27", y = "-2")]
-        public static const FOREST_LVL_3_SHADOW: Class;
-
         [Embed(source = "../../../graphics/objects/FOREST_LVL_4.png")]
         [EmbedPosition(name = "map", x = "4", y = "-19")]
         public static const FOREST_LVL_4: Class;
-
-        [Embed(source = "../../../graphics/objects/FOREST_LVL_4_SHADOW.png")]
-        [EmbedPosition(name = "map", x = "2", y = "-8")]
-        public static const FOREST_LVL_4_SHADOW: Class;
 
         // Store Achievement Icons
         [Embed(source = "../../../graphics/icons/achievements/coins-gold.png")]
@@ -403,7 +387,7 @@
         public static const DEFAULT_TRIBAL_FESTIVAL_STRUCTURE: Class;
 
         [Embed(source = "../../../graphics/themes/default/STRONGHOLD_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = 26, y = "-46")]
+        [EmbedPosition(name = "map", x = 106, y = "-46")]
         public static const DEFAULT_STRONGHOLD_STRUCTURE: Class;
 
         [Embed(source = "../../../graphics/themes/default/TRIBAL_GATHERING_STRUCTURE.png")]

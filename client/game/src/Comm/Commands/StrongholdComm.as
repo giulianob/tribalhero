@@ -1,5 +1,7 @@
 package src.Comm.Commands 
 {
+    import com.codecatalyst.promise.Promise;
+
     import fl.lang.Locale;
 
     import src.Comm.Commands;
@@ -205,6 +207,15 @@ package src.Comm.Commands
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.STRONGHOLD_LIST;
 			session.write(packet, onListStrongholds, { callback: callback });
+		}
+
+		public function setTheme(strongholdId: int, theme: String): Promise {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.STRONGHOLD_SET_THEME;
+            packet.writeUInt(strongholdId);
+            packet.writeString(theme);
+
+			return session.write(packet);
 		}
 	}
 }

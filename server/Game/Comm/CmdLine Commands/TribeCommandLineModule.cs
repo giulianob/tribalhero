@@ -271,16 +271,15 @@ namespace Game.Comm
             }
 
             CallbackLock.CallbackLockHandler lockHandler = delegate
-                {
-                    var locks =
-                            strongholdManager.StrongholdsForTribe(tribe)
-                                             .SelectMany(stronghold => stronghold.LockList)
+            {
+                var locks = strongholdManager.StrongholdsForTribe(tribe)
+                                             .SelectMany(stronghold => stronghold.LockList())
                                              .ToList();
 
-                    locks.AddRange(tribe.Tribesmen);
+                locks.AddRange(tribe.Tribesmen);
 
-                    return locks.ToArray();
-                };
+                return locks.ToArray();
+            };
 
             locker.Lock(lockHandler, new object[] {}, tribe).Do(() =>
             {

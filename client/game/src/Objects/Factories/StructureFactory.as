@@ -5,7 +5,6 @@
     import flash.display.*;
 
     import src.Assets;
-    import src.Constants;
     import src.Global;
     import src.Map.*;
     import src.Objects.*;
@@ -115,23 +114,16 @@
             return strPrototype.getSpriteName(theme);
         }
 
-		public static function getSprite(theme: String, type: int, level: int, withPosition: String = "", withShadow: Boolean = false): DisplayObjectContainer
+		public static function getSprite(theme: String, type: int, level: int, withPosition: String = ""): DisplayObjectContainer
 		{
 			var sprite: Sprite = new Sprite();
             var typeName: String = getSpriteName(theme, type, level);
 
             // Fall back to default theme if current theme does not have gfx
-            if (theme != "default" && !Assets.doesSpriteExist(typeName)) {
+            if (theme != Theme.DEFAULT_THEME_ID && !Assets.doesSpriteExist(typeName)) {
                 typeName = getSpriteName("DEFAULT", type, level);
             }
-/*
-            if (withShadow && Assets.doesSpriteExist(typeName + "_SHADOW")) {
-                var shadow: Bitmap = Assets.getInstance(typeName + "_SHADOW", withPosition);
-                shadow.alpha = Constants.shadowAlpha;
-                shadow.name = "shadow";
-                sprite.addChild(shadow);
-            }
-*/
+
             var mainImage: DisplayObject = Assets.getInstance(typeName, withPosition);
             sprite.addChild(mainImage);
 
@@ -154,7 +146,7 @@
 		{
 			var structureObj: StructureObject = new StructureObject(theme, type, state, objX, objY, size, playerId, cityId, objectId, level, wallRadius, wallTheme);
 
-			structureObj.setSprite(getSprite(theme, type, level, "map", true), Assets.getPosition(getSpriteName(theme, type, level), "map"));
+			structureObj.setSprite(getSprite(theme, type, level, "map"), Assets.getPosition(getSpriteName(theme, type, level), "map"));
 			
 			structureObj.setOnSelect(Global.map.selectObject);
 

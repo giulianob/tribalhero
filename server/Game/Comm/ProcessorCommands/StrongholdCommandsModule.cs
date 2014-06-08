@@ -2,6 +2,7 @@
 
 using System;
 using System.Linq;
+using Game.Data;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Map;
@@ -20,11 +21,14 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly IWorld world;
 
-        public StrongholdCommandsModule(IStrongholdManager strongholdManager, IWorld world, ILocker locker)
+        private readonly IThemeManager themeManager;
+
+        public StrongholdCommandsModule(IStrongholdManager strongholdManager, IWorld world, ILocker locker, IThemeManager themeManager)
         {
             this.strongholdManager = strongholdManager;
             this.world = world;
             this.locker = locker;
+            this.themeManager = themeManager;
         }
 
         public override void RegisterCommands(IProcessor processor)
@@ -35,6 +39,7 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.StrongholdLocate, Locate);
             processor.RegisterCommand(Command.StrongholdGateRepair, GateRepair);
             processor.RegisterCommand(Command.StrongholdList, ListAll);
+            processor.RegisterCommand(Command.StrongholdSetTheme, SetTheme);
         }
 
         private void ListAll(Session session, Packet packet)
@@ -250,7 +255,7 @@ namespace Game.Comm.ProcessorCommands
 
             locker.Lock(tribe, stronghold).Do(() =>
             {
-                if (stronghold.StrongholdState != StrongholdState.Occupied || tribe != stronghold.Tribe)
+                if (!stronghold.BelongsTo(tribe))
                 {
                     ReplyError(session, packet, Error.StrongholdNotOccupied);
                     return;
@@ -263,6 +268,55 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 var result = strongholdManager.RepairGate(stronghold);
+                ReplyWithResult(session, packet, result);
+            });
+        }
+
+        private void SetTheme(Session session, Packet packet)
+        {
+            uint strongholdId;
+            string themeId;
+
+            try
+            {
+                strongholdId = packet.GetUInt32();
+                themeId = packet.GetString();
+            }
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            if (session.Player.Tribesman == null)
+            {
+                ReplyError(session, packet, Error.TribeIsNull);
+                return;
+            }
+            var tribe = session.Player.Tribesman.Tribe;
+
+            IStronghold stronghold;
+            if (!strongholdManager.TryGetStronghold(strongholdId, out stronghold))
+            {
+                ReplyError(session, packet, Error.StrongholdNotFound);
+                return;
+            }
+
+            locker.Lock(tribe, stronghold).Do(() =>
+            {
+                if (!stronghold.BelongsTo(tribe))
+                {
+                    ReplyError(session, packet, Error.StrongholdNotOccupied);
+                    return;
+                }
+
+                if (!tribe.HasRight(session.Player.PlayerId, TribePermission.SetStrongholdTheme))
+                {
+                    ReplyError(session, packet, Error.TribesmanNotAuthorized);
+                    return;
+                }
+
+                var result = themeManager.SetStrongholdTheme(stronghold, session.Player, themeId);
                 ReplyWithResult(session, packet, result);
             });
         }

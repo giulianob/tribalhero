@@ -99,6 +99,7 @@ namespace Game.Comm
             {
                 packet.AddUInt32(stronghold.StrongholdState == StrongholdState.Occupied ? stronghold.Tribe.Id : 0);
                 packet.AddInt32(stronghold.GateMax);
+                packet.AddString(stronghold.Theme);
             }
 
             var structure = obj as IStructure;
@@ -819,8 +820,7 @@ namespace Game.Comm
 
         public static void AddStrongholdProfileToPacket(Session session, IStronghold stronghold, Packet packet)
         {
-            if (stronghold.StrongholdState != StrongholdState.Occupied || !session.Player.IsInTribe ||
-                session.Player.Tribesman.Tribe.Id != stronghold.Tribe.Id)
+            if (!session.Player.IsInTribe || !stronghold.BelongsTo(session.Player.Tribesman.Tribe))
             {
                 packet.AddByte(0);
                 packet.AddUInt32(stronghold.PrimaryPosition.X);

@@ -6,6 +6,8 @@ package src
 
     public class Constants
 	{
+        public static var storeEnabled: Boolean = false;
+
 		public static var version: int;
 		public static var revision: int;
         

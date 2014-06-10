@@ -23,7 +23,6 @@
     public class StrongholdInfoSidebar extends GameJSidebar
 	{
 		//UI
-		private var lblName:JLabel;
 		private var pnlStats:Form;
 		private var pnlGroups:JPanel;
 
@@ -91,8 +90,10 @@
                         }
                     });
 
-                    themeLink.setText(t("THEME_" + stronghold.theme));
-                    addStatRow(t("OBJECT_INFO_SIDEBAR_THEME_LABEL"), themeLink);
+                    if (Constants.storeEnabled) {
+                        themeLink.setText(t("THEME_" + stronghold.theme));
+                        addStatRow(t("OBJECT_INFO_SIDEBAR_THEME_LABEL"), themeLink);
+                    }
 
                     var storeLink: JLabelButton = new JLabelButton(t("OBJECT_INFO_SIDEBAR_BUY_MORE_THEMES"), null, AsWingConstants.LEFT);
                     themeDropdown.append(storeLink);

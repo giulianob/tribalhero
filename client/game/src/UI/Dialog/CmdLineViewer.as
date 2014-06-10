@@ -164,6 +164,11 @@ package src.UI.Dialog
                     }
                 }
 
+                if (message == "/viewstore") {
+                    Constants.storeEnabled = true;
+                    Global.gameContainer.btnStore.visible = true;
+                }
+
                 if (message.indexOf("/setvolume") == 0) {
                     Global.musicPlayer.volume = Number(message.split(" ")[1]);
                     return true;

@@ -324,16 +324,27 @@ _________ _______ _________ ______   _______  _
 
             State = EngineState.Stopping;
 
+            Logger.Info("Stopping queue listener...");
             queueListener.Stop();
+
+            Logger.Info("Pausing system variable updates");
             systemVariablesUpdater.Pause();
+            
             Logger.Info("Stopping TCP server...");
             server.Stop();
+
             Logger.Info("Stopping policy server...");
             policyServer.Stop();
+
+            Logger.Info("Stopping thrift server");
+            thriftServer.Stop();
+
             Logger.Info("Waiting for scheduler to end...");
-            //thriftServer.Stop();
             scheduler.Pause();
+
+            Logger.Info("Closing regions file...");
             world.Regions.Unload();
+            
             Logger.Info("Goodbye!");
 
             State = EngineState.Stopped;

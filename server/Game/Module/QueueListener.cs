@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using Common;
@@ -40,7 +41,7 @@ namespace Game.Module
             logger.Info("Starting QueueListener");
             
             isEnabled = true;
-            ConnectToRabbitMq();            
+            ConnectToRabbitMq(true);
         }
 
         public void Stop()
@@ -51,7 +52,7 @@ namespace Game.Module
             DisposeConnection();
         }
 
-        private bool ConnectToRabbitMq()
+        private bool ConnectToRabbitMq(bool purge)
         {
             logger.Info("Connecting to RabbitMq");
 
@@ -76,7 +77,7 @@ namespace Game.Module
                     connection = connectionFactory.CreateConnection();
 
                     // Create the model 
-                    CreateModel();
+                    CreateModel(purge);
 
                     return true;
                 }
@@ -132,7 +133,7 @@ namespace Game.Module
 
             try
             {                
-                if (ConnectToRabbitMq())
+                if (ConnectToRabbitMq(false))
                 {
                     logger.Info("Reconnected to RabbitMq");
                 }
@@ -144,7 +145,7 @@ namespace Game.Module
             }
         }
 
-        private void CreateModel()
+        private void CreateModel(bool purge)
         {
             model = connection.CreateModel();
 
@@ -156,11 +157,24 @@ namespace Game.Module
             // BasicQos(0="Dont send me a new message untill I’ve finshed",  1= "Send me one message at a time", false ="Apply to this Model only")
             model.BasicQos(0, 1, false);
 
-            model.ExchangeDeclare("gameserver", ExchangeType.Fanout, false, false, null);
-            string queueName = model.QueueDeclare();
-            model.QueueBind(queueName, "gameserver", "", null);
+            model.ExchangeDeclare("gameserver", ExchangeType.Fanout, durable: true, autoDelete: false, arguments: null);
 
-              var consumer = new EventingBasicConsumer(model);
+            var queueArguments = new Dictionary<string, object>
+            {
+                {"x-message-ttl", 900000}
+            };
+
+            var queueDeclareResult = model.QueueDeclare(string.Format("gameserver.{0}", Config.api_id), durable: true, exclusive: false, autoDelete: false, arguments: queueArguments);
+            var queueName = queueDeclareResult.QueueName;
+
+            if (purge)
+            {
+                model.QueuePurge(queueName);
+            }
+
+            model.QueueBind(queueName, exchange: "gameserver", routingKey: "", arguments: null);
+
+            var consumer = new EventingBasicConsumer(model);
             
             consumer.Received += (o, queueEvent) =>
             {
@@ -189,15 +203,24 @@ namespace Game.Module
                     logger.Error("Unhandled queue receive error");
                     Engine.UnhandledExceptionHandler(e);
                 }
+
+                try
+                {
+                    model.BasicAck(queueEvent.DeliveryTag, false);
+                }
+                catch(Exception e)
+                {
+                    logger.Error(e, "Unable to ACK message with delivery tag {0}", queueEvent.DeliveryTag);
+                }
             };
- 
+            
             consumer.Shutdown += (o, ev) =>
             {
                 logger.Warn("Connection to RabbitMq lost");
                 ReconnectToRabbitMq();
             };
 
-            model.BasicConsume(queueName, true, consumer);            
+            model.BasicConsume(string.Format("gameserver.{0}", Config.api_id), consumer: consumer, noAck: false);
         }
     }
 }

@@ -297,6 +297,11 @@ namespace Game.Data
 
         public void AddAchievement(Achievement achievement)
         {
+            if (Achievements.Any(p => p.Id == achievement.Id))
+            {
+                return;
+            }
+
             Achievements.Add(achievement);
         }
 

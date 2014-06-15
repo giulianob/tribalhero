@@ -90,10 +90,8 @@
                         }
                     });
 
-                    if (Constants.storeEnabled) {
-                        themeLink.setText(t("THEME_" + stronghold.theme));
-                        addStatRow(t("OBJECT_INFO_SIDEBAR_THEME_LABEL"), themeLink);
-                    }
+                    themeLink.setText(t("THEME_" + stronghold.theme));
+                    addStatRow(t("OBJECT_INFO_SIDEBAR_THEME_LABEL"), themeLink);
 
                     var storeLink: JLabelButton = new JLabelButton(t("OBJECT_INFO_SIDEBAR_BUY_MORE_THEMES"), null, AsWingConstants.LEFT);
                     themeDropdown.append(storeLink);

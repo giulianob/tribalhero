@@ -476,6 +476,18 @@
         [Embed(source = "../../../graphics/themes/pirates/BANNER.png")]
         public static const PIRATES_THEME_BANNER: Class;
 
+        [Embed(source = "../../../graphics/themes/default/CONSTRUCTION_SMALL.png")]
+        [EmbedPosition(name = "map", x = 32, y = "1")]
+        public static const PIRATES_BUILDING_1: Class;
+
+        [Embed(source = "../../../graphics/themes/default/CONSTRUCTION.png")]
+        [EmbedPosition(name = "map", x = 102, y = "-3")]
+        public static const PIRATES_BUILDING_2: Class;
+
+        [Embed(source = "../../../graphics/themes/default/CONSTRUCTION.png")]
+        [EmbedPosition(name = "map", x = 177, y = "68")]
+        public static const PIRATES_BUILDING_3: Class;
+
         [Embed(source = "../../../graphics/themes/pirates/ARMORY_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = "25", y = "-18")]
         public static const PIRATES_ARMORY_STRUCTURE: Class;

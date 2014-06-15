@@ -78,8 +78,8 @@ namespace Testing.BattleTests
             player.IsInTribe.Returns(true);
             player.Tribesman.Tribe.Id.Returns<uint>(123);
 
-            stronghold.StrongholdState = StrongholdState.Occupied;            
-            stronghold.Tribe.Id.Returns<uint>(123);
+            stronghold.StrongholdState = StrongholdState.Occupied;
+            stronghold.BelongsTo(player.Tribesman.Tribe).Returns(true);
 
             fixture.Register(() => new BattleLocation(BattleLocationType.Stronghold, 100));
 

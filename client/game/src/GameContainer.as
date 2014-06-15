@@ -91,9 +91,6 @@
 
 		public function GameContainer()
 		{
-            // Temporary
-            btnStore.visible = false;
-
             minimapTools = new MinimapToolsContainer(Global.musicPlayer, this);
 
 			// Here we create a dummy ASWing component and stick it over the menu button because the popup requires it

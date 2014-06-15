@@ -353,11 +353,11 @@ STORE_VIEW_THEME_DIALOG_STRONGHOLD_INCLUDED,Stronghold Included!
 STORE_VIEW_THEME_DIALOG_WALL_INCLUDED,Wall Set Included!
 STORE_VIEW_THEME_DIALOG_STRONGHOLD_AND_WALL_INCLUDED,Stronghold and Wall Set Included!
 STORE_VIEW_THEME_DIALOG_BUY,Buy for {0}
-STORE_VIEW_THEME_APPLY_ALL,Change all structures to this theme
+STORE_VIEW_THEME_APPLY_ALL,Change all existing structures to this theme
 STORE_VIEW_THEME_APPLY_WALL,Change wall to this theme
 STORE_VIEW_THEME_CHOOSE_CITY_HEADER_LABEL,Choose a city:
-STORE_VIEW_THEME_SET_DEFAULT,Make new structures use this theme
-STORE_VIEW_THEME_SET_INSTRUCTIONS,You can also change the theme for individual structures by clicking on them and selecting a different theme.
+STORE_VIEW_THEME_SET_DEFAULT,Make all new structures use this theme
+STORE_VIEW_THEME_SET_INSTRUCTIONS,Note: You can also change the theme for individual structures by selecting a structure on the map and choosing a different theme in the structure sidebar.
 ,
 STORE_BUY_COINS_DIALOG_TITLE,Purchase Coins
 STORE_BUY_COINS_DIALOG_DESCRIPTION,You must refill your account with coins before you can complete this purchase. All prices are in U.S. Dollars (USD$)

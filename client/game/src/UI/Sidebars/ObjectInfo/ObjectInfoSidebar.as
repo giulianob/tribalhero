@@ -147,10 +147,8 @@ package src.UI.Sidebars.ObjectInfo {
 					addStatRow("OBJECT_INFO_SIDEBAR_HP_LABEL", gameObject.hp.toString() + "/" + structPrototype.hp.toString());
 				}
 
-                if (Constants.storeEnabled) {
-                    themeLink.setText(StringHelper.localize("THEME_" + gameObject.theme));
-                    addStatRow("OBJECT_INFO_SIDEBAR_THEME_LABEL", themeLink);
-                }
+                themeLink.setText(StringHelper.localize("THEME_" + gameObject.theme));
+                addStatRow("OBJECT_INFO_SIDEBAR_THEME_LABEL", themeLink);
 
 				if (structPrototype.maxlabor > 0) {
 					addStatRow("OBJECT_INFO_SIDEBAR_LABORERS_LABEL", gameObject.labor + "/" + structPrototype.maxlabor, new AssetIcon(new ICON_LABOR()));

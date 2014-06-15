@@ -159,7 +159,8 @@ package src.UI.Dialog {
                 pnlSetThemeRow.setPreferredWidth(300);
                 pnlSetThemeRow.appendAll(btnApplyAll, btnSetWallTheme, btnSetDefault);
 
-                var helpLabel: MultilineLabel = new MultilineLabel(t("STORE_VIEW_THEME_SET_INSTRUCTIONS"), 0, 100);
+                var helpLabel: MultilineLabel = new MultilineLabel(t("STORE_VIEW_THEME_SET_INSTRUCTIONS"), 3, 100);
+                GameLookAndFeel.changeClass(helpLabel, "darkText");
 
                 append(pnlSetThemeRow);
                 append(helpLabel);

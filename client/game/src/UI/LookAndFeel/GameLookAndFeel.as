@@ -66,7 +66,9 @@
 			/* CLASSES */			
 			"Class.darkText", [
 			"Label.font", new ASFontUIResource("Arial", 12, true),
-			"Label.foreground", new ASColorUIResource(0x000000)				
+			"Label.foreground", new ASColorUIResource(0x000000),
+            "MultilineLabel.font", new ASFontUIResource("Arial", 12, true),
+            "TextArea.font", new ASFontUIResource("Arial", 12, true),
 			],
 			
 			"Class.header", [

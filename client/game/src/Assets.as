@@ -509,7 +509,7 @@
         public static const PIRATES_REFINERY_STRUCTURE: Class;
 
         [Embed(source = "../../../graphics/themes/pirates/STABLE_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "99", y = "-37")]
+        [EmbedPosition(name = "map", x = "74", y = "-50")]
         public static const PIRATES_STABLE_STRUCTURE: Class;
 
         [Embed(source = "../../../graphics/themes/pirates/TOWER_STRUCTURE.png")]
@@ -525,7 +525,7 @@
         public static const PIRATES_TRADING_POST_STRUCTURE: Class;
 
         [Embed(source = "../../../graphics/themes/pirates/UNIVERSITY_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "101", y = "-55")]
+        [EmbedPosition(name = "map", x = "101", y = "-40")]
         public static const PIRATES_UNIVERSITY_STRUCTURE: Class;
 
         [Embed(source = "../../../graphics/themes/pirates/LUMBERMILL_STRUCTURE.png")]

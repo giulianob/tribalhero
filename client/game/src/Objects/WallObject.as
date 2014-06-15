@@ -26,7 +26,7 @@ package src.Objects {
         }
 
         public function getTroopOverlappingAsset(): Bitmap {
-            return WallTileset.getTile(theme, tileId + 12);
+            return WallTileset.getTile(theme, tileId + 24);
         }
 
         override public function dispose(): void {

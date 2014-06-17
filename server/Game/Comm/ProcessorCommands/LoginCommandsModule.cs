@@ -12,9 +12,12 @@ using Game.Data;
 using Game.Data.BarbarianTribe;
 using Game.Logic;
 using Game.Logic.Actions;
+using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
 using Game.Map.LocationStrategies;
+using Game.Module;
+using Game.Module.Remover;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -40,7 +43,7 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly IWorld world;
 
-        private readonly Procedure procedure;
+        private readonly CityProcedure cityProcedure;
 
         private readonly ILocationStrategyFactory locationStrategyFactory;
 
@@ -52,26 +55,34 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly IChannel channel;
 
+        private readonly Formula formula;
+
+        private readonly ICityRemoverFactory cityRemoverFactory;
+
         public LoginCommandsModule(IActionFactory actionFactory,
                                    ITribeManager tribeManager,
                                    IDbManager dbManager,
                                    ILocker locker,
                                    IWorld world,
-                                   Procedure procedure,
+                                   CityProcedure cityProcedure,
                                    ICityFactory cityFactory,
                                    ILocationStrategyFactory locationStrategyFactory,
                                    IBarbarianTribeManager barbarianTribeManager,
                                    CallbackProcedure callbackProcedure,
-                                   IChannel channel)
+                                   IChannel channel,
+                                   Formula formula,
+                                   ICityRemoverFactory cityRemoverFactory)
         {
             this.actionFactory = actionFactory;
             this.tribeManager = tribeManager;
             this.dbManager = dbManager;
             this.locker = locker;
             this.world = world;
-            this.procedure = procedure;
+            this.cityProcedure = cityProcedure;
             this.callbackProcedure = callbackProcedure;
             this.channel = channel;
+            this.formula = formula;
+            this.cityRemoverFactory = cityRemoverFactory;
             this.cityFactory = cityFactory;
             this.locationStrategyFactory = locationStrategyFactory;
             this.barbarianTribeManager = barbarianTribeManager;
@@ -82,6 +93,7 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.Login, Login);
             processor.RegisterCommand(Command.QueryXml, QueryXml);
             processor.RegisterCommand(Command.CityCreateInitial, CreateInitialCity);
+            processor.RegisterCommand(Command.CityMove, MoveCity);
         }
 
         private void QueryXml(Session session, Packet packet)
@@ -417,10 +429,10 @@ namespace Game.Comm.ProcessorCommands
                         return;
                     }
 
-                    procedure.CreateCity(cityFactory, session.Player, cityName, 1, cityPosition, barbarianTribeManager, out city);
+                    cityProcedure.CreateCity(cityFactory, session.Player, cityName, 1, cityPosition, barbarianTribeManager, out city);
                 }
 
-                procedure.InitCity(city, callbackProcedure, actionFactory);
+                cityProcedure.InitCity(city, callbackProcedure, actionFactory);
 
                 var reply = new Packet(packet);
                 reply.Option |= (ushort)Packet.Options.Compressed;
@@ -444,5 +456,83 @@ namespace Game.Comm.ProcessorCommands
             // Subscribe to global channel
             channel.Subscribe(session, "/GLOBAL");
         }
+
+        private void MoveCity(Session session, Packet packet)
+        {
+            uint cityId;
+            uint x;
+            uint y;
+            string cityName;
+
+            try
+            {
+                cityId = packet.GetUInt32();
+                x = packet.GetUInt32();
+                y = packet.GetUInt32();
+                cityName = packet.GetString();
+            }
+            catch (Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            locker.Lock(session.Player).Do(() =>
+            {
+                ICity city = session.Player.GetCity(cityId);
+
+                if (city == null)
+                {
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;
+                }
+
+                var error = cityProcedure.CanCityBeRemoved(city);
+                if (error != Error.Ok)
+                {
+                    ReplyError(session, packet, error);
+                    return;
+                }
+
+                var lockedRegions = world.Regions.LockRegions(x, y, formula.GetInitialCityRadius());
+
+                if ((error = cityProcedure.PositionCheckForNewCity(new Position(x, y))) != Error.Ok)
+                {
+                    world.Regions.UnlockRegions(lockedRegions);
+                    ReplyError(session, packet, error);
+                    return;
+                }
+                // capture cost of the city
+                Resource expense;
+                int structureUpgrades;
+                int technlogyUpgrades;
+                formula.GetCityExpense(city, out expense, out structureUpgrades, out technlogyUpgrades);
+
+                // cityremover,
+                if (!cityRemoverFactory.CreateCityRemover(cityId).Start())
+                {
+                    world.Regions.UnlockRegions(lockedRegions);
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;
+                }
+
+                cityProcedure.CreateCity(cityFactory, session.Player, cityName, 0, new Position(x, y), barbarianTribeManager, out city);
+
+                world.Regions.UnlockRegions(lockedRegions);
+
+                var cityRebuildAction = actionFactory.CreateCityRebuildPassiveAction(city.Id, expense, structureUpgrades, technlogyUpgrades);
+                Error ret = city.Worker.DoPassive(city[1], cityRebuildAction, true);
+                if (ret != 0)
+                {
+                    ReplyError(session, packet, ret);
+                }
+                else
+                {
+                    ReplySuccess(session, packet);
+                }
+            });
+        }
+
     }
+
 }

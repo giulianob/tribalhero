@@ -47,8 +47,18 @@
 			packet.writeString(cityName);
 			session.write(packet, mapComm.catchAllErrors);
 		}
-		
-		public function buildRoad(cityId: int, x: int, y: int) : void {
+
+        public function moveCity(cityId: int, x: int, y: int, cityName: String) : void {
+            var packet: Packet = new Packet();
+            packet.cmd = Commands.CITY_MOVE;
+            packet.writeUInt(cityId);
+            packet.writeUInt(x);
+            packet.writeUInt(y);
+            packet.writeString(cityName);
+            session.write(packet, mapComm.catchAllErrors);
+        }
+
+        public function buildRoad(cityId: int, x: int, y: int) : void {
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.REGION_ROAD_BUILD;
 			packet.writeUInt(cityId);

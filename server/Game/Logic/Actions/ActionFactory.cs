@@ -114,7 +114,21 @@ namespace Game.Logic.Actions
 
         public CityCreatePassiveAction CreateCityCreatePassiveAction(uint cityId, uint x, uint y, string cityName)
         {
-            return new CityCreatePassiveAction(cityId, x, y, cityName, kernel.Get<IActionFactory>(), kernel.Get<ICityRemoverFactory>(), kernel.Get<Formula>(), kernel.Get<IWorld>(), kernel.Get<ILocker>(), kernel.Get<IObjectTypeFactory>(), kernel.Get<IStructureCsvFactory>(), kernel.Get<ICityFactory>(), kernel.Get<Procedure>(), kernel.Get<IBarbarianTribeManager>(), kernel.Get<CallbackProcedure>());
+            return new CityCreatePassiveAction(cityId, x, y, cityName, kernel.Get<IActionFactory>(), kernel.Get<ICityRemoverFactory>(), kernel.Get<Formula>(), kernel.Get<IWorld>(), kernel.Get<ILocker>(), kernel.Get<IObjectTypeFactory>(), kernel.Get<IStructureCsvFactory>(), kernel.Get<ICityFactory>(), kernel.Get<CityProcedure>(), kernel.Get<IBarbarianTribeManager>(), kernel.Get<CallbackProcedure>());
+        }
+
+        public CityRebuildPassiveAction CreateCityRebuildPassiveAction(uint cityId, Resource resource, int structureUpgrades, int technologyUpgrades)
+        {
+            return new CityRebuildPassiveAction(cityId,
+                                                resource,
+                                                structureUpgrades,
+                                                technologyUpgrades,
+                                                kernel.Get<IActionFactory>(),
+                                                kernel.Get<ILocker>(),
+                                                kernel.Get<CallbackProcedure>(),
+                                                kernel.Get<IStructureCsvFactory>(),
+                                                kernel.Get<CityProcedure>(),
+                                                kernel.Get<IWorld>());
         }
 
         public StructureSelfDestroyActiveAction CreateStructureSelfDestroyActiveAction(uint cityId, uint objectId)

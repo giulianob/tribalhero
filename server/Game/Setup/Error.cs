@@ -176,6 +176,9 @@ namespace Game.Setup
 
         BattleViewableGateAttackingUnits = 614,
 
+        TroopOutstanding = 615,
+
+        TroopStationedInCity = 616,
 
         #endregion
 

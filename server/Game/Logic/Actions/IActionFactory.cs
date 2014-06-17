@@ -59,6 +59,8 @@ namespace Game.Logic.Actions
 
         CityCreatePassiveAction CreateCityCreatePassiveAction(uint cityId, uint x, uint y, string cityName);
 
+        CityRebuildPassiveAction CreateCityRebuildPassiveAction(uint cityId, Resource resource, int structureUpgrades, int technologyUpgrades);
+
         StructureSelfDestroyActiveAction CreateStructureSelfDestroyActiveAction(uint cityId, uint objectId);
 
         StructureDowngradePassiveAction CreateStructureDowngradePassiveAction(uint cityId, uint structureId);

@@ -86,6 +86,7 @@ package src.Comm {
 		public static const CITY_NEW_UPDATE: int = 497;
 		public static const CITY_CREATE: int = 498;
 		public static const CITY_CREATE_INITIAL: int = 499;
+        public static const CITY_MOVE: int = 500;
 		
 		public static const FOREST_INFO: int = 350;
         public static const FOREST_CAMP_CREATE: int = 351;

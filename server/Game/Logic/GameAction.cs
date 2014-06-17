@@ -105,6 +105,8 @@ namespace Game.Logic
 
         CityCreatePassive = 505,
 
+        CityRebuildPassive = 506,
+
         RoadBuildActive = 510,
 
         RoadDestroyActive = 511,

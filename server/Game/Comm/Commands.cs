@@ -190,6 +190,8 @@ namespace Game.Comm
 
         CityCreateInitial = 499,
 
+        CityMove = 500,
+
         #endregion
 
         #region Troop

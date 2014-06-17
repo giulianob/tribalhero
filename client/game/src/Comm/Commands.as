@@ -25,6 +25,8 @@ package src.Comm {
 		public static const PROFILE_BY_TYPE: int = 22;
 		public static const SAVE_TUTORIAL_STEP: int = 23;
 		public static const SAVE_MUTE_SOUND: int = 24;
+		public static const PLAYER_COINS_UPDATE: int = 25;
+		public static const PLAYER_THEME_PURCHASED: int = 26;
 
 		public static const ACTION_CANCEL: int = 51;
 		public static const ACTION_COMPLETE: int = 52;
@@ -62,7 +64,9 @@ package src.Comm {
 		public static const STRUCTURE_LABOR_MOVE: int = 304;
 		public static const STRUCTURE_DOWNGRADE: int = 305;
 		public static const STRUCTURE_SELF_DESTROY: int = 306;
-		
+        public static const STRUCTURE_SET_THEME: int = 307;
+        public static const WALL_SET_THEME: int = 308;
+
 		public static const TECHNOLOGY_ADDED: int = 311;
 		public static const TECHNOLOGY_UPGRADE: int = 312;
 		public static const TECHNOLOGY_REMOVED: int = 313;
@@ -81,6 +85,7 @@ package src.Comm {
 		public static const CITY_POINTS_UPDATE: int = 467;
 		public static const CITY_HIDE_NEW_UNITS_UPDATE: int = 468;
 		public static const CITY_HAS_AP_BONUS: int = 469;
+		public static const CITY_DEFAULT_THEME_UPDATE: int = 470;
 		public static const CITY_BATTLE_STARTED: int = 490;
 		public static const CITY_BATTLE_ENDED: int = 491;
 		public static const CITY_NEW_UPDATE: int = 497;
@@ -160,5 +165,11 @@ package src.Comm {
 		public static const STRONGHOLD_GATE_REPAIR: int = 1104;
 		public static const STRONGHOLD_LOCATE_BY_NAME: int = 1105;
 		public static const STRONGHOLD_LIST: int = 1106;
+		public static const STRONGHOLD_SET_THEME: int = 1107;
+
+        public static const STORE_GET_ITEMS: int = 1201;
+        public static const STORE_PURCHASE_ITEM: int = 1202;
+        public static const STORE_SET_DEFAULT_THEME: int = 1203;
+        public static const STORE_THEME_APPLY_TO_ALL: int = 1204;
 	}
 }

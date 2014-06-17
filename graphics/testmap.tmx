@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="staggered" width="34" height="62" tilewidth="160" tileheight="80">
+<map version="1.0" orientation="staggered" width="15" height="29" tilewidth="160" tileheight="80">
  <tileset firstgid="1" name="Tileset" tilewidth="160" tileheight="80">
   <image source="Tilemap.png" width="2048" height="1024"/>
  </tileset>
  <tileset firstgid="145" name="Walls" tilewidth="160" tileheight="160">
   <image source="WallTilemap.png" width="2048" height="1024"/>
  </tileset>
- <layer name="Terrain" width="34" height="62">
+ <layer name="Terrain" width="15" height="29">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3OIQEAAAgDsL8N/RNSAYmYmF+TFAAAAACAzIMDAABwsxrWEXHwIAAA
+   H4sIAAAAAAAAC2NkYGBgHMUDisUo0EepXlL1i1FRL7H6sekjR68eCfrR9VGql1j9lNhLiX8pDWdK4pfSdEVJemakQB+yfnL1jmLqYQC7XmhTzAYAAA==
   </data>
  </layer>
- <layer name="Walls" width="34" height="62">
+ <layer name="Walls" width="15" height="29">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3BAQ0AAADCoPdPbQ43oAAAAAAAAAAAvgyVxM0b8CAAAA==
+   H4sIAAAAAAAAC2NgGDiwkkx9a4F4NQX2bqDQ/nVAvIoCvQxk6F+HxCZV71o0Pilhtx6JvYZEe5H1k6uXHH0wsIGwEqqDjWTq28AwMO6lFJDrX1C8rieoahSMAuIBAF8QIybMBgAA
   </data>
  </layer>
 </map>

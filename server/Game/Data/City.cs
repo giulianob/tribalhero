@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Game.Battle;
 using Game.Data.Events;
 using Game.Data.Troop;
@@ -119,6 +120,19 @@ namespace Game.Data
             }
         }
 
+        public string WallTheme
+        {
+            get
+            {
+                return wallTheme;
+            }
+            set
+            {
+                CheckUpdateMode();
+                wallTheme = value;                
+            }
+        }
+
         private readonly ITroopStubFactory troopStubFactory;
 
         private readonly IDbManager dbManager;
@@ -128,6 +142,10 @@ namespace Game.Data
         private readonly IActionFactory actionFactory;
 
         private readonly BattleProcedure battleProcedure;
+
+        private string defaultTheme;
+
+        private string wallTheme;
 
         /// <summary>
         ///     Enumerates only through structures in this city
@@ -157,7 +175,7 @@ namespace Game.Data
                 }
 
                 radius = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("Radius"));
+                RaisePropertyChanged();
             }
         }
 
@@ -186,7 +204,7 @@ namespace Game.Data
             {
                 battle = value;
 
-                PropertyChanged(this, new PropertyChangedEventArgs("Battle"));
+                RaisePropertyChanged();
             }
         }
 
@@ -212,6 +230,21 @@ namespace Game.Data
         public ITechnologyManager Technologies { get; private set; }
 
         public Position PrimaryPosition { get; private set; }
+
+        public string DefaultTheme
+        {
+            get
+            {
+                return defaultTheme;
+            }
+            set
+            {
+                CheckUpdateMode();
+
+                defaultTheme = value;
+                RaisePropertyChanged();
+            }
+        }
 
         /// <summary>
         ///     Returns the local troop
@@ -307,8 +340,7 @@ namespace Game.Data
             {
                 CheckUpdateMode();
                 hideNewUnits = value;
-
-                PropertyChanged(this, new PropertyChangedEventArgs("HideNewUnits"));
+                RaisePropertyChanged();
             }
         }
 
@@ -325,7 +357,7 @@ namespace Game.Data
             {
                 CheckUpdateMode();
                 attackPoint = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("AttackPoint"));
+                RaisePropertyChanged();
             }
         }
 
@@ -342,7 +374,7 @@ namespace Game.Data
             {
                 CheckUpdateMode();
                 defensePoint = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("DefensePoint"));
+                RaisePropertyChanged();
             }
         }
 
@@ -361,7 +393,7 @@ namespace Game.Data
 
                 CheckUpdateMode();
                 alignmentPoint = Math.Min(100m, Math.Max(0m, value));
-                PropertyChanged(this, new PropertyChangedEventArgs("AlignmentPoint"));
+                RaisePropertyChanged();
             }
         }
 
@@ -375,8 +407,7 @@ namespace Game.Data
             {
                 CheckUpdateMode();
                 this.value = value;
-
-                PropertyChanged(this, new PropertyChangedEventArgs("Value"));                
+                RaisePropertyChanged();
             }
         }
 
@@ -564,6 +595,8 @@ namespace Game.Data
                     ILazyResource resource,
                     byte radius,
                     decimal ap,
+                    string defaultTheme,
+                    string wallTheme,
                     IActionWorker worker,
                     CityNotificationManager notifications,
                     IReferenceManager references,
@@ -588,6 +621,8 @@ namespace Game.Data
 
             PrimaryPosition = position;
             AlignmentPoint = ap;
+            DefaultTheme = defaultTheme;
+            WallTheme = wallTheme;
             Resource = resource;
 
             Worker = worker;
@@ -755,7 +790,7 @@ namespace Game.Data
 
         public IStructure CreateStructure(ushort type, byte level, uint x, uint y)
         {
-            var structure = gameObjectFactory.CreateStructure(Id, objectIdGen.GetNext(), type, level, x, y);
+            var structure = gameObjectFactory.CreateStructure(Id, objectIdGen.GetNext(), type, level, x, y, DefaultTheme);
             Add(structure.ObjectId, structure, true);
             return structure;
         }
@@ -811,7 +846,9 @@ namespace Game.Data
                         new DbColumn("labor_production_rate", Resource.Labor.Rate, DbType.Int32),
                         new DbColumn("x", PrimaryPosition.X, DbType.UInt32), 
                         new DbColumn("y", PrimaryPosition.Y, DbType.UInt32),
-                        new DbColumn("deleted", Deleted, DbType.Int32)
+                        new DbColumn("deleted", Deleted, DbType.Int32),
+                        new DbColumn("default_theme_id", DefaultTheme, DbType.String),
+                        new DbColumn("wall_theme_id", WallTheme, DbType.String),
                 };
             }
         }
@@ -898,6 +935,11 @@ namespace Game.Data
             {
                 return LocationType.City;
             }
+        }
+
+        private void RaisePropertyChanged([CallerMemberName] string caller = "")
+        {
+            PropertyChanged(this, new PropertyChangedEventArgs(caller));
         }
     }
 }

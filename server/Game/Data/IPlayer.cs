@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Game.Comm;
+using Game.Data.Store;
 using Game.Data.Tribe;
 using Game.Util.Locking;
 using Persistance;
@@ -73,5 +74,17 @@ namespace Game.Data
         DateTime? HasTwoFactorAuthenticated { get; set; }
 
         string TwoFactorSecretKey { get; set; }
+
+        List<ThemePurchase> ThemePurchases { get; }
+
+        string PlayerChannel { get; }
+
+        bool HasPurchasedTheme(string theme);
+
+        void UpdateCoins(int coins);
+
+        void AddTheme(string themeId);
+        
+        void AddAchievement(Achievement achievement);
     }
 }

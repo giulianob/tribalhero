@@ -7,8 +7,8 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Game.Comm;
+using Game.Data.Store;
 using Game.Data.Tribe;
-using Game.Database;
 using Game.Setup;
 using Game.Util;
 using Persistance;
@@ -27,6 +27,10 @@ namespace Game.Data
 
         private string description = string.Empty;
 
+        private readonly IChannel channel;
+
+        private readonly IDbManager dbManager;
+
         private uint tribeRequest;
 
         private ITribesman tribesman;
@@ -34,6 +38,8 @@ namespace Game.Data
         public PlayerChatState ChatState { get; private set; }
 
         public AchievementList Achievements { get; private set; }
+
+        public List<ThemePurchase> ThemePurchases { get; private set; }
 
         public DateTime LastDeletedTribe { get; set; }
 
@@ -47,8 +53,11 @@ namespace Game.Data
                       string name,
                       string description,
                       PlayerRights playerRights,
-                      string sessionId = "")
+                      string sessionId,
+                      IChannel channel,
+                      IDbManager dbManager)
         {
+            ThemePurchases = new List<ThemePurchase>();
             ChatState = new PlayerChatState();
             Achievements = new AchievementList(playerid);
             PlayerId = playerid;
@@ -59,6 +68,8 @@ namespace Game.Data
             Rights = playerRights;
             ChatState.ChatFloodTime = DateTime.MinValue;
             this.description = description;
+            this.channel = channel;
+            this.dbManager = dbManager;
             NeverAttacked = true;
         }
 
@@ -69,6 +80,14 @@ namespace Game.Data
         public uint PlayerId { get; private set; }
 
         public uint TutorialStep { get; set; }
+
+        public string PlayerChannel
+        {
+            get
+            {
+                return "/PLAYER/" + PlayerId;
+            }
+        }
 
         public string PlayerHash
         {
@@ -108,7 +127,7 @@ namespace Game.Data
 
                 if (DbPersisted)
                 {
-                    DbPersistance.Current.Query(
+                    dbManager.Query(
                         string.Format("UPDATE `{0}` SET `description` = @description WHERE `id` = @id LIMIT 1", DB_TABLE),
                         new[]
                         {
@@ -214,7 +233,7 @@ namespace Game.Data
         public void SendSystemMessage(IPlayer from, String subject, String message)
         {
             subject = String.Format("(System) {0}", subject);
-            DbPersistance.Current.Query(
+            dbManager.Query(
                                         "INSERT INTO `messages` (`sender_player_id`, `recipient_player_id`, `subject`, `message`, `sender_state`, `recipient_state`, `created`) VALUES (@sender_player_id, @recipient_player_id, @subject, @message, @sender_state, @recipient_state, UTC_TIMESTAMP())",
                                         new[]
                                         {
@@ -231,7 +250,7 @@ namespace Game.Data
             if (Session != null)
             {
                 var packet = new Packet(Command.RefreshUnread);
-                Global.Current.Channel.Post("/PLAYER/" + PlayerId, packet);
+                channel.Post(PlayerChannel, packet);
             }
         }
 
@@ -247,7 +266,43 @@ namespace Game.Data
             packet.AddUInt32(TribeRequest);
             packet.AddByte((byte)(Tribesman == null ? 0 : tribesman.Rank.Id));
 
-            Global.Current.Channel.Post("/PLAYER/" + PlayerId, packet);
+            channel.Post(PlayerChannel, packet);
+        }
+
+        public bool HasPurchasedTheme(string theme)
+        {
+            // TODO
+            return true;
+        }
+
+        public void UpdateCoins(int coins)
+        {
+            channel.Post(PlayerChannel, () =>
+            {
+                var packet = new Packet(Command.PlayerCoinsUpdate);
+                packet.AddInt32(coins);
+                return packet;
+            });
+        }
+
+        public void AddTheme(string themeId)
+        {
+            channel.Post(PlayerChannel, () =>
+            {
+                var packet = new Packet(Command.PlayerThemePurchased);
+                packet.AddString(themeId);
+                return packet;
+            });
+        }
+
+        public void AddAchievement(Achievement achievement)
+        {
+            if (Achievements.Any(p => p.Id == achievement.Id))
+            {
+                return;
+            }
+
+            Achievements.Add(achievement);
         }
 
         #region ILockable Members

@@ -19,13 +19,15 @@ package src.Objects.Stronghold
 		public var tribeId: int;
         public var gateMax: int;
 		public var strongholdName: String;
+        public var theme: String;
 		public var id: int;
         
-		public function Stronghold(type: int, state: GameObjectState, objX: int, objY: int, size: int, groupId: int, objectId: int, level: int, tribeId: int, gateMax: int) {
+		public function Stronghold(type: int, state: GameObjectState, objX: int, objY: int, size: int, groupId: int, objectId: int, level: int, tribeId: int, gateMax: int, theme: String) {
 			super(type, state, objX, objY, size, groupId, objectId);
 			this.id = objectId;
 			this.level = level;
 			this.tribeId = tribeId;
+            this.theme = theme;
             this.gateMax = gateMax;
             mapPriority = Constants.mapObjectPriority.stronghold;
 		}
@@ -36,6 +38,7 @@ package src.Objects.Stronghold
 			var strongholdObj: Stronghold = obj as Stronghold;
 			id = strongholdObj.id;
 			level = strongholdObj.level;
+            theme = strongholdObj.theme;
 			tribeId = strongholdObj.tribeId;
 		}
 		

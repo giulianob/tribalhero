@@ -26,6 +26,8 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly IForestManager forestManager;
 
+        private readonly IThemeManager themeManager;
+
         private readonly IWorld world;
 
         private readonly ILocker locker;
@@ -35,6 +37,7 @@ namespace Game.Comm.ProcessorCommands
                                        IObjectTypeFactory objectTypeFactory,
                                        PropertyFactory propertyFactory,
                                        IForestManager forestManager,
+                                       IThemeManager themeManager,
                                        IWorld world,
                                        ILocker locker)
         {
@@ -43,6 +46,7 @@ namespace Game.Comm.ProcessorCommands
             this.objectTypeFactory = objectTypeFactory;
             this.propertyFactory = propertyFactory;
             this.forestManager = forestManager;
+            this.themeManager = themeManager;
             this.world = world;
             this.locker = locker;
         }
@@ -62,6 +66,73 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.TechUpgrade, TechnologyUpgrade);
             processor.RegisterCommand(Command.CityUsernameGet, GetCityUsername);
             processor.RegisterCommand(Command.CityHasApBonus, GetCityHasApBonus);
+            processor.RegisterCommand(Command.StructureSetTheme, StructureSetTheme);
+            processor.RegisterCommand(Command.WallSetTheme, WallSetTheme);
+        }
+        
+        private void WallSetTheme(Session session, Packet packet)
+        {
+            uint cityId;
+            string theme;
+
+            try
+            {
+                cityId = packet.GetUInt32();
+                theme = packet.GetString();
+            }
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            ICity city;
+            locker.Lock(cityId, out city).Do(() =>
+            {
+                if (city == null || city.Owner != session.Player)
+                {
+                    ReplyError(session, packet, Error.ObjectNotFound);
+                    return;
+                }
+
+                var result = themeManager.SetWallTheme(city, theme);
+
+                ReplyWithResult(session, packet, result);
+            });
+        }
+
+        private void StructureSetTheme(Session session, Packet packet)
+        {
+            uint cityId;
+            uint structureId;
+            string theme;
+
+            try
+            {
+                cityId = packet.GetUInt32();
+                structureId = packet.GetUInt32();
+                theme = packet.GetString();
+            }
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            ICity city;
+            IStructure structure;
+            locker.Lock(cityId, structureId, out city, out structure).Do(() =>
+            {
+                if (city == null || structure == null || city.Owner != session.Player)
+                {
+                    ReplyError(session, packet, Error.ObjectNotFound);
+                    return;
+                }
+
+                var result = themeManager.SetStructureTheme(structure, theme);
+
+                ReplyWithResult(session, packet, result);
+            });
         }
 
         private void GetCityHasApBonus(Session session, Packet packet)

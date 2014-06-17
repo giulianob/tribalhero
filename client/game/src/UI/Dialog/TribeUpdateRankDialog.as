@@ -18,7 +18,9 @@ package src.UI.Dialog{
 			new JCheckBox("Repair Stronghold Gate"),
 			new JCheckBox("Upgrade Tribe"),
 			new JCheckBox("Create Assignments"),
-			new JCheckBox("Delete Message Board Posts")
+			new JCheckBox("Delete Message Board Posts"),
+			new JCheckBox("Change announcement"),
+			new JCheckBox("Change Stronghold theme"),
 		];
 		
 		private var comboRankId: JComboBox;
@@ -43,7 +45,7 @@ package src.UI.Dialog{
             });
             
             btnEdit.addActionListener(function():void {
-                var rank :* = Constants.tribe.ranks[comboRankId.getSelectedIndex()];
+                var rank :* = Constants.session.tribe.ranks[comboRankId.getSelectedIndex()];
                 txtRankName.setText(rank.name);
                 setPermissions(rank.rights);                
                 
@@ -107,8 +109,8 @@ package src.UI.Dialog{
 		
 		private function update(): void {
 			var rankList: Array = [];
-			for ( var i:int = 0; i < Constants.tribe.ranks.length; ++i) {
-				rankList.push((i + 1) + " - " + Constants.tribe.ranks[i].name);
+			for ( var i:int = 0; i < Constants.session.tribe.ranks.length; ++i) {
+				rankList.push((i + 1) + " - " + Constants.session.tribe.ranks[i].name);
 			}
 			comboRankId.setListData(rankList);
 			

@@ -298,7 +298,7 @@ package src.UI.Dialog
             if (distinguish) {
                 cssClass = 'distinguished';
             }
-			else if (playerId == Constants.playerId)
+			else if (playerId == Constants.session.playerId)
 			{
 				cssClass = 'self';
 			}
@@ -517,7 +517,7 @@ package src.UI.Dialog
             txtCommand = new JTextField();
             txtCommand.setBackgroundDecorator(null);
             txtCommand.setConstraints("Center");
-            txtCommand.setMaxChars(Constants.admin ? 5000 : 450);
+            txtCommand.setMaxChars(Constants.session.admin ? 5000 : 450);
 
             var lblCommandCursor: JLabel = new JLabel(">");
             lblCommandCursor.setConstraints("West");

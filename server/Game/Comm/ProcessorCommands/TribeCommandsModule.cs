@@ -105,7 +105,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                if (!session.Player.Tribesman.Tribe.IsOwner(session.Player))
+                if (!session.Player.Tribesman.Tribe.IsOwner(session.Player) || !session.Player.Tribesman.Tribe.HasRight(session.Player.PlayerId, TribePermission.SetAnnouncement))
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;
@@ -280,7 +280,7 @@ namespace Game.Comm.ProcessorCommands
                 {
                     var locks =
                             strongholdManager.StrongholdsForTribe(tribe)
-                                             .SelectMany(stronghold => stronghold.LockList)
+                                             .SelectMany(stronghold => stronghold.LockList())
                                              .ToList();
 
                     locks.AddRange(tribe.Tribesmen);

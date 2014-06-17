@@ -1,3 +1,4 @@
+using Game.Comm;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Map;
@@ -92,5 +93,7 @@ namespace Game.Battle.CombatObjects
         void JoinBattle(uint round);
 
         bool HasAttacked(uint round);
+		
+        void AddPacketInfo(Packet packet);
     }
 }

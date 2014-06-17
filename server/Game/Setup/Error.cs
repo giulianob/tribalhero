@@ -263,8 +263,22 @@ namespace Game.Setup
 
         #region Barbarian Tribes
 
-        BarbarianTribeNoCampsRemaining = 901
+        BarbarianTribeNoCampsRemaining = 901,
     
+        #endregion
+
+        #region Store And Themes
+
+        ThemeNotPurchased = 10000,
+
+        StoreItemNotFound = 10001,
+        
+        StoreItemAlreadyPurchased = 10002,
+
+        StoreItemPurchaseProblem = 10003,
+
+        PlayerBalanceNotEnough = 10004,
+
         #endregion
     }
 }

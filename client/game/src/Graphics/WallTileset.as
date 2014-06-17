@@ -5,28 +5,36 @@ package src.Graphics {
     import flash.geom.Point;
     import flash.geom.Rectangle;
 
+    import src.Assets;
+
     import src.Constants;
     import src.Objects.SimpleObject;
 
-    [Embed(source = "../../../../graphics/WallTilemap.png")]
-    public class WallTileset extends Bitmap {
-        public function WallTileset() { }
+    public class WallTileset {
 
-        public function getTile(tileId: int): Bitmap {
+
+        public static function getTile(theme: String, tileId: int): Bitmap {
+            var wallTileset: Bitmap = Assets.getSharedInstance(getSpriteName(theme));
+
             var tilesetsrcX:int = int(tileId % Constants.tileSetTileW) * Constants.tileW;
             var tilesetsrcY:int = int(tileId / Constants.tileSetTileW) * Constants.tileH * 2;
 
-            var tile: Bitmap = new Bitmap(new BitmapData(Constants.tileW, Constants.tileH, true, 0));
+            var tile: Bitmap = new Bitmap(new BitmapData(Constants.tileW, Constants.tileH * 2, true, 0));
+            tile.y = Constants.tileH * -1;
 
             tile.bitmapData.copyPixels(
-                    Constants.wallTileset.bitmapData,
+                    wallTileset.bitmapData,
                     new Rectangle(tilesetsrcX, tilesetsrcY, Constants.tileW, Constants.tileH * 2),
-                    new Point(0, -Constants.tileH),
+                    new Point(0, 0),
                     null,
                     null,
                     true);
 
             return tile;
+        }
+
+        public static function getSpriteName(theme: String): String {
+            return theme + "_WALL_TILESET";
         }
     }
 }

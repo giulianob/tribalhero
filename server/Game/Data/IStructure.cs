@@ -14,5 +14,7 @@ namespace Game.Data
         bool IsMainBuilding { get; }
 
         IStructureStats Stats { get; set; }
+
+        string Theme { get; set; }
     }
 }

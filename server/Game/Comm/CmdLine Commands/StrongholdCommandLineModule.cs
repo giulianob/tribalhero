@@ -18,7 +18,7 @@ using NDesk.Options;
 
 namespace Game.Comm
 {
-    class StrongholdCommandLineModule : CommandLineModule
+    class StrongholdCommandLineModule : ICommandLineModule
     {
         private readonly ILocker locker;
 
@@ -51,7 +51,7 @@ namespace Game.Comm
             this.tileLocator = tileLocator;
         }
 
-        public override void RegisterCommands(CommandLineProcessor processor)
+        public void RegisterCommands(CommandLineProcessor processor)
         {
             processor.RegisterCommand("StrongholdTransfer", CmdStrongholdTransfer, PlayerRights.Admin);
             processor.RegisterCommand("StrongholdAddTroop", CmdStrongholdAddTroop, PlayerRights.Admin);
@@ -283,7 +283,7 @@ namespace Game.Comm
                 return "Stronghold not found";
             }
 
-            locker.Lock(custom => stronghold.LockList.ToArray(), null, tribe, stronghold)
+            locker.Lock(custom => stronghold.LockList().ToArray(), null, tribe, stronghold)
                   .Do(() => strongholdManager.TransferTo(stronghold, tribe));
 
             return "OK!";

@@ -77,7 +77,7 @@ package src.UI.Dialog{
 			lblNewRankTitle.setHorizontalAlignment(AsWingConstants.RIGHT);
 			
 			var options : * = [];
-			var ranks : * = Constants.tribe.ranks;
+			var ranks : * = Constants.session.tribe.ranks;
 			for (var i:int = 0; i < ranks.length; ++i) {
 				options.push(ranks[i].name);
 			}

@@ -306,7 +306,7 @@ namespace Game.Comm.ProcessorCommands
 
                     var locks =
                             strongholdManager.StrongholdsForTribe(tribe)
-                                             .SelectMany(stronghold => stronghold.LockList)
+                                             .SelectMany(stronghold => stronghold.LockList())
                                              .ToList();
 
                     locks.Add(tribe);
@@ -356,7 +356,7 @@ namespace Game.Comm.ProcessorCommands
                 {
                     var locks =
                             strongholdManager.StrongholdsForTribe(tribe)
-                                             .SelectMany(stronghold => stronghold.LockList)
+                                             .SelectMany(stronghold => stronghold.LockList())
                                              .ToList();
 
                     return locks.ToArray();

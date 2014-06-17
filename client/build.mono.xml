@@ -62,7 +62,7 @@
         <replaceregexp file="${basedir}/game/src/Constants.as" match="var revision\:(.*)" replace="var revision: int = ${revision};" byline="true" />			
 	
 		<exec executable="${mxmlc}" dir="${basedir}" failonerror="true">
-			<arg line="-load-config+=GameConfig.xml -debug=false -swf-version=22 -frame start src.Main -keep-as3-metadata+=EmbedPosition -o bin/Game.swf" />
+			<arg line="-load-config+=GameConfig.xml -debug=false -o bin/Game.swf" />
 		</exec>
 	</target>
 	

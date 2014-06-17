@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -21,7 +22,7 @@ using Persistance;
 
 namespace Game.Comm
 {
-    class PlayerCommandLineModule : CommandLineModule
+    class PlayerCommandLineModule : ICommandLineModule
     {
         private readonly Chat chat;
 
@@ -70,12 +71,13 @@ namespace Game.Comm
             this.technologyFactory = technologyFactory;
         }
 
-        public override void RegisterCommands(CommandLineProcessor processor)
+        public void RegisterCommands(CommandLineProcessor processor)
         {
             processor.RegisterCommand("auth", Auth, PlayerRights.Moderator);
             processor.RegisterCommand("resetauthcode", ResetAuthCode, PlayerRights.Bureaucrat);
             processor.RegisterCommand("playerinfo", Info, PlayerRights.Moderator);            
             processor.RegisterCommand("playersearch", Search, PlayerRights.Moderator);
+            processor.RegisterCommand("addcoins", AddCoins, PlayerRights.Admin);
             processor.RegisterCommand("ban", BanPlayer, PlayerRights.Moderator);
             processor.RegisterCommand("unban", UnbanPlayer, PlayerRights.Moderator);
             processor.RegisterCommand("deleteplayer", DeletePlayer, PlayerRights.Bureaucrat);
@@ -325,9 +327,9 @@ namespace Game.Comm
                 });
             }
 
-            ApiResponse response = ApiCaller.SetPlayerRights(playerName, rights.GetValueOrDefault());
+            ApiResponse<dynamic> response = ApiCaller.SetPlayerRights(playerName, rights.GetValueOrDefault());
 
-            return response.Success ? "OK!" : response.ErrorMessage;
+            return response.Success ? "OK!" : response.AllErrorMessages;
         }
 
         public string ResetAuthCode(Session session, string[] parms)
@@ -354,9 +356,9 @@ namespace Game.Comm
                 return String.Format("resetauthcode --player=player");
             }
 
-            ApiResponse response = ApiCaller.ResetAuthCode(playerName);
+            ApiResponse<dynamic> response = ApiCaller.ResetAuthCode(playerName);
 
-            return response.Success ? "OK!" : response.ErrorMessage;
+            return response.Success ? "OK!" : response.AllErrorMessages;
         }
 
         public string Auth(Session session, String[] parms)
@@ -432,11 +434,11 @@ namespace Game.Comm
                 return String.Format("playerinfo --player=name|emailaddress");
             }
 
-            ApiResponse response = ApiCaller.PlayerInfo(playerName);
+            ApiResponse<dynamic> response = ApiCaller.PlayerInfo(playerName);
 
             if (!response.Success)
             {
-                return response.ErrorMessage;
+                return response.AllErrorMessages;
             }
 
             try
@@ -484,11 +486,11 @@ namespace Game.Comm
                 return String.Format("playersearch --player=name|emailaddress");
             }
 
-            ApiResponse response = ApiCaller.PlayerSearch(playerName);
+            ApiResponse<dynamic> response = ApiCaller.PlayerSearch(playerName);
 
             if (!response.Success)
             {
-                return response.ErrorMessage;
+                return response.AllErrorMessages;
             }
 
             try
@@ -866,11 +868,11 @@ namespace Game.Comm
             uint playerId;
             var foundLocally = world.FindPlayerId(playerName, out playerId);
 
-            ApiResponse response = ApiCaller.RenamePlayer(playerName, newPlayerName);
+            ApiResponse<dynamic> response = ApiCaller.RenamePlayer(playerName, newPlayerName);
 
             if (!response.Success)
             {
-                return response.ErrorMessage;
+                return response.AllErrorMessages;
             }
 
             if (!foundLocally)
@@ -904,6 +906,42 @@ namespace Game.Comm
             });
         }
 
+        public string AddCoins(Session session, string[] parms)
+        {
+            bool help = false;
+            string playerName = string.Empty;
+            int coins = 0;
+
+            try
+            {
+                var p = new OptionSet
+                {
+                        {"?|help|h", v => help = true},
+                        {"player=", v => playerName = v.TrimMatchingQuotes()},
+                        {"coins=", v => coins = int.Parse(v.TrimMatchingQuotes())}
+                };
+                p.Parse(parms);
+            }
+            catch(Exception)
+            {
+                help = true;
+            }
+
+            if (help || string.IsNullOrEmpty(playerName) || coins == 0)
+            {
+                return "addcoins --player=player --coins=#";
+            }
+
+            ApiResponse<dynamic> response = ApiCaller.AddCoins(playerName, coins);
+
+            if (!response.Success)
+            {
+                return response.AllErrorMessages;
+            }
+
+            return "OK!";
+        }
+
         public string SetPassword(Session session, string[] parms)
         {
             bool help = false;
@@ -930,9 +968,9 @@ namespace Game.Comm
                 return "setpassword --player=player --password=password";
             }
 
-            ApiResponse response = ApiCaller.SetPassword(playerName, password);
+            ApiResponse<dynamic> response = ApiCaller.SetPassword(playerName, password);
 
-            return response.Success ? "OK!" : response.ErrorMessage;
+            return response.Success ? "OK!" : response.AllErrorMessages;
         }
 
         public string BanPlayer(Session session, string[] parms)
@@ -986,9 +1024,9 @@ namespace Game.Comm
                 }
             });
 
-            ApiResponse response = ApiCaller.Ban(playerName);
+            ApiResponse<dynamic> response = ApiCaller.Ban(playerName);
 
-            return response.Success ? "OK!" : response.ErrorMessage;
+            return response.Success ? "OK!" : response.AllErrorMessages;
         }
 
         public string UnbanPlayer(Session session, string[] parms)
@@ -1031,9 +1069,9 @@ namespace Game.Comm
                 }
             });
 
-            ApiResponse response = ApiCaller.Unban(playerName);
+            ApiResponse<dynamic> response = ApiCaller.Unban(playerName);
 
-            return response.Success ? "OK!" : response.ErrorMessage;
+            return response.Success ? "OK!" : response.AllErrorMessages;
         }
 
         public string DeletePlayer(Session session, string[] parms)
@@ -1155,7 +1193,7 @@ namespace Game.Comm
             var title = "Supporter";
             var description = "Helped Improve Tribal Hero";
 
-            ApiResponse response = ApiCaller.GiveAchievement(playerName, tier.Value, type, icon, title, description);
+            ApiResponse<dynamic> response = ApiCaller.GiveAchievement(playerName, tier.Value, type, icon, title, description);
 
             if (response.Success)
             {
@@ -1172,7 +1210,7 @@ namespace Game.Comm
                 }
             }
 
-            return response.Success ? "OK!" : response.ErrorMessage;
+            return response.Success ? "OK!" : response.AllErrorMessages;
         }
 
         public string GiveAchievement(Session session, String[] parms)
@@ -1217,9 +1255,9 @@ namespace Game.Comm
                                      String.Join("|", Enum.GetNames(typeof(AchievementTier))));
             }
 
-            ApiResponse response = ApiCaller.GiveAchievement(playerName, tier.Value, type, icon, title, description);
+            ApiResponse<dynamic> response = ApiCaller.GiveAchievement(playerName, tier.Value, type, icon, title, description);
 
-            return response.Success ? "OK!" : response.ErrorMessage;
+            return response.Success ? "OK!" : response.AllErrorMessages;
         }
     }
 }

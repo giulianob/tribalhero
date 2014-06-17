@@ -7,6 +7,7 @@ using Game.Logic;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
+using Game.Util;
 
 namespace Game.Comm.Channel
 {
@@ -119,35 +120,41 @@ namespace Game.Comm.Channel
 
         private string GetChannelName(ICity city)
         {
-            return "/PLAYER/" + city.Owner.PlayerId;
+            return city.Owner.PlayerChannel;
         }
 
-        private void CityOnPropertyChanged(ICity city, PropertyChangedEventArgs propertyChangedEventArgs)
+        private void CityOnPropertyChanged(ICity city, PropertyChangedEventArgs ev)
         {
-            switch(propertyChangedEventArgs.PropertyName)
+            if (ev.PropertyName == city.GetProperty(c => c.Radius))
             {
-                case "Radius":
-                    RadiusUpdateEvent(city);
-                    break;
-                case "Battle":
-                    if (city.Battle == null)
-                    {
-                        BattleEnded(city);
-                    }
-                    else
-                    {
-                        BattleStarted(city);
-                    }
-                    break;
-                case "HideNewUnits":
-                    HideNewUnitsUpdate(city);
-                    break;
-                case "AttackPoint":
-                case "DefensePoint":
-                case "AlignmentPoint":
-                case "Value":
-                    PointUpdate(city);
-                    break;
+                RadiusUpdateEvent(city);
+            }
+            else if (ev.PropertyName == city.GetProperty(c => c.Battle))
+            {
+                if (city.Battle == null)
+                {
+                    BattleEnded(city);
+                }
+                else
+                {
+                    BattleStarted(city);
+                }
+            }
+            else if (ev.PropertyName == city.GetProperty(c => c.HideNewUnits))
+            {
+                HideNewUnitsUpdate(city);
+            }
+            else if (ev.PropertyName == city.GetProperty(c => c.AttackPoint) ||
+                     ev.PropertyName == city.GetProperty(c => c.DefensePoint) ||
+                     ev.PropertyName == city.GetProperty(c => c.AlignmentPoint) ||
+                     ev.PropertyName == city.GetProperty(c => c.Value))
+            {
+                PointUpdate(city);
+
+            }
+            else if (ev.PropertyName == city.GetProperty(c => c.DefaultTheme))
+            {
+                DefaultThemeUpdate(city);
             }
         }
 
@@ -263,6 +270,22 @@ namespace Game.Comm.Channel
                     packet.AddInt32(city.DefensePoint);
                     packet.AddUInt16(city.Value);
                     packet.AddFloat((float)city.AlignmentPoint);
+                    return packet;
+                });
+        }
+
+        private void DefaultThemeUpdate(ICity city)
+        {
+            if (!ShouldUpdate(city))
+            {
+                return;
+            }
+
+            channel.Post(GetChannelName(city), () =>
+                {
+                    var packet = new Packet(Command.CityDefaultThemeUpdate);
+                    packet.AddUInt32(city.Id);
+                    packet.AddString(city.DefaultTheme);
                     return packet;
                 });
         }

@@ -6,6 +6,8 @@
     import flash.display.DisplayObjectContainer;
     import flash.geom.Point;
 
+    import src.Assets;
+
     import src.Constants;
     import src.Global;
     import src.Objects.*;
@@ -65,13 +67,14 @@
         override public function setVisibilityPriority(isHighestPriority: Boolean, objectsInTile: Array): void {
             super.setVisibilityPriority(isHighestPriority, objectsInTile);
 
-            var wallObject: Option = Enumerable.from(objectsInTile).ofType(WallObject).firstOrNone();
-            if (wallObject.isSome) {
+            var wallObjectResult: Option = Enumerable.from(objectsInTile).ofType(WallObject).firstOrNone();
+            if (wallObjectResult.isSome) {
                 if (isOverWall) {
                     return;
                 }
 
-                var wallSprite: Bitmap = Constants.wallTileset.getTile(wallObject.value.tileId + 12);
+                var wallObject: WallObject = wallObjectResult.value;
+                var wallSprite: Bitmap = wallObject.getTroopOverlappingAsset();
                 setSprite(wallSprite, new Point());
                 isOverWall = true;
                 return;

@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using Game.Comm;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Data.Troop;
@@ -30,6 +31,8 @@ namespace Game.Battle.CombatObjects
         private readonly BattleStats stats;
 
         private readonly ushort type;
+        
+        public string Theme { get; set; }
 
         /// <summary>
         ///     Since the structure HP can change from the outside.
@@ -38,7 +41,7 @@ namespace Game.Battle.CombatObjects
         /// </summary>
         private decimal hp;
 
-        private IRegionManager regionManager;
+        private readonly IRegionManager regionManager;
 
         public CombatStructure(uint id,
                                uint battleId,
@@ -61,6 +64,7 @@ namespace Game.Battle.CombatObjects
             type = structure.Type;
             lvl = structure.Lvl;
             hp = structure.Stats.Hp;
+            Theme = structure.Theme;
         }
 
         public CombatStructure(uint id,
@@ -70,6 +74,7 @@ namespace Game.Battle.CombatObjects
                                decimal hp,
                                ushort type,
                                byte lvl,
+                               string theme,
                                Formula formula,
                                IActionFactory actionFactory,
                                IBattleFormulas battleFormulas,
@@ -87,6 +92,7 @@ namespace Game.Battle.CombatObjects
             this.hp = hp;
             this.type = type;
             this.lvl = lvl;
+            this.Theme = theme;
         }
 
         public override ICity City
@@ -252,7 +258,8 @@ namespace Game.Battle.CombatObjects
                                new DbColumn("hits_dealt", HitDealt, DbType.UInt16),
                                new DbColumn("hits_dealt_by_unit", HitDealtByUnit, DbType.UInt32),
                                new DbColumn("hits_received", HitRecv, DbType.UInt16),
-                               new DbColumn("is_waiting_to_join_battle", IsWaitingToJoinBattle, DbType.Boolean)
+                               new DbColumn("is_waiting_to_join_battle", IsWaitingToJoinBattle, DbType.Boolean),
+                               new DbColumn("theme_id", Theme, DbType.String)
                        };
             }
         }
@@ -361,6 +368,12 @@ namespace Game.Battle.CombatObjects
             City.BeginUpdate();
             City.DefensePoint += attackPoints;
             City.EndUpdate();
+        }
+
+        public override void AddPacketInfo(Packet packet)
+        {
+            base.AddPacketInfo(packet);
+            packet.AddString(Theme);
         }
     }
 }

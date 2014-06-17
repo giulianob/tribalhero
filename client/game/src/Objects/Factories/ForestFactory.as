@@ -20,21 +20,13 @@
             return "FOREST_LVL_4";
         }
 
-        public static function getSprite(withPosition: String = "", withShadow: Boolean = false): DisplayObjectContainer
+        public static function getSprite(withPosition: String = ""): DisplayObjectContainer
         {
             var assetName: String = getSpriteName();
 
             var image: DisplayObject = Assets.getInstance(assetName, withPosition);
 
             var sprite: Sprite = new Sprite();
-
-            if (withShadow) {
-                var shadow: Bitmap = Assets.getInstance(assetName + "_SHADOW", withPosition);
-                shadow.alpha = Constants.shadowAlpha;
-                shadow.name = "shadow";
-                sprite.addChild(shadow);
-            }
-
             sprite.addChild(image);
 
             return sprite;
@@ -44,7 +36,7 @@
 		{
 			var forestObj: Forest = new Forest(type, state, objX, objY, size, groupId, objectId);
 
-            forestObj.setSprite(getSprite("map", true), Assets.getPosition(getSpriteName(), "map"));
+            forestObj.setSprite(getSprite("map"), Assets.getPosition(getSpriteName(), "map"));
 
 			forestObj.setOnSelect(Global.map.selectObject);
 			

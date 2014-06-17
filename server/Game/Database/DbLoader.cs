@@ -449,27 +449,28 @@ namespace Game.Database
         {
             #region Players
 
+            var playerFactory = Kernel.Get<IPlayerFactory>();
+
             logger.Info("Loading players...");
             using (var reader = DbManager.Select(Player.DB_TABLE))
             {
                 while (reader.Read())
                 {
-                    var player = new Player((uint)reader["id"],
-                                            DateTime.SpecifyKind((DateTime)reader["created"], DateTimeKind.Utc),
-                                            DateTime.SpecifyKind((DateTime)reader["last_login"], DateTimeKind.Utc),
-                                            (string)reader["name"],
-                                            (string)reader["description"],
-                                            PlayerRights.Basic)
-                    {
-                            DbPersisted = true,
-                            SoundMuted = (bool)reader["sound_muted"],
-                            TutorialStep = (uint)reader["tutorial_step"],
-                            TribeRequest = (uint)reader["invitation_tribe_id"],
-                            Muted = DateTime.SpecifyKind((DateTime)reader["muted"], DateTimeKind.Utc),
-                            LastDeletedTribe = DateTime.SpecifyKind((DateTime)reader["last_deleted_tribe"], DateTimeKind.Utc),
-                            Banned = (bool)reader["banned"],
-                            NeverAttacked = (bool)reader["never_attacked"]
-                    };
+                    var player = playerFactory.CreatePlayer((uint)reader["id"],
+                                                            DateTime.SpecifyKind((DateTime)reader["created"], DateTimeKind.Utc),
+                                                            DateTime.SpecifyKind((DateTime)reader["last_login"], DateTimeKind.Utc),
+                                                            (string)reader["name"],
+                                                            (string)reader["description"],
+                                                            PlayerRights.Basic,
+                                                            string.Empty);
+                    player.DbPersisted = true;
+                    player.SoundMuted = (bool)reader["sound_muted"];
+                    player.TutorialStep = (uint)reader["tutorial_step"];
+                    player.TribeRequest = (uint)reader["invitation_tribe_id"];
+                    player.Muted = DateTime.SpecifyKind((DateTime)reader["muted"], DateTimeKind.Utc);
+                    player.LastDeletedTribe = DateTime.SpecifyKind((DateTime)reader["last_deleted_tribe"], DateTimeKind.Utc);
+                    player.Banned = (bool)reader["banned"];
+                    player.NeverAttacked = (bool)reader["never_attacked"];
 
                     if (!World.Players.TryAdd(player.PlayerId, player))
                     {
@@ -564,7 +565,9 @@ namespace Game.Database
                                                         new Position((uint)reader["x"], (uint) reader["y"]),
                                                         resource,
                                                         (byte)reader["radius"],
-                                                        (decimal)reader["alignment_point"]);
+                                                        (decimal)reader["alignment_point"],
+                                                        (string)reader["default_theme_id"],
+                                                        (string)reader["wall_theme_id"]);
 
                     city.DbPersisted = true;
                     city.LootStolen = (uint)reader["loot_stolen"];
@@ -610,7 +613,8 @@ namespace Game.Database
                                                                         (uint)reader["x"],
                                                                         (uint)reader["y"],
                                                                         (decimal)reader["gate"],
-                                                                        (int)reader["gate_max"]);
+                                                                        (int)reader["gate_max"],
+                                                                        (string)reader["theme_id"]);
                     stronghold.StrongholdState = (StrongholdState)((byte)reader["state"]);
                     stronghold.NearbyCitiesCount = (ushort)reader["nearby_cities"];
                     stronghold.DbPersisted = true;
@@ -793,12 +797,13 @@ namespace Game.Database
                     }
                 }
 
-                IStructure structure = gameObjectFactory.CreateStructure((uint)reader["city_id"], 
-                    (uint)reader["id"], 
-                    (ushort)reader["type"],
-                    (byte)reader["level"],
-                    (uint)reader["x"],
-                    (uint)reader["y"]);
+                IStructure structure = gameObjectFactory.CreateStructure((uint)reader["city_id"],
+                                                                         (uint)reader["id"],
+                                                                         (ushort)reader["type"],
+                                                                         (byte)reader["level"],
+                                                                         (uint)reader["x"],
+                                                                         (uint)reader["y"],
+                                                                         (string)reader["theme_id"]);
                 structure.InWorld = (bool)reader["in_world"];
                 structure.Technologies.Parent = city.Technologies;
                 structure.Stats.Hp = (decimal)reader["hp"];
@@ -1325,6 +1330,7 @@ namespace Game.Database
                                                                   (decimal)listReader["hp"],
                                                                   (ushort)listReader["type"],
                                                                   (byte)listReader["level"],
+                                                                  (string)listReader["theme_id"],
                                                                   Kernel.Get<Formula>(),
                                                                   Kernel.Get<IActionFactory>(),
                                                                   Kernel.Get<IBattleFormulas>(),

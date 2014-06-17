@@ -38,6 +38,12 @@ namespace Game.Comm
 
         SaveMuteSound = 24,
 
+        PlayerCoinsUpdate = 25,
+
+        PlayerThemePurchased = 26,
+        
+        PlayerAchievementPurchased = 27,
+
         #endregion
 
         #region Action
@@ -131,6 +137,10 @@ namespace Game.Comm
         StructureDowngrade = 305,
 
         StructureSelfDestroy = 306,
+        
+        StructureSetTheme = 307,
+
+        WallSetTheme = 308,
 
         TechAdded = 311,
 
@@ -179,6 +189,8 @@ namespace Game.Comm
         CityHideNewUnitsUpdate = 468,
 
         CityHasApBonus = 469,
+
+        CityDefaultThemeUpdate = 470,
 
         CityBattleStarted = 490,
 
@@ -342,6 +354,8 @@ namespace Game.Comm
 
         StrongholdList = 1106,
 
+        StrongholdSetTheme = 1107,
+
         #endregion
 
         #region Internal Messages
@@ -359,6 +373,18 @@ namespace Game.Comm
         MoveObject = 1002,
 
         FooRegionMoveRight = 1003,
+
+        #endregion
+
+        #region Store
+
+        StoreGetItems = 1201,
+        
+        StorePurchaseItem = 1202,
+
+        StoreSetDefaultTheme = 1203,
+
+        StoreApplyThemeToAll = 1204,
 
         #endregion
     }

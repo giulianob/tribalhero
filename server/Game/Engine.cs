@@ -72,6 +72,10 @@ namespace Game
 
         private readonly IStrongholdManagerLogger strongholdManagerLogger;
 
+        private readonly StoreSync storeSync;
+
+        private readonly IQueueListener queueListener;
+
         private readonly IPolicyServer policyServer;
 
         private readonly INetworkServer server;
@@ -94,7 +98,9 @@ namespace Game
                       StrongholdChecker strongholdChecker,
                       BarbarianTribeChecker barbarianTribeChecker,
                       ICityChannel cityChannel,
-                      IStrongholdManagerLogger strongholdManagerLogger)
+                      IStrongholdManagerLogger strongholdManagerLogger,
+                      StoreSync storeSync,
+                      IQueueListener queueListener)
         {
             this.server = server;
             this.policyServer = policyServer;
@@ -113,6 +119,8 @@ namespace Game
             this.barbarianTribeChecker = barbarianTribeChecker;
             this.cityChannel = cityChannel;
             this.strongholdManagerLogger = strongholdManagerLogger;
+            this.storeSync = storeSync;
+            this.queueListener = queueListener;
         }
 
         public EngineState State { get; private set; }
@@ -259,6 +267,12 @@ _________ _______ _________ ______   _______  _
 
             // Initialize game market
             Market.Init();
+            
+            // Start listening  for queue events
+            queueListener.Start(Config.api_domain);
+
+            // Start store sync
+            storeSync.Start();
 
             // Start command processor
             server.Start(Config.server_listen_address, Config.server_port);
@@ -294,7 +308,6 @@ _________ _______ _________ ______   _______  _
             PacketHelper.RegionLocator = Ioc.Kernel.Get<IRegionLocator>();
             Global.Current = Ioc.Kernel.Get<Global>();
             SystemVariablesUpdater.Current = Ioc.Kernel.Get<SystemVariablesUpdater>();
-            TileLocator.Current = Ioc.Kernel.Get<TileLocator>();
             World.Current = Ioc.Kernel.Get<IWorld>();
             Scheduler.Current = Ioc.Kernel.Get<IScheduler>();
             DbPersistance.Current = Ioc.Kernel.Get<IDbManager>();
@@ -311,15 +324,27 @@ _________ _______ _________ ______   _______  _
 
             State = EngineState.Stopping;
 
+            Logger.Info("Stopping queue listener...");
+            queueListener.Stop();
+
+            Logger.Info("Pausing system variable updates");
             systemVariablesUpdater.Pause();
+            
             Logger.Info("Stopping TCP server...");
             server.Stop();
+
             Logger.Info("Stopping policy server...");
             policyServer.Stop();
+
+            Logger.Info("Stopping thrift server");
+            thriftServer.Stop();
+
             Logger.Info("Waiting for scheduler to end...");
-            //thriftServer.Stop();
             scheduler.Pause();
+
+            Logger.Info("Closing regions file...");
             world.Regions.Unload();
+            
             Logger.Info("Goodbye!");
 
             State = EngineState.Stopped;

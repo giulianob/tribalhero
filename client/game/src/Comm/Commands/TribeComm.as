@@ -46,11 +46,11 @@
 		}
 
 		public function onReceiveTribeUpdate(packet: Packet) : void {
-			Constants.tribe.id = packet.readUInt();
-			Constants.tribeInviteId = packet.readUInt();
-			Constants.tribe.rank = packet.readUByte();
+			Constants.session.tribe.id = packet.readUInt();
+			Constants.session.tribeInviteId = packet.readUInt();
+			Constants.session.tribe.rank = packet.readUByte();
 
-			Global.gameContainer.tribeNotificationIcon.visible = Constants.tribeInviteId > 0;
+			Global.gameContainer.tribeNotificationIcon.visible = Constants.session.tribeInviteId > 0;
 		}
 		
 		public function contribute(cityId: int, structureId: int, resources: Resources, callback: Function): void {
@@ -76,7 +76,7 @@
 				rankData.rights = packet.readInt();
 				ranks.push(rankData);
 			}
-			Constants.tribe.ranks = ranks;
+			Constants.session.tribe.ranks = ranks;
 			return ranks;
 		}
 		private function onCreateTribe(packet: Packet, custom: *) : void  {
@@ -84,7 +84,7 @@
 				return;
 			}
 			readTribeRanks(packet);
-			Global.mapComm.Tribe.viewTribeProfile(Constants.tribe.id);			
+			Global.mapComm.Tribe.viewTribeProfile(Constants.session.tribe.id);
 		}
 		public function createTribe(name: String) : void {
 			var packet: Packet = new Packet();

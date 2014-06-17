@@ -12,8 +12,6 @@ namespace Game.Data.BarbarianTribe
         private readonly MapFactory mapFactory;
 
         private readonly IRegionManager regionManager;
-
-        private readonly Random random = new Random();
         
         public BarbarianTribeConfigurator(MapFactory mapFactory, IRegionManager regionManager)
         {
@@ -39,7 +37,7 @@ namespace Game.Data.BarbarianTribe
             while (!IsLocationAvailable(position));
             
             var ratio = count / 100m;
-            var index = random.Next(count);
+            var index = Config.Random.Next(count);
             for (level = 1; index >= (decimal)LevelProbability[level] * ratio; level++)
             {
                 // this gets the level based on distribution

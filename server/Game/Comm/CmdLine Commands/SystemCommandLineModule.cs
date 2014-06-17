@@ -1,5 +1,4 @@
 ﻿using System;
-using System.CodeDom;
 using System.Diagnostics;
 using Game.Data;
 using Game.Util;
@@ -7,7 +6,7 @@ using NDesk.Options;
 
 namespace Game.Comm
 {
-    public class SystemCommandLineModule : CommandLineModule
+    public class SystemCommandLineModule : ICommandLineModule
     {
         private readonly INetworkServer networkServer;
 
@@ -16,7 +15,7 @@ namespace Game.Comm
             this.networkServer = networkServer;
         }
 
-        public override void RegisterCommands(CommandLineProcessor processor)
+        public void RegisterCommands(CommandLineProcessor processor)
         {
             processor.RegisterCommand("sessionstatus", SessionStatus, PlayerRights.Bureaucrat);            
             processor.RegisterCommand("disconnectall", DisconnectAll, PlayerRights.Bureaucrat);

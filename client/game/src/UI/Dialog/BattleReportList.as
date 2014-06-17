@@ -114,7 +114,7 @@
 			append(pnlRemote);
 			append(new JLabel("Reports are removed after two weeks.", null, AsWingConstants.LEFT));
 			
-			if (Constants.admin) {
+			if (Constants.session.admin) {
 				pnlAdminSearch.append(txtAdminCityList);
 				pnlAdminSearch.append(btnAdminSearch);				
 				append(pnlAdminSearch);			

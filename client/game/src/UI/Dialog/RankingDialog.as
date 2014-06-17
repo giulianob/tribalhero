@@ -222,9 +222,9 @@ package src.UI.Dialog{
 			if (rankings[type].baseOn == "city") {
 				Global.mapComm.Ranking.list(loader, Global.gameContainer.selectedCity.id, type, page);
 			} else if(rankings[type].baseOn == "player") {
-				Global.mapComm.Ranking.list(loader, Constants.playerId, type, page);
+				Global.mapComm.Ranking.list(loader, Constants.session.playerId, type, page);
 			} else if (rankings[type].baseOn == "tribe") {
-				Global.mapComm.Ranking.list(loader, Constants.tribe.id, type, page);
+				Global.mapComm.Ranking.list(loader, Constants.session.tribe.id, type, page);
 			} else if (rankings[type].baseOn == "stronghold") {
 				Global.mapComm.Ranking.list(loader, 0, type, page);
 			}
@@ -273,7 +273,7 @@ package src.UI.Dialog{
 			for each(var rank: Object in data.rankings) {
 				rankingList.append( { "rank": rank.rank, "value": rank.value, "cityId": rank.cityId, "cityName": rank.cityName, "playerName": rank.playerName, "playerId": rank.playerId } );
 
-				if (rank.playerId == Constants.playerId)  {
+				if (rank.playerId == Constants.session.playerId)  {
 					selectIdx = rankingList.size() - 1;
 				}
 			}
@@ -306,7 +306,7 @@ package src.UI.Dialog{
 				rankingList.append( { "rank": rank.rank, "value": rank.value, "cityId": rank.cityId, "cityName": rank.cityName, "playerName": rank.playerName, "playerId": rank.playerId } );
 
 				// If this is our player then we save this index
-				if (rank.playerId == Constants.playerId)  {
+				if (rank.playerId == Constants.session.playerId)  {
 					selectIdx = rankingList.size() - 1;
 				}
 			}
@@ -344,7 +344,7 @@ package src.UI.Dialog{
 				
 				rankingList.append( { "rank": rank.rank, "value": rank.value, "tribeId": rank.tribeId, "tribeName": rank.tribeName } );
 
-				if (Constants.tribe.isInTribe(rank.tribeId))  {
+				if (Constants.session.tribe.isInTribe(rank.tribeId))  {
 					selectIdx = rankingList.size() - 1;
 				}
 			}

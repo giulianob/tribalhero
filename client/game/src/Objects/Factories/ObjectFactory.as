@@ -105,24 +105,18 @@
 			}
 		}
 
-		public static function getSpriteEx(type:int, level:int, forDarkBackground:Boolean = false): DisplayObjectContainer
+        [Deprecated(message = "Use proper objects to get sprites")]
+		public static function getSpriteEx(theme: String, type:int, level:int, forDarkBackground:Boolean = false): DisplayObjectContainer
 		{
             var sprite: DisplayObjectContainer;
 			if (type >= 1000)
-				sprite = StructureFactory.getSprite(type, level);
+				sprite = StructureFactory.getSprite(theme, type, level);
 			else if (type == 100)
 				sprite = TroopFactory.getSprite();
 			else
 				sprite = UnitFactory.getSprite(type, level, forDarkBackground);
 
             return sprite;
-		}
-		
-		public static function makeSpriteSmall(obj: DisplayObjectContainer, scale: Number = 0.5) : DisplayObjectContainer {
-			obj.scaleX = scale;
-			obj.scaleY = scale;
-
-			return obj;
 		}
 
 		public static function getIcon(name: String) : DisplayObject
@@ -144,8 +138,8 @@
 		{
 			var sprite: DisplayObjectContainer;
 			if (obj is StructureObject) {
-                var structure: StructureObject = (obj as StructureObject);
-				sprite = StructureFactory.getSprite(structure.type, structure.level, withPosition);
+                var structure: StructureObject = StructureObject(obj);
+				sprite = StructureFactory.getSprite(structure.theme, structure.type, structure.level, withPosition);
             }
 			else if (obj is TroopObject)
 				sprite = TroopFactory.getSprite();
@@ -153,8 +147,10 @@
 				sprite = ForestFactory.getSprite();
 			else if (obj is NewCityPlaceholder)
 				sprite = getNewCityPlaceholderSprite();
-			else if (obj is Stronghold)
-				sprite = StrongholdFactory.getSprite(withPosition);
+			else if (obj is Stronghold) {
+                var stronghold:Stronghold = Stronghold(obj);
+				sprite = StrongholdFactory.getSprite(stronghold.theme, withPosition);
+            }
 			else if (obj is BarbarianTribe)
 				sprite = BarbarianTribeFactory.getSprite();
 			else
@@ -166,14 +162,14 @@
 		public static function getNewCityPlaceholderSprite() : DisplayObjectContainer
 		{
 			var obj: Sprite = new Sprite();
-			obj.addChild(Assets.getInstance("FOUNDATION"));
+			obj.addChild(Assets.getInstance("DEFAULT_FOUNDATION"));
 			return obj;
 		}
 		
 		public static function getNewCityPlaceholderInstance(x: int, y: int) : NewCityPlaceholder
 		{
 			var obj: NewCityPlaceholder = new NewCityPlaceholder(x, y);
-			obj.setSprite(Assets.getInstance("FOUNDATION", "map"), Assets.getPosition("FOUNDATION", "map"));
+			obj.setSprite(Assets.getInstance("DEFAULT_FOUNDATION", "map"), Assets.getPosition("DEFAULT_FOUNDATION", "map"));
 			return obj;
 		}
 	}

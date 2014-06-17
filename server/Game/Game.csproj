@@ -75,6 +75,9 @@
     <Reference Include="Dawn.SocketAwaitable">
       <HintPath>..\Lib\dawn.socketawaitable\Dawn.SocketAwaitable.dll</HintPath>
     </Reference>
+    <Reference Include="Flurl">
+      <HintPath>..\packages\Flurl.0.2.1\lib\portable-win+net40+sl40+wp+Xbox40\Flurl.dll</HintPath>
+    </Reference>
     <Reference Include="JsonFx, Version=2.0.1209.2802, Culture=neutral, PublicKeyToken=315052dd637f8a52, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\JsonFx.2.0.1209.2802\lib\net40\JsonFx.dll</HintPath>
@@ -91,11 +94,13 @@
       <HintPath>..\Lib\ndesk.options\NDesk.Options.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NStatsD.Client">
       <HintPath>..\packages\NStatsD.Client.1.3.3.0\lib\net40\NStatsD.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="RabbitMQ.Client">
+      <HintPath>..\packages\RabbitMQ.Client.3.3.0\lib\net30\RabbitMQ.Client.dll</HintPath>
     </Reference>
     <Reference Include="SimpleInjector">
       <HintPath>..\packages\SimpleInjector.2.5.0\lib\net45\SimpleInjector.dll</HintPath>
@@ -175,6 +180,7 @@
     <Compile Include="Battle\StatsModCalculator\IntStatsModCalculator.cs" />
     <Compile Include="Battle\StatsModCalculator\MaxHpModCalculator.cs" />
     <Compile Include="Battle\StrongholdMainBattleManager.cs" />
+    <Compile Include="Comm\Api\LoginResponse.cs" />
     <Compile Include="Comm\AsyncTcpServer.cs" />
     <Compile Include="Comm\Channel\BattleChannel.cs" />
     <Compile Include="Battle\BattleFormulas.cs" />
@@ -196,11 +202,16 @@
     <Compile Include="Comm\CmdLine Commands\ResourcesCommandLineModule.cs" />
     <Compile Include="Comm\CommandLineProcessor.cs" />
     <Compile Include="Comm\Commands.cs" />
-    <Compile Include="Comm\CommandLineModule.cs" />
+    <Compile Include="Comm\DummyLoginHandler.cs" />
+    <Compile Include="Comm\ICommandLineModule.cs" />
+    <Compile Include="Comm\ILoginHandler.cs" />
     <Compile Include="Comm\IPolicyServer.cs" />
     <Compile Include="Comm\IProcessor.cs" />
+    <Compile Include="Comm\IQueueCommandModule.cs" />
+    <Compile Include="Comm\IQueueCommandProcessor.cs" />
     <Compile Include="Comm\ISocketSessionFactory.cs" />
     <Compile Include="Comm\INetworkServer.cs" />
+    <Compile Include="Comm\MainSiteLoginHandler.cs" />
     <Compile Include="Comm\PacketMaker.cs" />
     <Compile Include="Comm\PolicyServer.cs" />
     <Compile Include="Comm\Packet.cs" />
@@ -210,6 +221,7 @@
     <Compile Include="Comm\ProcessorCommands\AssignmentCommandsModule.cs" />
     <Compile Include="Comm\ProcessorCommands\ChatCommandsModule.cs" />
     <Compile Include="Comm\ProcessorCommands\ProfileCommandsModule.cs" />
+    <Compile Include="Comm\ProcessorCommands\StoreCommandsModule.cs" />
     <Compile Include="Comm\ProcessorCommands\StrongholdCommandsModule.cs" />
     <Compile Include="Comm\ProcessorCommands\TribesmanCommandsModule.cs" />
     <Compile Include="Comm\ProcessorCommands\TribeCommandsModule.cs" />
@@ -226,6 +238,8 @@
     <Compile Include="Comm\Protocol\PacketProtocol.cs" />
     <Compile Include="Comm\Protocol\IProtocolFactory.cs" />
     <Compile Include="Comm\Protocol\ProtocolFactory.cs" />
+    <Compile Include="Comm\QueueCommandProcessor.cs" />
+    <Compile Include="Comm\QueueCommands\PlayerQueueCommandsModule.cs" />
     <Compile Include="Comm\Session.cs" />
     <Compile Include="Comm\AsyncSocketSession.cs" />
     <Compile Include="Comm\SocketSessionFactory.cs" />
@@ -262,11 +276,13 @@
     <Compile Include="Data\ICityFactory.cs" />
     <Compile Include="Data\IGameObjectFactory.cs" />
     <Compile Include="Data\IGlobal.cs" />
+    <Compile Include="Data\IPlayerFactory.cs" />
     <Compile Include="Data\IPrimaryPosition.cs" />
     <Compile Include="Data\ITechnologyManagerFactory.cs" />
     <Compile Include="Data\Forest\IForest.cs" />
     <Compile Include="Data\Forest\IForestFactory.cs" />
     <Compile Include="Data\Forest\IForestManager.cs" />
+    <Compile Include="Data\IThemeManager.cs" />
     <Compile Include="Data\PlayerChatState.cs" />
     <Compile Include="Data\City.cs" />
     <Compile Include="Comm\Processor.cs" />
@@ -283,6 +299,7 @@
     <Compile Include="Data\IStructure.cs" />
     <Compile Include="Data\ITechnologyManager.cs" />
     <Compile Include="Data\LazyValue.cs" />
+    <Compile Include="Data\PlayerFactory.cs" />
     <Compile Include="Data\PlayerRights.cs" />
     <Compile Include="Data\SimpleStubGeneratorFactory.cs" />
     <Compile Include="Data\Stats\IBaseBattleStats.cs" />
@@ -297,6 +314,10 @@
     <Compile Include="Data\Global.cs" />
     <Compile Include="Data\Player.cs" />
     <Compile Include="Data\Resource.cs" />
+    <Compile Include="Data\Store\IStoreManager.cs" />
+    <Compile Include="Data\Store\StoreItem.cs" />
+    <Compile Include="Data\Store\StoreManager.cs" />
+    <Compile Include="Data\Store\ThemePurchase.cs" />
     <Compile Include="Data\Stronghold\DummyActivationCondition.cs" />
     <Compile Include="Data\Stronghold\IStronghold.cs" />
     <Compile Include="Data\Stronghold\IStrongholdActivationCondition.cs" />
@@ -316,6 +337,8 @@
     <Compile Include="Data\Technology.cs" />
     <Compile Include="Data\TechnologyManager.cs" />
     <Compile Include="Data\TechnologyManagerFactory.cs" />
+    <Compile Include="Data\Theme.cs" />
+    <Compile Include="Data\ThemeManager.cs" />
     <Compile Include="Data\Tribe\Assignment.cs" />
     <Compile Include="Data\Tribe\AssignmentFactory.cs" />
     <Compile Include="Data\Tribe\EventArguments\TribeEventArg.cs" />
@@ -513,6 +536,8 @@
     <Compile Include="Map\RoadPathFinder.cs" />
     <Compile Include="Logic\IGameTask.cs" />
     <Compile Include="Module\Chat.cs" />
+    <Compile Include="Module\IQueueListener.cs" />
+    <Compile Include="Module\QueueListener.cs" />
     <Compile Include="Module\Remover\CityRemover.cs" />
     <Compile Include="Module\Remover\ActivePlayerSelector.cs" />
     <Compile Include="Module\Remover\CityRemoverFactory.cs" />
@@ -527,6 +552,7 @@
     <Compile Include="Module\Market.cs" />
     <Compile Include="Data\Stronghold\StrongholdActivationChecker.cs" />
     <Compile Include="Module\Remover\PlayersRemoverFactory.cs" />
+    <Compile Include="Module\StoreSync.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Map\Region.cs" />
     <Compile Include="Map\World.cs" />
@@ -553,6 +579,7 @@
     <Compile Include="Setup\RequirementCsvFactory.cs" />
     <Compile Include="Setup\TechnologyFactory.cs" />
     <Compile Include="Util\Channel.cs" />
+    <Compile Include="Util\DeliminatorSeparatedPropertyNamesContractResolver.cs" />
     <Compile Include="Util\DuplicateSubscriptionException.cs" />
     <Compile Include="Util\EnumExtension.cs" />
     <Compile Include="Util\EventHandlerExtensions.cs" />

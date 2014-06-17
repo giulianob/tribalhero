@@ -6,7 +6,7 @@ using System;
 
 namespace Game.Util
 {
-    class UnixDateTime
+    static class UnixDateTime
     {
         public static readonly DateTime UnixBase = new DateTime(1970, 1, 1);
 
@@ -18,6 +18,11 @@ namespace Game.Util
         public static uint DateTimeToUnix(DateTime dtm)
         {
             return (uint)(dtm.Subtract(UnixBase)).TotalSeconds;
+        }
+
+        public static uint ToUnixTime(this DateTime dtm)
+        {
+            return DateTimeToUnix(dtm);
         }
     }
 }

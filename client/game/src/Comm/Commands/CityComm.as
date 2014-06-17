@@ -84,6 +84,9 @@
 				case Commands.CITY_POINTS_UPDATE: 
 					onReceiveCityPointsUpdate(e.packet);
 					break;
+                case Commands.CITY_DEFAULT_THEME_UPDATE:
+					onReceiveDefaultThemeUpdate(e.packet);
+					break;
 				case Commands.CITY_BATTLE_ENDED: 
 				case Commands.CITY_BATTLE_STARTED: 
 					onReceiveBattleStateChange(e.packet);
@@ -118,7 +121,20 @@
 				BuiltInMessages.showApStatus(city);
 			}
 		}
-		
+
+        public function onReceiveDefaultThemeUpdate(packet:Packet):void
+		{
+			var cityId:int = packet.readUInt();
+            var themeId:String = packet.readString();
+
+			var city:City = Global.map.cities.get(cityId);
+
+			if (city != null)
+			{
+                city.defaultTheme = themeId;
+			}
+		}
+
 		public function onReceiveBattleStateChange(packet:Packet):void
 		{
 			var cityId:int = packet.readUInt();
@@ -242,7 +258,7 @@
 				}
 			}
 			
-			return new CityObject(city, obj.id, obj.type, obj.lvl, obj.state, obj.x, obj.y, obj.size, obj.labor);
+			return new CityObject(city, obj.id, obj.theme, obj.type, obj.lvl, obj.state, obj.x, obj.y, obj.size, obj.labor);
 		}
 		
 		public function setPlayerDescription(description:String):void

@@ -99,19 +99,23 @@ namespace Game.Comm
             {
                 packet.AddUInt32(stronghold.StrongholdState == StrongholdState.Occupied ? stronghold.Tribe.Id : 0);
                 packet.AddInt32(stronghold.GateMax);
+                packet.AddString(stronghold.Theme);
             }
 
             var structure = obj as IStructure;
             if (structure != null)
             {
+                packet.AddString(structure.Theme);
+
                 if (!forRegion)
                 {
-                    packet.AddUInt16(structure.Stats.Labor);
+                    packet.AddUInt16(structure.Stats.Labor);                    
                 }
 
                 if (structure.IsMainBuilding)
                 {
                     packet.AddByte(gameObj.City.Radius);
+                    packet.AddString(gameObj.City.WallTheme);
                 }
             }
 
@@ -372,33 +376,34 @@ namespace Game.Comm
 
         internal static void AddToPacket(ICombatObject combatObject, Packet packet)
         {
-            packet.AddUInt32(combatObject.Id);
-            packet.AddByte((byte)combatObject.ClassType);
-            packet.AddUInt16(combatObject.Type);
-            packet.AddByte(combatObject.Lvl);
-            packet.AddFloat((float)combatObject.Hp);
-            packet.AddFloat((float)combatObject.Stats.MaxHp);
-            packet.AddUInt16(combatObject.Count);
+            combatObject.AddPacketInfo(packet);            
         }
 
-        public static void AddLoginToPacket(Session session, Packet packet)
+        public static void AddLoginToPacket(Session session, IThemeManager themeManager, Packet packet)
         {
             // Tribal info
             packet.AddUInt32(session.Player.Tribesman == null ? 0 : session.Player.Tribesman.Tribe.Id);
             packet.AddUInt32(session.Player.TribeRequest);
             packet.AddByte((byte)(session.Player.Tribesman == null ? 0 : session.Player.Tribesman.Rank.Id));
             packet.AddString(session.Player.Tribesman == null ? string.Empty : session.Player.Tribesman.Tribe.Name);
-            if(session.Player.Tribesman != null)
+            if (session.Player.Tribesman != null)
             {
                 AddTribeRanksToPacket(session.Player.Tribesman.Tribe, packet);
             }
 
             //Cities
             IEnumerable<ICity> list = session.Player.GetCityList();
-            packet.AddByte((byte)session.Player.GetCityCount());
+            packet.AddInt32(session.Player.GetCityCount());
             foreach (var city in list)
             {
                 AddToPacket(city, packet);
+            }
+
+            // Themes purchased
+            packet.AddInt32(session.Player.ThemePurchases.Count);
+            foreach (var theme in session.Player.ThemePurchases)
+            {
+                packet.AddString(theme.ThemeId);
             }
         }
 
@@ -426,6 +431,7 @@ namespace Game.Comm
             packet.AddFloat((float)city.AlignmentPoint);
             packet.AddByte(city.Battle != null ? (byte)1 : (byte)0);
             packet.AddByte(city.HideNewUnits ? (byte)1 : (byte)0);
+            packet.AddString(city.DefaultTheme);
 
             //City Actions
             AddToPacket(new List<GameAction>(city.Worker.GetVisibleActions()), packet, true);
@@ -814,8 +820,7 @@ namespace Game.Comm
 
         public static void AddStrongholdProfileToPacket(Session session, IStronghold stronghold, Packet packet)
         {
-            if (stronghold.StrongholdState != StrongholdState.Occupied || !session.Player.IsInTribe ||
-                session.Player.Tribesman.Tribe.Id != stronghold.Tribe.Id)
+            if (!session.Player.IsInTribe || !stronghold.BelongsTo(session.Player.Tribesman.Tribe))
             {
                 packet.AddByte(0);
                 packet.AddUInt32(stronghold.PrimaryPosition.X);

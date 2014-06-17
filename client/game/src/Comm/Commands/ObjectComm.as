@@ -70,11 +70,13 @@
 			switch(ObjectFactory.getClassType(obj.type)) {
 				case ObjectFactory.TYPE_STRUCTURE:
 					obj.playerId = packet.readUInt();
-					obj.lvl = packet.readUByte();		
+					obj.lvl = packet.readUByte();
+                    obj.theme = packet.readString();
 					obj.labor = forRegion ? 0 : packet.readUShort();
-						
+
 					if (obj.id == 1) {
 						obj.wallRadius = packet.readUByte();
+                        obj.wallTheme = packet.readString();
 					}
 					break;
 				case ObjectFactory.TYPE_FOREST:
@@ -86,6 +88,7 @@
 					obj.lvl = packet.readUByte();
 					obj.tribeId = packet.readUInt();
                     obj.gateMax = packet.readInt();
+                    obj.themeId = packet.readString();
 					break;
 				case ObjectFactory.TYPE_BARBARIAN_TRIBE:
 					obj.lvl = packet.readUByte();
@@ -105,13 +108,13 @@
 			
 			switch(ObjectFactory.getClassType(obj.type)) {
 				case ObjectFactory.TYPE_STRUCTURE:
-					return StructureFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.size, obj.playerId, obj.groupId, obj.id, obj.lvl, obj.wallRadius);
+					return StructureFactory.getInstance(obj.theme, obj.type, obj.state, coord.x, coord.y, obj.size, obj.playerId, obj.groupId, obj.id, obj.lvl, obj.wallRadius, obj.wallTheme);
 				case ObjectFactory.TYPE_FOREST:
 					return ForestFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.size, obj.groupId, obj.id);
 				case ObjectFactory.TYPE_TROOP_OBJ:
 					return TroopFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.size, obj.playerId, obj.groupId, obj.id);
 				case ObjectFactory.TYPE_STRONGHOLD:
-					return StrongholdFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.size, obj.groupId, obj.id, obj.lvl, obj.tribeId, obj.gateMax);
+					return StrongholdFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.size, obj.groupId, obj.id, obj.lvl, obj.tribeId, obj.gateMax, obj.themeId);
 				case ObjectFactory.TYPE_BARBARIAN_TRIBE:
 					return BarbarianTribeFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.size, obj.groupId, obj.id, obj.lvl, obj.count);
 				default:
@@ -244,7 +247,6 @@
 			pass.push(id);
 
 			session.write(packet, onReceivePlayerUsername, pass);
-		
 		}
 
         public function getPlayerUsername(id: int, callback: Function, custom: * = null) : void
@@ -394,7 +396,7 @@
 			obj.type = packet.readUShort();
 			obj.level = packet.readUByte();
 
-			if (obj.playerId == Constants.playerId) {
+			if (obj.playerId == Constants.session.playerId) {
 				obj.labor = packet.readUShort();
 				obj.hp = packet.readUShort();
 
@@ -591,10 +593,19 @@
 			packet.writeUInt(objectId);
 			packet.writeUInt(id);
 
-			session.write(packet, mapComm.catchAllErrors, objectId);
+			session.write(packet, mapComm.catchAllErrors);
 		}
 
-	}
+        public function setStructureTheme(cityId: int, objectId: int, theme: String): void {
+            var packet: Packet = new Packet();
+            packet.cmd = Commands.STRUCTURE_SET_THEME;
+            packet.writeUInt(cityId);
+            packet.writeUInt(objectId);
+            packet.writeString(theme);
+
+            session.write(packet, mapComm.catchAllErrors);
+        }
+    }
 
 }
 

@@ -206,12 +206,12 @@
 			else if (gameObj is Stronghold) {
 				var strongholdObj: Stronghold = gameObj as Stronghold;
 				
-				if (!Constants.tribe.isInTribe()) {
+				if (!Constants.session.tribe.isInTribe()) {
 					Global.gameContainer.message.showMessage(StringHelper.localize("ATTACK_STRONGHOLD_NO_TRIBESMAN"));
 					return;
 				}
 				
-				if (Constants.tribe.isInTribe(strongholdObj.tribeId)) {
+				if (Constants.session.tribe.isInTribe(strongholdObj.tribeId)) {
 					Global.gameContainer.message.showMessage(StringHelper.localize("ATTACK_OWN_STRONGHOLD"));
 					return;
 				}

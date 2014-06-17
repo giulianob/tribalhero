@@ -183,7 +183,7 @@
 			obj.troop = new TroopStub();
 			obj.stubId = packet.readUShort();
 
-			if (obj.playerId == Constants.playerId) {
+			if (obj.playerId == Constants.session.playerId) {
 				obj.attackRadius = packet.readUByte();
 				obj.speed = packet.readFloat();				
 				obj.targetX = packet.readUInt();

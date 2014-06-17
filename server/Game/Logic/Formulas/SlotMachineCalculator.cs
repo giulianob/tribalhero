@@ -1,4 +1,5 @@
 ﻿using System;
+using Game.Util;
 
 namespace Game.Logic.Formulas
 {
@@ -12,19 +13,16 @@ namespace Game.Logic.Formulas
 
         private readonly double[] chance;
 
-        private readonly Random rand;
-
         protected SlotMachineCalculator()
         {            
         }
 
-        public SlotMachineCalculator(int[] minValue, int[] maxValue, double[] chance, int[] missValue, Random rand)
+        public SlotMachineCalculator(int[] minValue, int[] maxValue, double[] chance, int[] missValue)
         {
             this.minValue = minValue;
             this.maxValue = maxValue;
             this.missValue = missValue;
             this.chance = chance;
-            this.rand = rand;
 
             if (minValue.Length != maxValue.Length || maxValue.Length != chance.Length || maxValue.Length != missValue.Length)
             {
@@ -32,7 +30,7 @@ namespace Game.Logic.Formulas
             }
         }
 
-        public virtual int Roll(byte level)
+        public virtual int Roll(byte level, Random rand)
         {
             lock (rand)
             {

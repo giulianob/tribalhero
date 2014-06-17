@@ -30,7 +30,8 @@ package src.Map {
 		public var defensePoint: int = 0;
 		public var value: int = 0;
 		public var ap: Number = 0;
-		
+        public var defaultTheme: String;
+
 		public var hideNewUnits: Boolean;
 
 		public var inBattle: Boolean;
@@ -62,7 +63,8 @@ package src.Map {
                              value: int,
                              inBattle: Boolean,
                              hideNewUnits : Boolean,
-                             ap: Number) {
+                             ap: Number,
+                             defaultTheme: String) {
 			this.id = id;
 			this.resources = resources;
 			this.radius = radius;
@@ -74,8 +76,9 @@ package src.Map {
 			this.inBattle = inBattle;
 			this.hideNewUnits = hideNewUnits;
 			this.value = value;
+            this.defaultTheme = defaultTheme;
 
-			troops = new TroopManager(this);
+            troops = new TroopManager(this);
 
 			dispatchEvent(new Event(RESOURCES_UPDATE));
 		}

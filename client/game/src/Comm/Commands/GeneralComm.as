@@ -42,9 +42,22 @@
 				case Commands.SYSTEM_CHAT:
 					onChatSystemMessage(e.packet);
 					break;
-				
+                case Commands.PLAYER_COINS_UPDATE:
+                    onPlayerCoinsUpdate(e.packet);
+                    break;
+                case Commands.PLAYER_THEME_PURCHASED:
+                    onPlayerThemePurchased(e.packet);
+                    break;
 			}
-		}				
+		}
+
+        private function onPlayerThemePurchased(packet: Packet): void {
+            Constants.session.addThemePurchased(packet.readString());
+        }
+
+        private function onPlayerCoinsUpdate(packet: Packet): void {
+            Constants.session.coins = packet.readInt();
+        }
 		
 		private function onMessageBox(packet: Packet): void
 		{
@@ -53,18 +66,18 @@
 		
 		private function onChatMessage(packet: Packet): void
 		{
-			var type: int = packet.readUByte();
+			var channelType: int = packet.readUByte();
 			var achievements: * = {
 				gold: packet.readUByte(),
 				silver: packet.readUByte(),
 				bronze: packet.readUByte()
 			};
-            var distinguish: Boolean = packet.readUByte() == 1 ? true : false;
+            var distinguish: Boolean = packet.readUByte() == 1;
 			var playerId: int = packet.readUInt();
 			var playerName: String = packet.readString();
 			var message: String = packet.readString();		
 			
-			Global.gameContainer.cmdLine.logChat(type, playerId, playerName, achievements, distinguish, message);					
+			Global.gameContainer.cmdLine.logChat(channelType, playerId, playerName, achievements, distinguish, message);
 		}
 		
 		private function onChatSystemMessage(packet: Packet): void
@@ -107,27 +120,28 @@
 		public function onLogin(packet: Packet): Boolean
 		{
             Constants.motd = packet.readString();
-			Constants.playerId = packet.readUInt();
-			Constants.playerHash = packet.readString();
-			Constants.tutorialStep = packet.readUInt();
-			Constants.soundMuted = packet.readBoolean();
-			Constants.admin = packet.readBoolean();
-			Constants.sessionId = packet.readString();			
-			Constants.playerName = packet.readString();			
-			Constants.newbieProtectionSeconds = packet.readInt();
-			Constants.signupTime = new Date(packet.readUInt() * 1000);
-			Constants.tribeIncoming = packet.readInt();
-			Constants.tribeAssignment = packet.readShort();
+			Constants.session.playerId = packet.readUInt();
+			Constants.session.playerHash = packet.readString();
+			Constants.session.tutorialStep = packet.readUInt();
+			Constants.session.soundMuted = packet.readBoolean();
+			Constants.session.admin = packet.readBoolean();
+			Constants.session.sessionId = packet.readString();
+			Constants.session.playerName = packet.readString();
+			Constants.session.newbieProtectionSeconds = packet.readInt();
+            Constants.session.coins = packet.readInt();
+			Constants.session.signupTime = new Date(packet.readUInt() * 1000);
+			Constants.session.tribeIncoming = packet.readInt();
+			Constants.session.tribeAssignment = packet.readShort();
 
-			var now: Date = new Date();
 			var serverTime: int = packet.readUInt();
-			Constants.secondsPerUnit = Number(packet.readString());
+
+            Constants.secondsPerUnit = Number(packet.readString());
 
 			Util.log("Seconds per unit is " + Constants.secondsPerUnit);
 			Util.log("Server Time is " + new Date(serverTime * 1000));
-			var timeDelta: int = serverTime - int(now.time / 1000);
+			var timeDelta: int = serverTime - int(new Date().time / 1000);
 			Util.log("Delta is " + timeDelta);
-			Constants.timeDelta = timeDelta;			
+			Constants.session.timeDelta = timeDelta;
 
 			// return whether it's a new player or not, which if it is we show the new city panel
 			return packet.readByte() == 1;
@@ -136,22 +150,30 @@
 		public function readLoginInfo(packet: Packet): void
 		{
 			// Tribe info
-			Constants.tribe.id = packet.readUInt();
-			Constants.tribeInviteId = packet.readUInt();
-			Constants.tribe.rank = packet.readUByte();
-			Global.gameContainer.tribeNotificationIcon.visible = Constants.tribeInviteId > 0;			
+			Constants.session.tribe.id = packet.readUInt();
+			Constants.session.tribeInviteId = packet.readUInt();
+			Constants.session.tribe.rank = packet.readUByte();
+			Global.gameContainer.tribeNotificationIcon.visible = Constants.session.tribeInviteId > 0;
 			
 			var tribeName: String = packet.readString();
-			if (Constants.tribe.isInTribe()) {
-				Global.map.usernames.tribes.add(new Username(Constants.tribe.id, tribeName));
+			if (Constants.session.tribe.isInTribe()) {
+				Global.map.usernames.tribes.add(new Username(Constants.session.tribe.id, tribeName));
 
 				TribeComm.readTribeRanks(packet);
 			}
 				
 			// Cities
-			var cityCnt: int = packet.readUByte();
-			for (var i: int = 0; i < cityCnt; i++)			
-				readCity(packet);			
+			var cityCnt: int = packet.readInt();
+			for (var i: int = 0; i < cityCnt; i++) {
+				readCity(packet);
+            }
+
+            // Themes purchased
+            Constants.session.themesPurchased = [Theme.DEFAULT_THEME_ID];
+            var themesPurchasedCnt: int = packet.readInt();
+            for (i = 0; i < themesPurchasedCnt; i++) {
+                Constants.session.themesPurchased.push(packet.readString());
+            }
 		}
 		
 		public function readCity(packet: Packet) : City {
@@ -167,19 +189,15 @@
 			);
 
 			var radius: int = packet.readUByte();
-
 			var attackPoint: int = packet.readInt();
 			var defensePoint: int = packet.readInt();
-			
 			var cityValue: int = packet.readUShort();
-			
 			var ap: Number = packet.readFloat();
-
 			var inBattle: Boolean = packet.readByte() == 1;
-			
 			var hideNewUnits: Boolean = packet.readByte() == 1;
+            var defaultTheme: String = packet.readString();
 
-			var city: City = new City(id, name, position, radius, resources, attackPoint, defensePoint, cityValue, inBattle, hideNewUnits, ap);
+			var city: City = new City(id, name, position, radius, resources, attackPoint, defensePoint, cityValue, inBattle, hideNewUnits, ap, defaultTheme);
 
 			// Add the name of this city to the list of city names
 			Global.map.usernames.cities.add(new Username(id, name));
@@ -272,26 +290,26 @@
 			session.write(packet, onReceiveCommandResponse, [callback, 0]);
 		}
 		
-		public function sendChat(type: int, message: String, callback: Function) : void {			
+		public function sendChat(channelType: int, message: String, callback: Function) : void {
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.CHAT;
-			packet.writeByte(type);
+			packet.writeByte(channelType);
 			packet.writeString(message);
 
-			session.write(packet, onReceiveCommandResponse, [callback, type]);
+			session.write(packet, onReceiveCommandResponse, [callback, channelType]);
 		}		
 
 		private function onReceiveCommandResponse(packet: Packet, custom: *) : void {
 			var callback: Function = custom[0];
-			var type: int = custom[1];
+			var channelType: int = custom[1];
 
 			if ((packet.option & Packet.OPTIONS_FAILED) == Packet.OPTIONS_FAILED) {
-				callback(GameError.getMessage(packet.readUInt()), type);
+				callback(GameError.getMessage(packet.readUInt()), channelType);
 				return;
 			}
 
 			if (packet.hasData()) {
-				callback(packet.readString(), type);
+				callback(packet.readString(), channelType);
 			}
 		}
 		
@@ -349,16 +367,16 @@
 			autocompleteLoader.load("/players/autocomplete", [ { key: "name", value: name }], true, false);
 		}				
 		
-		public function viewProfileByType(type:String, id:int, callback:Function = null):void
+		public function viewProfileByType(profileType:String, id:int, callback:Function = null):void
 		{
 			var packet:Packet = new Packet();
 			packet.cmd = Commands.PROFILE_BY_TYPE;
-			packet.writeString(type);
+			packet.writeString(profileType);
 			packet.writeUInt(id);
 			
 			mapComm.showLoading();
 			
-			switch (type.toLowerCase()) {
+			switch (profileType.toLowerCase()) {
 				case 'city':
 					session.write(packet, mapComm.City.onReceivePlayerProfile, { callback: callback } );
 					break;

@@ -1,40 +1,35 @@
 ﻿package src.Objects.Effects {
-import System.Linq.Enumerable;
-import System.Linq.Enumerable;
-import System.Linq.Enumerable;
-import System.Linq.Option.Option;
-import System.Linq.Option.Option;
+    import System.Linq.Enumerable;
+    import System.Linq.Option.Option;
 
-import src.Global;
+    import src.Global;
     import src.Map.City;
     import src.Map.CityObject;
     import src.Objects.Factories.*;
     import src.Objects.GameObject;
     import src.Objects.Prototypes.*;
-import src.Objects.Prototypes.EffectPrototype;
-import src.Objects.StructureObject;
-import src.Objects.TechnologyStats;
-import src.Objects.TechnologyStats;
+    import src.Objects.StructureObject;
+    import src.Objects.TechnologyStats;
     import src.Util.StringHelper;
     import src.Util.Util;
 
     public class RequirementFormula {
 
-		private static var methodLookup: Array = new Array(
-		{name: "Message", method: custom, message: customMsg},
-		{name: "CanBuild", method: canBuild, message: canBuildMsg},
-		{name: "HaveTechnology", method: haveTechnology, message: haveTechnologyMsg },
-		{name: "HaveStructure", method: haveStructure, message: haveStructureMsg },
-		{name: "HaveNoStructure", method: haveNoStructure, message: haveNoStructureMsg },
-		{name: "CountLessThan", method: countLessThan, message: countLessThanMsg },
-		{name: "DefensePoint", method: defensePoint, message: defensePointMsg },
-		{name: "PlayerDefensePoint", method: playerDefensePoint, message: playerDefensePointMsg },
-		{name: "AttackPoint", method: attackPoint, message: attackPointMsg },
-		{name: "PlayerAttackPoint", method: playerAttackPoint, message: playerAttackPointMsg },
-		{name: "HaveUnit", method: haveUnit, message: haveUnitMsg },
-        {name: "DistributedPointSystem", method: pointSystemTechnology, message: pointSystemTechnologyMsg },
-        {name: "LessThanStructureCount", method: lessThanStructureCount }
-		);
+		private static var methodLookup: Array = [
+            {name: "Message", method: custom, message: customMsg},
+            {name: "CanBuild", method: canBuild, message: canBuildMsg},
+            {name: "HaveTechnology", method: haveTechnology, message: haveTechnologyMsg },
+            {name: "HaveStructure", method: haveStructure, message: haveStructureMsg },
+            {name: "HaveNoStructure", method: haveNoStructure, message: haveNoStructureMsg },
+            {name: "CountLessThan", method: countLessThan, message: countLessThanMsg },
+            {name: "DefensePoint", method: defensePoint, message: defensePointMsg },
+            {name: "PlayerDefensePoint", method: playerDefensePoint, message: playerDefensePointMsg },
+            {name: "AttackPoint", method: attackPoint, message: attackPointMsg },
+            {name: "PlayerAttackPoint", method: playerAttackPoint, message: playerAttackPointMsg },
+            {name: "HaveUnit", method: haveUnit, message: haveUnitMsg },
+            {name: "DistributedPointSystem", method: pointSystemTechnology, message: pointSystemTechnologyMsg },
+            {name: "LessThanStructureCount", method: lessThanStructureCount }
+        ];
 
 		private static var methodsSorted: Boolean = false;
 

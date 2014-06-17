@@ -1,9 +1,10 @@
 ﻿package src.Objects.Factories {
 
+    import System.Linq.Enumerable;
+
     import flash.display.*;
 
     import src.Assets;
-    import src.Constants;
     import src.Global;
     import src.Map.*;
     import src.Objects.*;
@@ -79,6 +80,13 @@
 			structurePrototypes.sort();
 		}
 
+        public static function getAllStructureTypes(): Array
+        {
+            return Enumerable.from(structurePrototypes.toArray()).where(function(strPrototype: StructurePrototype): Boolean {
+                return strPrototype.level == 1
+            }).toArray();
+        }
+
 		public static function getPrototype(type: int, level: int): StructurePrototype
 		{
 			var structPrototype: StructurePrototype = structurePrototypes.get([type, level]);
@@ -88,42 +96,32 @@
 			return structPrototype;
 		}
 
-        public static function getSpriteName(type: int, level: int): String {
+        public static function getSpriteName(theme: String, type: int, level: int): String {
             var strPrototype: StructurePrototype = getPrototype(type, level);
-            var typeName: String;
 
             if (strPrototype == null)
             {
-                Util.log("Missing obj prototype. type: " + type.toString() + " lvl: " + level.toString() + " Loading generic simple object");
-                typeName = "DEFAULT_STRUCTURE_SIMPLE";
+                throw new Error("Missing obj prototype. type: " + type.toString() + " lvl: " + level.toString() + " Loading generic simple object");
             }
-            else
+
+            var worker: Worker = WorkerFactory.getPrototype(strPrototype.workerid);
+
+            if (worker == null)
             {
-                var worker: Worker = WorkerFactory.getPrototype(strPrototype.workerid);
-
-                if (worker == null)
-                {
-                    typeName = "DEFAULT_STRUCTURE_SIMPLE";
-                }
-                else
-                {
-                    typeName = strPrototype.spriteClass;
-                }
+                throw new Error("Missing structure worker " + strPrototype.workerid);
             }
 
-            return typeName;
+            return strPrototype.getSpriteName(theme);
         }
 
-		public static function getSprite(type: int, level: int, withPosition: String = "", withShadow: Boolean = false): DisplayObjectContainer
+		public static function getSprite(theme: String, type: int, level: int, withPosition: String = ""): DisplayObjectContainer
 		{
 			var sprite: Sprite = new Sprite();
-            var typeName: String = getSpriteName(type, level);
+            var typeName: String = getSpriteName(theme, type, level);
 
-            if (withShadow && Assets.doesSpriteExist(typeName + "_SHADOW")) {
-                var shadow: Bitmap = Assets.getInstance(typeName + "_SHADOW", withPosition);
-                shadow.alpha = Constants.shadowAlpha;
-                shadow.name = "shadow";
-                sprite.addChild(shadow);
+            // Fall back to default theme if current theme does not have gfx
+            if (theme != Theme.DEFAULT_THEME_ID && !Assets.doesSpriteExist(typeName)) {
+                typeName = getSpriteName("DEFAULT", type, level);
             }
 
             var mainImage: DisplayObject = Assets.getInstance(typeName, withPosition);
@@ -132,23 +130,23 @@
 			return sprite;
 		}
 
-		public static function getSimpleObject(type: int, level:int, x: int, y: int, size: int): SimpleObject
+		public static function getSimpleObject(theme: String, type: int, level:int, x: int, y: int, size: int): SimpleObject
 		{
-			var sprite: DisplayObjectContainer = getSprite(type, level, "map") as DisplayObjectContainer;
+			var sprite: DisplayObjectContainer = getSprite(theme, type, level, "map") as DisplayObjectContainer;
 			var simpleObject: SimpleObject = new SimpleObject(x, y, size);
 			
 			if (sprite != null) {
-				simpleObject.setSprite(sprite, Assets.getPosition(getSpriteName(type, level), "map"));
+				simpleObject.setSprite(sprite, Assets.getPosition(getSpriteName(theme, type, level), "map"));
 			}
 
 			return simpleObject;
 		}
 
-		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, size: int, playerId: int, cityId: int, objectId: int, level: int, wallRadius: int): StructureObject
+		public static function getInstance(theme: String, type: int, state: GameObjectState, objX: int, objY: int, size: int, playerId: int, cityId: int, objectId: int, level: int, wallRadius: int, wallTheme: String): StructureObject
 		{
-			var structureObj: StructureObject = new StructureObject(type, state, objX, objY, size, playerId, cityId, objectId, level, wallRadius);
+			var structureObj: StructureObject = new StructureObject(theme, type, state, objX, objY, size, playerId, cityId, objectId, level, wallRadius, wallTheme);
 
-			structureObj.setSprite(getSprite(type, level, "map", true), Assets.getPosition(getSpriteName(type, level), "map"));
+			structureObj.setSprite(getSprite(theme, type, level, "map"), Assets.getPosition(getSpriteName(theme, type, level), "map"));
 			
 			structureObj.setOnSelect(Global.map.selectObject);
 

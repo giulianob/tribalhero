@@ -9,10 +9,6 @@ package
     import src.*;
     import src.Util.Util;
 
-    /**
-	 * ...
-	 * @author Giuliano Barberi
-	 */
 	public class UncaughtExceptionHandler
 	{
 		public function UncaughtExceptionHandler(loaderInfo: LoaderInfo)
@@ -48,15 +44,15 @@ package
 			Util.log(error.getStackTrace());
 			
 			// Only send error if we are in web mode
-			if (Constants.loginKey == "") return;
+			if (Constants.session.loginKey == "") return;
 			
 			var url:String = Constants.mainWebsite + "stacktraces/game_submit";
 			var request:URLRequest = new URLRequest(url);
 			var requestVars:URLVariables = new URLVariables();
 			
 			requestVars.stacktrace = error.message + "\n" + getStacktrace();
-			requestVars.playerId = Constants.playerId;
-			requestVars.playerName = Constants.playerName;
+			requestVars.playerId = Constants.session.playerId;
+			requestVars.playerName = Constants.session.playerName;
 			requestVars.flashVersion = Capabilities.version;
 			requestVars.gameVersion = Constants.version.toString() + "." + Constants.revision.toString();
 			

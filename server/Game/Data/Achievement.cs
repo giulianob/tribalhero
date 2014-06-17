@@ -3,6 +3,8 @@
     public class Achievement
     {
         public int Id { get; set; }
+        
+        public uint PlayerId { get; set; }
 
         public string Type { get; set; }
 

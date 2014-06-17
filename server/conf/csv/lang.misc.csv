@@ -17,6 +17,8 @@ TIME_LEFT_LABEL,Time Left
 STR_TROOPS,Troops
 STR_REPORTS,Reports
 STR_ONGOING_ATTACKS,Attacks
+STR_WALL_SET,Wall Set
+STR_STRONGHOLD,Stronghold
 STR_STRONGHOLDS,Strongholds
 STR_STRONGHOLDS_UNDER_COMMAND,Strongholds In Command
 STR_NAME,Name
@@ -317,3 +319,69 @@ TMP_BASEMENT_SIDEBAR_HIDDEN_IRON,Hidden Iron
 TMP_BASEMENT_SIDEBAR_HIDDEN_GOLD,Hidden Gold
 ,
 ACTION_BUILD_ROAD,"All structures, except farms, lumbermills, towers and basements must be connected to a road.  Plan your roads carefully. You'll want an efficient design which will allow for as many buildings as possible."
+OBJECT_INFO_SIDEBAR_PLAYER_LABEL,Player
+OBJECT_INFO_SIDEBAR_BUY_MORE_THEMES,View more themes in the store
+OBJECT_INFO_SIDEBAR_CITY_LABEL,City
+OBJECT_INFO_SIDEBAR_LEVEL_PLAYER,Level
+OBJECT_INFO_SIDEBAR_HP_LABEL,HP
+OBJECT_INFO_SIDEBAR_THEME_LABEL,Theme
+OBJECT_INFO_SIDEBAR_LABORERS_LABEL,Laborers
+OBJECT_INFO_SIDEBAR_THEME_DROPDOWN_TITLE,Pick a theme
+,
+STRUCTURE_PROPERTY_RATE,Rate
+STRUCTURE_PROPERTY_CROP,Crop
+STRUCTURE_PROPERTY_LABOR,Laborers
+STRUCTURE_PROPERTY_POINTS_USED,Points Used
+STRUCTURE_PROPERTY_POINTS_AVAILABLE,Points Available
+,
+ACHIEVEMENT_PURCHASED_MESSAGE,Thank you for your support. Your name will now feature your new achievement in chat and in your profile. You may purchase additional  achievements as well.
+,
+THEME_PURCHASED_MESSAGE,You may start using your new theme in two different ways. In the Items Owned section of the store you can apply the theme to all of your existing structures and set it as your default theme for new structures. You can also click on individual structures and apply your new theme there.
+,
+DEFAULT_THEME_NAME,Tribal Hero
+DEFAULT_THEME_DESCRIPTION,The original Tribal Hero theme.
+,
+PIRATES_THEME_NAME,Shipwrecked Pirates
+PIRATES_THEME_DESCRIPTION,"At the edge of the world, where land meets ocean, a group of bandits have joined together to strike terror into the heart of the world. No longer bound by water, Shipwrecked Pirates have appeared to conquer the lands of Tribal Hero with buildings inspired by sailing the high seas."
+,
+STORE_DIALOG_TITLE,Store
+STORE_DIALOG_PURCHASED_ITEMS,Items Owned
+STORE_DIALOG_CURRENT_BALANCE,Current Balance:
+,
+STORE_VIEW_THEME_DIALOG_PREVIEW_TAB,Preview
+STORE_VIEW_THEME_DIALOG_DETAIL_TAB,Included Items
+STORE_VIEW_THEME_DIALOG_STRONGHOLD_INCLUDED,Stronghold Included!
+STORE_VIEW_THEME_DIALOG_WALL_INCLUDED,Wall Set Included!
+STORE_VIEW_THEME_DIALOG_STRONGHOLD_AND_WALL_INCLUDED,Stronghold and Wall Set Included!
+STORE_VIEW_THEME_DIALOG_BUY,Buy for {0}
+STORE_VIEW_THEME_APPLY_ALL,Change all existing structures to this theme
+STORE_VIEW_THEME_APPLY_WALL,Change wall to this theme
+STORE_VIEW_THEME_CHOOSE_CITY_HEADER_LABEL,Choose a city:
+STORE_VIEW_THEME_SET_DEFAULT,Make all new structures use this theme
+STORE_VIEW_THEME_SET_INSTRUCTIONS,Note: You can also change the theme for individual structures by selecting a structure on the map and choosing a different theme in the structure sidebar.
+,
+STORE_BUY_COINS_DIALOG_TITLE,Purchase Coins
+STORE_BUY_COINS_DIALOG_DESCRIPTION,You must refill your account with coins before you can complete this purchase. All prices are in U.S. Dollars (USD$)
+STORE_BUY_COINS_DIALOG_BALANCE,Current balance
+STORE_BUY_COINS_DIALOG_PURCHASE_COST,Purchase cost
+STORE_BUY_COINS_DIALOG_NEEDED,Needed to complete purchase
+STORE_BUY_COINS_DIALOG_REFILL_PRICE,Refill ${0}
+STORE_BUY_COINS_DIALOG_REFILL_DISCOUNT,Save {0}%
+,
+STORE_CONFIRM_DIALOG_CONFIRM,Confirm
+STORE_CONFIRM_DIALOG_CURRENT_BALANCE,Current balance
+STORE_CONFIRM_DIALOG_ITEM_COST,{0} cost
+STORE_CONFIRM_DIALOG_REMAINING_BALANCE,Balance after purchase
+STORE_CONFIRM_DIALOG_DESCRIPTION,Please confirm your purchase:
+,
+STORE_VIEW_ACHIEVEMENT_DIALOG_MULTIPLE_PURCHASES,This item can be purchased multiple times.
+STORE_VIEW_ACHIEVEMENT_DIALOG_BUY,Buy for {0}
+,
+STORE_BUY_ITEM_CONFIRMATION_TITLE,Purchase Complete
+,
+BRONZE_ACHIEVEMENT_NAME,Bronze Achievement
+BRONZE_ACHIEVEMENT_DESCRIPTION,Show your support by purchasing a bronze achievement. It will make your name look great in chat and your profile will sport a new badge. Every 3 achievements of the same tier will show as a diamond next to your name in chat, up to 3 diamonds.
+SILVER_ACHIEVEMENT_NAME,Silver Achievement
+SILVER_ACHIEVEMENT_DESCRIPTION,Show your support by purchasing a silver achievement. It will make your name look great in chat and your profile will sport a new badge. Every 3 achievements of the same tier will show as a diamond next to your name in chat, up to 3 diamonds.
+GOLD_ACHIEVEMENT_NAME,Gold Achievement
+GOLD_ACHIEVEMENT_DESCRIPTION,Show your support by purchasing a gold achievement. It will make your name look great in chat and your profile will sport a new badge. Every 3 achievements of the same tier will show as a diamond next to your name in chat, up to 3 diamonds.

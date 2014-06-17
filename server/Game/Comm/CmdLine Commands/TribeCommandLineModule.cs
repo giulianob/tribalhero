@@ -18,7 +18,7 @@ using Persistance;
 
 namespace Game.Comm
 {
-    class TribeCommandLineModule : CommandLineModule
+    class TribeCommandLineModule : ICommandLineModule
     {
         private readonly IDbManager dbManager;
 
@@ -43,7 +43,7 @@ namespace Game.Comm
             this.strongholdManager = strongholdManager;         
         }
 
-        public override void RegisterCommands(CommandLineProcessor processor)
+        public void RegisterCommands(CommandLineProcessor processor)
         {
             processor.RegisterCommand("TribeInfo", Info, PlayerRights.Admin);
             processor.RegisterCommand("TribeCreate", Create, PlayerRights.Admin);
@@ -271,16 +271,15 @@ namespace Game.Comm
             }
 
             CallbackLock.CallbackLockHandler lockHandler = delegate
-                {
-                    var locks =
-                            strongholdManager.StrongholdsForTribe(tribe)
-                                             .SelectMany(stronghold => stronghold.LockList)
+            {
+                var locks = strongholdManager.StrongholdsForTribe(tribe)
+                                             .SelectMany(stronghold => stronghold.LockList())
                                              .ToList();
 
-                    locks.AddRange(tribe.Tribesmen);
+                locks.AddRange(tribe.Tribesmen);
 
-                    return locks.ToArray();
-                };
+                return locks.ToArray();
+            };
 
             locker.Lock(lockHandler, new object[] {}, tribe).Do(() =>
             {

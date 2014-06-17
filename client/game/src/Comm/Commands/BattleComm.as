@@ -193,7 +193,7 @@
 		private function readCombatObject(packet: Packet): CombatObject {
 			var combatObjId: int = packet.readUInt();
 			var classType: int = packet.readUByte();
-			var type: int = packet.readUShort();
+			var objType: int = packet.readUShort();
 			var level: int = packet.readUByte();
 			var hp: Number = packet.readFloat();
 			var maxHp: Number = packet.readFloat();
@@ -201,10 +201,10 @@
 			
 			var combatObj: CombatObject;
 			if (classType == BattleManager.UNIT) {
-				combatObj = new CombatUnit(combatObjId, type, level, hp, maxHp, count);
+				combatObj = new CombatUnit(combatObjId, objType, level, hp, maxHp, count);
 			}
 			else if (classType == BattleManager.STRUCTURE) {
-				combatObj = new CombatStructure(combatObjId, type, level, hp, maxHp, count);
+				combatObj = new CombatStructure(combatObjId, packet.readString(), objType, level, hp, maxHp, count);
 			}
 			else {
 				throw new Error("Unknown class type " + classType);

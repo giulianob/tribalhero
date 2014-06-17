@@ -30,6 +30,7 @@ namespace Game.Setup
         public static bool server_admin_always;
         public static int scheduler_threads = 25;
         public static bool server_production = true;
+        public static bool xdebug_enabled = false;
         public static string flash_domain = "tribalhero.com";
         public static string api_domain = "tribalhero.com";
         public static string api_id = string.Empty;
@@ -59,7 +60,7 @@ namespace Game.Setup
 
         #region Database Settings
 
-        public static string database_schema_version = "20140427161120";
+        public static string database_schema_version = "20140502010026";
         public static bool database_verbose;
         public static bool database_empty;
         public static bool database_load_players = true;
@@ -73,8 +74,15 @@ namespace Game.Setup
 
         #endregion
 
+        #region Queue Settings
+
+        public static string queue_username = "guest";
+        public static string queue_password = "guest";
+
+        #endregion
+
         #region Chat Settings
- 
+
         public static string welcome_motd = string.Empty;
         public static PlayerRights chat_min_level = PlayerRights.Basic;
 

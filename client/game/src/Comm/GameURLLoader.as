@@ -36,7 +36,7 @@
 		}
 
 		public function load(path: String, params: Array, includeLoginInfo: Boolean = true, showLoadingMessage: Boolean = true) : void {			
-			var request: URLRequest = new URLRequest("http://" + Constants.hostname + path);			
+			var request: URLRequest = new URLRequest("http://" + Constants.session.hostname + path);
 			var variables :URLVariables = new URLVariables();
 			
 			request.data = variables;
@@ -53,8 +53,8 @@
             }
 
 			if (includeLoginInfo) {
-                variables.sessionId = Constants.sessionId;
-                variables.playerId = Constants.playerId;
+                variables.sessionId = Constants.session.sessionId;
+                variables.playerId = Constants.session.playerId;
 			}
 			
 			request.method = URLRequestMethod.POST;
@@ -67,19 +67,27 @@
 				loader.load(request);
 			}
 			catch (e: Error) {
+                closeLoadingPanel();
+
                 Util.log("URLLoader error");
                 Util.log(e.message);
+                Util.log(request.url);
+                Util.log(request.data.toString());
                 
 				loader.dispatchEvent(new Event(Event.COMPLETE));
 			}
 		}
 		
 		private function onComplete(e: Event = null): void {
-			if (pnlLoading) {
-				pnlLoading.getFrame().dispose();				
-				pnlLoading = null;
-			}
-		}
+            closeLoadingPanel();
+        }
+
+        private function closeLoadingPanel(): void {
+            if (pnlLoading) {
+                pnlLoading.getFrame().dispose();
+                pnlLoading = null;
+            }
+        }
 		
 		public function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void{
 			loader.addEventListener(type, listener, useCapture, priority);

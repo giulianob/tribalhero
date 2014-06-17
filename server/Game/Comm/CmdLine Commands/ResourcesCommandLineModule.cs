@@ -16,7 +16,7 @@ using System.Linq;
 
 namespace Game.Comm
 {
-    public class ResourcesCommandLineModule : CommandLineModule
+    public class ResourcesCommandLineModule : ICommandLineModule
     {
         private readonly IWorld world;
         private readonly UnitFactory unitFactory;
@@ -44,7 +44,7 @@ namespace Game.Comm
             this.world = world;
         }
 
-        public override void RegisterCommands(CommandLineProcessor processor)
+        public void RegisterCommands(CommandLineProcessor processor)
         {
             processor.RegisterCommand("sendresources", SendResources, PlayerRights.Admin);
             processor.RegisterCommand("trainunits", TrainUnits, PlayerRights.Admin);

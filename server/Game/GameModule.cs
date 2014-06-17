@@ -7,12 +7,13 @@ using Game.Battle.CombatObjects;
 using Game.Battle.Reporting;
 using Game.Comm;
 using Game.Comm.Channel;
-using Game.Comm.CmdLine_Commands;
 using Game.Comm.ProcessorCommands;
+using Game.Comm.QueueCommands;
 using Game.Comm.Thrift;
 using Game.Data;
 using Game.Data.BarbarianTribe;
 using Game.Data.Forest;
+using Game.Data.Store;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Logic;
@@ -56,6 +57,11 @@ namespace Game
             container.Register<IRoadManager, RoadManager>(Lifestyle.Singleton);
             container.Register<IRoadPathFinder, RoadPathFinder>();
 
+            container.Register<IThemeManager, ThemeManager>(Lifestyle.Singleton);
+            container.Register<IStoreManager, StoreManager>(Lifestyle.Singleton);
+
+            container.Register<StoreSync>(Lifestyle.Singleton);
+
             #endregion
 
             #region General Comms
@@ -73,6 +79,18 @@ namespace Game
 
             container.Register<Chat>(Lifestyle.Singleton);
             container.Register<ICityTriggerManager, CityTriggerManager>(Lifestyle.Singleton);
+
+            container.Register<IQueueListener, QueueListener>(Lifestyle.Singleton);
+            container.Register<IQueueCommandProcessor>(() => new QueueCommandProcessor(container.GetInstance<PlayerQueueCommandsModule>()), Lifestyle.Singleton);
+
+            if (Config.database_load_players)
+            {
+                container.Register<ILoginHandler, MainSiteLoginHandler>(Lifestyle.Singleton);
+            }
+            else
+            {
+                container.Register<ILoginHandler, DummyLoginHandler>(Lifestyle.Singleton);
+            }
 
             #endregion
             
@@ -177,7 +195,8 @@ namespace Game
                                                                container.GetInstance<TribesmanCommandsModule>(),
                                                                container.GetInstance<StrongholdCommandsModule>(),
                                                                container.GetInstance<ProfileCommandsModule>(),
-                                                               container.GetInstance<TroopCommandsModule>()),
+                                                               container.GetInstance<TroopCommandsModule>(),
+                                                               container.GetInstance<StoreCommandsModule>()),
                                            Lifestyle.Singleton);
 
             #endregion
@@ -268,8 +287,6 @@ namespace Game
                 }
 
                 container.Register(factoryInterfaceType, implementingTypes.First(), Lifestyle.Singleton);
-
-                // Console.Out.WriteLine("Registering {0} to {1}", factoryInterfaceType.Name, implementingTypes.First().Name);
             }                
         }
     }

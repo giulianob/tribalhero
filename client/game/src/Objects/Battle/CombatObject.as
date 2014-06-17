@@ -14,7 +14,7 @@
 		public function CombatObject(combatObjectId: int, type: int, level: int, hp: Number, maxHp: Number, count: int)
 		{
 			this.combatObjectId = combatObjectId;
-			this.type = type;
+            this.type = type;
 			this.level = level;
 			this.hp = hp;
 			this.maxHp = maxHp;
@@ -26,7 +26,7 @@
 		}
 		
 		public function getIcon(): DisplayObjectContainer {
-			return ObjectFactory.getSpriteEx(type, level);
+			throw new Error("Unimplemented method in inheritor");
 		}		
 		
 		public static function sortOnId(a:CombatObject, b:CombatObject):Number 

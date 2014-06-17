@@ -1,5 +1,8 @@
 ﻿package src.Comm 
 {
+    import com.codecatalyst.promise.Deferred;
+    import com.codecatalyst.promise.Promise;
+
     import flash.events.*;
     import flash.net.Socket;
     import flash.utils.ByteArray;
@@ -26,7 +29,6 @@
 		private var onConnectCallback: Function;
 		private var onDisconnectCallback: Function;
 		private var onLoginCallback: Function;
-		private var onReceiveCallback: Function;
 		private var onSecurityErrorCallback: Function;
 		
 		public function TcpSession() 
@@ -56,12 +58,7 @@
 		public function setLoginSuccess(bool: Boolean): void {
 			loginSuccess = bool;
 		}
-		
-		public function setReceive(callback: Function): void
-		{
-			onReceiveCallback = callback;
-		}
-		
+
 		public function setConnect(callback: Function): void
 		{
 			onConnectCallback = callback;
@@ -105,7 +102,7 @@
 		
 		public function connect(hostname: String):void
 		{			
-			socket.connect(hostname, Constants.serverPort);
+			socket.connect(hostname, Constants.session.serverPort);
 		}
 		
 		public function logout():void 
@@ -113,14 +110,14 @@
 			socket.close();
 		}
 		
-		public function write(packet:Packet, callback: Function = null, custom: * = null):Boolean 
+		public function write(packet:Packet, callback: Function = null, custom: * = null):Promise
 		{			
 			packet.seq = seq++;
-			
-			if (callback != null) {				
-				pending.push(new PendingPacket(packet.seq,callback,custom));
-			}
-			
+
+            var deferred: Deferred = new Deferred();
+
+            pending.push(new PendingPacket(packet.seq, callback, custom, deferred));
+
 			var bytes:ByteArray = packet.getBytes();
 			
 			if (Constants.debug >= 3)
@@ -129,7 +126,8 @@
 			socket.writeBytes(bytes,0,bytes.length);
 			
 			socket.flush();
-			return true;
+
+            return deferred.promise;
 		}
 		
 		private function connectHandler(event:Event):void 
@@ -231,14 +229,17 @@
 					{						
 						for (var i: int = 0; i < pending.length; ++i) 
 						{				
-							if ( pending[i].seq == incomingPacket.seq ) 
+							if (pending[i].seq == incomingPacket.seq)
 							{
 								var pendingPacket: PendingPacket = pending[i];
 								pending.splice(i, 1);
-								if (pendingPacket.callback != null)												
+								if (pendingPacket.callback != null)
+                                {
 									pendingPacket.callback(incomingPacket, pendingPacket.custom);
-								else if (onReceiveCallback != null)
-									onReceiveCallback(incomingPacket);
+                                }
+
+                                pendingPacket.resolve(incomingPacket);
+
 								break;
 							}
 						}

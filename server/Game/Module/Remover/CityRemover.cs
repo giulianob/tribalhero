@@ -80,7 +80,7 @@ namespace Game.Module.Remover
                 city.EndUpdate();
             }
 
-            Time = DateTime.UtcNow;
+            Time = SystemClock.Now;
             scheduler.Put(this);
             return true;
         }

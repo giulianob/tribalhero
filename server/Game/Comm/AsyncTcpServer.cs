@@ -74,7 +74,7 @@ namespace Game.Comm
             listener = new Socket(localAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             listener.Bind(new IPEndPoint(localAddr, port));
 
-            listeningTask = ListenerHandler().CatchUnhandledException();
+            listeningTask = ListenerHandler().CatchUnhandledException("ListenerHandler");
             
             return true;
         }
@@ -230,15 +230,10 @@ namespace Game.Comm
         {
             session.OnClose += OnClose;
 
-            var readTask = new Task(async () =>
-            {
-                await ReadLoop(session);
-            });
+            var readTask = ReadLoop(session);
 
-            sessions.TryAdd(session, readTask);
-
-            readTask.Start();
-            readTask.CatchUnhandledException();
+            sessions.TryAdd(session, readTask);                       
+            readTask.CatchUnhandledException("ReadTask for " + session.RemoteIP);
         }
 
         private async Task ReadLoop(AsyncSocketSession session)
@@ -277,6 +272,9 @@ namespace Game.Comm
                                     logger.Debug(e, "Handled exception while serving policy file on main game port");
                                 }
                             }
+
+                            Task removedSocket;
+                            sessions.TryRemove(session, out removedSocket);
 
                             return;
                         }

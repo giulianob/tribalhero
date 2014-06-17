@@ -4,7 +4,6 @@ using Game.Logic.Actions;
 using Game.Logic.Notifications;
 using Game.Logic.Procedures;
 using Game.Map;
-using Game.Setup;
 using Game.Setup.DependencyInjection;
 using Persistance;
 
@@ -43,7 +42,7 @@ namespace Game.Data
             this.unitTemplateFactory = unitTemplateFactory;
         }
 
-        public ICity CreateCity(uint id, IPlayer owner, string name, Position position, Resource resource, byte radius, decimal ap)
+        public ICity CreateCity(uint id, IPlayer owner, string name, Position position, Resource resource, byte radius, decimal ap, string defaultTheme, string wallTheme)
         {
             return CreateCity(id,
                               owner,
@@ -55,13 +54,15 @@ namespace Game.Data
                                                wood: resource.Wood,
                                                labor: resource.Labor),
                               radius,
-                              ap);
+                              ap,
+                              defaultTheme,
+                              wallTheme);
         }
 
-        public ICity CreateCity(uint id, IPlayer owner, string name, Position position, ILazyResource resource, byte radius, decimal ap)
+        public ICity CreateCity(uint id, IPlayer owner, string name, Position position, ILazyResource resource, byte radius, decimal ap, string defaultTheme, string wallTheme)
         {
             var worker = actionWorkerFactory.CreateActionWorker(() => owner, new SimpleLocation(LocationType.City, id));
-            var notifications = notificationManagerFactory.CreateCityNotificationManager(worker, id, "/PLAYER/" + owner.PlayerId);
+            var notifications = notificationManagerFactory.CreateCityNotificationManager(worker, id, owner.PlayerChannel);
             var references = referenceManagerFactory.CreateReferenceManager(id, worker, owner);
             var technologies = technologyManagerFactory.CreateTechnologyManager(EffectLocation.City, id, id);
             var troops = troopManagerFactory.CreateTroopManager();
@@ -75,6 +76,8 @@ namespace Game.Data
                                 resource,
                                 radius,
                                 ap,
+                                defaultTheme,
+                                wallTheme,
                                 worker,
                                 notifications,
                                 references,

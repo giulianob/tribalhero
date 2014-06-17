@@ -121,18 +121,18 @@
             Constants.mainWebsite = parms.mainWebsite || Constants.mainWebsite;
 
             if (parms.playerName) {
-                Constants.playerName = parms.playerName;
+                Constants.session.playerName = parms.playerName;
             }
 
             if (parms.hostname) {
-                Constants.hostname = parms.hostname;
+                Constants.session.hostname = parms.hostname;
             }
 
 			//Define login type and perform login action
 			if (parms.lsessid)
 			{
 				siteVersion = parms.siteVersion;
-				Constants.loginKey = parms.lsessid;
+				Constants.session.loginKey = parms.lsessid;
 				loadData();
 			}
 			else
@@ -156,7 +156,7 @@
 					onDisconnected();
 					showConnectionError(true);
 				});
-				loader.load(new URLRequest("http://" + Constants.hostname + "/data.xml?m=" + new Date().getTime().toString() + "&v=" + siteVersion));
+				loader.load(new URLRequest("http://" + Constants.session.hostname + "/data.xml?m=" + new Date().getTime().toString() + "&v=" + siteVersion));
 			} 
 			else
 				loadLanguages();
@@ -171,7 +171,7 @@
 				}
 				else doConnect();
 			});
-			Locale.addXMLPath(Constants.defLang, "http://" + Constants.hostname + "/Game_" + Constants.defLang + ".xml?m=" + new Date().getTime().toString() + "&v=" + siteVersion);
+			Locale.addXMLPath(Constants.defLang, "http://" + Constants.session.hostname + "/Game_" + Constants.defLang + ".xml?m=" + new Date().getTime().toString() + "&v=" + siteVersion);
 			Locale.setDefaultLang(Constants.defLang);				
 			Locale.loadLanguageXML(Constants.defLang);
 		}
@@ -185,7 +185,7 @@
 			session.setLogin(onLogin);
 			session.setDisconnect(onDisconnected);
 			session.setSecurityErrorCallback(onSecurityError);
-			session.connect(Constants.hostname);
+			session.connect(Constants.session.hostname);
 		}
 
 		public function showLoginDialog():void
@@ -197,9 +197,9 @@
 
 		public function onConnect(sender: LoginDialog):void
 		{
-			Constants.username = sender.getTxtUsername().getText();
+			Constants.session.username = sender.getTxtUsername().getText();
 			password = sender.getTxtPassword().getText();
-			Constants.hostname = sender.getTxtAddress().getText();
+			Constants.session.hostname = sender.getTxtAddress().getText();
 
 			loadData();
 		}
@@ -256,8 +256,8 @@
                 
 				Global.mapComm = new MapComm(session);
 
-				if (Constants.loginKey) session.login(true, Constants.playerName, Constants.loginKey);
-				else session.login(false, Constants.username, password);
+				if (Constants.session.loginKey) session.login(true, Constants.session.playerName, Constants.session.loginKey);
+				else session.login(false, Constants.session.username, password);
 			}
 
 			password = '';
@@ -291,8 +291,8 @@
 				createCityDialog.show();
 			}
 
-            Global.musicPlayer.setMuted(Constants.soundMuted, true);
-            if (!Constants.soundMuted) {
+            Global.musicPlayer.setMuted(Constants.session.soundMuted, true);
+            if (!Constants.session.soundMuted) {
                 Global.musicPlayer.play(newPlayer);
             }
 		}
@@ -302,8 +302,8 @@
 			Global.map = map = new Map();
 			miniMap = new MiniMap(Constants.miniMapScreenW, Constants.miniMapScreenH);
 			
-			map.usernames.players.add(new Username(Constants.playerId, Constants.playerName));
-			map.setTimeDelta(Constants.timeDelta);		
+			map.usernames.players.add(new Username(Constants.session.playerId, Constants.session.playerName));
+			map.setTimeDelta(Constants.session.timeDelta);
 			
 			EffectReqFactory.init(map, Constants.objData);
 			PropertyFactory.init(map, Constants.objData);

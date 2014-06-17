@@ -1,9 +1,8 @@
 package src
 {
     import src.Graphics.Tileset;
-    import src.Graphics.WallTileset;
     import src.Map.MiniMap.MiniMapLegend;
-    import src.Objects.Tribe;
+    import src.Objects.Store.CoinPrice;
 
     public class Constants
 	{
@@ -16,27 +15,9 @@ package src
         // Hardcoded for now
         public static var motd_helpdesk:String = 'New player? Read the <a href="http://tribalhero.wikia.com/wiki/Frequently_Asked_Questions" target="_blank">wiki FAQ</a> for answers to common questions.';
 		
-		/* SESSION VARIABLES */
-		public static var username: String = "1234";
-		public static var hostname: String = "local.tribalhero.com";
-		public static var serverPort: int = 443;
-		public static var sessionId: String;
-		public static var playerName: String;
-		public static var timeDelta: int;
-		public static var admin: Boolean;
-		public static var loginKey: String;
-		public static var playerId: int;
-		public static var playerHash: String;
-		public static var tutorialStep: int;
-		public static var tribeInviteId: int;
-		public static var tribe: Tribe = new Tribe();
-		public static var signupTime: Date;
-		public static var newbieProtectionSeconds: int;
-		public static var tribeAssignment: int;
-		public static var tribeIncoming: int;
-        public static var soundMuted: Boolean;
+		public static var session: SessionVariables = new SessionVariables();
 
-		/* APP CONSTANTS */
+        /* APP CONSTANTS */
 		public static var mainWebsite: String = "http://tribalhero.com/";
 		public static const debug:int = 0;
         public static var debugStacktracer: Boolean = false;
@@ -81,7 +62,6 @@ package src
 		public static var screenH:int = origScreenH;
 		
 		public static const tileset: Tileset = new Tileset();
-		public static const wallTileset: WallTileset = new WallTileset();
 
 		public static const cityStartTile: int = 16;
 
@@ -161,7 +141,13 @@ package src
             displayObject: 10
         };
 
-        public static const shadowAlpha: Number = 0.5;
+        public static const coinPrices: Array = [
+            new CoinPrice("REFILL3", 3, 115, 0),
+            new CoinPrice("REFILL6", 6, 240, 4),
+            new CoinPrice("REFILL10", 10, 450, 15),
+            new CoinPrice("REFILL15", 15, 700, 18),
+            new CoinPrice("REFILL20", 20, 1000, 23)
+        ];
 	}
 }
 

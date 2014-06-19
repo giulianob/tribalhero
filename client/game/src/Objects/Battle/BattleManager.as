@@ -123,9 +123,9 @@
 				Util.log("Received attack command for unknown combat object. Attacker: " + attackerCombatId + " Defender: " + defenderCombatId + " Dmg:" + dmg);
 				return;
 			}
-			
-			defender.hp -= dmg;
-			defender.hp = Util.roundNumber(defender.hp);
+
+			defender.hp = Util.roundNumber(defender.hp - dmg);
+            defender.count = targetCount;
 			
 			dispatchEvent(new BattleAttackEvent(OBJECT_ATTACKED, attackingSide, attackerGroup, attacker, defenderGroup, defender, dmg, attackerCount, targetCount));
 			

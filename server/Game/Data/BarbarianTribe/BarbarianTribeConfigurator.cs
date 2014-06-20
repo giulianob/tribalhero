@@ -12,11 +12,14 @@ namespace Game.Data.BarbarianTribe
         private readonly MapFactory mapFactory;
 
         private readonly IRegionManager regionManager;
-        
-        public BarbarianTribeConfigurator(MapFactory mapFactory, IRegionManager regionManager)
+
+        private readonly ITileLocator tileLocator;
+
+        public BarbarianTribeConfigurator(MapFactory mapFactory, IRegionManager regionManager, ITileLocator tileLocator)
         {
             this.mapFactory = mapFactory;
             this.regionManager = regionManager;
+            this.tileLocator = tileLocator;
         }
 
         public bool Next(int count, out byte level, out Position position)
@@ -48,7 +51,7 @@ namespace Game.Data.BarbarianTribe
 
         public bool IsLocationAvailable(Position position)
         {
-            return !mapFactory.TooCloseToCities(position) && !regionManager.GetObjectsWithin(position.X, position.Y, 2).Any();
+            return !regionManager.GetObjectsWithin(position.X, position.Y, BarbarianTribe.SIZE).Any() && !mapFactory.TooCloseToCities(position, BarbarianTribe.SIZE);
         }
     }
 }

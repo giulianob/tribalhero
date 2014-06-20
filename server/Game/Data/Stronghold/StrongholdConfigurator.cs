@@ -87,7 +87,7 @@ namespace Game.Data.Stronghold
                     return false;
                 }
             }
-            while (!HasEnoughCities(x, y, level) || mapFactory.TooCloseToCities(new Position(x, y)) ||
+            while (!HasEnoughCities(x, y, level) || mapFactory.TooCloseToCities(new Position(x, y), Stronghold.SIZE) ||
                    TooCloseToStrongholds(x, y, MIN_DISTANCE_AWAY_FROM_STRONGHOLDS) || regionManager.GetObjectsInTile(x, y).Any());
 
             strongholds.Add(new Position(x, y));

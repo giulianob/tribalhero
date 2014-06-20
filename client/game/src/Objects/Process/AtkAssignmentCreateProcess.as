@@ -35,7 +35,7 @@ package src.Objects.Process
 		
 		public function execute(): void
 		{
-			attackDialog = new AttackTroopDialog(sourceCity, onChoseUnits);
+			attackDialog = new AttackTroopDialog(sourceCity, onChoseUnits, true, AttackTroopDialog.ATTACK_NONE);
 			
 			attackDialog.show();
 		}

@@ -222,8 +222,7 @@ namespace Game.Logic.Actions
                 --distanceRemaining;
 
                 troopObj.BeginUpdate();
-                troopObj.PrimaryPosition.X = nextX;
-                troopObj.PrimaryPosition.Y = nextY;
+                troopObj.Move(new Position(nextX, nextY));
                 troopObj.EndUpdate();
 
                 // Fire updated to force sending new position

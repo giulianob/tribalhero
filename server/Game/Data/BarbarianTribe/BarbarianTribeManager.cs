@@ -81,7 +81,7 @@ namespace Game.Data.BarbarianTribe
             }
         }
 
-        public void CreateBarbarianTribeNear(byte level, int campCount, uint x, uint y, byte radius)
+        public bool CreateBarbarianTribeNear(byte level, int campCount, uint x, uint y, byte radius)
         {
             Position barbarianCampPosition;
 
@@ -89,18 +89,31 @@ namespace Game.Data.BarbarianTribe
             do
             {
                 tileLocator.RandomPoint(new Position(x, y), radius, true, out barbarianCampPosition);
+                
+                if (barbarianTribeConfigurator.IsLocationAvailable(barbarianCampPosition))
+                {
+                    break;
+                }
+                
                 if (tries++ > 150)
                 {
-                    return;
+                    return false;
+                }
+
+                if (tries > 0 && radius == 0)
+                {
+                    return false;
                 }
             }
-            while (!barbarianTribeConfigurator.IsLocationAvailable(barbarianCampPosition));
+            while (true);
             
             IBarbarianTribe barbarianTribe = barbarianTribeFactory.CreateBarbarianTribe(idGenerator.GetNext(), level, barbarianCampPosition, campCount);
             if (barbarianTribe != null)
             {
                 Add(barbarianTribe);
             }
+
+            return true;
         }
 
         private void Add(IBarbarianTribe barbarianTribe)
@@ -123,17 +136,31 @@ namespace Game.Data.BarbarianTribe
             }
         }
 
-        private void Remove(IBarbarianTribe barbarianTribe)
+        public bool RelocateBarbarianTribe(IBarbarianTribe barbarianTribe)
+        {
+            bool removed = multiObjectLockFactory().Lock(new ILockable[] {barbarianTribe})
+                                               .Do(() => Remove(barbarianTribe));
+
+            if (!removed)
+            {
+                return false;
+            }
+
+            Generate(1);
+            return true;
+        }
+
+        private bool Remove(IBarbarianTribe barbarianTribe)
         {
             if (barbarianTribe.Battle != null || barbarianTribe.Worker.PassiveActions.Any() || barbarianTribe.Worker.ActiveActions.Any())
             {
-                return;
+                return false;
             }            
 
             IBarbarianTribe obj;
             if (!barbarianTribes.TryRemove(barbarianTribe.ObjectId, out obj))
             {
-                return;
+                return false;
             }
 
             barbarianTribe.CampRemainsChanged -= BarbarianTribeOnCampRemainsChanged;
@@ -146,6 +173,7 @@ namespace Game.Data.BarbarianTribe
             }
 
             dbManager.Delete(barbarianTribe);
+            return true;
         }
 
         public void RelocateAsNeeded()

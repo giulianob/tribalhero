@@ -14,6 +14,8 @@ namespace Game.Data.BarbarianTribe
 {
     public class BarbarianTribe : SimpleGameObject, IBarbarianTribe
     {
+        public const byte SIZE = 2;
+
         public event EventHandler<EventArgs> CampRemainsChanged = (sender, args) => { };
 
         public const string DB_TABLE = "barbarian_tribes";
@@ -79,7 +81,7 @@ namespace Game.Data.BarbarianTribe
         {
             get
             {
-                return 2;
+                return SIZE;
             }
         }
 

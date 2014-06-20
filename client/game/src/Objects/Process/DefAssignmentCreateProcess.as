@@ -32,7 +32,7 @@ package src.Objects.Process
 		
 		public function execute(): void
 		{
-			troopDialog = new ReinforceTroopDialog(sourceCity, onChoseUnits);
+			troopDialog = new ReinforceTroopDialog(sourceCity, onChoseUnits, true, ReinforceTroopDialog.ATTACK_NONE);
 			
 			troopDialog.show();
 		}

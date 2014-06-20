@@ -36,9 +36,9 @@ package src.Objects.Technologies {
             } else if (key == "COORDINATED_DEFENSE_TECHNOLOGY" || key == "COORDINATED_ATTACK_TECHNOLOGY") {
                 summarizer = new AdditiveTechnologySummarizer(2, 40);
             } else if (key == "RUSH_ATTACK_TECHNOLOGY") {
-                summarizer = new AdditiveTechnologySummarizer(4, 100);
+                summarizer = new AdditiveTechnologySummarizer(4);
             } else if (key == "RUSH_DEFENSE_TECHNOLOGY") {
-                summarizer = new AdditiveTechnologySummarizer(8, 100);
+                summarizer = new AdditiveTechnologySummarizer(8);
             } else if (key == "SENSE_OF_URGENCY_TECHNOLOGY") {
                 summarizer = new AdditiveTechnologySummarizer(4, 100);
             } else if (key.indexOf("_ARMOR_RESEARCH_TECHNOLOGY") != -1 ||

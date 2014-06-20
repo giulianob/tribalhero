@@ -60,13 +60,14 @@ namespace Game.Map.LocationStrategies
                 {
                     continue;
                 }
+                
+                position = new Position(point.X, point.Y);
 
-                position.X = point.X;
-                position.Y = point.Y;
-                if(mapFactory.Index % 10 == 0)
+                if (mapFactory.Index % 10 == 0)
                 {
                     mapFactory.Index += 1;
                 }
+
                 break;
             }
             while (true);

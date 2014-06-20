@@ -6,7 +6,7 @@ namespace Game.Data.BarbarianTribe
 
         void DbLoaderAdd(IBarbarianTribe barbarianTribe);
 
-        void CreateBarbarianTribeNear(byte level, int campCount, uint x, uint y, byte radius);
+        bool CreateBarbarianTribeNear(byte level, int campCount, uint x, uint y, byte radius);
 
         bool TryGetBarbarianTribe(uint id, out IBarbarianTribe barbarianTribe);
 

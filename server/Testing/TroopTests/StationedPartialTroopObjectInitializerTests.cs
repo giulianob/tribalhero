@@ -66,8 +66,7 @@ namespace Testing.TroopTests
             stub.State.Returns(TroopState.Stationed);
             stub.RemoveFromFormation(FormationType.Defense, Arg.Any<ISimpleStub>()).Returns(true);
 
-            stub.Station.PrimaryPosition.X.Returns<uint>(10);
-            stub.Station.PrimaryPosition.Y.Returns<uint>(20);
+            stub.Station.PrimaryPosition.Returns(new Position(10, 20));
 
             var newStub = Substitute.For<ITroopStub>();
             stub.City.CreateTroopStub().Returns(newStub);

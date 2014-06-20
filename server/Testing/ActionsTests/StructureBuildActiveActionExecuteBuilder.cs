@@ -54,8 +54,7 @@ namespace Testing.ActionsTests
             objectTypeFactory.IsObjectType("NoRoadRequired", Arg.Any<ushort>()).Returns(true);
 
             city = fixture.Create<ICity>();
-            city.PrimaryPosition.X.Returns<uint>(99);
-            city.PrimaryPosition.Y.Returns<uint>(98);
+            city.PrimaryPosition.Returns(new Position(99, 98));
             city.Radius.Returns<byte>(5);
             city.Resource.HasEnough(structureBaseStats.Cost).Returns(true);
             city.CreateStructure(Arg.Any<ushort>(), Arg.Any<byte>(), Arg.Any<uint>(), Arg.Any<uint>()).Returns(structure);           

@@ -49,11 +49,9 @@ namespace Game.Data.BarbarianTribe
             return true;
         }
 
-        public bool IsLocationAvailable(Position mainPosition)
+        public bool IsLocationAvailable(Position position)
         {
-            var positions = tileLocator.ForeachMultitile(mainPosition.X, mainPosition.Y, BarbarianTribe.SIZE);
-
-            return !regionManager.GetObjectsWithin(mainPosition.X, mainPosition.Y, BarbarianTribe.SIZE).Any() && positions.All(position => !mapFactory.TooCloseToCities(position));
+            return !regionManager.GetObjectsWithin(position.X, position.Y, BarbarianTribe.SIZE).Any() && !mapFactory.TooCloseToCities(position, BarbarianTribe.SIZE);
         }
     }
 }

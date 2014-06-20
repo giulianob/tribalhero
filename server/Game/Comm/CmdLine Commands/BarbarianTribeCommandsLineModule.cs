@@ -72,14 +72,15 @@ namespace Game.Comm
                 return "BarbarianTribeCreate --x=x --y=y --level=level --camps=camps";
             }
 
+            var success = false;
             locker.Lock(session.Player).Do(() =>
             {
                 world.Regions.LockRegion(x.Value, y.Value);
-                barbarianTribeManager.CreateBarbarianTribeNear(level.Value, campCount.Value, x.Value, y.Value, 0);
+                success = barbarianTribeManager.CreateBarbarianTribeNear(level.Value, campCount.Value, x.Value, y.Value, 0);
                 world.Regions.UnlockRegion(x.Value, y.Value);
             });
 
-            return "OK";
+            return success ? "OK" : "Unable to find empty spot";
         }       
     }
 }

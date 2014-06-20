@@ -18,6 +18,7 @@ namespace Game.Data.Stronghold
 {
     public class Stronghold : SimpleGameObject, IStronghold
     {
+        public const byte SIZE = 2;
         public const string DB_TABLE = "strongholds";
 
         private readonly IDbManager dbManager;
@@ -221,7 +222,7 @@ namespace Game.Data.Stronghold
         {
             get
             {
-                return 2;
+                return SIZE;
             }
         }
 

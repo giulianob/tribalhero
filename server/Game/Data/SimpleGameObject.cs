@@ -100,8 +100,6 @@ namespace Game.Data
             this.objectId = objectId;
             this.PrimaryPosition = new Position(x, y);
             this.state = GameObjectStateFactory.NormalState();
-
-            this.PrimaryPosition.PropertyChanged += PrimaryPositionOnPropertyChanged;
         }
 
         protected bool Updating;
@@ -149,33 +147,26 @@ namespace Game.Data
 
         #endregion
 
+        public void Move(Position newPosition)
+        {
+            CheckUpdateMode();
+         
+            PrimaryPosition = newPosition;
+            
+            if (!inWorld)
+            {
+                originalPosition = newPosition;
+            }
+        }
+
         private void SaveOrigPos()
         {
             if (InWorld)
             {
-                originalPosition = PrimaryPosition.Clone();
+                originalPosition = PrimaryPosition;
             }
         }
-
-        private void PrimaryPositionOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
-        {
-            CheckUpdateMode();
-
-            if (inWorld)
-            {
-                return;
-            }
-
-            if (propertyChangedEventArgs.PropertyName == "X")
-            {
-                originalPosition.X = PrimaryPosition.X;
-            }
-            else if (propertyChangedEventArgs.PropertyName == "Y")
-            {
-                originalPosition.Y = PrimaryPosition.Y;
-            }
-        }
-
+        
         public override string ToString()
         {
             return string.Format("{0} x[{1}] y[{2}] origX[{7}] origY[{8}] type[{3}] groupId[{4}] objId[{5}] inWorld[{6}]", base.ToString(), PrimaryPosition.X, PrimaryPosition.Y, Type, GroupId, ObjectId, inWorld, originalPosition.X, originalPosition.Y);

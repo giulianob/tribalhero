@@ -13,5 +13,7 @@ namespace Game.Data.BarbarianTribe
         void Generate(int count);
         
         void RelocateAsNeeded();
+
+        bool RelocateBarbarianTribe(IBarbarianTribe barbarianTribe);
     }
 }

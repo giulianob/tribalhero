@@ -273,7 +273,7 @@ namespace Game.Data.Stronghold
 
         protected override void CheckUpdateMode()
         {
-            if (!Global.Current.FireEvents)
+            if (!Global.Current.FireEvents || !DbPersisted)
             {
                 return;
             }

@@ -17,6 +17,11 @@
 
     public class AttackTroopDialog extends GameJPanel {
 
+        public static const ATTACK_NONE: int = -1;
+        public static const ATTACK_RAID: int = 0;
+        public static const ATTACK_ASSAULT: int = 1;
+        public static const ATTACK_SLAUGHTER: int = 2;
+
 		//members define
 		protected var pnlAttackStrength:JPanel;
 		protected var lblAttackStrength:JLabel;
@@ -36,13 +41,15 @@
 
 		protected var tilelists: Array = [];
 		protected var attackTilelists: Array = [];
+        private var defaultAttackMode: int;
 
-		public function AttackTroopDialog(city: City, onAccept: Function, hasAttackStrength: Boolean = true):void
+		public function AttackTroopDialog(city: City, onAccept: Function, hasAttackStrength: Boolean = true, defaultAttackMode: int = ATTACK_RAID):void
 		{
-			title = "Send Attack";
+            title = "Send Attack";
 
 			this.city = city;
 			this.hasAttackStrength = hasAttackStrength;
+            this.defaultAttackMode = defaultAttackMode;
 			
 			createUI();			
 
@@ -50,6 +57,11 @@
 			btnOk.addActionListener(function():void { 
 				if (getTroop().getIndividualUnitCount() == 0) {
 					InfoDialog.showMessageDialog("Error", "You have to assign units before continuing. Drag units from the local troop to assign them.");
+					return;
+				}
+
+				if (hasAttackStrength && getMode() == ATTACK_NONE) {
+					InfoDialog.showMessageDialog("Error", "You have to choose an attack strength before continuing. Select one above at the top.");
 					return;
 				}
 				
@@ -93,10 +105,10 @@
 
 		public function getMode(): int
 		{
-			if (rdAssault.isSelected()) return 1;
-			else if (rdRaid.isSelected()) return 0;
-			else if (rdSlaughter.isSelected()) return 2;
-			else return -1;
+			if (rdAssault.isSelected()) return ATTACK_ASSAULT;
+			else if (rdRaid.isSelected()) return ATTACK_RAID;
+			else if (rdSlaughter.isSelected()) return ATTACK_SLAUGHTER;
+			else return ATTACK_NONE;
 		}
 
 		public function getTroop(): TroopStub
@@ -127,30 +139,22 @@
 			setLayout(layout0);
 
 			pnlAttackStrength = new JPanel();
-			pnlAttackStrength.setLocation(new IntPoint(5, 5));
-			pnlAttackStrength.setSize(new IntDimension(10, 10));
 
 			lblAttackStrength = new JLabel();
-			lblAttackStrength.setLocation(new IntPoint(5, 5));
-			lblAttackStrength.setSize(new IntDimension(80, 17));
 			lblAttackStrength.setText("Attack Strength:");
 
 			rdAssault = new JRadioButton();
-			rdAssault.setLocation(new IntPoint(5, 5));
-			rdAssault.setSize(new IntDimension(54, 17));
 			rdAssault.setText("Assault");
+            rdAssault.setSelected(defaultAttackMode == ATTACK_ASSAULT);
 			new SimpleTooltip(rdAssault, "Retreat if only 1/3 of the units remain");
 
 			rdRaid = new JRadioButton();
-            rdRaid.setSelected(true);
-			rdRaid.setLocation(new IntPoint(51, 5));
-			rdRaid.setSize(new IntDimension(40, 17));
+            rdRaid.setSelected(defaultAttackMode == ATTACK_RAID);
 			rdRaid.setText("Raid");
 			new SimpleTooltip(rdRaid, "Retreat if only 2/3 of the units remain");
 
 			rdSlaughter = new JRadioButton();
-			rdSlaughter.setLocation(new IntPoint(97, 5));
-			rdSlaughter.setSize(new IntDimension(65, 17));
+            rdSlaughter.setSelected(defaultAttackMode == ATTACK_ASSAULT);
 			rdSlaughter.setText("Slaughter");
 			new SimpleTooltip(rdSlaughter, "Fight until death");
 
@@ -161,8 +165,6 @@
 			pnlAttack.setSize(new IntDimension(389, 35));
 
 			pnlButton = new JPanel();
-			pnlButton.setLocation(new IntPoint(0, 127));
-			pnlButton.setSize(new IntDimension(389, 10));
 			var layout3:FlowLayout = new FlowLayout();
 			layout3.setAlignment(AsWingConstants.CENTER);
 			pnlButton.setLayout(layout3);

@@ -26,7 +26,7 @@ package src.Objects.Process
 		
 		public function execute(): void 
 		{
-			reinforceDialog = new ReinforceTroopDialog(sourceCity, onChoseUnits, true);
+			reinforceDialog = new ReinforceTroopDialog(sourceCity, onChoseUnits);
 			
 			reinforceDialog.show();
 		}

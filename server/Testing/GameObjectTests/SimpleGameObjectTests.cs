@@ -3,6 +3,7 @@ using Common.Testing;
 using FluentAssertions;
 using Game.Data;
 using Game.Data.Events;
+using Game.Map;
 using NSubstitute;
 using Xunit.Extensions;
 
@@ -28,7 +29,7 @@ namespace Testing.GameObjectTests
 
             gameObject.BeginUpdate();
             gameObject.InWorld = false;
-            gameObject.PrimaryPosition.X = 10;
+            gameObject.Move(new Position(10, gameObject.PrimaryPosition.Y));
             gameObject.EndUpdate();
 
             gameObject.ShouldRaise("ObjectUpdated")
@@ -43,7 +44,7 @@ namespace Testing.GameObjectTests
 
             gameObject.BeginUpdate();
             gameObject.InWorld = false;
-            gameObject.PrimaryPosition.Y = 10;
+            gameObject.Move(new Position(gameObject.PrimaryPosition.X, 10));
             gameObject.EndUpdate();
 
             gameObject.ShouldRaise("ObjectUpdated")

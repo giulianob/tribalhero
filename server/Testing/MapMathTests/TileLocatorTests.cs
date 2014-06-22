@@ -174,12 +174,10 @@ namespace Testing.MapMathTests
             TileLocator tileLocator
             )
         {
-            obj1.PrimaryPosition.X.Returns((uint)x);
-            obj1.PrimaryPosition.Y.Returns((uint)y);
+            obj1.PrimaryPosition.Returns(new Position((uint)x, (uint)y));
             obj1.Size.Returns((byte)size);
 
-            obj2.PrimaryPosition.X.Returns((uint)x1);
-            obj2.PrimaryPosition.Y.Returns((uint)y1);
+            obj2.PrimaryPosition.Returns(new Position((uint)x1, (uint)y1));
             obj2.Size.Returns((byte)size1);
 
             tileLocator.RadiusDistance(obj1, obj2).Should().Be(expected);

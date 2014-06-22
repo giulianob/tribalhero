@@ -349,6 +349,12 @@ import src.Objects.Troop.*;
 
             return currentBuildActions < maxConcurrentUpgrades;
         }
+
+        public static function barbarianTribeUpkeep(level: int): int {
+            const upkeepPerLevel: Array = [5, 20, 41, 73, 117, 171, 237, 313, 401, 500];
+
+            return upkeepPerLevel[level - 1];
+        }
     }
 }
 

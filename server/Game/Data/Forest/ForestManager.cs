@@ -107,7 +107,7 @@ namespace Game.Data.Forest
                         x = (uint)Config.Random.Next(5, (int)Config.map_width - 5);
                         y = (uint)Config.Random.Next(5, (int)Config.map_height - 5);
                         
-                        if (mapFactory.TooCloseToCities(new Position(x, y)))
+                        if (mapFactory.TooCloseToCities(new Position(x, y), 1))
                         {
                             continue;
                         }

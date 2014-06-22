@@ -318,6 +318,7 @@ TMP_BASEMENT_SIDEBAR_HIDDEN_WOOD,Hidden Wood
 TMP_BASEMENT_SIDEBAR_HIDDEN_IRON,Hidden Iron
 TMP_BASEMENT_SIDEBAR_HIDDEN_GOLD,Hidden Gold
 ,
+ACTION_BUILD_ROAD,"All structures, except farms, lumbermills, towers and basements must be connected to a road.  Plan your roads carefully. You'll want an efficient design which will allow for as many buildings as possible."
 OBJECT_INFO_SIDEBAR_PLAYER_LABEL,Player
 OBJECT_INFO_SIDEBAR_BUY_MORE_THEMES,View more themes in the store
 OBJECT_INFO_SIDEBAR_CITY_LABEL,City

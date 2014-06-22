@@ -591,6 +591,7 @@
     <Compile Include="Util\EnumExtension.cs" />
     <Compile Include="Util\EventHandlerExtensions.cs" />
     <Compile Include="Util\FileExtension.cs" />
+    <Compile Include="Util\GcMonitor.cs" />
     <Compile Include="Util\GetRandom.cs" />
     <Compile Include="Util\IChannel.cs" />
     <Compile Include="Util\Inflector.cs" />

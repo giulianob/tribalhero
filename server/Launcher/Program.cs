@@ -5,6 +5,7 @@ using CSVToXML;
 using Game;
 using Game.Data;
 using Game.Setup;
+using Game.Util;
 using Mono.Unix;
 using Mono.Unix.Native;
 using NDesk.Options;
@@ -62,6 +63,11 @@ namespace Launcher
                 {
                     return;
                 }
+            }
+
+            if (Config.gc_monitor)
+            {
+                GcMonitor.MonitorGc();
             }
 #endif
 

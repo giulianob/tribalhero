@@ -42,6 +42,7 @@ namespace Game.Setup
         public static string data_folder = "conf/data/";
         public static string regions_folder = "conf/regions/";
         public static bool locks_check;
+        public static bool gc_monitor;
 
         #endregion
 

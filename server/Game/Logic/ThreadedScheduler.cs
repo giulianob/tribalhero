@@ -57,6 +57,17 @@ namespace Game.Logic
                               null,
                               Timeout.Infinite,
                               Timeout.Infinite);
+
+            var debugTimer = new Timer(obj =>
+            {
+                
+                    int availableWorkerThreads;
+                    int availableCompletionThreads;
+
+                    ThreadPool.GetAvailableThreads(out availableWorkerThreads, out availableCompletionThreads);
+                Logger.Debug("AvailableThreads[{0}] AvailableCompletionThreads[{1}]", availableWorkerThreads, availableCompletionThreads);
+            });
+            debugTimer.Change(0, 1000);
         }
 
         public bool Paused { get; private set; }
@@ -136,10 +147,10 @@ namespace Game.Logic
 
                 schedule.IsScheduled = true;
 
-                //if (Logger.IsDebugEnabled)
-                //{
-                //    Log(schedule, String.Format("Schedule added index[{0}] total[{1}].", index, schedules.Count));
-                //}
+                if (Logger.IsDebugEnabled)
+                {
+                    Log(schedule, String.Format("Schedule added index[{0}] total[{1}].", index, schedules.Count));
+                }
 
                 if (index == 0)
                 {
@@ -193,6 +204,8 @@ namespace Game.Logic
         // call back for the timer function
         private void DispatchAction(object obj) // obj ignored
         {
+            Logger.Debug("In DispatchAction");
+
             lock (schedulesLock)
             {
                 if (schedules.Count == 0 || Paused)
@@ -222,7 +235,7 @@ namespace Game.Logic
 
                 doneEvents.Add(job.Id, job.ResetEvent);
 
-                //Log(job.Schedule, "Queueing for execution");
+                Log(job.Schedule, "Queueing for execution");
 
                 taskScheduler.QueueWorkItem(() => ExecuteAction(job));
 
@@ -234,7 +247,7 @@ namespace Game.Logic
         {           
             var job = (ScheduledJob)obj;
 
-            //Log(job.Schedule, "Executing action");
+            Log(job.Schedule, "Executing action");
 
             actionExecuting = job.Schedule;
 

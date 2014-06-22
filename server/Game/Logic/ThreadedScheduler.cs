@@ -374,7 +374,7 @@ namespace Game.Logic
             /// </summary>
             private void NotifyThreadPoolOfPendingWork()
             {
-                ThreadPool.UnsafeQueueUserWorkItem(_ =>
+                ThreadPool.QueueUserWorkItem(_ =>
                     {
                         // Note that the current thread is now processing work items.
                         // This is necessary to enable inlining of tasks into this thread.
@@ -436,7 +436,9 @@ namespace Game.Logic
             protected override sealed bool TryDequeue(Task task)
             {
                 lock (_tasks)
+                {
                     return _tasks.Remove(task);
+                }
             }
 
             /// <summary>Gets the maximum concurrency level supported by this scheduler.</summary>

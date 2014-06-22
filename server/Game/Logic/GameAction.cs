@@ -89,6 +89,8 @@ namespace Game.Logic
 
         ForestCampLaborUpdatePassive = 314,
 
+        ResourceWithdrawActive = 315,
+
         TechnologyCreatePassive = 400,
 
         TechnologyDeletePassive = 401,

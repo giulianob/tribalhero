@@ -18,7 +18,7 @@ package src.Objects.Store {
         }
 
         public function thumbnail(): Sprite {
-            return Sprite(StructureFactory.getSprite(item.themeId, structurePrototype.type, structurePrototype.level));
+            return Sprite(StructureFactory.getFlashSprite(item.themeId, structurePrototype.type, structurePrototype.level));
         }
     }
 }

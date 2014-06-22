@@ -3,17 +3,16 @@ package src.Objects {
 
     import com.greensock.TweenMax;
 
-    import flash.display.DisplayObject;
-    import flash.display.MovieClip;
-    import flash.display.Sprite;
-    import flash.events.Event;
-    import flash.filters.GlowFilter;
     import flash.geom.Point;
+
+    import starling.display.*;
 
     import src.Constants;
     import src.Map.ScreenPosition;
 
-    public class SimpleObject extends MovieClip {
+    import starling.filters.BlurFilter;
+
+    public class SimpleObject extends Sprite {
 		
 		public static const DISPOSED: String = "DISPOSED";
 		
@@ -82,7 +81,8 @@ package src.Objects {
 			if (count <= 1) {
 				return;		
 			}
-			
+
+            /*
 			var bubble: CountBubble = new CountBubble();
 			bubble.mouseChildren = false;
 			bubble.txtUnreadCount.mouseEnabled = false;
@@ -90,19 +90,24 @@ package src.Objects {
 			bubble.txtUnreadCount.text = count > 9 ? "!" : count.toString();
 			bubble.x = spritePosition.x - bubble.width;
 			bubble.y = 20;
+
 			
 			objectCountDisplayObject = bubble;
 			
 			addChild(bubble);
+			*/
 		}
 		
-		public function dispose(): void {
+		public override function dispose(): void {
+            super.dispose();
+
 			disposed = true;
 			if (objectCountDisplayObject != null) {
 				removeChild(objectCountDisplayObject);
 				objectCountDisplayObject = null;
             }
-			dispatchEvent(new Event(DISPOSED));
+
+			dispatchEventWith(DISPOSED);
 		}
 		
 		public function fadeIn(startFromCurrentAlpha: Boolean = false):void
@@ -125,27 +130,25 @@ package src.Objects {
 		}
 
 		public function setSelected(bool: Boolean = false):void
-		{			
+		{
+            disposeFilter();
 			if (bool) {
-				filters = [new GlowFilter(0xFFFFFF, 0.5, 16, 16, 3)];
+				filter = BlurFilter.createGlow(0xFFFFFF, 0.5, 1);
 			}
 			
 			selected = bool;
-			
-			if (!bool) {
-				setHighlighted(false);
-			}
 		}
 
 		public function setHighlighted(bool: Boolean = false):void
 		{
-			if (selected)
+			if (selected) {
 				return;
+            }
 
-			if (bool == false)			
-				filters = [];			
-			else			
-				filters = [new GlowFilter(0xFFDD00, 0.5, 16, 16, 3)];			
+            disposeFilter();
+            if (bool != false) {
+                filter = BlurFilter.createGlow(0xFFDD00, 0.5, 1);
+            }
 		}		
 		
 		public function distance(x_1: int, y_1: int): int
@@ -197,10 +200,12 @@ package src.Objects {
 		}
 
         public function setSprite(sprite: DisplayObject, spritePosition: Point): void {
-            spriteContainer.removeChildren();
+            sprite.x = spritePosition.x;
+            sprite.y = spritePosition.y;
 
             this.spritePosition = spritePosition;
 
+            spriteContainer.removeChildren();
             spriteContainer.addChild(sprite);
         }
 
@@ -227,6 +232,13 @@ package src.Objects {
         public function setVisibilityPriority(isHighestPriority: Boolean, objectsInTile: Array): void {
             visible = isHighestPriority;
             this.isHighestPriority = isHighestPriority;
+        }
+
+        protected function disposeFilter(): void {
+            if (filter != null) {
+                filter.dispose();
+                filter = null;
+            }
         }
 	}
 	

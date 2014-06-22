@@ -7,7 +7,7 @@
     import flash.events.Event;
     import flash.geom.ColorTransform;
 
-    import src.Assets;
+    import src.FlashAssets;
     import src.Constants;
     import src.Map.Position;
     import src.Map.ScreenPosition;
@@ -59,7 +59,7 @@
 			tiles = [];
 
 			for each (var position: Position in TileLocator.foreachRadius(Math.ceil(radius / 2.0), Math.ceil(radius / 2.0) * 2 + 1, radius)) {
-                var tiledata: DisplayObject = Assets.getInstance("MASK_TILE");
+                var tiledata: DisplayObject = FlashAssets.getInstance("MASK_TILE");
                 var tile: Bitmap = new Bitmap(new BitmapData(Constants.tileW, Constants.tileH, true, 0x000000));
                 tile.smoothing = true;
 

@@ -2,9 +2,9 @@
 
     import System.Linq.Enumerable;
 
-    import flash.display.*;
+    import flash.geom.Point;
 
-    import src.Assets;
+    import src.FlashAssets;
     import src.Global;
     import src.Map.*;
     import src.Objects.*;
@@ -15,7 +15,9 @@
     import src.Util.BinaryList.*;
     import src.Util.Util;
 
-    public class StructureFactory {
+    import starling.display.DisplayObjectContainer;
+
+    public class StructureFactory extends SpriteFactory {
 
 		private static var map: Map;
 		private static var structurePrototypes: BinaryList;
@@ -96,7 +98,7 @@
 			return structPrototype;
 		}
 
-        public static function getSpriteName(theme: String, type: int, level: int): String {
+        public static function getSpriteName(theme: String, type: int, level: int, fallbackToDefaultTheme: Boolean = false): String {
             var strPrototype: StructurePrototype = getPrototype(type, level);
 
             if (strPrototype == null)
@@ -111,43 +113,31 @@
                 throw new Error("Missing structure worker " + strPrototype.workerid);
             }
 
-            return strPrototype.getSpriteName(theme);
-        }
+            var typeName: String = strPrototype.getSpriteName(theme);
 
-		public static function getSprite(theme: String, type: int, level: int, withPosition: String = ""): DisplayObjectContainer
-		{
-			var sprite: Sprite = new Sprite();
-            var typeName: String = getSpriteName(theme, type, level);
-
-            // Fall back to default theme if current theme does not have gfx
-            if (theme != Theme.DEFAULT_THEME_ID && !Assets.doesSpriteExist(typeName)) {
-                typeName = getSpriteName("DEFAULT", type, level);
+            if (fallbackToDefaultTheme && theme != Theme.DEFAULT_THEME_ID && !FlashAssets.doesSpriteExist(typeName)) {
+                return getSpriteName("DEFAULT", type, level);
             }
 
-            var mainImage: DisplayObject = Assets.getInstance(typeName, withPosition);
-            sprite.addChild(mainImage);
-
-			return sprite;
-		}
+            return typeName;
+        }
 
 		public static function getSimpleObject(theme: String, type: int, level:int, x: int, y: int, size: int): SimpleObject
 		{
-			var sprite: DisplayObjectContainer = getSprite(theme, type, level, "map") as DisplayObjectContainer;
+            var typeName: String = getSpriteName(theme, type, level, true);
+
 			var simpleObject: SimpleObject = new SimpleObject(x, y, size);
-			
-			if (sprite != null) {
-				simpleObject.setSprite(sprite, Assets.getPosition(getSpriteName(theme, type, level), "map"));
-			}
+            simpleObject.setSprite(getStarlingSprite(typeName), getMapPosition(typeName));
 
 			return simpleObject;
 		}
 
 		public static function getInstance(theme: String, type: int, state: GameObjectState, objX: int, objY: int, size: int, playerId: int, cityId: int, objectId: int, level: int, wallRadius: int, wallTheme: String): StructureObject
 		{
-			var structureObj: StructureObject = new StructureObject(theme, type, state, objX, objY, size, playerId, cityId, objectId, level, wallRadius, wallTheme);
+            var typeName: String = getSpriteName(theme, type, level);
 
-			structureObj.setSprite(getSprite(theme, type, level, "map"), Assets.getPosition(getSpriteName(theme, type, level), "map"));
-			
+			var structureObj: StructureObject = new StructureObject(theme, type, state, objX, objY, size, playerId, cityId, objectId, level, wallRadius, wallTheme);
+			structureObj.setSprite(getStarlingSprite(typeName), getMapPosition(typeName));
 			structureObj.setOnSelect(Global.map.selectObject);
 
 			return structureObj;

@@ -5,7 +5,7 @@
     import flash.display.DisplayObjectContainer;
     import flash.display.Sprite;
 
-    import src.Assets;
+    import src.FlashAssets;
     import src.Constants;
     import src.Global;
     import src.Objects.BarbarianTribe;
@@ -22,7 +22,7 @@
         }
 
         public static function getSprite(withPosition: String = ""): DisplayObjectContainer {
-			var image: DisplayObject = Assets.getInstance(getSpriteName(), withPosition);
+			var image: DisplayObject = FlashAssets.getInstance(getSpriteName(), withPosition);
 
             var sprite: Sprite = new Sprite();
             sprite.addChild(image);
@@ -34,7 +34,7 @@
 		{
 			var obj: BarbarianTribe = new BarbarianTribe(type, state, objX, objY, size, groupId, objectId, level, count);
 
-            obj.setSprite(getSprite("map"), Assets.getPosition(getSpriteName(), "map"));
+            obj.setSprite(getSprite("map"), FlashAssets.getPosition(getSpriteName(), "map"));
 
 			obj.setOnSelect(Global.map.selectObject);
 			

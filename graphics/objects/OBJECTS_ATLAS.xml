@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TextureAtlas imagePath="sprites.png">
+	<!--
+	Created with ShoeBox
+	http://renderhjs.net/shoebox/
+	-->
+	<SubTexture name="FOREST_LVL_1.png"	x="0"	y="249"	width="124"	height="72" frameX="-0" frameY="-0" frameWidth="124" frameHeight="72"/>
+	<SubTexture name="FOREST_LVL_2.png"	x="0"	y="322"	width="116"	height="79" frameX="-0" frameY="-0" frameWidth="116" frameHeight="79"/>
+	<SubTexture name="FOREST_LVL_3.png"	x="0"	y="175"	width="147"	height="73" frameX="-0" frameY="-0" frameWidth="147" frameHeight="73"/>
+	<SubTexture name="FOREST_LVL_4.png"	x="0"	y="81"	width="156"	height="93" frameX="-0" frameY="-0" frameWidth="156" frameHeight="93"/>
+	<SubTexture name="MASK_TILE.png"	x="0"	y="0"	width="160"	height="80" frameX="-0" frameY="-0" frameWidth="160" frameHeight="80"/>
+</TextureAtlas>

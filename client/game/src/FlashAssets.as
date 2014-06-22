@@ -1,17 +1,14 @@
 ﻿package src 
 {
     import flash.display.Bitmap;
-    import flash.display.Sprite;
     import flash.events.Event;
-    import flash.geom.Point;
     import flash.utils.Dictionary;
-    import flash.utils.describeType;
 
     import src.Util.Util;
 
-    public class Assets
+    public class FlashAssets
 	{
-		public function Assets()
+		public function FlashAssets()
 		{					
 			//Icons
 			ICON_UNFRIEND;
@@ -82,63 +79,23 @@
 			WAGON_UNIT;
 		}
 
-        private static var embedPositionCache: Dictionary;
-
         private static var sharedInstanceCache: Dictionary = new Dictionary(false);
 
         public static function doesSpriteExist(spriteName: String): Boolean {
             spriteName = spriteName.replace('-', '_').toUpperCase();
-            var spriteClass: Class = Assets[spriteName] as Class;
+            var spriteClass: Class = FlashAssets[spriteName] as Class;
 
             return spriteClass != null;
         }
 
-        private static function initializeEmbedPositionCache() : void {
-            if (embedPositionCache == null) {
-                embedPositionCache = new Dictionary(false);
-
-                var constants: XMLList = describeType(Assets).constant;
-                var constantsLength: int = constants.length();
-                for (var i: int = 0; i < constantsLength; i++) {
-                    if (!constants[i].metadata) {
-                        continue;
-                    }
-
-                    var embedPosition: XMLList = constants[i].metadata.(@name=="EmbedPosition");
-                    var embedPositionLength: int = embedPosition.length();
-                    for (var embedPositionIdx: int = 0; embedPositionIdx < embedPositionLength; embedPositionIdx++) {
-                        var positionName: String = embedPosition[embedPositionIdx].arg.(@key == "name").@value;
-                        embedPositionCache[constants[i].@name.toString() + ":" + positionName] = new Point(
-                                Number(embedPosition[embedPositionIdx].arg.(@key == "x").@value) || 0,
-                                Number(embedPosition[embedPositionIdx].arg.(@key == "y").@value) || 0
-                        );
-                    }
-                }
-
-            }
-        }
-
-        public static function getPosition(spriteName: String, withPosition: String): Point {
-            initializeEmbedPositionCache();
-            return embedPositionCache[spriteName + ":" + withPosition];
-        }
-
-		public static function getInstance(spriteName: String, withPosition: String = ""): Bitmap
+		public static function getInstance(spriteName: String): Bitmap
 		{
 			try {
 				spriteName = spriteName.replace('-', '_').toUpperCase();				
-				var spriteClass: Class = Assets[spriteName] as Class;
+				var spriteClass: Class = FlashAssets[spriteName] as Class;
 				var sprite: Bitmap = (Bitmap)(new spriteClass());
 				(sprite as Bitmap).smoothing = true;
 				sprite.scaleY = 1.001;
-
-                if (withPosition) {
-                    var point: Point = getPosition(spriteName, withPosition);
-                    if (point) {
-                        sprite.x = point.x;
-                        sprite.y = point.y;
-                    }
-                }
 
 				return sprite;
 			}
@@ -157,7 +114,7 @@
         {
             var sprite: Bitmap = sharedInstanceCache[spriteName];
             if (!sprite) {
-                sprite = Assets.getInstance(spriteName);
+                sprite = FlashAssets.getInstance(spriteName);
 
                 sprite.addEventListener(Event.ADDED_TO_STAGE, function(e: Event): void {
                     throw new Error("Shared instance was added to the stage.")
@@ -170,7 +127,7 @@
         }
 
         // Tileset
-        [Embed(source = "../../../graphics/MaskTile.png")]
+        [Embed(source = "../../../graphics/objects/MASK_TILE.png")]
         public static const MASK_TILE: Class;
 
         // Icons
@@ -288,19 +245,15 @@
 
         // Forests
         [Embed(source = "../../../graphics/objects/FOREST_LVL_1.png")]
-        [EmbedPosition(name = "map", x = "22", y = "-4")]
         public static const FOREST_LVL_1: Class;
 
         [Embed(source = "../../../graphics/objects/FOREST_LVL_2.png")]
-        [EmbedPosition(name = "map", x = "23", y = "-7")]
         public static const FOREST_LVL_2: Class;
 
         [Embed(source = "../../../graphics/objects/FOREST_LVL_3.png")]
-        [EmbedPosition(name = "map", x = "12", y = "-3")]
         public static const FOREST_LVL_3: Class;
 
         [Embed(source = "../../../graphics/objects/FOREST_LVL_4.png")]
-        [EmbedPosition(name = "map", x = "4", y = "-19")]
         public static const FOREST_LVL_4: Class;
 
         // Store Achievement Icons
@@ -314,266 +267,207 @@
         public static const BRONZE_ACHIEVEMENT_THUMBNAIL: Class;
 
         // Common structures
-        [Embed(source = "../../../graphics/themes/default/BARBARIAN_TRIBE_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "66", y = "-41")]
-        public static const BARBARIAN_TRIBE_STRUCTURE: Class;
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_BARBARIAN_TRIBE_STRUCTURE.png")]
+        public static const DEFAULT_BARBARIAN_TRIBE_STRUCTURE: Class;
 
         // Default Structure Pack
-        [Embed(source = "../../../graphics/themes/default/WALL.png")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_WALL.png")]
         public static const DEFAULT_WALL_TILESET: Class;
 
-        [Embed(source = "../../../graphics/themes/default/THUMBNAIL.png")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_THUMBNAIL.png")]
         public static const DEFAULT_THEME_THUMBNAIL: Class;
 
-        [Embed(source = "../../../graphics/themes/default/BANNER.png")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_BANNER.png")]
         public static const DEFAULT_THEME_BANNER: Class;
 
-        [Embed(source = "../../../graphics/themes/default/TROOP.png")]
-        [EmbedPosition(name = "map", x = "7", y = "2")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_TROOP.png")]
         public static const DEFAULT_TROOP: Class;
 
-        [Embed(source = "../../../graphics/themes/default/ARMORY_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "15", y = "-11")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_ARMORY_STRUCTURE.png")]
         public static const DEFAULT_ARMORY_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/FIELD_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "25", y = "4")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_FIELD_STRUCTURE.png")]
         public static const DEFAULT_FIELD_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/BARRACK_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = 93, y = "-16")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_BARRACK_STRUCTURE.png")]
         public static const DEFAULT_BARRACK_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/FOUNDATION.png")]
-        [EmbedPosition(name = "map", x = 42, y = "-24")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_FOUNDATION.png")]
         public static const DEFAULT_FOUNDATION: Class;
 
-        [Embed(source = "../../../graphics/themes/default/CONSTRUCTION_SMALL.png")]
-        [EmbedPosition(name = "map", x = 32, y = "1")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_CONSTRUCTION_SMALL.png")]
         public static const DEFAULT_BUILDING_1: Class;
 
-        [Embed(source = "../../../graphics/themes/default/CONSTRUCTION.png")]
-        [EmbedPosition(name = "map", x = 102, y = "-3")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_CONSTRUCTION.png")]
         public static const DEFAULT_BUILDING_2: Class;
 
-        [Embed(source = "../../../graphics/themes/default/CONSTRUCTION.png")]
-        [EmbedPosition(name = "map", x = 177, y = "68")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_CONSTRUCTION.png")]
         public static const DEFAULT_BUILDING_3: Class;
 
-        [Embed(source = "../../../graphics/themes/default/TRIBAL_GATHERING_STRUCTURE.png")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_TRIBAL_GATHERING_STRUCTURE.png")]
         public static const DEFAULT_STRUCTURE_SIMPLE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/TRIBAL_GATHERING_STRUCTURE.png")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_TRIBAL_GATHERING_STRUCTURE.png")]
         public static const DEFAULT_STRUCTURE_COMPLEX: Class;
 
-        [Embed(source = "../../../graphics/themes/default/TRIBAL_GATHERING_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = 24, y = "6")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_TRIBAL_GATHERING_STRUCTURE.png")]
         public static const DEFAULT_EMBASSY_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/FOUNDRY_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = 29, y = "-3")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_FOUNDRY_STRUCTURE.png")]
         public static const DEFAULT_FOUNDRY_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/TRIBAL_CARNIVAL_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = 39, y = "14")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_TRIBAL_CARNIVAL_STRUCTURE.png")]
         public static const DEFAULT_TRIBAL_CARNIVAL_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/TRIBAL_FAIR_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = 38, y = "13")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_TRIBAL_FAIR_STRUCTURE.png")]
         public static const DEFAULT_TRIBAL_FAIR_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/TRIBAL_FESTIVAL_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = 35, y = "1")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_TRIBAL_FESTIVAL_STRUCTURE.png")]
         public static const DEFAULT_TRIBAL_FESTIVAL_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/STRONGHOLD_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = 106, y = "-46")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_STRONGHOLD_STRUCTURE.png")]
         public static const DEFAULT_STRONGHOLD_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/TRIBAL_GATHERING_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = 24, y = "6")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_TRIBAL_GATHERING_STRUCTURE.png")]
         public static const DEFAULT_TRIBAL_GATHERING_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/FARM_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = 13, y = "1")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_FARM_STRUCTURE.png")]
         public static const DEFAULT_FARM_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/MARKET_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = 31, y = "6")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_MARKET_STRUCTURE.png")]
         public static const DEFAULT_MARKET_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/REFINERY_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = 28, y = "0")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_REFINERY_STRUCTURE.png")]
         public static const DEFAULT_REFINERY_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/STABLE_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = 78, y = "-26")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_STABLE_STRUCTURE.png")]
         public static const DEFAULT_STABLE_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/TOWER_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = 46, y = "-18")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_TOWER_STRUCTURE.png")]
         public static const DEFAULT_TOWER_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/TOWNCENTER_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = 124, y = "-50")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_TOWNCENTER_STRUCTURE.png")]
         public static const DEFAULT_TOWNCENTER_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/TRADING_POST_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "66", y = "-23")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_TRADING_POST_STRUCTURE.png")]
         public static const DEFAULT_TRADING_POST_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/UNIVERSITY_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = 46, y = "-52")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_UNIVERSITY_STRUCTURE.png")]
         public static const DEFAULT_UNIVERSITY_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/LUMBERMILL_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = 17, y = "-10")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_LUMBERMILL_STRUCTURE.png")]
         public static const DEFAULT_LUMBERMILL_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/WORKSHOP_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = 76, y = "-46")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_WORKSHOP_STRUCTURE.png")]
         public static const DEFAULT_WORKSHOP_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/TRAINING_GROUND_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = 53, y = "-24")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_TRAINING_GROUND_STRUCTURE.png")]
         public static const DEFAULT_TRAINING_GROUND_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/CANNON_TOWER_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = 46, y = "-18")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_CANNON_TOWER_STRUCTURE.png")]
         public static const DEFAULT_CANNON_TOWER_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/BLACKSMITH_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = 14, y = "-19")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_BLACKSMITH_STRUCTURE.png")]
         public static const DEFAULT_BLACKSMITH_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/BASEMENT_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = 30, y = "6")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_BASEMENT_STRUCTURE.png")]
         public static const DEFAULT_BASEMENT_STRUCTURE: Class;
 	
-        [Embed(source = "../../../graphics/themes/default/BASEMENT_TMP_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = 43, y = 16)]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_BASEMENT_TMP_STRUCTURE.png")]
         public static const DEFAULT_BASEMENT_TMP_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/FOREST_CAMP_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = 36, y = "4")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_FOREST_CAMP_STRUCTURE.png")]
         public static const DEFAULT_FOREST_CAMP_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/DEAD_FIELD_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "25", y = "4")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_DEAD_FIELD_STRUCTURE.png")]
         public static const DEFAULT_DEAD_FIELD_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/default/GRAPE_FIELD_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "25", y = "4")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_GRAPE_FIELD_STRUCTURE.png")]
         public static const DEFAULT_GRAPE_FIELD_STRUCTURE: Class;
 
         // Pirates structure pack
-        [Embed(source = "../../../graphics/themes/pirates/WALL.png")]
+        [Embed(source = "../../../graphics/themes/pirates/PIRATES_WALL.png")]
         public static const PIRATES_WALL_TILESET: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/THUMBNAIL.png")]
+        [Embed(source = "../../../graphics/themes/pirates/PIRATES_THUMBNAIL.png")]
         public static const PIRATES_THEME_THUMBNAIL: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/BANNER.png")]
+        [Embed(source = "../../../graphics/themes/pirates/PIRATES_BANNER.png")]
         public static const PIRATES_THEME_BANNER: Class;
 
-        [Embed(source = "../../../graphics/themes/default/CONSTRUCTION_SMALL.png")]
-        [EmbedPosition(name = "map", x = 32, y = "1")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_CONSTRUCTION_SMALL.png")]
         public static const PIRATES_BUILDING_1: Class;
 
-        [Embed(source = "../../../graphics/themes/default/CONSTRUCTION.png")]
-        [EmbedPosition(name = "map", x = 102, y = "-3")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_CONSTRUCTION.png")]
         public static const PIRATES_BUILDING_2: Class;
 
-        [Embed(source = "../../../graphics/themes/default/CONSTRUCTION.png")]
-        [EmbedPosition(name = "map", x = 177, y = "68")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_CONSTRUCTION.png")]
         public static const PIRATES_BUILDING_3: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/ARMORY_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "25", y = "-18")]
+        [Embed(source = "../../../graphics/themes/pirates/PIRATES_ARMORY_STRUCTURE.png")]
         public static const PIRATES_ARMORY_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/FIELD_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "24", y = "5")]
+        [Embed(source = "../../../graphics/themes/pirates/PIRATES_FIELD_STRUCTURE.png")]
         public static const PIRATES_FIELD_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/BARRACK_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "75", y = "-52")]
+        [Embed(source = "../../../graphics/themes/pirates/PIRATES_BARRACK_STRUCTURE.png")]
         public static const PIRATES_BARRACK_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/FOUNDRY_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "27", y = "-7")]
+        [Embed(source = "../../../graphics/themes/pirates/PIRATES_FOUNDRY_STRUCTURE.png")]
         public static const PIRATES_FOUNDRY_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/STRONGHOLD_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "117", y = "-94")]
+        [Embed(source = "../../../graphics/themes/pirates/PIRATES_STRONGHOLD_STRUCTURE.png")]
         public static const PIRATES_STRONGHOLD_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/FARM_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "19", y = "-17")]
+        [Embed(source = "../../../graphics/themes/pirates/PIRATES_FARM_STRUCTURE.png")]
         public static const PIRATES_FARM_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/MARKET_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "16", y = "-11")]
+        [Embed(source = "../../../graphics/themes/pirates/PIRATES_MARKET_STRUCTURE.png")]
         public static const PIRATES_MARKET_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/REFINERY_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "32", y = "-24")]
+        [Embed(source = "../../../graphics/themes/pirates/PIRATES_REFINERY_STRUCTURE.png")]
         public static const PIRATES_REFINERY_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/STABLE_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "74", y = "-50")]
+        [Embed(source = "../../../graphics/themes/pirates/PIRATES_STABLE_STRUCTURE.png")]
         public static const PIRATES_STABLE_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/TOWER_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "37", y = "-41")]
+        [Embed(source = "../../../graphics/themes/pirates/PIRATES_TOWER_STRUCTURE.png")]
         public static const PIRATES_TOWER_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/TOWNCENTER_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "80", y = "-86")]
+        [Embed(source = "../../../graphics/themes/pirates/PIRATES_TOWNCENTER_STRUCTURE.png")]
         public static const PIRATES_TOWNCENTER_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/TRADING_POST_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "56", y = "-14")]
+        [Embed(source = "../../../graphics/themes/pirates/PIRATES_TRADING_POST_STRUCTURE.png")]
         public static const PIRATES_TRADING_POST_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/UNIVERSITY_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "101", y = "-40")]
+        [Embed(source = "../../../graphics/themes/pirates/PIRATES_UNIVERSITY_STRUCTURE.png")]
         public static const PIRATES_UNIVERSITY_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/LUMBERMILL_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "11", y = "-13")]
+        [Embed(source = "../../../graphics/themes/pirates/PIRATES_LUMBERMILL_STRUCTURE.png")]
         public static const PIRATES_LUMBERMILL_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/WORKSHOP_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "36", y = "-76")]
+        [Embed(source = "../../../graphics/themes/pirates/PIRATES_WORKSHOP_STRUCTURE.png")]
         public static const PIRATES_WORKSHOP_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/TRAINING_GROUND_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "74", y = "-13")]
+        [Embed(source = "../../../graphics/themes/pirates/PIRATES_TRAINING_GROUND_STRUCTURE.png")]
         public static const PIRATES_TRAINING_GROUND_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/CANNON_TOWER_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = 24, y = "-40")]
+        [Embed(source = "../../../graphics/themes/pirates/PIRATES_CANNON_TOWER_STRUCTURE.png")]
         public static const PIRATES_CANNON_TOWER_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/BLACKSMITH_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "19", y = "-47")]
+        [Embed(source = "../../../graphics/themes/pirates/PIRATES_BLACKSMITH_STRUCTURE.png")]
         public static const PIRATES_BLACKSMITH_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/BASEMENT_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "29", y = "4")]
+        [Embed(source = "../../../graphics/themes/pirates/PIRATES_BASEMENT_STRUCTURE.png")]
         public static const PIRATES_BASEMENT_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/FOREST_CAMP_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "23", y = "2")]
+        [Embed(source = "../../../graphics/themes/pirates/PIRATES_FOREST_CAMP_STRUCTURE.png")]
         public static const PIRATES_FOREST_CAMP_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/DEAD_FIELD_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "28", y = "10")]
+        [Embed(source = "../../../graphics/themes/pirates/PIRATES_DEAD_FIELD_STRUCTURE.png")]
         public static const PIRATES_DEAD_FIELD_STRUCTURE: Class;
 
-        [Embed(source = "../../../graphics/themes/pirates/GRAPE_FIELD_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "25", y = "7")]
+        [Embed(source = "../../../graphics/themes/pirates/PIRATES_GRAPE_FIELD_STRUCTURE.png")]
         public static const PIRATES_GRAPE_FIELD_STRUCTURE: Class;
     }
 }

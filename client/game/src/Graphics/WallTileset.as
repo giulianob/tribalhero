@@ -5,7 +5,7 @@ package src.Graphics {
     import flash.geom.Point;
     import flash.geom.Rectangle;
 
-    import src.Assets;
+    import src.FlashAssets;
 
     import src.Constants;
     import src.Objects.SimpleObject;
@@ -14,7 +14,7 @@ package src.Graphics {
 
 
         public static function getTile(theme: String, tileId: int): Bitmap {
-            var wallTileset: Bitmap = Assets.getSharedInstance(getSpriteName(theme));
+            var wallTileset: Bitmap = FlashAssets.getSharedInstance(getSpriteName(theme));
 
             var tilesetsrcX:int = int(tileId % Constants.tileSetTileW) * Constants.tileW;
             var tilesetsrcY:int = int(tileId / Constants.tileSetTileW) * Constants.tileH * 2;

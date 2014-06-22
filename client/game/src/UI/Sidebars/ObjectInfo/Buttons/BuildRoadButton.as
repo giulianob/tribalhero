@@ -14,8 +14,9 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
     import src.UI.Cursors.*;
     import src.UI.LookAndFeel.GameLookAndFeel;
     import src.UI.Tooltips.Tooltip;
+import src.Util.StringHelper;
 
-    public class BuildRoadButton extends ActionButton
+public class BuildRoadButton extends ActionButton
 	{
 		public function BuildRoadButton(parentObj: SimpleGameObject)
 		{
@@ -28,7 +29,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
             var lblBuildRoad: JLabel = new JLabel("Build Road", null, AsWingConstants.LEFT);
             GameLookAndFeel.changeClass(lblBuildRoad, "Tooltip.text");
             
-            var lblBuildRoadDescription: MultilineLabel = new MultilineLabel("All structures, other than Farms and Lumbermills, must be connected to a road.", 0, 20);
+            var lblBuildRoadDescription: MultilineLabel = new MultilineLabel(StringHelper.localize("ACTION_BUILD_ROAD"), 0, 20);
             GameLookAndFeel.changeClass(lblBuildRoadDescription, "Tooltip.text");
             
             tooltipPnl.appendAll(lblBuildRoad, lblBuildRoadDescription);            

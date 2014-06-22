@@ -1,5 +1,6 @@
 using System;
 using Game.Data.Events;
+using Game.Map;
 using Game.Util.Locking;
 
 namespace Game.Data
@@ -23,6 +24,8 @@ namespace Game.Data
         void BeginUpdate();
 
         void EndUpdate();
+
+        void Move(Position newPosition);
 
         string ToString();
     }

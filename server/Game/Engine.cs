@@ -21,6 +21,7 @@ using Game.Module.Remover;
 using Game.Setup;
 using Game.Setup.DependencyInjection;
 using Game.Util;
+using Mono.Unix;
 using Persistance;
 using SimpleInjector;
 using Thrift.Server;
@@ -162,7 +163,14 @@ namespace Game
             }
             finally
             {
-                Environment.Exit(1);
+                if (Global.IsRunningOnMono())
+                {
+                    UnixProcess.GetCurrentProcess().Kill();
+                }
+                else
+                {
+                    Environment.FailFast("Unhandled exception.. failing fast.");
+                }
             }
         }
 

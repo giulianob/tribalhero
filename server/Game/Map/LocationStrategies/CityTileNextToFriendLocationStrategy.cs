@@ -50,7 +50,7 @@ namespace Game.Map.LocationStrategies
 
             if (city == null)
             {
-                position = null;
+                position = new Position();
                 return Error.CityNotFound;
             }
 
@@ -69,7 +69,7 @@ namespace Game.Map.LocationStrategies
 
             if (positions.Count == 0)
             {
-                position = null;
+                position = new Position();
                 return Error.FriendMapFull;
             }
 

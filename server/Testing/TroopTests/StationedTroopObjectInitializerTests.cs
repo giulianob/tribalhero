@@ -50,8 +50,7 @@ namespace Testing.TroopTests
             
             stub.Station.Troops.RemoveStationed(Arg.Any<ushort>()).Returns(true);
 
-            stub.Station.PrimaryPosition.X.Returns<uint>(10);
-            stub.Station.PrimaryPosition.Y.Returns<uint>(20);
+            stub.Station.PrimaryPosition.Returns(new Position(10, 20));
 
             ITroopObject troopObject;
             troopInitializer.GetTroopObject(out troopObject).Should().Be(Error.Ok);

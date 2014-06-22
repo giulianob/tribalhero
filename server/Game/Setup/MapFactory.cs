@@ -82,9 +82,11 @@ namespace Game.Setup
             }
         }
         
-        public bool TooCloseToCities(Position position)
+        public bool TooCloseToCities(Position position, byte size)
         {
-            return tileLocator.ForeachMultitile(position.X, position.Y, MIN_DISTANCE_AWAY_FROM_CITIES).Any(eachPosition => cityLocationsByPosition.Contains(eachPosition));
+            return tileLocator.ForeachMultitile(position.X, position.Y, size)
+                              .SelectMany(eachPosition => tileLocator.ForeachTile(eachPosition.X, eachPosition.Y, MIN_DISTANCE_AWAY_FROM_CITIES))
+                              .Any(positionToCheck => cityLocationsByPosition.Contains(positionToCheck));
         }
     }
 }

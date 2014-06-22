@@ -7,24 +7,19 @@ namespace Game.Util
     public class GcMonitor
     {
         private static readonly ILogger Logger = LoggerFactory.Current.GetLogger<GcMonitor>();
-
+        
         public static void MonitorGc()
         {
             GC.RegisterForFullGCNotification(10, 10);
-
             Thread startpolling = new Thread(() =>
             {
                 while (true)
                 {
-                    Logger.Debug("Polling GC");
-
-                    ThreadPool.QueueUserWorkItem(obj => Logger.Debug("Thread pool is running"));
                     // Check for a notification of an approaching collection.
                     GCNotificationStatus s = GC.WaitForFullGCApproach(1000);
                     if (s == GCNotificationStatus.Succeeded)
                     {
                         //Call event
-
                         Logger.Debug("GC is about to begin");
                         GC.Collect();
 

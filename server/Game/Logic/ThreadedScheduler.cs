@@ -2,11 +2,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Common;
-using Game.Setup;
 using Game.Util;
 
 #endregion
@@ -15,6 +12,8 @@ namespace Game.Logic
 {
     public class ThreadedScheduler : IScheduler
     {
+        private readonly ITaskScheduler taskScheduler;
+
         private static readonly ILogger Logger = LoggerFactory.Current.GetLogger<ThreadedScheduler>();
 
         private readonly ScheduleComparer comparer = new ScheduleComparer();
@@ -39,8 +38,6 @@ namespace Game.Logic
 
         private int nextId;
 
-        private readonly TaskFactory factory;
-
         [ThreadStatic]
         private static ISchedule actionExecuting;
 
@@ -51,15 +48,15 @@ namespace Game.Logic
             }
         }
 
-        public ThreadedScheduler()
+        public ThreadedScheduler(ITaskScheduler taskScheduler)
         {
+            this.taskScheduler = taskScheduler;
+
             timer = new Timer(DispatchAction,
                               // main timer
                               null,
                               Timeout.Infinite,
                               Timeout.Infinite);
-            
-            factory = new TaskFactory(new LimitedConcurrencyLevelTaskScheduler(Config.scheduler_threads));
         }
 
         public bool Paused { get; private set; }
@@ -139,10 +136,10 @@ namespace Game.Logic
 
                 schedule.IsScheduled = true;
 
-                if (Logger.IsTraceEnabled)
-                {
-                    Logger.Trace(String.Format("Schedule added index[{0}] total[{1}].", index, schedules.Count));
-                }
+                //if (Logger.IsDebugEnabled)
+                //{
+                //    Log(schedule, String.Format("Schedule added index[{0}] total[{1}].", index, schedules.Count));
+                //}
 
                 if (index == 0)
                 {
@@ -177,14 +174,14 @@ namespace Game.Logic
         {
             if (ms == Timeout.Infinite)
             {
-                Logger.Trace(String.Format("Timer sleeping"));
+                Logger.Debug(String.Format("Scheduler sleeping"));
                 nextFire = DateTime.MinValue;
             }
             else
             {
-                if (Logger.IsTraceEnabled && ms > 0)
+                if (Logger.IsDebugEnabled)// && ms > 0)
                 {
-                    Logger.Trace(String.Format("Next schedule in {0} milliseconds.", ms));
+                    Logger.Debug(String.Format("Next schedule in {0} ms.", ms));
                 }
 
                 nextFire = SystemClock.Now.AddMilliseconds(ms);
@@ -200,7 +197,7 @@ namespace Game.Logic
             {
                 if (schedules.Count == 0 || Paused)
                 {
-                    Logger.Trace("In DispatchAction but no schedules");
+                    Logger.Debug("In DispatchAction but no schedules");
                     return;
                 }
                 
@@ -225,7 +222,9 @@ namespace Game.Logic
 
                 doneEvents.Add(job.Id, job.ResetEvent);
 
-                factory.StartNew(() => ExecuteAction(job));
+                //Log(job.Schedule, "Queueing for execution");
+
+                taskScheduler.QueueWorkItem(() => ExecuteAction(job));
 
                 SetNextActionTime();
             }
@@ -235,33 +234,31 @@ namespace Game.Logic
         {           
             var job = (ScheduledJob)obj;
 
+            //Log(job.Schedule, "Executing action");
+
             actionExecuting = job.Schedule;
 
-            var startTicks = Environment.TickCount;
+            var scheduledDelta = SystemClock.Now.Subtract(job.Schedule.Time);
+            if (scheduledDelta.TotalSeconds > 1)
+            {
+                Log(job.Schedule, string.Format("Action fired {0}ms late", scheduledDelta));
+            }
+            else if (scheduledDelta.TotalSeconds < -1)
+            {
+                Log(job.Schedule, string.Format("Action fired {0}ms early", scheduledDelta));
+            }
             
+
+            var startTicks = Environment.TickCount;
+
+
             job.Schedule.Callback(null);
+
 
             var deltaTicks = Environment.TickCount - startTicks;
             if (deltaTicks > 1000)
             {
-                var gameAction = job.Schedule as GameAction;
-                if (gameAction == null)
-                {
-                    Logger.Warn("Slow action took {0}ms to complete. ScheduleType[{1}] ScheduleTime[{2}]",
-                                deltaTicks,
-                                job.Schedule.GetType().FullName,
-                                job.Schedule.Time);
-                }
-                else
-                {
-                    Logger.Warn("Slow action took {0}ms to complete. ScheduleType[{1}] ScheduleTime[{2}] LocationType[{3}] LocationId[{4}] ActionId[{5}]",
-                                deltaTicks,
-                                job.Schedule.GetType().FullName,
-                                job.Schedule.Time,
-                                gameAction.Location.LocationType.ToString(),
-                                gameAction.Location.LocationId,
-                                gameAction.ActionId);
-                }
+                Log(job.Schedule, string.Format("Slow action took {0}ms to complete.", deltaTicks));
             }
 
             Interlocked.Increment(ref actionsFired);
@@ -288,7 +285,7 @@ namespace Game.Logic
 
             if (schedules.Count == 0)
             {
-                Logger.Trace("No actions available.");
+                Logger.Debug("No actions available.");
                 SetTimer(Timeout.Infinite);
                 return;
             }
@@ -296,6 +293,28 @@ namespace Game.Logic
             TimeSpan ts = schedules[0].Time.Subtract(SystemClock.Now);
             long ms = Math.Max(0, (long)ts.TotalMilliseconds);
             SetTimer(ms);
+        }
+
+        private void Log(ISchedule schedule, string messagePrefix)
+        {
+            var gameAction = schedule as GameAction;
+            if (gameAction == null)
+            {                
+                Logger.Warn("{0} ScheduleType[{1}] ScheduleTime[{2}]",
+                            messagePrefix,
+                            schedule.GetType().FullName,
+                            schedule.Time);
+            }
+            else
+            {
+                Logger.Warn("{0}. ScheduleType[{1}] ScheduleTime[{2}] LocationType[{3}] LocationId[{4}] ActionId[{5}]",
+                            messagePrefix,
+                            schedule.GetType().FullName,
+                            schedule.Time,
+                            gameAction.Location.LocationType.ToString(),
+                            gameAction.Location.LocationId,
+                            gameAction.ActionId);
+            }
         }
 
         private class ScheduledJob
@@ -312,163 +331,6 @@ namespace Game.Logic
             {
                 Created = DateTime.UtcNow;
             }
-        }
-
-        /// <summary>
-        /// Provides a task scheduler that ensures a maximum concurrency level while
-        /// running on top of the ThreadPool.
-        /// </summary>
-        public class LimitedConcurrencyLevelTaskScheduler : TaskScheduler
-        {
-            /// <summary>Whether the current thread is processing work items.</summary>
-            [ThreadStatic]
-            private static bool _currentThreadIsProcessingItems;
-
-            /// <summary>The list of tasks to be executed.</summary>
-            private readonly LinkedList<Task> _tasks = new LinkedList<Task>(); // protected by lock(_tasks)
-
-            /// <summary>The maximum concurrency level allowed by this scheduler.</summary>
-            private readonly int _maxDegreeOfParallelism;
-
-            /// <summary>Whether the scheduler is currently processing work items.</summary>
-            private int _delegatesQueuedOrRunning = 0; // protected by lock(_tasks)
-
-            /// <summary>
-            /// Initializes an instance of the LimitedConcurrencyLevelTaskScheduler class with the
-            /// specified degree of parallelism.
-            /// </summary>
-            /// <param name="maxDegreeOfParallelism">The maximum degree of parallelism provided by this scheduler.</param>
-            public LimitedConcurrencyLevelTaskScheduler(int maxDegreeOfParallelism)
-            {
-                if (maxDegreeOfParallelism < 1)
-                    throw new ArgumentOutOfRangeException("maxDegreeOfParallelism");
-                _maxDegreeOfParallelism = maxDegreeOfParallelism;
-            }
-
-            /// <summary>Queues a task to the scheduler.</summary>
-            /// <param name="task">The task to be queued.</param>
-            protected override sealed void QueueTask(Task task)
-            {
-                // Add the task to the list of tasks to be processed.  If there aren't enough
-                // delegates currently queued or running to process tasks, schedule another.
-                lock (_tasks)
-                {
-                    task.ContinueWith(continuation =>
-                    {
-                        Logger.Error("Got error in LimitedConcurrencyLevelTaskScheduler.QueueTask");
-
-                        Engine.UnhandledExceptionHandler(continuation.Exception);
-                    }, TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.OnlyOnFaulted);
-
-                    _tasks.AddLast(task);
-                    if (_delegatesQueuedOrRunning < _maxDegreeOfParallelism)
-                    {
-                        ++_delegatesQueuedOrRunning;
-                        NotifyThreadPoolOfPendingWork();
-                    }
-                }
-            }
-
-            /// <summary>
-            /// Informs the ThreadPool that there's work to be executed for this scheduler.
-            /// </summary>
-            private void NotifyThreadPoolOfPendingWork()
-            {
-                ThreadPool.QueueUserWorkItem(_ =>
-                    {
-                        // Note that the current thread is now processing work items.
-                        // This is necessary to enable inlining of tasks into this thread.
-                        _currentThreadIsProcessingItems = true;
-                        try
-                        {
-                            // Process all available items in the queue.
-                            while (true)
-                            {
-                                Task item;
-                                lock (_tasks)
-                                {
-                                    // When there are no more items to be processed,
-                                    // note that we're done processing, and get out.
-                                    if (_tasks.Count == 0)
-                                    {
-                                        --_delegatesQueuedOrRunning;
-                                        break;
-                                    }
-
-                                    // Get the next item from the queue
-                                    item = _tasks.First.Value;
-                                    _tasks.RemoveFirst();
-                                }
-
-                                // Execute the task we pulled out of the queue
-                                base.TryExecuteTask(item);                                
-                            }
-                        }
-                                // We're done processing items on the current thread
-                        finally
-                        {
-                            _currentThreadIsProcessingItems = false;
-                        }
-                    }, null);
-            }
-
-            /// <summary>Attempts to execute the specified task on the current thread.</summary>
-            /// <param name="task">The task to be executed.</param>
-            /// <param name="taskWasPreviouslyQueued"></param>
-            /// <returns>Whether the task could be executed on the current thread.</returns>
-            protected override sealed bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued)
-            {
-                // If this thread isn't already processing a task, we don't support inlining
-                if (!_currentThreadIsProcessingItems)
-                    return false;
-
-                // If the task was previously queued, remove it from the queue
-                if (taskWasPreviouslyQueued)
-                    TryDequeue(task);
-
-                // Try to run the task.
-                return base.TryExecuteTask(task);
-            }
-
-            /// <summary>Attempts to remove a previously scheduled task from the scheduler.</summary>
-            /// <param name="task">The task to be removed.</param>
-            /// <returns>Whether the task could be found and removed.</returns>
-            protected override sealed bool TryDequeue(Task task)
-            {
-                lock (_tasks)
-                {
-                    return _tasks.Remove(task);
-                }
-            }
-
-            /// <summary>Gets the maximum concurrency level supported by this scheduler.</summary>
-            public override sealed int MaximumConcurrencyLevel
-            {
-                get
-                {
-                    return _maxDegreeOfParallelism;
-                }
-            }
-
-            /// <summary>Gets an enumerable of the tasks currently scheduled on this scheduler.</summary>
-            /// <returns>An enumerable of the tasks currently scheduled.</returns>
-            protected override sealed IEnumerable<Task> GetScheduledTasks()
-            {
-                bool lockTaken = false;
-                try
-                {
-                    Monitor.TryEnter(_tasks, ref lockTaken);
-                    if (lockTaken)
-                        return _tasks.ToArray();
-                    else
-                        throw new NotSupportedException();
-                }
-                finally
-                {
-                    if (lockTaken)
-                        Monitor.Exit(_tasks);
-                }
-            }
-        }
+        }        
     }
 }

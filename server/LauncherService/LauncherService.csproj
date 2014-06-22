@@ -81,7 +81,7 @@
       <HintPath>..\Lib\ndesk.options\NDesk.Options.dll</HintPath>
     </Reference>
     <Reference Include="NStatsD.Client">
-      <HintPath>..\packages\NStatsD.Client.1.3.3.0\lib\net40\NStatsD.Client.dll</HintPath>
+      <HintPath>..\packages\NStatsD.Client.1.4.1.0\lib\net40\NStatsD.Client.dll</HintPath>
     </Reference>
     <Reference Include="SimpleInjector">
       <HintPath>..\packages\SimpleInjector.2.5.0\lib\net45\SimpleInjector.dll</HintPath>

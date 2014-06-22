@@ -6,7 +6,7 @@
     import flash.display.DisplayObjectContainer;
     import flash.geom.Point;
 
-    import src.Assets;
+    import src.FlashAssets;
 
     import src.Constants;
     import src.Global;

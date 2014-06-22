@@ -7,7 +7,7 @@
     import flash.geom.Matrix;
     import flash.utils.getDefinitionByName;
 
-    import src.Assets;
+    import src.FlashAssets;
 
     import src.Map.Map;
     import src.Objects.BarbarianTribe;
@@ -110,7 +110,7 @@
 		{
             var sprite: DisplayObjectContainer;
 			if (type >= 1000)
-				sprite = StructureFactory.getSprite(theme, type, level);
+				sprite = StructureFactory.getFlashSprite(theme, type, level);
 			else if (type == 100)
 				sprite = TroopFactory.getSprite();
 			else
@@ -139,7 +139,7 @@
 			var sprite: DisplayObjectContainer;
 			if (obj is StructureObject) {
                 var structure: StructureObject = StructureObject(obj);
-				sprite = StructureFactory.getSprite(structure.theme, structure.type, structure.level, withPosition);
+				sprite = StructureFactory.getFlashSprite(structure.theme, structure.type, structure.level, withPosition);
             }
 			else if (obj is TroopObject)
 				sprite = TroopFactory.getSprite();
@@ -162,14 +162,14 @@
 		public static function getNewCityPlaceholderSprite() : DisplayObjectContainer
 		{
 			var obj: Sprite = new Sprite();
-			obj.addChild(Assets.getInstance("DEFAULT_FOUNDATION"));
+			obj.addChild(FlashAssets.getInstance("DEFAULT_FOUNDATION"));
 			return obj;
 		}
 		
 		public static function getNewCityPlaceholderInstance(x: int, y: int) : NewCityPlaceholder
 		{
 			var obj: NewCityPlaceholder = new NewCityPlaceholder(x, y);
-			obj.setSprite(Assets.getInstance("DEFAULT_FOUNDATION", "map"), Assets.getPosition("DEFAULT_FOUNDATION", "map"));
+			obj.setSprite(FlashAssets.getInstance("DEFAULT_FOUNDATION", "map"), FlashAssets.getPosition("DEFAULT_FOUNDATION", "map"));
 			return obj;
 		}
 	}

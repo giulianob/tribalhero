@@ -2,7 +2,7 @@ package src.Objects {
     import flash.display.Bitmap;
     import flash.geom.Point;
 
-    import src.Assets;
+    import src.FlashAssets;
 
     import src.Constants;
     import src.Graphics.WallTileset;

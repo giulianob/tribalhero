@@ -1,12 +1,10 @@
 ﻿package src.Objects.Factories {
 
-    import flash.display.Bitmap;
     import flash.display.DisplayObject;
     import flash.display.DisplayObjectContainer;
     import flash.display.Sprite;
 
-    import src.Assets;
-    import src.Constants;
+    import src.FlashAssets;
     import src.Global;
     import src.Objects.Forest;
     import src.Objects.States.GameObjectState;
@@ -24,7 +22,7 @@
         {
             var assetName: String = getSpriteName();
 
-            var image: DisplayObject = Assets.getInstance(assetName, withPosition);
+            var image: DisplayObject = FlashAssets.getInstance(assetName, withPosition);
 
             var sprite: Sprite = new Sprite();
             sprite.addChild(image);
@@ -36,7 +34,7 @@
 		{
 			var forestObj: Forest = new Forest(type, state, objX, objY, size, groupId, objectId);
 
-            forestObj.setSprite(getSprite("map"), Assets.getPosition(getSpriteName(), "map"));
+            forestObj.setSprite(getSprite("map"), FlashAssets.getPosition(getSpriteName(), "map"));
 
 			forestObj.setOnSelect(Global.map.selectObject);
 			

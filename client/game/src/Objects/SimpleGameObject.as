@@ -2,13 +2,15 @@
 package src.Objects {
     import com.greensock.TweenMax;
 
-    import flash.display.DisplayObject;
-    import flash.events.Event;
+    import starling.display.*;
+
     import flash.geom.Point;
 
     import src.Constants;
 
     import src.Objects.States.GameObjectState;
+
+    import starling.events.Event;
 
     public class SimpleGameObject extends SimpleObject {
 		
@@ -36,7 +38,7 @@ package src.Objects {
 			
 			State = state;
 			
-			mouseEnabled = false;
+			touchable = false;
 			addEventListener(OBJECT_UPDATE, onObjectUpdate);
 		}				
 

@@ -128,18 +128,20 @@
                 Constants.session.hostname = parms.hostname;
             }
 
-			//Define login type and perform login action
-			if (parms.lsessid)
-			{
-				siteVersion = parms.siteVersion;
-				Constants.session.loginKey = parms.lsessid;
-				loadData();
-			}
-			else
-			{
-				siteVersion = new Date().getTime().toString();
-				showLoginDialog();
-			}			                                         
+            StarlingStage.init(stage).then(function(value: *): void {
+                //Define login type and perform login action
+                if (parms.lsessid)
+                {
+                    siteVersion = parms.siteVersion;
+                    Constants.session.loginKey = parms.lsessid;
+                    loadData();
+                }
+                else
+                {
+                    siteVersion = new Date().getTime().toString();
+                    showLoginDialog();
+                }
+            });
 		}
 
 		private function loadData(): void

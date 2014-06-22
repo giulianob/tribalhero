@@ -1,7 +1,7 @@
 package src.Objects.Store {
     import flash.display.Bitmap;
 
-    import src.Assets;
+    import src.FlashAssets;
     import src.Constants;
     import src.Util.StringHelper;
 
@@ -31,7 +31,7 @@ package src.Objects.Store {
         }
 
         override public function thumbnail(): Bitmap {
-            return Assets.getInstance(id + "_THUMBNAIL")
+            return FlashAssets.getInstance(id + "_THUMBNAIL")
         }
     }
 }

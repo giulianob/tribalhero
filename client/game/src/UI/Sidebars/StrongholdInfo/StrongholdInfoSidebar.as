@@ -71,7 +71,7 @@
 
                     for each (var theme: String in Constants.session.themesPurchased) {
                         var newSprite: String = StrongholdFactory.getSpriteName(theme);
-                        if (!Assets.doesSpriteExist(newSprite)) {
+                        if (!FlashAssets.doesSpriteExist(newSprite)) {
                             continue;
                         }
 

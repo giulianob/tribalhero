@@ -4,7 +4,7 @@
     import flash.display.DisplayObjectContainer;
     import flash.display.Sprite;
 
-    import src.Assets;
+    import src.FlashAssets;
     import src.Constants;
     import src.Global;
     import src.Objects.States.GameObjectState;
@@ -21,7 +21,7 @@
 
 		public static function getSprite(theme: String, withPosition: String = ""): DisplayObjectContainer
 		{
-			var image: Bitmap = Assets.getInstance(getSpriteName(theme), withPosition);
+			var image: Bitmap = FlashAssets.getInstance(getSpriteName(theme), withPosition);
 
             var sprite: Sprite = new Sprite();
 
@@ -34,7 +34,7 @@
 		{
 			var strongholdObj: Stronghold = new Stronghold(type, state, objX, objY, size, groupId, objectId, level, tribeId, gateMax, themeId);
 
-			strongholdObj.setSprite(getSprite(themeId, "map"), Assets.getPosition(getSpriteName(themeId), "map"));
+			strongholdObj.setSprite(getSprite(themeId, "map"), FlashAssets.getPosition(getSpriteName(themeId), "map"));
 
 			strongholdObj.setOnSelect(Global.map.selectObject);
 			

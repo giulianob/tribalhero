@@ -6,7 +6,7 @@
     import flash.display.MovieClip;
     import flash.events.Event;
 
-    import src.Assets;
+    import src.FlashAssets;
     import src.Constants;
     import src.Map.Position;
     import src.Map.ScreenPosition;
@@ -52,7 +52,7 @@
 			circle = new MovieClip();
 			tiles = [];
 			for each (var position: Position in TileLocator.foreachTile(size, size * 2 + 1, size)) {
-                var tiledata: DisplayObject = Assets.getInstance("MASK_TILE");
+                var tiledata: DisplayObject = FlashAssets.getInstance("MASK_TILE");
                 var tile: Bitmap = new Bitmap(new BitmapData(Constants.tileW, Constants.tileH, true, 0x000000));
                 tile.smoothing = true;
                 var point: ScreenPosition = position.toScreenPosition();

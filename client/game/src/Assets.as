@@ -525,7 +525,7 @@
         public static const PIRATES_STABLE_STRUCTURE: Class;
 
         [Embed(source = "../../../graphics/themes/pirates/TOWER_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "37", y = "-41")]
+        [EmbedPosition(name = "map", x = "25", y = "-51")]
         public static const PIRATES_TOWER_STRUCTURE: Class;
 
         [Embed(source = "../../../graphics/themes/pirates/TOWNCENTER_STRUCTURE.png")]
@@ -537,7 +537,7 @@
         public static const PIRATES_TRADING_POST_STRUCTURE: Class;
 
         [Embed(source = "../../../graphics/themes/pirates/UNIVERSITY_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "101", y = "-40")]
+        [EmbedPosition(name = "map", x = "60", y = "-110")]
         public static const PIRATES_UNIVERSITY_STRUCTURE: Class;
 
         [Embed(source = "../../../graphics/themes/pirates/LUMBERMILL_STRUCTURE.png")]
@@ -553,7 +553,7 @@
         public static const PIRATES_TRAINING_GROUND_STRUCTURE: Class;
 
         [Embed(source = "../../../graphics/themes/pirates/CANNON_TOWER_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = 24, y = "-40")]
+        [EmbedPosition(name = "map", x = "25", y = "-51")]
         public static const PIRATES_CANNON_TOWER_STRUCTURE: Class;
 
         [Embed(source = "../../../graphics/themes/pirates/BLACKSMITH_STRUCTURE.png")]

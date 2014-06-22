@@ -179,10 +179,10 @@ namespace Game.Logic
             }
             else
             {
-                if (Logger.IsDebugEnabled)// && ms > 0)
-                {
-                    Logger.Debug(String.Format("Next schedule in {0} ms.", ms));
-                }
+//                if (Logger.IsDebugEnabled && ms > 0)
+//                {
+//                    Logger.Debug(String.Format("Next schedule in {0} ms.", ms));
+//                }
 
                 nextFire = SystemClock.Now.AddMilliseconds(ms);
             }
@@ -193,8 +193,6 @@ namespace Game.Logic
         // call back for the timer function
         private void DispatchAction(object obj) // obj ignored
         {
-            Logger.Debug("In DispatchAction");
-
             lock (schedulesLock)
             {
                 if (schedules.Count == 0 || Paused)

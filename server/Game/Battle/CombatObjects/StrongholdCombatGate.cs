@@ -1,4 +1,5 @@
-﻿using Game.Data;
+﻿using Game.Comm;
+using Game.Data;
 using Game.Data.Stronghold;
 using Game.Setup;
 using Persistance;
@@ -36,6 +37,12 @@ namespace Game.Battle.CombatObjects
                                                     out decimal actualDmg)
         {
             actualDmg = baseDmg / 10;
+        }
+
+        public override void AddPacketInfo(Packet packet)
+        {
+            base.AddPacketInfo(packet);
+            packet.AddString(Stronghold.Theme);
         }
     }
 }

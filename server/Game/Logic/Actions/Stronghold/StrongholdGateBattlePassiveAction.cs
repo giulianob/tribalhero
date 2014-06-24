@@ -180,7 +180,10 @@ namespace Game.Logic.Actions
 
                 var winningTribe = tribesByDamage.FirstOrDefault(x => attackerTribes.ContainsKey(x.TribeId));
 
-                if (winningTribe != null)
+                // Open the gate to the tribe that won unless the tribe that won is
+                // the tribe that owns the stronghold. This can happen if members switch tribes during an attack to the tribe
+                // that owns the SH.
+                if (winningTribe != null && attackerTribes[winningTribe.TribeId] != stronghold.Tribe)
                 {
                     stronghold.BeginUpdate();
                     stronghold.GateOpenTo = attackerTribes[winningTribe.TribeId];

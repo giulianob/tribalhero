@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
+<!-- $TexturePacker:SmartUpdate:dceb631fd0f4edbf99f01adcff96fbc2:8f3d015515095d2cce1a4d434c2b05f8:67e41789a95267cd5dc6eebabda3cb22$ -->
+<TextureAtlas imagePath="ICONS_ATLAS.png">
+    <SubTexture name="ICON_ARROW_LEFT" x="108" y="36" width="16" height="12" frameX="0" frameY="-2" frameWidth="16" frameHeight="16"/>
+    <SubTexture name="ICON_ARROW_RIGHT" x="54" y="56" width="16" height="12" frameX="0" frameY="-2" frameWidth="16" frameHeight="16"/>
+    <SubTexture name="ICON_BELL" x="90" y="20" width="16" height="16"/>
+    <SubTexture name="ICON_BOOK_SMALL" x="72" y="20" width="16" height="16"/>
+    <SubTexture name="ICON_CHECKMARK" x="108" y="2" width="16" height="16"/>
+    <SubTexture name="ICON_COIN" x="104" y="50" width="8" height="8"/>
+    <SubTexture name="ICON_CROP" x="90" y="2" width="16" height="16"/>
+    <SubTexture name="ICON_GLOBE" x="72" y="2" width="16" height="16"/>
+    <SubTexture name="ICON_GLOBE_STANDALONE" x="90" y="44" width="12" height="12"/>
+    <SubTexture name="ICON_GOLD" x="54" y="38" width="16" height="16"/>
+    <SubTexture name="ICON_HAMMER" x="108" y="20" width="16" height="14" frameX="0" frameY="-2" frameWidth="16" frameHeight="16"/>
+    <SubTexture name="ICON_IRON" x="2" y="70" rotated="true" width="16" height="18"/>
+    <SubTexture name="ICON_LABOR" x="54" y="20" width="16" height="16"/>
+    <SubTexture name="ICON_LEVEL_UP" x="54" y="2" width="16" height="16"/>
+    <SubTexture name="ICON_MAP" x="38" y="106" width="16" height="16"/>
+    <SubTexture name="ICON_MESSAGING" x="38" y="88" width="16" height="16"/>
+    <SubTexture name="ICON_MINIMAP_ICON_BLUE" x="36" y="56" width="16" height="12" frameX="0" frameY="-2" frameWidth="16" frameHeight="16"/>
+    <SubTexture name="ICON_MINIMAP_ICON_RED" x="54" y="56" width="16" height="12" frameX="0" frameY="-2" frameWidth="16" frameHeight="16"/>
+    <SubTexture name="ICON_MINUS" x="84" y="52" rotated="true" width="4" height="10" frameX="-2" frameY="-6" frameWidth="16" frameHeight="16"/>
+    <SubTexture name="ICON_PAPER_SCROLL" x="2" y="36" width="32" height="32"/>
+    <SubTexture name="ICON_PAPER_SCROLL_ALERT" x="2" y="2" width="32" height="32"/>
+    <SubTexture name="ICON_PLUS" x="72" y="52" width="10" height="10" frameX="-3" frameY="-3" frameWidth="16" frameHeight="16"/>
+    <SubTexture name="ICON_QUESTION" x="90" y="38" width="16" height="4" frameX="0" frameY="-10" frameWidth="16" frameHeight="16"/>
+    <SubTexture name="ICON_RED_X" x="38" y="70" width="16" height="16"/>
+    <SubTexture name="ICON_SHIELD" x="36" y="38" width="16" height="16"/>
+    <SubTexture name="ICON_SINGLE_SWORD" x="36" y="20" width="16" height="16"/>
+    <SubTexture name="ICON_STAR" x="36" y="2" width="16" height="16"/>
+    <SubTexture name="ICON_STAR_EMPTY" x="20" y="106" width="16" height="16"/>
+    <SubTexture name="ICON_STAR_HALF" x="20" y="88" width="16" height="16"/>
+    <SubTexture name="ICON_SWORD" x="20" y="70" width="16" height="16"/>
+    <SubTexture name="ICON_UNFRIEND" x="2" y="109" width="16" height="16"/>
+    <SubTexture name="ICON_UPGRADE" x="72" y="38" rotated="true" width="16" height="12" frameX="-2" frameY="0" frameWidth="16" frameHeight="16"/>
+    <SubTexture name="ICON_WOOD" x="2" y="90" rotated="true" width="16" height="17"/>
+</TextureAtlas>

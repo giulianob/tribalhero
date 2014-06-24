@@ -200,8 +200,8 @@
       "y":-50
    },
    "PIRATES_TOWER_STRUCTURE":{
-      "x":37,
-      "y":-41
+      "x":25,
+      "y":-51
    },
    "PIRATES_TOWNCENTER_STRUCTURE":{
       "x":80,
@@ -212,8 +212,8 @@
       "y":-14
    },
    "PIRATES_UNIVERSITY_STRUCTURE":{
-      "x":101,
-      "y":-40
+      "x":60,
+      "y":-110
    },
    "PIRATES_LUMBERMILL_STRUCTURE":{
       "x":11,
@@ -228,8 +228,8 @@
       "y":-13
    },
    "PIRATES_CANNON_TOWER_STRUCTURE":{
-      "x":24,
-      "y":-40
+      "x":25,
+      "y":-51
    },
    "PIRATES_BLACKSMITH_STRUCTURE":{
       "x":19,

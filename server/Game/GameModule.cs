@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using Amib.Threading;
 using Dawn.Net.Sockets;
 using Game.Battle;
 using Game.Battle.CombatObjects;
@@ -203,7 +205,23 @@ namespace Game
             
             #region Utils
 
-            container.Register<IScheduler, ThreadedScheduler>(Lifestyle.Singleton);
+            container.Register<SmartThreadPool>(() => new SmartThreadPool(), Lifestyle.Singleton);
+
+            container.Register<IScheduler>(() =>
+            {
+                ITaskScheduler taskScheduler;
+                if (Config.scheduler_use_smartthreadpoool)
+                {
+                    var threadPool = container.GetInstance<SmartThreadPool>();
+                    taskScheduler = new SmartThreadPoolTaskScheduler(threadPool.CreateWorkItemsGroup(Config.scheduler_threads));
+                }
+                else
+                {
+                    taskScheduler = new LimitedConcurrencyLevelTaskScheduler.TaskFactory(new LimitedConcurrencyLevelTaskScheduler(Config.scheduler_threads));
+                }
+
+                return new ThreadedScheduler(taskScheduler);
+            }, Lifestyle.Singleton);
             container.Register<ITileLocator, TileLocator>();
             container.Register<GetRandom>(() => new Random().Next);
             container.Register<Procedure>(Lifestyle.Singleton);
@@ -214,7 +232,7 @@ namespace Game
             container.Register<CallbackProcedure>(Lifestyle.Singleton);
             container.Register<Random>(() => new Random());
             container.Register<ISystemVariableManager, SystemVariableManager>(Lifestyle.Singleton);
-            container.Register<SystemVariablesUpdater>(Lifestyle.Singleton);
+            container.Register<SystemVariablesUpdater>(Lifestyle.Singleton);            
 
             #endregion
 

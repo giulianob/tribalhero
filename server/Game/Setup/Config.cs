@@ -29,6 +29,7 @@ namespace Game.Setup
         public static bool server_admin_only;
         public static bool server_admin_always;
         public static int scheduler_threads = 25;
+        public static bool scheduler_use_smartthreadpoool = true;
         public static bool server_production = true;
         public static bool xdebug_enabled = false;
         public static string flash_domain = "tribalhero.com";
@@ -41,6 +42,7 @@ namespace Game.Setup
         public static string data_folder = "conf/data/";
         public static string regions_folder = "conf/regions/";
         public static bool locks_check;
+        public static bool gc_monitor;
 
         #endregion
 
@@ -188,8 +190,8 @@ namespace Game.Setup
             }
         }
 
-        public static readonly Dictionary<string, string> ExtraProperties = new Dictionary<string, string>();        
-        
+        public static readonly Dictionary<string, string> ExtraProperties = new Dictionary<string, string>();
+
         public static void LoadConfigFile(string settingsFile = null)
         {
             if (string.IsNullOrEmpty(settingsFile))

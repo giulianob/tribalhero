@@ -7,7 +7,7 @@ package src {
         [Embed(source = "../../../graphics/Tilemap.png")]
         public static const TILESET: Class;
 
-        [Embed(source = "../../../graphics/objects/OBJECTS_ATLAS.png")]
+        [Embed(source = "../../../graphics/atlas/OBJECTS_ATLAS.png")]
         public static const OBJECTS_ATLAS: Class;
         [Embed(source = "../../../graphics/objects/OBJECTS_ATLAS.xml", mimeType="application/octet-stream")]
         public static const OBJECTS_ATLAS_XML:Class;

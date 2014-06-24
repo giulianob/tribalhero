@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
+<!-- $TexturePacker:SmartUpdate:22fd965bd415b53a2c0136badc267d48:edf2e38c4e4aa1aed7ae7ac99098114f:3d6f789254fe6d2b935ad16c7400be7b$ -->
+<TextureAtlas imagePath="OBJECTS_ATLAS.png">
+    <SubTexture name="FOREST_LVL_1" x="160" y="120" rotated="true" width="72" height="124"/>
+    <SubTexture name="FOREST_LVL_2" x="164" y="2" rotated="true" width="79" height="116"/>
+    <SubTexture name="FOREST_LVL_3" x="2" y="179" width="147" height="73"/>
+    <SubTexture name="FOREST_LVL_4" x="2" y="84" width="156" height="93"/>
+    <SubTexture name="MASK_TILE" x="2" y="2" width="160" height="80"/>
+</TextureAtlas>

@@ -106,6 +106,7 @@ namespace Game.Comm
             bool help = false;
             ushort stubId = 0;
             string cityName = string.Empty;
+            string expectedState = string.Empty;
 
             try
             {
@@ -113,7 +114,8 @@ namespace Game.Comm
                 {
                         {"?|help|h", v => help = true},
                         {"city=", v => cityName = v.TrimMatchingQuotes()},
-                        {"stubId=", v => stubId = ushort.Parse(v.TrimMatchingQuotes())}
+                        {"stubId=", v => stubId = ushort.Parse(v.TrimMatchingQuotes())},
+                        {"expectedState=", v => expectedState = v.TrimMatchingQuotes() }
                 };
                 p.Parse(parms);
             }
@@ -124,7 +126,7 @@ namespace Game.Comm
 
             if (help || cityName == string.Empty)
             {
-                return "deletestucktroop --city=### --stubId=###";
+                return "deletestucktroop --city=### --stubId=### --expectedState=TroopStateEnum";
             }
 
             uint cityId;
@@ -136,6 +138,12 @@ namespace Game.Comm
             ICity city;
             return locker.Lock(cityId, out city).Do(() =>
             {
+                TroopState expectedStateEnum;
+                if (!Enum.TryParse(expectedState, out expectedStateEnum))
+                {
+                    return "Invalid expected state entered";
+                }
+
                 if (city == null)
                 {
                     return "City not found";
@@ -147,6 +155,11 @@ namespace Game.Comm
                     return "Stub not found";
                 }
 
+                if (stub.State != expectedStateEnum)
+                {
+                    return "Stub is not in the expected state";
+                }
+                
                 if (stub == city.DefaultTroop)
                 {
                     return "Cant remove local troop";

@@ -89,7 +89,7 @@ namespace Game.Data.Troop
             idGen.Release(id);
             dict.Remove(id);
             stub.Update -= StubUpdateEvent;
-            stub.UnitUpdate -= StubUnitUpdateEvent;
+            stub.UnitUpdate -= StubUnitUpdateEvent;            
             FireRemoved(stub);
         }
 
@@ -204,7 +204,8 @@ namespace Game.Data.Troop
                 throw new Exception("Trying to remove invalid troop");
             }
 
-            DeregisterStub(id, stub);
+            stub.FireRemoved();
+            DeregisterStub(id, stub);            
             dbManager.Delete(stub);
 
             return true;
@@ -291,7 +292,7 @@ namespace Game.Data.Troop
         {
             CheckUpdateMode();
             
-            TroopRemoved(stub);            
+            TroopRemoved(stub);
         }
 
         #endregion

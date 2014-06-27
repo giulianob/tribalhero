@@ -32,7 +32,7 @@
 			{
 				if (!obj.isSelectable()) continue;
 
-                var structureSprite: DisplayObject = ObjectFactory.getSprite(obj);
+                var structureSprite: DisplayObject = ObjectFactory.getFlashSprite(obj);
                 Util.resizeSprite(structureSprite, structureSprite.width, 100);
 
 				var icon: MovieClip = new MovieClip();

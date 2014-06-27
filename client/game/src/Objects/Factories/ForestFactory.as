@@ -1,10 +1,5 @@
 ﻿package src.Objects.Factories {
 
-    import flash.display.DisplayObject;
-    import flash.display.DisplayObjectContainer;
-    import flash.display.Sprite;
-
-    import src.FlashAssets;
     import src.Global;
     import src.Objects.Forest;
     import src.Objects.States.GameObjectState;
@@ -14,30 +9,17 @@
 		public function ForestFactory() {
 		}
 
-        private static function getSpriteName(): String {
+        public static function getSpriteName(): String {
             return "FOREST_LVL_4";
-        }
-
-        public static function getSprite(withPosition: String = ""): DisplayObjectContainer
-        {
-            var assetName: String = getSpriteName();
-
-            var image: DisplayObject = FlashAssets.getInstance(assetName, withPosition);
-
-            var sprite: Sprite = new Sprite();
-            sprite.addChild(image);
-
-            return sprite;
         }
 
 		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, size: int, groupId: int, objectId: int): Forest
 		{
+            var typeName: String = getSpriteName();
+
 			var forestObj: Forest = new Forest(type, state, objX, objY, size, groupId, objectId);
-
-            forestObj.setSprite(getSprite("map"), FlashAssets.getPosition(getSpriteName(), "map"));
-
+            forestObj.setSprite(SpriteFactory.getStarlingImage(typeName), SpriteFactory.getMapPosition(typeName));
 			forestObj.setOnSelect(Global.map.selectObject);
-			
 			return forestObj;
 		}
 	}

@@ -1,14 +1,13 @@
 package src.Objects {
-    import flash.display.Bitmap;
     import flash.geom.Point;
-
-    import src.FlashAssets;
 
     import src.Constants;
     import src.Graphics.WallTileset;
 
+    import starling.display.Image;
+
     public class WallObject extends SimpleObject {
-        private var standardAsset: Bitmap;
+        private var standardAsset: Image;
         private var theme: String;
 
         public var tileId: int;
@@ -25,15 +24,8 @@ package src.Objects {
             setSprite(standardAsset, new Point());
         }
 
-        public function getTroopOverlappingAsset(): Bitmap {
+        public function getTroopOverlappingAsset(): Image {
             return WallTileset.getTile(theme, tileId + 24);
-        }
-
-        override public function dispose(): void {
-            super.dispose();
-
-            removeChildren();
-            standardAsset.bitmapData.dispose();
         }
 
         override public function dim(): void {

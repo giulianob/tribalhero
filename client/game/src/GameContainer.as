@@ -10,6 +10,8 @@
     import org.aswing.event.*;
     import org.aswing.geom.*;
 
+    import src.Events.NavigateEvent;
+
     import src.Map.*;
     import src.Map.MiniMap.MiniMap;
     import src.Objects.*;
@@ -775,12 +777,12 @@
 			miniMap.setCityPointer(selectedCity.name);
 		}
 
-		private function onMinimapNavigateToPoint(e: MouseEvent) : void {
+		private function onMinimapNavigateToPoint(e: NavigateEvent) : void {
 			if (minimapTools.minimapZoomed) {
                 minimapTools.zoomIntoMinimap(false);
 			}
 
-			Global.map.camera.ScrollToCenter(new ScreenPosition(e.localX, e.localY));
+			Global.map.camera.ScrollToCenter(new ScreenPosition(e.x, e.y));
 		}
 		
 		public function setUnreadMessageCount(unreadMessages: int): void

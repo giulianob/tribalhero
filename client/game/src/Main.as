@@ -65,6 +65,7 @@
             
             stage.showDefaultContextMenu = false;
 
+            Global.stage = stage;
             Global.musicPlayer = new MusicPlayer();
 
 			CONFIG::debug {

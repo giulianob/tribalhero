@@ -16,6 +16,8 @@
     import org.aswing.ext.GridListItemEvent;
     import org.aswing.geom.IntDimension;
 
+    import src.Objects.Factories.SpriteFactory;
+
     import src.Objects.Factories.UnitFactory;
     import src.Objects.Prototypes.UnitPrototype;
     import src.Objects.Troop.*;
@@ -115,7 +117,7 @@
 			level = template.level;
 
 			var unitPrototype: UnitPrototype = UnitFactory.getPrototype(type, level);
-			var icon: DisplayObject = UnitFactory.getSprite(type, level) as DisplayObject;
+			var icon: DisplayObject = SpriteFactory.getFlashSprite(UnitFactory.getSpriteName(type, level));
 
 			(getModel() as VectorListModel).append( { source: icon, name: (unitPrototype != null ? unitPrototype.getName() : unit.type), data: unit, level: level } );
 
@@ -173,7 +175,7 @@
 					}
 
 					var unitPrototype: UnitPrototype = UnitFactory.getPrototype(unit.type, level);
-					var icon: DisplayObject = UnitFactory.getSprite(unit.type, level) as DisplayObject;
+					var icon: DisplayObject = SpriteFactory.getFlashSprite(UnitFactory.getSpriteName(unit.type, level));
 
 					(ts.getModel() as VectorListModel).append( { source: icon, name: (unitPrototype != null ? unitPrototype.getName() : unit.type), data: unit, level: level } );
 				}

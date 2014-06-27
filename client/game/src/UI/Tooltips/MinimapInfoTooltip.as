@@ -17,10 +17,6 @@ import org.aswing.AssetIcon;
     import src.UI.LookAndFeel.GameLookAndFeel;
 import src.Util.DateUtil;
 
-	/**
-	 * ...
-	 * @author
-	 */
 	public class MinimapInfoTooltip extends Tooltip
 	{
 		private var obj: MiniMapRegionObject;

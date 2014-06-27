@@ -1,5 +1,8 @@
 package src.Objects.States 
 {
+    import src.Objects.Factories.SpriteFactory;
+    import src.StarlingStage;
+
     import starling.display.DisplayObject;
 
     import src.Objects.SimpleGameObject;
@@ -18,9 +21,9 @@ package src.Objects.States
 			return SimpleGameObject.STATE_BATTLE;
 		}
 		
-		override public function getStateIcon():DisplayObject 
+		override public function getStateIcon():DisplayObject
 		{
-			return new ICON_BATTLE();
+			return SpriteFactory.getStarlingImage("ICON_BATTLE");
 		}
 		
 		override public function equals(other: GameObjectState): Boolean {

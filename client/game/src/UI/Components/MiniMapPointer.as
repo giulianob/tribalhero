@@ -2,11 +2,9 @@ package src.UI.Components
 {
     import com.greensock.*;
 
-    import flash.display.DisplayObject;
-    import flash.display.MovieClip;
-    import flash.display.Sprite;
-    import flash.events.Event;
-    import flash.events.MouseEvent;
+    import starling.display.*;
+    import starling.events.*;
+
     import flash.geom.Point;
 
     import org.aswing.AsWingConstants;
@@ -54,7 +52,7 @@ package src.UI.Components
 			return pointerName;
 		}
 		
-		public function setIcon(icon:MovieClip):void
+		public function setIcon(icon:DisplayObject):void
 		{
 			this.removeChild(pointer);
 			pointer = icon;

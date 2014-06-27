@@ -108,15 +108,18 @@
         [Deprecated(message = "Use proper objects to get sprites")]
 		public static function getSpriteEx(theme: String, type:int, level:int, forDarkBackground:Boolean = false): DisplayObjectContainer
 		{
-            var sprite: DisplayObjectContainer;
-			if (type >= 1000)
-				sprite = StructureFactory.getFlashSprite(theme, type, level);
-			else if (type == 100)
-				sprite = TroopFactory.getSprite();
-			else
-				sprite = UnitFactory.getSprite(type, level, forDarkBackground);
+            var typeName: String;
+			if (type >= 1000) {
+				typeName = StructureFactory.getSpriteName(theme, type, level);
+            }
+			else if (type == 100) {
+				typeName = TroopFactory.getSpriteName();
+            }
+			else {
+				typeName = UnitFactory.getSpriteName(type, level, forDarkBackground);
+            }
 
-            return sprite;
+            return SpriteFactory.getFlashSprite(typeName);
 		}
 
 		public static function getIcon(name: String) : DisplayObject
@@ -134,42 +137,45 @@
 			return new objRef() as DisplayObject;
 		}
 
-		public static function getSprite(obj: SimpleObject, withPosition: String = ""):DisplayObjectContainer
+		public static function getFlashSprite(obj: SimpleObject):DisplayObjectContainer
 		{
-			var sprite: DisplayObjectContainer;
+			var typeName: String;
 			if (obj is StructureObject) {
                 var structure: StructureObject = StructureObject(obj);
-				sprite = StructureFactory.getFlashSprite(structure.theme, structure.type, structure.level, withPosition);
+				typeName = StructureFactory.getSpriteName(structure.theme, structure.type, structure.level, true);
             }
-			else if (obj is TroopObject)
-				sprite = TroopFactory.getSprite();
-			else if (obj is Forest)
-				sprite = ForestFactory.getSprite();
-			else if (obj is NewCityPlaceholder)
-				sprite = getNewCityPlaceholderSprite();
+			else if (obj is TroopObject) {
+				typeName = TroopFactory.getSpriteName();
+            }
+			else if (obj is Forest) {
+				typeName = ForestFactory.getSpriteName();
+            }
+			else if (obj is NewCityPlaceholder) {
+				typeName = getNewCityPlaceholderSpriteName();
+            }
 			else if (obj is Stronghold) {
                 var stronghold:Stronghold = Stronghold(obj);
-				sprite = StrongholdFactory.getSprite(stronghold.theme, withPosition);
+				typeName = StrongholdFactory.getSpriteName(stronghold.theme);
             }
-			else if (obj is BarbarianTribe)
-				sprite = BarbarianTribeFactory.getSprite();
-			else
-				return null;			
+			else if (obj is BarbarianTribe) {
+				typeName = BarbarianTribeFactory.getSpriteName();
+            }
+			else {
+				return null;
+            }
 
-            return sprite;
+            return SpriteFactory.getFlashSprite(typeName);
 		}
 
-		public static function getNewCityPlaceholderSprite() : DisplayObjectContainer
+		public static function getNewCityPlaceholderSpriteName() : String
 		{
-			var obj: Sprite = new Sprite();
-			obj.addChild(FlashAssets.getInstance("DEFAULT_FOUNDATION"));
-			return obj;
+			return "DEFAULT_FOUNDATION";
 		}
-		
+
 		public static function getNewCityPlaceholderInstance(x: int, y: int) : NewCityPlaceholder
 		{
 			var obj: NewCityPlaceholder = new NewCityPlaceholder(x, y);
-			obj.setSprite(FlashAssets.getInstance("DEFAULT_FOUNDATION", "map"), FlashAssets.getPosition("DEFAULT_FOUNDATION", "map"));
+			obj.setSprite(SpriteFactory.getStarlingImage("DEFAULT_FOUNDATION"), SpriteFactory.getMapPosition("DEFAULT_FOUNDATION"));
 			return obj;
 		}
 	}

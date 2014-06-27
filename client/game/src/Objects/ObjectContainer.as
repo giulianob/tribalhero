@@ -3,9 +3,12 @@ package src.Objects {
 
     import System.Linq.Enumerable;
 
-    import flash.display.*;
-    import flash.events.*;
-    import flash.geom.*;
+    import flash.geom.Point;
+
+    import org.aswing.geom.IntPoint;
+
+    import starling.display.*;
+    import starling.events.*;
     import flash.utils.Dictionary;
 
     import src.*;
@@ -47,7 +50,7 @@ package src.Objects {
 			objSpace = new Sprite();
 			addChild(objSpace);
 
-			this.mouseEnabled = mouseEnabled;
+			this.touchable = touchable;
 
 			if (mouseEnabled)
 			{
@@ -59,27 +62,29 @@ package src.Objects {
 			objSpace.name = "Object Space";
 		}
 
-		public function addToStage(e: Event) : void {
-			objSpace.addEventListener(MouseEvent.MOUSE_MOVE, eventMouseMove);
-			objSpace.addEventListener(MouseEvent.CLICK, eventMouseClick);
-			objSpace.addEventListener(MouseEvent.MOUSE_DOWN, eventMouseDown);
-			objSpace.addEventListener(MouseEvent.MOUSE_OUT, eventMouseOut);
-		}
+        public function addToStage(e: Event) : void {
+            objSpace.addEventListener(TouchPhase.HOVER, eventMouseMove);
+            objSpace.addEventListener(TouchEvent.TOUCH, eventMouseClick);
+            objSpace.addEventListener(TouchPhase.BEGAN, eventMouseDown);
+            objSpace.addEventListener(TouchPhase.HOVER, eventMouseOut);
+        }
 
-		public function removeFromStage(e: Event) : void {			
-			objSpace.removeEventListener(MouseEvent.MOUSE_MOVE, eventMouseMove);
-			objSpace.removeEventListener(MouseEvent.CLICK, eventMouseClick);
-			objSpace.removeEventListener(MouseEvent.MOUSE_DOWN, eventMouseDown);
-			objSpace.removeEventListener(MouseEvent.MOUSE_OUT, eventMouseOut);
-		}
+        public function removeFromStage(e: Event) : void {
+            objSpace.removeEventListener(TouchPhase.HOVER, eventMouseMove);
+            objSpace.removeEventListener(TouchEvent.TOUCH, eventMouseClick);
+            objSpace.removeEventListener(TouchPhase.BEGAN, eventMouseDown);
+            objSpace.removeEventListener(TouchPhase.HOVER, eventMouseOut);
+        }
 		
 		public function disableMouse(disabled: Boolean) : void {
 			mouseDisabled = disabled;
 		}
 		
-		public function eventMouseClick(e: MouseEvent):void
+		public function eventMouseClick(e: TouchEvent):void
 		{
-			if (mouseDisabled) return;
+			if (mouseDisabled) {
+                return;
+            }
 			
 			if (highlightedObject && !ignoreClick)
 			{
@@ -116,35 +121,44 @@ package src.Objects {
 			eventMouseMove(e);
 		}
 
-		public function eventMouseDown(e: MouseEvent):void
+		public function eventMouseDown(e: TouchEvent):void
 		{
-			if (mouseDisabled) return;
-			
-			originClick = new Point(e.stageX, e.stageY);
+			if (mouseDisabled) {
+                return;
+            }
+
+            if (e.touches.length == 1) {
+                var touch: Touch = e.touches[0];
+			    originClick = new Point(touch.globalX, touch.globalY);
+            }
 		}
 
-		public function eventMouseOut(e: MouseEvent):void
+		public function eventMouseOut(e: TouchEvent):void
 		{
-			if (mouseDisabled) return;
+			if (mouseDisabled) {
+                return;
+            }
 			
 			resetHighlightedObject();
 			resetDimmedObjects();
 			ignoreClick = false;
 		}
 
-		public function eventMouseMove(e: MouseEvent):void
+		public function eventMouseMove(e: TouchEvent):void
 		{
-			if (mouseDisabled) return;
-			
-			if (e.buttonDown)
-			{
-				if (Point.distance(new Point(e.stageX, e.stageY), originClick) > 4)
-				ignoreClick = true;
-			}
+			if (mouseDisabled) {
+                return;
+            }
+
+            if (e.touches.length != 1) {
+                return;
+            }
+
+            var touch: Touch = e.touches[0];
 
             var screenPos: ScreenPosition = TileLocator.getActualCoord(
-                    e.stageX * Global.gameContainer.camera.getZoomFactorOverOne() + Global.gameContainer.camera.currentPosition.x,
-                    e.stageY * Global.gameContainer.camera.getZoomFactorOverOne() + Global.gameContainer.camera.currentPosition.y);
+                    touch.globalX * Global.gameContainer.camera.getZoomFactorOverOne() + Global.gameContainer.camera.currentPosition.x,
+                    touch.globalY * Global.gameContainer.camera.getZoomFactorOverOne() + Global.gameContainer.camera.currentPosition.y);
 
             if (screenPos.x < 0 || screenPos.y < 0) return;
 
@@ -178,10 +192,11 @@ package src.Objects {
 					}
 				}
 
-				if (obj.hitTestPoint(e.stageX, e.stageY, true))
+				if (obj.hitTest(touch.getLocation(obj), true))
 				{
-					if (!highestObj || obj.primaryPosition.y < highestObj.primaryPosition.y || (highestObj is SimpleObject && obj is SimpleGameObject))
+					if (!highestObj || obj.primaryPosition.y < highestObj.primaryPosition.y || (highestObj is SimpleObject && obj is SimpleGameObject)) {
 						highestObj = obj;
+                    }
 
 					objects.push(obj);
 				}
@@ -199,8 +214,9 @@ package src.Objects {
 			// If we still have the same highest obj then stop here
 			if (highlightedObject == highestObj) {
 				// Adjust tooltip to current mouse position
-				if (objTooltip) 
-					objTooltip.show(highestObj);				
+				if (objTooltip) {
+					objTooltip.show(obj);
+                }
 				return;
 			}
 			

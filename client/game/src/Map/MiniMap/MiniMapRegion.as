@@ -1,7 +1,7 @@
 ﻿package src.Map.MiniMap
 {
-    import flash.display.*;
-    import flash.events.*;
+    import starling.display.*;
+    import starling.events.*;
 
     import src.*;
     import src.Map.*;
@@ -14,12 +14,12 @@
 		private var globalX: int;
 		private var globalY: int;
 		private var objects: Array = [];
-		private var filter: MiniMapDrawer;
+		private var mapFilter: MiniMapDrawer;
 
 		public function MiniMapRegion(id: int, filter: MiniMapDrawer)
 		{
 			this.id = id;
-			this.filter = filter;
+			this.mapFilter = filter;
 
 			globalX = (id % Constants.miniMapRegionRatioW) * Constants.miniMapRegionW;
 			globalY = int(id / Constants.miniMapRegionRatioW) * (Constants.miniMapRegionH / 2);
@@ -27,6 +27,7 @@
 			if (Constants.debug >= 4)
 			{
 				/* adds an outline to this region */
+                var graphics: Graphics = new Graphics(this);
 				graphics.beginFill(0x000000, 0);
 				graphics.lineStyle(1, 0xcccccc, 0.3);
 				graphics.drawRect(0, 0, Constants.miniMapRegionW * Constants.miniMapRegionTileW, Constants.miniMapRegionH * Constants.miniMapRegionTileH);
@@ -36,7 +37,7 @@
 
 		public function setFilter(filter:MiniMapDrawer): void
 		{
-			this.filter = filter;
+			this.mapFilter = filter;
 			for each(var obj: * in objects)
 				filter.apply(obj);
 		}
@@ -54,14 +55,18 @@
 
 			Global.gameContainer.miniMap.objContainer.addObject(regionObject);
 
-			regionObject.addEventListener(MouseEvent.MOUSE_OVER, onObjectMouseOver);
-			filter.apply(regionObject);
+			regionObject.addEventListener(TouchEvent.TOUCH, onObjectMouseOver);
+			mapFilter.apply(regionObject);
 			objects.push(regionObject);
 			return regionObject;
 		}
 
-		public function onObjectMouseOver(e: MouseEvent) : void {
-			new MinimapInfoTooltip(e.target is MiniMapRegionObject ? e.target as MiniMapRegionObject : e.target.parent);
+		public function onObjectMouseOver(e: TouchEvent) : void {
+            if (e.touches.length !== 1 || e.touches[0].phase !== TouchPhase.HOVER) {
+                return;
+            }
+
+			new MinimapInfoTooltip(MiniMapRegionObject(e.target is MiniMapRegionObject ? e.touches[0].target : e.touches[0].target.parent));
 		}
 
 		public function moveWithCamera(camera: Camera):void

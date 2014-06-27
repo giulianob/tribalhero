@@ -83,7 +83,7 @@ package src.Objects {
             }
         }
 
-        public override function setSprite(sprite: DisplayObject, spritePosition: Point): void {
+        public override function setSprite(sprite: Image, spritePosition: Point): void {
             super.setSprite(sprite, spritePosition);
 
             alignIcon();

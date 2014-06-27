@@ -13,7 +13,7 @@ package src.Objects.Factories {
     public class SpriteFactory {
         private static var mapPositions: Object = null;
 
-        protected static function getFlashSprite(typeName: String): DisplayObjectContainer
+        public static function getFlashSprite(typeName: String): DisplayObjectContainer
         {
             var mainImage: DisplayObject = FlashAssets.getInstance(typeName);
 
@@ -23,17 +23,13 @@ package src.Objects.Factories {
             return sprite;
         }
 
-        protected static function getStarlingSprite(typeName: String): starling.display.DisplayObjectContainer
+        public static function getStarlingImage(typeName: String): Image
         {
             var mainImage: Texture = StarlingStage.assets.getTexture(typeName);
-
-            var sprite: starling.display.Sprite = new starling.display.Sprite();
-            sprite.addChild(new Image(mainImage));
-
-            return sprite;
+            return new Image(mainImage)
         }
 
-        protected static function getMapPosition(name: String):Point {
+        public static function getMapPosition(name: String):Point {
             if (mapPositions === null) {
                 mapPositions = StarlingStage.assets.getObject("MAP_POSITIONS");
             }

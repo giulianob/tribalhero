@@ -1,6 +1,8 @@
 ﻿package src.Objects.Battle {
     import flash.display.DisplayObjectContainer;
 
+    import src.Objects.Factories.SpriteFactory;
+
     import src.Objects.Factories.UnitFactory;
     import src.Objects.Prototypes.UnitPrototype;
 
@@ -16,7 +18,7 @@
 		}
 
         override public function getIcon(): DisplayObjectContainer {
-            return UnitFactory.getSprite(type, level);
+            return SpriteFactory.getFlashSprite(UnitFactory.getSpriteName(type, level));
         }
 		
 		public override function get name(): String {

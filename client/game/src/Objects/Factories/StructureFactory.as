@@ -2,8 +2,6 @@
 
     import System.Linq.Enumerable;
 
-    import flash.geom.Point;
-
     import src.FlashAssets;
     import src.Global;
     import src.Map.*;
@@ -15,9 +13,7 @@
     import src.Util.BinaryList.*;
     import src.Util.Util;
 
-    import starling.display.DisplayObjectContainer;
-
-    public class StructureFactory extends SpriteFactory {
+    public class StructureFactory {
 
 		private static var map: Map;
 		private static var structurePrototypes: BinaryList;
@@ -127,7 +123,7 @@
             var typeName: String = getSpriteName(theme, type, level, true);
 
 			var simpleObject: SimpleObject = new SimpleObject(x, y, size);
-            simpleObject.setSprite(getStarlingSprite(typeName), getMapPosition(typeName));
+            simpleObject.setSprite(SpriteFactory.getStarlingImage(typeName), SpriteFactory.getMapPosition(typeName));
 
 			return simpleObject;
 		}
@@ -137,7 +133,7 @@
             var typeName: String = getSpriteName(theme, type, level);
 
 			var structureObj: StructureObject = new StructureObject(theme, type, state, objX, objY, size, playerId, cityId, objectId, level, wallRadius, wallTheme);
-			structureObj.setSprite(getStarlingSprite(typeName), getMapPosition(typeName));
+			structureObj.setSprite(SpriteFactory.getStarlingImage(typeName), SpriteFactory.getMapPosition(typeName));
 			structureObj.setOnSelect(Global.map.selectObject);
 
 			return structureObj;

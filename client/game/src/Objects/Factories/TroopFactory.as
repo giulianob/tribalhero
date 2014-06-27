@@ -1,41 +1,29 @@
 ﻿package src.Objects.Factories {
 
-    import flash.display.DisplayObject;
-    import flash.display.DisplayObjectContainer;
-    import flash.display.Sprite;
     import flash.geom.Point;
 
-    import src.FlashAssets;
     import src.Global;
     import src.Objects.States.GameObjectState;
     import src.Objects.Troop.TroopObject;
+
+    import starling.display.DisplayObjectContainer;
 
     public class TroopFactory {
 
 		public function TroopFactory() {
 		}
 
-        public static function getSprite(withPosition: String = ""): DisplayObjectContainer
-		{
-            var image: DisplayObject = FlashAssets.getInstance(getSpriteName(), withPosition);
-
-            var sprite: Sprite = new Sprite();
-
-            sprite.addChild(image);
-
-            return sprite;
-		}
-
-        private static function getSpriteName(): String {
+        public static function getSpriteName(): String {
             return "DEFAULT_TROOP";
         }
 
 		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, size: int, playerId: int, cityId: int, objectId: int): TroopObject
 		{
-            var defaultSprite: DisplayObjectContainer = getSprite("map");
-            var defaultPosition: Point = FlashAssets.getPosition(getSpriteName(), "map");
-			var troopObject: TroopObject = new TroopObject(type, state, defaultSprite, defaultPosition, objX, objY, size, playerId, cityId, objectId);
-
+            var typeName: String = getSpriteName();
+            var position: Point = SpriteFactory.getMapPosition(typeName);
+            var defaultSprite: DisplayObjectContainer = SpriteFactory.getStarlingImage(typeName);
+			var troopObject: TroopObject = new TroopObject(type, state, defaultSprite, position, objX, objY, size, playerId, cityId, objectId);
+            troopObject.setSprite(SpriteFactory.getStarlingImage(typeName), position);
 			troopObject.setOnSelect(Global.map.selectObject);
 			
 			return troopObject;

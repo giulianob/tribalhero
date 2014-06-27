@@ -1,35 +1,40 @@
 package src.Graphics {
-    import flash.display.Bitmap;
-    import flash.display.BitmapData;
-    import flash.display.DisplayObject;
-    import flash.geom.Point;
-    import flash.geom.Rectangle;
 
-    import src.FlashAssets;
+    import flash.geom.Rectangle;
+    import flash.utils.Dictionary;
 
     import src.Constants;
-    import src.Objects.SimpleObject;
+    import src.Objects.Theme;
+    import src.StarlingStage;
+
+    import starling.display.Image;
+    import starling.textures.Texture;
 
     public class WallTileset {
+        private static var wallTiles: Dictionary = new Dictionary();
 
+        public static function getTile(theme: String, tileId: int): Image {
+            var wallTileName: String = getSpriteName(theme) + ":" + tileId;
 
-        public static function getTile(theme: String, tileId: int): Bitmap {
-            var wallTileset: Bitmap = FlashAssets.getSharedInstance(getSpriteName(theme));
+            var wallTile: Texture = wallTiles[wallTileName];
+            if (wallTile == null) {
+                var tilesetsrcX:int = int(tileId % Constants.tileSetTileW) * Constants.tileW;
+                var tilesetsrcY:int = int(tileId / Constants.tileSetTileW) * Constants.tileH * 2;
+                var texture: Texture = StarlingStage.assets.getTexture(theme);
+                if (texture == null) {
+                    texture = StarlingStage.assets.getTexture(Theme.DEFAULT_THEME_ID);
+                }
 
-            var tilesetsrcX:int = int(tileId % Constants.tileSetTileW) * Constants.tileW;
-            var tilesetsrcY:int = int(tileId / Constants.tileSetTileW) * Constants.tileH * 2;
+                wallTile = Texture.fromTexture(texture, new Rectangle(
+                        tilesetsrcX, tilesetsrcY,
+                        Constants.tileW, Constants.tileH * 2
+                ));
 
-            var tile: Bitmap = new Bitmap(new BitmapData(Constants.tileW, Constants.tileH * 2, true, 0));
+                wallTiles[wallTileName] = wallTile;
+            }
+
+            var tile: Image = new Image(wallTile);
             tile.y = Constants.tileH * -1;
-
-            tile.bitmapData.copyPixels(
-                    wallTileset.bitmapData,
-                    new Rectangle(tilesetsrcX, tilesetsrcY, Constants.tileW, Constants.tileH * 2),
-                    new Point(0, 0),
-                    null,
-                    null,
-                    true);
-
             return tile;
         }
 

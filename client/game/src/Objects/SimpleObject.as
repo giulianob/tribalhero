@@ -35,6 +35,8 @@ package src.Objects {
 
         public var isHighestPriority: Boolean;
 
+        private var _sprite: Image;
+
 		public function SimpleObject(objX: int, objY: int, size: int) {
 			super();
 
@@ -199,7 +201,7 @@ package src.Objects {
 				return 0;
 		}
 
-        public function setSprite(sprite: DisplayObject, spritePosition: Point): void {
+        public function setSprite(sprite: Image, spritePosition: Point): void {
             sprite.x = spritePosition.x;
             sprite.y = spritePosition.y;
 
@@ -207,6 +209,8 @@ package src.Objects {
 
             spriteContainer.removeChildren();
             spriteContainer.addChild(sprite);
+
+            this._sprite = sprite;
         }
 
         override public function get x(): Number {
@@ -240,6 +244,10 @@ package src.Objects {
                 filter = null;
             }
         }
-	}
+
+        public function get sprite(): Image {
+            return _sprite;
+        }
+    }
 	
 }

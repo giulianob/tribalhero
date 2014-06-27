@@ -47,8 +47,10 @@ to be relative and use forward slashes.
       <value>false</value>
     </define>
     <source-path append="true">
-      <path-element>lib/src/com</path-element>
-      <path-element>lib/src/org</path-element>
+      <path-element>lib/src/promise/com</path-element>
+      <path-element>lib/src/aswing/org</path-element>
+      <path-element>lib/src/starling-graphics/starling</path-element>
+      <path-element>lib/src/starling-pixelmask/starling</path-element>
       <path-element>game</path-element>
     </source-path>
     <library-path append="true">

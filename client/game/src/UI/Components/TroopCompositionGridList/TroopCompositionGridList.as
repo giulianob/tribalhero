@@ -43,7 +43,7 @@
 			var units: Dictionary = troop.toUnitsArray();
 			for (var unitType: Object in units)
 			{
-				var icon: DisplayObject = UnitFactory.getSprite(int(unitType), 1, false) as DisplayObject;
+				var icon: DisplayObject = SpriteFactory.getFlashSprite(UnitFactory.getSpriteName(int(unitType), 1, false));
 				icon.scaleX = 0.5;
 				icon.scaleY = 0.5;
 				(getModel() as VectorListModel).append( { source: icon, data: new Unit(int(unitType), units[unitType]) } );					

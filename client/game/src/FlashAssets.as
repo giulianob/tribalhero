@@ -131,7 +131,7 @@
         public static const MASK_TILE: Class;
 
         // Icons
-        [Embed(source = "../../../graphics/icons/props/coin.png")]
+        [Embed(source = "../../../graphics/icons/general/ICON_COIN.png")]
         public static const ICON_COIN: Class;
 
         // Achievement Icons

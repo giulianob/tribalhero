@@ -106,7 +106,7 @@
 		}
 
         public function getSpriteName(theme: String): String {
-            return theme + "_" + spriteClass;
+            return theme.toUpperCase() + "_" + spriteClass;
         }
     }
 

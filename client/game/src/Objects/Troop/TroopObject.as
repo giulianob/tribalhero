@@ -2,16 +2,14 @@
     import System.Linq.Enumerable;
     import System.Linq.Option.Option;
 
-    import flash.display.Bitmap;
-    import flash.display.DisplayObjectContainer;
     import flash.geom.Point;
 
-    import src.FlashAssets;
-
     import src.Constants;
-    import src.Global;
     import src.Objects.*;
     import src.Objects.States.GameObjectState;
+
+    import starling.display.DisplayObjectContainer;
+    import starling.display.Image;
 
     public class TroopObject extends GameObject {
 
@@ -74,7 +72,7 @@
                 }
 
                 var wallObject: WallObject = wallObjectResult.value;
-                var wallSprite: Bitmap = wallObject.getTroopOverlappingAsset();
+                var wallSprite: Image = wallObject.getTroopOverlappingAsset();
                 setSprite(wallSprite, new Point());
                 isOverWall = true;
                 return;

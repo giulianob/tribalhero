@@ -1,22 +1,15 @@
 ﻿package src.Map
 {
-    import flash.display.Sprite;
-    import flash.events.*;
+    import flash.events.MouseEvent;
     import flash.geom.Point;
     import flash.geom.Rectangle;
 
     import src.Constants;
     import src.Global;
-    import src.Objects.BarbarianTribe;
-    import src.Objects.Forest;
-    import src.Objects.NewCityPlaceholder;
-    import src.Objects.ObjectContainer;
-    import src.Objects.SimpleGameObject;
-    import src.Objects.SimpleObject;
-    import src.Objects.Stronghold.Stronghold;
-    import src.Objects.StructureObject;
+    import src.Objects.*;
     import src.Objects.Troop.*;
     import src.UI.GameJSidebar;
+    import src.Objects.Stronghold.Stronghold;
     import src.UI.Sidebars.BarbarianTribeInfo.BarbarianTribeSidebar;
     import src.UI.Sidebars.ForestInfo.ForestInfoSidebar;
     import src.UI.Sidebars.NewCityPlaceholder.NewCityPlaceholderSidebar;
@@ -24,6 +17,9 @@
     import src.UI.Sidebars.StrongholdInfo.StrongholdInfoSidebar;
     import src.UI.Sidebars.TroopInfo.TroopInfoSidebar;
     import src.Util.Util;
+
+    import starling.display.*;
+    import starling.events.*;
 
     public class Map extends Sprite
 	{
@@ -77,8 +73,10 @@
             listenersDefined = false;
         }
 
-		public function dispose():void
+		override public function dispose():void
 		{
+            super.dispose();
+
 			camera.removeEventListener(Camera.ON_MOVE, onMove);
 			disableMouse(true);
 		}
@@ -109,7 +107,7 @@
 					stage.removeEventListener(MouseEvent.MOUSE_DOWN, eventMouseDown);
 					stage.removeEventListener(MouseEvent.MOUSE_MOVE, eventMouseMove);
 					stage.removeEventListener(MouseEvent.MOUSE_UP, eventMouseUp);
-					stage.removeEventListener(Event.MOUSE_LEAVE, eventMouseLeave);
+					stage.removeEventListener(flash.events.Event.MOUSE_LEAVE, eventMouseLeave);
 
 					listenersDefined = false;
 				}
@@ -119,11 +117,12 @@
 					stage.addEventListener(MouseEvent.MOUSE_DOWN, eventMouseDown);
 					stage.addEventListener(MouseEvent.MOUSE_MOVE, eventMouseMove);
 					stage.addEventListener(MouseEvent.MOUSE_UP, eventMouseUp);
-					stage.addEventListener(Event.MOUSE_LEAVE, eventMouseLeave);				
+					stage.addEventListener(flash.events.Event.MOUSE_LEAVE, eventMouseLeave);
 
 					listenersDefined = true;
 				}
-				stage.focus = Global.map;
+
+				Global.stage.focus = Global.gameContainer;
 			}
 		}
 
@@ -376,7 +375,7 @@
 
 		public function eventMouseClick(event: MouseEvent):void
 		{
-			stage.focus = Global.map;
+			Global.stage.focus = Global.gameContainer;
 			
 			if (Point.distance(new Point(event.stageX, event.stageY), originPoint) < 4)
 				doSelectedObject(null);

@@ -2,6 +2,8 @@ package src.UI.Components
 {
     import com.greensock.*;
 
+    import src.Objects.Factories.SpriteFactory;
+
     import starling.display.*;
     import starling.events.*;
 
@@ -33,7 +35,7 @@ package src.UI.Components
 		public function MiniMapPointer(x:int, y:int, name:String) {
             cityMinimapPoint = TileLocator.getMiniMapScreenCoord(x, y);
             pointerName = name;
-            pointer = new ICON_MINIMAP_ARROW_BLUE();
+            pointer = SpriteFactory.getStarlingImage("ICON_MINIMAP_ARROW_BLUE");
             addChild(pointer);
 
             tooltip = new Tooltip();
@@ -43,8 +45,7 @@ package src.UI.Components
             GameLookAndFeel.changeClass(tooltipDistanceLabel, "Tooltip.italicsText");
             tooltip.getUI().setLayout(new SoftBoxLayout(AsWingConstants.VERTICAL));
             tooltip.getUI().appendAll(tooltipCityLabel, tooltipDistanceLabel);
-            addEventListener(MouseEvent.MOUSE_MOVE, onRollOver);
-            addEventListener(MouseEvent.ROLL_OUT, onRollOut);
+            addEventListener(TouchEvent.TOUCH, onTouch);
         }
 		
 		public function getPointerName():String
@@ -60,22 +61,24 @@ package src.UI.Components
 			if (center != null)
 				update(center, lastWidth, lastHeight);
 		}
-		
-		private function onRollOver(e:Event):void
-		{
-			var distance:int = TileLocator.distance(
-                    cityMinimapPoint.x / Constants.miniMapTileW, cityMinimapPoint.y, 1,
-                    (center.x + x - lastWidth / 2) / Constants.miniMapTileW, (center.y + y - lastHeight / 2), 1);
 
-			tooltipDistanceLabel.setText(distance + " tiles away");
-			tooltip.show(pointer);
-		}
-		
-		private function onRollOut(e:Event = null):void
-		{
-			tooltip.hide();
-		}
-		
+
+        private function onTouch(e: TouchEvent): void {
+            if (e.getTouch(this, TouchPhase.HOVER)) {
+                var distance:int = TileLocator.distance(
+                        cityMinimapPoint.x / Constants.miniMapTileW, cityMinimapPoint.y, 1,
+                        (center.x + x - lastWidth / 2) / Constants.miniMapTileW, (center.y + y - lastHeight / 2), 1);
+
+                tooltipDistanceLabel.setText(distance + " tiles away");
+                tooltip.show(pointer);
+            }
+
+            var endedTouch: Touch = e.getTouch(this, TouchPhase.ENDED);
+            if (endedTouch && !this.hitTest(endedTouch.getLocation(this))) {
+                tooltip.hide();
+            }
+        }
+
 		public function update(center:Point, mapWidth:int, mapHeight:int):void
 		{
 			this.center = center;

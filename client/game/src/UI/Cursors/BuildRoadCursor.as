@@ -179,7 +179,7 @@ package src.UI.Cursors {
                 return false;
             }
 
-			return new ColorTransform(1.0, 1.0, 1.0, 1.0, 0, 100);
+			return 0x00FF00;
 		}
 
 		public function validateBuilding():void

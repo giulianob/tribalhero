@@ -101,7 +101,7 @@ package src.UI.Sidebars.ObjectInfo {
 		}
 
         private function createThemeMenuItem(theme: String): JMenuItem {
-            var sprite: DisplayObject = StructureFactory.getFlashSprite(theme, gameObject.type, gameObject.level);
+            var sprite: DisplayObject = SpriteFactory.getFlashSprite(StructureFactory.getSpriteName(theme, gameObject.type, gameObject.level));
             Util.resizeSprite(sprite, 85, 85);
 
             var menuItem: JMenuItem = new JMenuItem(StringHelper.localize("THEME_" + theme), new AssetIcon(sprite));

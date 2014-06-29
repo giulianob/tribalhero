@@ -1,9 +1,13 @@
 package src.Graphics {
 
+    import flash.display.Bitmap;
+    import flash.display.BitmapData;
+    import flash.geom.Point;
     import flash.geom.Rectangle;
     import flash.utils.Dictionary;
 
     import src.Constants;
+    import src.FlashAssets;
     import src.Objects.Theme;
     import src.StarlingStage;
 
@@ -35,6 +39,26 @@ package src.Graphics {
 
             var tile: Image = new Image(wallTile);
             tile.y = Constants.tileH * -1;
+            return tile;
+        }
+
+        public static function getFlashTile(theme: String, tileId: int): Bitmap {
+            var wallTileset: Bitmap = FlashAssets.getSharedInstance(getSpriteName(theme));
+
+            var tilesetsrcX:int = int(tileId % Constants.tileSetTileW) * Constants.tileW;
+            var tilesetsrcY:int = int(tileId / Constants.tileSetTileW) * Constants.tileH * 2;
+
+            var tile: Bitmap = new Bitmap(new BitmapData(Constants.tileW, Constants.tileH * 2, true, 0));
+            tile.y = Constants.tileH * -1;
+
+            tile.bitmapData.copyPixels(
+                    wallTileset.bitmapData,
+                    new Rectangle(tilesetsrcX, tilesetsrcY, Constants.tileW, Constants.tileH * 2),
+                    new Point(0, 0),
+                    null,
+                    null,
+                    true);
+
             return tile;
         }
 

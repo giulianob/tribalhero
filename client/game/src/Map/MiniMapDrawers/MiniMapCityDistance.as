@@ -12,9 +12,12 @@ import src.Map.MiniMap.MiniMapLegendPanel;
 import src.Map.MiniMap.MiniMapRegionObject;
 import src.Map.Position;
 import src.Map.TileLocator;
-import src.Util.StringHelper;
+    import src.Objects.Factories.SpriteFactory;
+    import src.Util.StringHelper;
 
-public class MiniMapCityDistance implements IMiniMapObjectDrawer
+    import starling.display.Image;
+
+    public class MiniMapCityDistance implements IMiniMapObjectDrawer
 	{
         private var cityButton: JToggleButton = new JToggleButton();
         private var d100Button: JToggleButton = new JToggleButton();
@@ -26,11 +29,14 @@ public class MiniMapCityDistance implements IMiniMapObjectDrawer
         private var DEFAULT_COLORS : * = MiniMapGroupCity.DEFAULT_COLORS;
 
 		public function applyObject(obj: MiniMapRegionObject) : void {
+            var dotSprite: Image;
 
 			if (Global.map.cities.get(obj.groupId)) {
                 if(cityButton.isSelected()) return;
-                obj.setIcon(new DOT_SPRITE);
-				obj.transform.colorTransform = new ColorTransform();
+
+                dotSprite = SpriteFactory.getStarlingImage("DOT_SPRITE");
+                dotSprite.color = MiniMapGroupCity.CITY_DEFAULT_COLOR;
+                obj.setIcon(dotSprite);
 			} else {
 				// Apply the difficulty transformation to the tile
 				var point: Position = TileLocator.getScreenMinimapToMapCoord(obj.x, obj.y);
@@ -43,8 +49,9 @@ public class MiniMapCityDistance implements IMiniMapObjectDrawer
 				else if (distance > 400 && !d500Button.isSelected())distanceIdx = 0;
                 else return;
 
-                obj.setIcon(new DOT_SPRITE);
-				obj.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[distanceIdx].r, DEFAULT_COLORS[distanceIdx].g, DEFAULT_COLORS[distanceIdx].b);
+                dotSprite = SpriteFactory.getStarlingImage("DOT_SPRITE");
+                dotSprite.color = DEFAULT_COLORS[distanceIdx].hex;
+                obj.setIcon(dotSprite);
 			}
 		}
 		

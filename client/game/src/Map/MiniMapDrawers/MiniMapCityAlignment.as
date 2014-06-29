@@ -11,9 +11,12 @@ import src.Global;
 import src.Map.MiniMap.LegendGroups.MiniMapGroupCity;
 import src.Map.MiniMap.MiniMapLegendPanel;
 import src.Map.MiniMap.MiniMapRegionObject;
-import src.Util.StringHelper;
+    import src.Objects.Factories.SpriteFactory;
+    import src.Util.StringHelper;
 
-public class MiniMapCityAlignment implements IMiniMapObjectDrawer
+    import starling.display.Image;
+
+    public class MiniMapCityAlignment implements IMiniMapObjectDrawer
 	{
         private var cityButton: JToggleButton = new JToggleButton();
         private var ap20Button: JToggleButton = new JToggleButton();
@@ -28,11 +31,16 @@ public class MiniMapCityAlignment implements IMiniMapObjectDrawer
 
 			var alignment: Number = obj.extraProps.alignment;
 			var alignmentIdx: int;
+            var dotSprite: Image;
 			if (Global.map.cities.get(obj.groupId)) {
                 // If it's our city, we just show a special flag
-                if(cityButton.isSelected()) return;
-                obj.setIcon(new DOT_SPRITE);
-				obj.transform.colorTransform = new ColorTransform();
+                if(cityButton.isSelected()) {
+                    return;
+                }
+
+                dotSprite = SpriteFactory.getStarlingImage("DOT_SPRITE");
+                dotSprite.color = MiniMapGroupCity.CITY_DEFAULT_COLOR;
+                obj.setIcon(dotSprite);
 			}
 			else {
 				if (alignment <= 20 && !ap20Button.isSelected()) alignmentIdx = 0;
@@ -42,8 +50,9 @@ public class MiniMapCityAlignment implements IMiniMapObjectDrawer
 				else if(alignment > 80 && !ap100Button.isSelected()) alignmentIdx = 4;
                 else return;
 
-                obj.setIcon(new DOT_SPRITE);
-				obj.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[alignmentIdx].r, DEFAULT_COLORS[alignmentIdx].g, DEFAULT_COLORS[alignmentIdx].b);
+                dotSprite = SpriteFactory.getStarlingImage("DOT_SPRITE");
+                dotSprite.color = DEFAULT_COLORS[alignmentIdx].hex;
+                obj.setIcon(dotSprite);
 			}
 		}
 		

@@ -1,36 +1,30 @@
 ﻿package src.UI.Components {
-    import flash.display.Bitmap;
-    import flash.display.BitmapData;
-    import flash.display.DisplayObject;
-    import flash.display.DisplayObjectContainer;
-    import flash.display.MovieClip;
-    import flash.events.Event;
     import flash.geom.ColorTransform;
 
-    import src.FlashAssets;
+    import src.Objects.Factories.SpriteFactory;
+
+    import starling.display.*;
+
     import src.Constants;
     import src.Map.Position;
     import src.Map.ScreenPosition;
     import src.Map.TileLocator;
     import src.Objects.SimpleObject;
 
+    import starling.events.Event;
+
     public class GroundCircle extends SimpleObject
 	{
 		private var circle: DisplayObjectContainer;
-		private var tiles: Array;
-		private var colorTransform: ColorTransform;
 		private var skipCenter: Boolean;
         private var radius: int;
+        private var color: uint;
 
-		public function GroundCircle(radius: int, skipCenter: Boolean = false, colorTransform: ColorTransform = null) {
+		public function GroundCircle(radius: int, skipCenter: Boolean = false, color: uint = 0x00FF00) {
 			super( -10, -10, 1);
-			
-			if (colorTransform == null) {
-				colorTransform = new ColorTransform(1.0, 1.0, 1.0, 1.0, 0, 100, 0);
-			}
 
+			this.color = color;
 			this.skipCenter = skipCenter;
-			this.colorTransform = colorTransform;
             this.radius = radius;
 
 			drawCircle(radius);
@@ -55,13 +49,11 @@
 			if (circle != null)
 			dispose();
 
-			circle = new MovieClip();
-			tiles = [];
+			circle = new Sprite();
 
 			for each (var position: Position in TileLocator.foreachRadius(Math.ceil(radius / 2.0), Math.ceil(radius / 2.0) * 2 + 1, radius)) {
-                var tiledata: DisplayObject = FlashAssets.getInstance("MASK_TILE");
-                var tile: Bitmap = new Bitmap(new BitmapData(Constants.tileW, Constants.tileH, true, 0x000000));
-                tile.smoothing = true;
+                var tile: Image = SpriteFactory.getStarlingImage("MASK_TILE");
+                tile.color = color;
 
                 var tileRadius: int = Math.ceil(radius / 2.0);
                 var point: ScreenPosition = position.toScreenPosition();
@@ -72,11 +64,7 @@
                     continue;
                 }
 
-                tile.bitmapData.draw(tiledata, null, colorTransform);
-
                 circle.addChild(tile);
-
-                tiles.push(tile);
             }
 
 			addChild(circle);
@@ -90,14 +78,6 @@
 			{
 				removeChild(circle);
 				circle = null;
-			}
-
-			if (tiles)
-			{
-				for each(var tile: Bitmap in tiles)
-				tile.bitmapData.dispose();
-
-				tiles = null;
 			}
 		}
 	}

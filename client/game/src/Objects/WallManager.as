@@ -1,11 +1,12 @@
 ﻿package src.Objects
 {
-    import flash.display.DisplayObject;
-    import flash.events.Event;
+    import starling.display.*;
 
     import src.Global;
     import src.Map.Position;
     import src.Map.ScreenPosition;
+
+    import starling.events.Event;
 
     public class WallManager
 	{
@@ -480,9 +481,6 @@
                     ["", 	"", 	"", 	"", 	"", 	"", 	"", 	"", 	"", 	"", 	"", 	"", 	"", 	"", 	"", 	],
                 ],
             ]];
-        
-        // Controls how many different wall styles we have for the same wall tile (e.g. one w/ vines, one w/o vines)
-		private static const WALL_VARIATIONS: int = 2;
 
 		public var objects: Array = [];
 
@@ -526,7 +524,7 @@
 
             // Delay until the obj is in the stage
             if (parent.stage == null) {
-                parent.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage, false, 0, true);
+                parent.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
                 return;
             }
 

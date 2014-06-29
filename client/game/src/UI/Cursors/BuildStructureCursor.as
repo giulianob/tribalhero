@@ -71,7 +71,7 @@ package src.UI.Cursors {
                 validateTile(position);
             }
 
-			rangeCursor = new GroundCircle(structPrototype.radius, true, new ColorTransform(1.0, 1.0, 1.0, 1.0, 236, 88, 0));
+			rangeCursor = new GroundCircle(structPrototype.radius, true, 0xec5800);
 			rangeCursor.alpha = 0.6;
 
 			buildableArea = new GroundCallbackCircle(size, validateTileCallback);
@@ -254,10 +254,10 @@ package src.UI.Cursors {
             var mapPosition:Position = new ScreenPosition(point.x + x, point.y + y).toPosition();
 
             if (buildableTiles.get(mapPosition) == null) {
-                return new ColorTransform(1, 1, 1, 0.5, 255, 215);
+                return 0xFFD700;
             }
 
-			return new ColorTransform(1.0, 1.0, 1.0, 1.0, 0, 100);
+			return 0x00FF00;
 		}
 
 		public function validateBuilding():Boolean

@@ -384,7 +384,7 @@
 			}
 			
 			if (Global.map.selectedObject != null)
-				Global.map.selectedObject.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
+				Global.map.selectedObject.dispatchEventWith(SimpleGameObject.OBJECT_UPDATE);
 		}
 		
 		public function onReceiveTechnologyChanged(packet:Packet):void
@@ -452,7 +452,7 @@
 			}
 			
 			if (Global.map.selectedObject != null)
-				Global.map.selectedObject.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
+				Global.map.selectedObject.dispatchEventWith(SimpleGameObject.OBJECT_UPDATE);
 		}
 		
 		public function getSendResourcesConfirmation(resources:Resources, cityId:int, objId:int, targetCityName:String, callback:Function):void

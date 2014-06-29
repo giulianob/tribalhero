@@ -13,7 +13,7 @@ package src.Objects.Factories {
     public class SpriteFactory {
         private static var mapPositions: Object = null;
 
-        public static function getFlashSprite(typeName: String): DisplayObjectContainer
+        public static function getFlashSprite(typeName: String): Sprite
         {
             var mainImage: DisplayObject = FlashAssets.getInstance(typeName);
 

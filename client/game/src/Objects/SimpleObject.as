@@ -85,6 +85,7 @@ package src.Objects {
 			}
 
             /*
+            TODO: Count bubble
 			var bubble: CountBubble = new CountBubble();
 			bubble.mouseChildren = false;
 			bubble.txtUnreadCount.mouseEnabled = false;
@@ -101,9 +102,10 @@ package src.Objects {
 		}
 		
 		public override function dispose(): void {
+            disposeFilter();
             super.dispose();
 
-			disposed = true;
+            disposed = true;
 			if (objectCountDisplayObject != null) {
 				removeChild(objectCountDisplayObject);
 				objectCountDisplayObject = null;

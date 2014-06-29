@@ -26,6 +26,9 @@
             <entry library-id="7c70df43-ec7a-4528-92e2-acee1e55f1db">
               <dependency linkage="Merged" />
             </entry>
+            <entry library-id="04d52bbe-d87d-44f9-8e58-923aca6965e1">
+              <dependency linkage="Merged" />
+            </entry>
           </entries>
           <sdk name="flexsdk" />
         </dependencies>
@@ -65,6 +68,16 @@
         <properties id="7c70df43-ec7a-4528-92e2-acee1e55f1db" />
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/swc/starling/starling.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="04d52bbe-d87d-44f9-8e58-923aca6965e1" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/swc/feathers/feathers.swc!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

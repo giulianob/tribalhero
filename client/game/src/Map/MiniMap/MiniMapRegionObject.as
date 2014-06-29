@@ -31,11 +31,7 @@
 		}
 
         public function setIcon(sprite: DisplayObject): void {
-            var hitArea: Sprite = new MINIMAP_HIT_AREA();
-            this.addChild(hitArea);
-            hitArea.visible = false;
-            sprite.hitArea = hitArea;
-            sprite.touchable = false;
+            removeSprite();
 
             this.x = int(position.x - sprite.width/2 + (size-1) * Constants.miniMapTileW/2);
             this.y = int(position.y - sprite.height/4 + (size-1) * Constants.miniMapTileH/4);

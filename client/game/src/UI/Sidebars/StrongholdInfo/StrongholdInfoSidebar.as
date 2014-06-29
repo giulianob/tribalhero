@@ -10,6 +10,7 @@
     import src.*;
     import src.Map.Position;
     import src.Objects.*;
+    import src.Objects.Factories.SpriteFactory;
     import src.Objects.Factories.StrongholdFactory;
     import src.Objects.Stronghold.*;
     import src.UI.*;
@@ -118,7 +119,7 @@
 		}
 
         private function createThemeMenuItem(theme: String): JMenuItem {
-            var sprite: DisplayObject = StrongholdFactory.getSprite(theme);
+            var sprite: DisplayObject = SpriteFactory.getFlashSprite(StrongholdFactory.getSpriteName(theme));
             Util.resizeSprite(sprite, 85, 85);
 
             var menuItem: JMenuItem = new JMenuItem(t("THEME_" + theme), new AssetIcon(sprite));

@@ -81,6 +81,8 @@ package src.Comm {
 		public static const CITY_POINTS_UPDATE: int = 467;
 		public static const CITY_HIDE_NEW_UNITS_UPDATE: int = 468;
 		public static const CITY_HAS_AP_BONUS: int = 469;
+        public static const CITY_RESOURCES_WITHDRAW: int = 470;
+
 		public static const CITY_BATTLE_STARTED: int = 490;
 		public static const CITY_BATTLE_ENDED: int = 491;
 		public static const CITY_NEW_UPDATE: int = 497;

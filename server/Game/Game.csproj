@@ -373,6 +373,7 @@
     <Compile Include="Logic\Actions\BarbarianTribe\BarbarianTribeBattlePassiveAction.cs" />
     <Compile Include="Logic\Actions\Miscellaneous\CityRebuildPassiveAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\CityResourceCapUpdatePassiveAction.cs" />
+    <Compile Include="Logic\Actions\ResourceActions\ResourceWithdrawActiveAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\ForestCampLaborUpdatePassiveAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\ForestCampRateUpdatePassiveAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\ResourceRateUpdatePassiveAction.cs" />

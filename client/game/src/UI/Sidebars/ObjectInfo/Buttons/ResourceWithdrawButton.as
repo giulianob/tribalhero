@@ -6,6 +6,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
     import src.Objects.*;
     import src.Objects.Actions.*;
 import src.UI.Components.SimpleTooltip;
+import src.UI.Dialog.ResourceWithdrawDialog;
 import src.UI.Dialog.SendResourceDialog;
 import src.UI.Tooltips.*;
 
@@ -24,8 +25,7 @@ import src.UI.Tooltips.*;
         {
             if (isEnabled())
             {
-                var picker: SendResourceDialog = new SendResourceDialog(parentObj as StructureObject, function(dlg: SendResourceDialog) : void {
-                    Global.mapComm.City.sendResources(dlg.amount(), parentObj.groupId, parentObj.objectId, dlg.cityName());
+                var picker: ResourceWithdrawDialog = new ResourceWithdrawDialog(parentObj as StructureObject, function(dlg: ResourceWithdrawDialog) : void {
                     dlg.getFrame().dispose();
                 });
 

@@ -1,7 +1,8 @@
 package src.UI.Tooltips {
 
-    import flash.display.*;
-    import flash.events.*;
+    import flash.display.DisplayObject;
+    import flash.events.Event;
+    import flash.events.MouseEvent;
 
     import org.aswing.AsWingManager;
     import org.aswing.Insets;
@@ -15,8 +16,11 @@ package src.UI.Tooltips {
     import src.Map.Camera;
     import src.UI.GameJBoxBackground;
 
-    import starling.display.*;
-    import starling.events.*;
+    import starling.display.DisplayObject;
+    import starling.events.Event;
+    import starling.events.Touch;
+    import starling.events.TouchEvent;
+    import starling.events.TouchPhase;
 
     public class Tooltip
 	{
@@ -35,10 +39,10 @@ package src.UI.Tooltips {
             container.setOpaque(true);
             container.setBackgroundDecorator(new GameJBoxBackground());
             container.append(ui);
-            ui.addEventListener(ContainerEvent.COM_ADDED, function(e: Event): void {
+            ui.addEventListener(ContainerEvent.COM_ADDED, function(e: flash.events.Event): void {
                 resize();
             });
-            container.addEventListener(AWEvent.PAINT, function(e: Event): void {                
+            container.addEventListener(AWEvent.PAINT, function(e: flash.events.Event): void {
                 adjustPosition(); 
             });                        
 		}
@@ -47,11 +51,11 @@ package src.UI.Tooltips {
 			return ui;
 		}
 		
-		public function bind(obj: DisplayObject) : void {
-			obj.addEventListener(MouseEvent.MOUSE_MOVE, function(e: Event): void {
+		public function bind(obj: flash.display.DisplayObject) : void {
+			obj.addEventListener(MouseEvent.MOUSE_MOVE, function(e: flash.events.Event): void {
 				show(obj);
 			});
-			obj.addEventListener(MouseEvent.MOUSE_OUT, function(e: Event): void {
+			obj.addEventListener(MouseEvent.MOUSE_OUT, function(e: flash.events.Event): void {
 				hide();
 			});			
 		}
@@ -89,7 +93,7 @@ package src.UI.Tooltips {
             var starlingSprite: starling.display.DisplayObject = viewObj as starling.display.DisplayObject;
             if (starlingSprite) {
                 starlingSprite.addEventListener(starling.events.Event.REMOVED_FROM_STAGE, parentHidden);
-                starlingSprite.addEventListener(starling.events.TouchEvent.TOUCH, starlingTouch);
+                starlingSprite.addEventListener(TouchEvent.TOUCH, starlingTouch);
                 return
             }
 
@@ -104,7 +108,7 @@ package src.UI.Tooltips {
 
             var flashSprite: flash.display.DisplayObject = viewObj as flash.display.DisplayObject;
             if (flashSprite) {
-                flashSprite.removeEventListener(Event.REMOVED_FROM_STAGE, parentHidden);
+                flashSprite.removeEventListener(flash.events.Event.REMOVED_FROM_STAGE, parentHidden);
                 flashSprite.removeEventListener(MouseEvent.MOUSE_DOWN, parentHidden);
                 return;
             }
@@ -112,7 +116,7 @@ package src.UI.Tooltips {
             var starlingSprite: starling.display.DisplayObject = viewObj as starling.display.DisplayObject;
             if (starlingSprite) {
                 starlingSprite.removeEventListener(starling.events.Event.REMOVED_FROM_STAGE, parentHidden);
-                starlingSprite.removeEventListener(starling.events.TouchEvent.TOUCH, starlingTouch);
+                starlingSprite.removeEventListener(TouchEvent.TOUCH, starlingTouch);
                 return
             }
 
@@ -132,7 +136,7 @@ package src.UI.Tooltips {
 
         protected function showFrame(): void {
             Global.stage.addChild(container);
-            Global.stage.addEventListener(Event.ENTER_FRAME, enterFrame);
+            Global.stage.addEventListener(flash.events.Event.ENTER_FRAME, enterFrame);
             
             if (!mouseInteractive()) {
                 container.mouseEnabled = false;
@@ -147,7 +151,7 @@ package src.UI.Tooltips {
 			return false;
 		}
 
-        private function starlingTouch(e: starling.events.TouchEvent): void {
+        private function starlingTouch(e: TouchEvent): void {
             var touch: Touch = e.getTouch(this.viewObj, TouchPhase.BEGAN);
             if (touch) {
                 hide();

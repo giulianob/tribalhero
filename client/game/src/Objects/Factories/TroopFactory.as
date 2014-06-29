@@ -6,7 +6,7 @@
     import src.Objects.States.GameObjectState;
     import src.Objects.Troop.TroopObject;
 
-    import starling.display.DisplayObjectContainer;
+    import starling.display.*;
 
     public class TroopFactory {
 
@@ -21,7 +21,7 @@
 		{
             var typeName: String = getSpriteName();
             var position: Point = SpriteFactory.getMapPosition(typeName);
-            var defaultSprite: DisplayObjectContainer = SpriteFactory.getStarlingImage(typeName);
+            var defaultSprite: Image = SpriteFactory.getStarlingImage(typeName);
 			var troopObject: TroopObject = new TroopObject(type, state, defaultSprite, position, objX, objY, size, playerId, cityId, objectId);
             troopObject.setSprite(SpriteFactory.getStarlingImage(typeName), position);
 			troopObject.setOnSelect(Global.map.selectObject);

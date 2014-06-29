@@ -1,6 +1,5 @@
 package src
 {
-    import src.Graphics.Tileset;
     import src.Map.MiniMap.MiniMapLegend;
     import src.Objects.Store.CoinPrice;
 
@@ -39,6 +38,7 @@ package src
 		public static const tileH:int = 80;
 
 		public static const tileSetTileW:int = 12;
+		public static const tileSetTileH:int = 12;
 
 		public static const mapW:int = mapTileW * tileW;
 		public static const mapH:int = mapTileH * tileH;
@@ -61,8 +61,6 @@ package src
 		public static var screenW:int = origScreenW;
 		public static var screenH:int = origScreenH;
 		
-		public static const tileset: Tileset = new Tileset();
-
 		public static const cityStartTile: int = 16;
 
 		/* MINI MAP CONSTANTS */

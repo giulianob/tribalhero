@@ -228,7 +228,7 @@ package src.UI.Cursors {
 				return false;
             }
 
-			return new ColorTransform(1.0, 1.0, 1.0, 1.0, 100);
+			return 0x640000;
 		}
 
 		public function validateBuilding():void

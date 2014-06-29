@@ -115,7 +115,7 @@
 			
 			Global.map.requeryIfSelected(obj);
 			
-			obj.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));		
+			obj.dispatchEventWith(SimpleGameObject.OBJECT_UPDATE);
 			
 			return obj;
 		}
@@ -159,7 +159,7 @@
 				
 			Global.map.requeryIfSelected(currentObj);
 
-            currentObj.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
+            currentObj.dispatchEventWith(SimpleGameObject.OBJECT_UPDATE);
 					
 			return currentObj;
 		}

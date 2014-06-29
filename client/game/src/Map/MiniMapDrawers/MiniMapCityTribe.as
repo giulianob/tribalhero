@@ -10,9 +10,12 @@ import src.Global;
 import src.Map.MiniMap.LegendGroups.MiniMapGroupCity;
 import src.Map.MiniMap.MiniMapLegendPanel;
 import src.Map.MiniMap.MiniMapRegionObject;
-import src.Util.StringHelper;
+    import src.Objects.Factories.SpriteFactory;
+    import src.Util.StringHelper;
 
-public class MiniMapCityTribe implements IMiniMapObjectDrawer
+    import starling.display.Image;
+
+    public class MiniMapCityTribe implements IMiniMapObjectDrawer
 	{
         private var cityButton: JToggleButton = new JToggleButton();
         private var selfButton: JToggleButton = new JToggleButton();
@@ -22,23 +25,29 @@ public class MiniMapCityTribe implements IMiniMapObjectDrawer
         private var DEFAULT_COLORS : * = MiniMapGroupCity.DEFAULT_COLORS;
 
 		public function applyObject(obj: MiniMapRegionObject) : void {
+            var dotSprite: Image;
 
 			if (Global.map.cities.get(obj.groupId)) {
                 if(cityButton.isSelected()) return;
-                obj.setIcon(new DOT_SPRITE);
-				obj.transform.colorTransform = new ColorTransform();
+                dotSprite = SpriteFactory.getStarlingImage("DOT_SPRITE");
+                dotSprite.color = MiniMapGroupCity.CITY_DEFAULT_COLOR;
+                obj.setIcon(dotSprite);
+
 			} else if(Constants.session.tribe.isInTribe(obj.extraProps.tribeId)) {
                 if(selfButton.isSelected()) return;
-                obj.setIcon(new DOT_SPRITE);
-				obj.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[1].r, DEFAULT_COLORS[1].g, DEFAULT_COLORS[1].b);
+                dotSprite = SpriteFactory.getStarlingImage("DOT_SPRITE");
+                dotSprite.color = DEFAULT_COLORS[1].hex;
+                obj.setIcon(dotSprite);
 			} else if (obj.extraProps.tribeId>0) {
                 if(otherButton.isSelected()) return;
-                obj.setIcon(new DOT_SPRITE);
-				obj.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[4].r, DEFAULT_COLORS[4].g, DEFAULT_COLORS[4].b);
+                dotSprite = SpriteFactory.getStarlingImage("DOT_SPRITE");
+                dotSprite.color = DEFAULT_COLORS[4].hex;
+                obj.setIcon(dotSprite);
 			} else {
                 if(noneButton.isSelected()) return;
-                obj.setIcon(new DOT_SPRITE);
-				obj.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[0].r, DEFAULT_COLORS[0].g, DEFAULT_COLORS[0].b);
+                dotSprite = SpriteFactory.getStarlingImage("DOT_SPRITE");
+                dotSprite.color = DEFAULT_COLORS[0].hex;
+                obj.setIcon(dotSprite);
 			}
 		}
 		

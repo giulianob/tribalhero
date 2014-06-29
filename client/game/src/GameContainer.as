@@ -1,4 +1,6 @@
 ﻿package src {
+    import flash.display.Sprite;
+
     import flash.display.*;
     import flash.events.*;
     import flash.net.*;
@@ -42,7 +44,8 @@
 		private var cmdLineHolder: Sprite;
 
 		public var map: Map;
-		public var miniMap: MiniMap;				
+
+		public var miniMap: MiniMap;
 		public var minimapHolder: Sprite;
 		private var minimapRefreshTimer: Timer = new Timer(500000, 0);
 
@@ -411,15 +414,15 @@
 			// Clear current city list
 			(lstCities.getModel() as VectorListModel).clear();
 
-			// Add map			
-			mapHolder.addChild(map);
-			minimapHolder.addChild(miniMap);
+			// Add map
+            Global.starlingStage.addChild(map);
+            Global.starlingStage.addChild(miniMap);
 
             // Set initial map zoom
-            mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactorPercentage();
+            map.scaleX = map.scaleY = camera.getZoomFactorPercentage();
 
 			// Create map overlay
-			this.mapOverlay = new MovieClip();
+			this.mapOverlay = new Sprite();
 			this.mapOverlay.graphics.beginFill(0xCCFF00);
 			this.mapOverlay.graphics.drawRect(0, 0, Constants.screenW, Constants.screenH);
 			this.mapOverlay.visible = false;
@@ -582,10 +585,13 @@
 				resizeManager.removeEventListener(Event.RESIZE, message.onResize);
 				miniMap.removeEventListener(MiniMap.NAVIGATE_TO_POINT, onMinimapNavigateToPoint);
 
-				map.dispose();
-				mapHolder.removeChild(map);
+				Global.starlingStage.removeChild(map);
+                Global.starlingStage.removeChild(miniMap);
+
+                map.dispose();
+                miniMap.dispose();
+
 				removeChild(mapOverlay);
-				minimapHolder.removeChild(miniMap);
 
 				map = null;
 				miniMap = null;
@@ -636,7 +642,7 @@
 				sidebar.show(sidebarHolder);								
 			}					
 			
-			stage.focus = map;
+			stage.focus = this;
 		}
 		
 		public function closeAllFrames(onlyClosableFrames: Boolean = false) : void {
@@ -773,7 +779,7 @@
 			selectedCity = lstCities.getSelectedItem().city;
 			displayResources();						
 			
-			stage.focus = map;
+			stage.focus = this;
 			miniMap.setCityPointer(selectedCity.name);
 		}
 

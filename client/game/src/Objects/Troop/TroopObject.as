@@ -8,8 +8,7 @@
     import src.Objects.*;
     import src.Objects.States.GameObjectState;
 
-    import starling.display.DisplayObjectContainer;
-    import starling.display.Image;
+    import starling.display.*;
 
     public class TroopObject extends GameObject {
 
@@ -23,11 +22,11 @@
 		public var template: UnitTemplateManager = new UnitTemplateManager();
 		
 		private var radiusManager: RadiusManager;
-        private var defaultSprite: DisplayObjectContainer;
+        private var defaultSprite: Image;
         private var defaultPosition: Point;
         private var isOverWall: Boolean;
 
-		public function TroopObject(type: int, state: GameObjectState, defaultSprite: DisplayObjectContainer, defaultPosition: Point, objX: int, objY: int, size: int, playerId: int, cityId: int, objectId: int) {
+		public function TroopObject(type: int, state: GameObjectState, defaultSprite: Image, defaultPosition: Point, objX: int, objY: int, size: int, playerId: int, cityId: int, objectId: int) {
 			super(type, state, objX, objY, size, playerId, cityId, objectId);
             this.defaultSprite = defaultSprite;
             this.defaultPosition = defaultPosition;

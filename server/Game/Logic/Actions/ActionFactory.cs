@@ -77,6 +77,17 @@ namespace Game.Logic.Actions
             return new ResourceGatherActiveAction(cityId, objectId, kernel.Get<ILocker>(), kernel.Get<IObjectTypeFactory>(), kernel.Get<IWorld>(), kernel.Get<IActionFactory>());
         }
 
+        public ResourceWithdrawActiveAction CreateResourceWithdrawActiveAction(uint cityId, uint objectId, Resource resource)
+        {
+            return new ResourceWithdrawActiveAction(cityId,
+                                                    objectId,
+                                                    resource,
+                                                    kernel.Get<ILocker>(),
+                                                    kernel.Get<IObjectTypeFactory>(),
+                                                    kernel.Get<IWorld>(),
+                                                    kernel.Get<IActionFactory>());
+        }
+
         public CityEngageDefensePassiveAction CreateCityEngageDefensePassiveAction(uint cityId, uint troopObjectId, FormationType formationType)
         {
             return new CityEngageDefensePassiveAction(cityId, troopObjectId, formationType, kernel.Get<BattleProcedure>(), kernel.Get<CityBattleProcedure>(), kernel.Get<IGameObjectLocator>());

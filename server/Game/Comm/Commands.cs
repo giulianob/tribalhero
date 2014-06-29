@@ -180,6 +180,8 @@ namespace Game.Comm
 
         CityHasApBonus = 469,
 
+        CityResourceWithdraw = 470,
+
         CityBattleStarted = 490,
 
         CityBattleEnded = 491,

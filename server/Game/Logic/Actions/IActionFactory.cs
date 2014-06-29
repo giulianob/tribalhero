@@ -37,6 +37,8 @@ namespace Game.Logic.Actions
 
         ResourceGatherActiveAction CreateResourceGatherActiveAction(uint cityId, uint objectId);
 
+        ResourceWithdrawActiveAction CreateResourceWithdrawActiveAction(uint cityId, uint objectId, Resource resource);
+
         CityEngageDefensePassiveAction CreateCityEngageDefensePassiveAction(uint cityId, uint troopObjectId, FormationType formationType);
 
         CityEngageAttackPassiveAction CreateCityEngageAttackPassiveAction(uint cityId,

@@ -1,28 +1,23 @@
 ﻿package src.UI.Dialog
 {
-    import flash.events.Event;
+import flash.events.Event;
 
-    import org.aswing.*;
-    import org.aswing.geom.*;
+import org.aswing.*;
+import org.aswing.geom.*;
 
-    import src.Comm.Packet;
-    import src.Global;
-    import src.Map.City;
-    import src.Objects.Effects.Formula;
-    import src.Objects.GameError;
-    import src.Objects.Resources;
-    import src.Objects.StructureObject;
-    import src.UI.Components.AutoCompleteTextField;
-    import src.UI.Components.TradeResourcesPanel;
-    import src.UI.GameJPanel;
-    import src.Util.DateUtil;
+import src.Comm.Packet;
+import src.Global;
+import src.Map.City;
+import src.Objects.GameError;
+import src.Objects.Resources;
+import src.Objects.StructureObject;
+import src.UI.Components.TradeResourcesPanel;
+import src.UI.GameJPanel;
 
-    public class ResourceWithdrawDialog extends GameJPanel
+public class ResourceWithdrawDialog extends GameJPanel
 	{
 
 		private var pnlResources:TradeResourcesPanel;
-
-		private var pnlBottom:JPanel;
 		private var btnOk:JButton;
 
 		public var city: City;
@@ -31,19 +26,27 @@
 		private var loadingDlg: InfoDialog;
 		
 		private var parentObj: StructureObject;
-		
+
+        private var stored: Resources;
+
 		public function ResourceWithdrawDialog(parentObj: StructureObject, onAccept: Function):void
 		{
 			this.onAccept = onAccept;
 			this.parentObj = parentObj;
-			
+
+            city = Global.map.cities.get(parentObj.cityId);
+            stored = new Resources(
+                    parentObj.properties[0],
+                    parentObj.properties[2],
+                    parentObj.properties[3],
+                    parentObj.properties[1],
+                    0
+            );
 			createUI();
 
-			title = "Withdraw Resources";
-			
+            title = "Withdraw Resources";
 			btnOk.addActionListener(onWithdraw);
 
-			city = Global.map.cities.get(parentObj.cityId);
 		}
 
 		public function onWithdraw(e: Event) : void {
@@ -52,12 +55,12 @@
 				return;
 			}
 
-			loadingDlg = InfoDialog.showMessageDialog("Send Resources", "Validating...", null, null, true, false, 0);
+			loadingDlg = InfoDialog.showMessageDialog("Withdraw Resources", "Withdrawing...", null, null, true, false, 0);
 
-		//	Global.mapComm.City.getSendResourcesConfirmation(amount(), parentObj.cityId, parentObj.objectId, onReceiveTradeInformation);
+			Global.mapComm.City.withdrawResources(amount(), parentObj.cityId, parentObj.objectId, onWithdrawComplete);
 		}
 
-        public function onReceiveTradeInformation(packet: Packet, custom: * = null) : void {
+        public function onWithdrawComplete(packet: Packet, custom: * = null) : void {
 			
 			if (loadingDlg) loadingDlg.getFrame().dispose();
 			
@@ -66,23 +69,16 @@
 				var err: int = packet.readUInt();
 				GameError.showMessage(err);
 				return;
-			}
-			
-//			var tradeTime: int = packet.readInt();
-			
+            }
+
 			var infoPanel: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
-	//		infoPanel.append(new JLabel(DateUtil.formatTime(tradeTime), new AssetIcon(new ICON_CLOCK()), AsWingConstants.RIGHT));
-	//		infoPanel.append(new JLabel("You have chosen to send " + amount().toNiceString() + " to " + playerName + " " + txtCityName.getText() + "\n\nAre you sure?"));
-			
-			InfoDialog.showMessageDialog("Confirm", infoPanel, onUserConfirms, null, true, false, JOptionPane.YES | JOptionPane.NO);
-		}
-		
-		public function onUserConfirms(option: int): void {
-			if (option == JOptionPane.YES) {			
-				var self: SendResourceDialog = this;
-				if (onAccept != null) onAccept(self);
-			}
-		}
+
+		    infoPanel.append(new JLabel("Resources are transfered from Cranny to the City."));
+
+			InfoDialog.showMessageDialog("Withdraw Resources", infoPanel, null, null, true, false, JOptionPane.OK);
+
+            onAccept(this);
+        }
 
 		public function show(owner:* = null, modal:Boolean = true, onClose:Function = null):JFrame
 		{
@@ -96,23 +92,31 @@
 		}
 
 		public function createUI(): void {
-			setLayout(new SoftBoxLayout(AsWingConstants.VERTICAL, 0, AsWingConstants.TOP));
+            setLayout(new SoftBoxLayout(AsWingConstants.VERTICAL, 0, AsWingConstants.TOP));
 
-			pnlResources = new TradeResourcesPanel(parentObj, Formula.sendCapacity(parentObj.level));
+            var capacity:Resources = new Resources(
+                    Math.min(stored.crop, city.resources.crop.getLimit() - city.resources.crop.getValue()),
+                    Math.min(stored.gold, 99999),
+                    Math.min(stored.iron, city.resources.iron.getLimit() - city.resources.iron.getValue()),
+                    Math.min(stored.wood, city.resources.wood.getLimit() - city.resources.wood.getValue()),
+                    0
+            );
 
-			pnlBottom = new JPanel();
-			pnlBottom.setSize(new IntDimension(200, 10));
-			pnlBottom.setLayout(new FlowLayout(AsWingConstants.CENTER));
+            pnlResources = new TradeResourcesPanel(parentObj, capacity, null, false);
 
-			btnOk = new JButton("Send");
+            var pnlBottom:JPanel = new JPanel();
+            pnlBottom.setSize(new IntDimension(200, 10));
+            pnlBottom.setLayout(new FlowLayout(AsWingConstants.CENTER));
 
-			//component layoution
-			append(new JLabel(" ")); //separator
-			append(pnlResources);
-			append(pnlBottom);
+            btnOk = new JButton("Withdraw");
 
-			pnlBottom.append(btnOk);
-		}
+            //component layoution
+            append(new JLabel(" ")); //separator
+            append(pnlResources);
+            append(pnlBottom);
+
+            pnlBottom.append(btnOk);
+        }
 	}
 
 }

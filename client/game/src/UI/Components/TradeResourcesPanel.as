@@ -15,7 +15,7 @@
 		private var structure:StructureObject = null;
 		private var city:City = null;
 		private var prompt:String;
-		private var capacity: int;
+		private var capacity: Resources;
 		
 		private var lblTitle1:JLabel;
 		
@@ -33,19 +33,32 @@
 		private var pnlGold:JPanel;
 		private var lblGoldAmount:JAdjuster;
         private var lblMaxOut:JLabelButton;
+        private var updateResources:Boolean;
 		
-		public function TradeResourcesPanel(parentObj:StructureObject, capacity: int, prompt:String = null)
+		public function TradeResourcesPanel(parentObj:StructureObject, capacity: Resources, prompt:String = null, updateResources: Boolean = true)
 		{
 			this.structure = parentObj;
 			this.city = Global.map.cities.get(parentObj.cityId);
 			this.prompt = prompt;
 			this.capacity = capacity;
-			
+			this.updateResources = updateResources;
+
 			setBorder(null);
 			setLayout(new SoftBoxLayout(AsWingConstants.VERTICAL, 0, AsWingConstants.TOP));
-			parentObj.getCorrespondingCityObj().city.addEventListener(City.RESOURCES_UPDATE, onResourceChange);
+            if(updateResources)
+			    parentObj.getCorrespondingCityObj().city.addEventListener(City.RESOURCES_UPDATE, onResourceChange);
+
 			draw();
-			onResourceChange();
+
+            if(updateResources) {
+			    onResourceChange();
+            } else {
+                lblWoodAmount.setMaximum(capacity.wood);
+                lblCropAmount.setMaximum(capacity.crop);
+                lblGoldAmount.setMaximum(capacity.gold);
+                lblIronAmount.setMaximum(capacity.iron);
+            }
+
             lblMaxOut.addActionListener(function (e: Event): void {
                 lblWoodAmount.setValue(lblWoodAmount.getMaximum());
                 lblIronAmount.setValue(lblIronAmount.getMaximum());
@@ -56,15 +69,16 @@
 		
 		public function dispose():void
 		{
-			city.removeEventListener(City.RESOURCES_UPDATE, onResourceChange);
+            if(updateResources)
+			    city.removeEventListener(City.RESOURCES_UPDATE, onResourceChange);
 		}
 		
 		private function onResourceChange(e:Event = null):void
 		{			
-			lblWoodAmount.setMaximum(Math.min(capacity, city.resources.wood.getValue()));
-			lblCropAmount.setMaximum(Math.min(capacity, city.resources.crop.getValue()));
-			lblGoldAmount.setMaximum(Math.min(capacity, city.resources.gold.getValue()));
-			lblIronAmount.setMaximum(Math.min(capacity, city.resources.iron.getValue()));
+			lblWoodAmount.setMaximum(Math.min(capacity.wood, city.resources.wood.getValue()));
+			lblCropAmount.setMaximum(Math.min(capacity.crop, city.resources.crop.getValue()));
+			lblGoldAmount.setMaximum(Math.min(capacity.gold, city.resources.gold.getValue()));
+			lblIronAmount.setMaximum(Math.min(capacity.iron, city.resources.iron.getValue()));
 		}
 		
 		public function getResource():Resources

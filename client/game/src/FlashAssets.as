@@ -295,20 +295,14 @@
         [Embed(source = "../../../graphics/themes/default/DEFAULT_FOUNDATION.png")]
         public static const DEFAULT_FOUNDATION: Class;
 
-        [Embed(source = "../../../graphics/themes/default/DEFAULT_CONSTRUCTION_SMALL.png")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_BUILDING_1.png")]
         public static const DEFAULT_BUILDING_1: Class;
 
-        [Embed(source = "../../../graphics/themes/default/DEFAULT_CONSTRUCTION.png")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_BUILDING_2.png")]
         public static const DEFAULT_BUILDING_2: Class;
 
-        [Embed(source = "../../../graphics/themes/default/DEFAULT_CONSTRUCTION.png")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_BUILDING_3.png")]
         public static const DEFAULT_BUILDING_3: Class;
-
-        [Embed(source = "../../../graphics/themes/default/DEFAULT_TRIBAL_GATHERING_STRUCTURE.png")]
-        public static const DEFAULT_STRUCTURE_SIMPLE: Class;
-
-        [Embed(source = "../../../graphics/themes/default/DEFAULT_TRIBAL_GATHERING_STRUCTURE.png")]
-        public static const DEFAULT_STRUCTURE_COMPLEX: Class;
 
         [Embed(source = "../../../graphics/themes/default/DEFAULT_TRIBAL_GATHERING_STRUCTURE.png")]
         public static const DEFAULT_EMBASSY_STRUCTURE: Class;
@@ -395,13 +389,13 @@
         [Embed(source = "../../../graphics/themes/pirates/PIRATES_BANNER.png")]
         public static const PIRATES_THEME_BANNER: Class;
 
-        [Embed(source = "../../../graphics/themes/default/DEFAULT_CONSTRUCTION_SMALL.png")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_BUILDING_1.png")]
         public static const PIRATES_BUILDING_1: Class;
 
-        [Embed(source = "../../../graphics/themes/default/DEFAULT_CONSTRUCTION.png")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_BUILDING_2.png")]
         public static const PIRATES_BUILDING_2: Class;
 
-        [Embed(source = "../../../graphics/themes/default/DEFAULT_CONSTRUCTION.png")]
+        [Embed(source = "../../../graphics/themes/default/DEFAULT_BUILDING_3.png")]
         public static const PIRATES_BUILDING_3: Class;
 
         [Embed(source = "../../../graphics/themes/pirates/PIRATES_ARMORY_STRUCTURE.png")]

@@ -51,6 +51,7 @@ to be relative and use forward slashes.
       <path-element>lib/src/aswing/org</path-element>
       <path-element>lib/src/starling-graphics/starling</path-element>
       <path-element>lib/src/starling-pixelmask/starling</path-element>
+      <path-element>lib/src/starling-pixelperfecttouch/starling</path-element>      
       <path-element>game</path-element>
     </source-path>
     <library-path append="true">

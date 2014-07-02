@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
-<!-- $TexturePacker:SmartUpdate:d326f0b5323b7f73fb849e30dfc7afc5:38a906ddd368556615ffd5036e78d3b7:67e41789a95267cd5dc6eebabda3cb22$ -->
+<!-- $TexturePacker:SmartUpdate:7ee1a1a9f29f72038883f1c5123795ac:38a906ddd368556615ffd5036e78d3b7:67e41789a95267cd5dc6eebabda3cb22$ -->
 <TextureAtlas imagePath="ICONS_ATLAS.png">
     <SubTexture name="DOT_SPRITE" x="72" y="52" width="12" height="6"/>
     <SubTexture name="ICON_ARROW_LEFT" x="108" y="36" width="16" height="12" frameX="0" frameY="-2" frameWidth="16" frameHeight="16"/>
@@ -19,8 +19,8 @@
     <SubTexture name="ICON_LEVEL_UP" x="54" y="2" width="16" height="16"/>
     <SubTexture name="ICON_MAP" x="38" y="106" width="16" height="16"/>
     <SubTexture name="ICON_MESSAGING" x="38" y="88" width="16" height="16"/>
-    <SubTexture name="ICON_MINIMAP_ICON_BLUE" x="36" y="56" width="16" height="12" frameX="0" frameY="-2" frameWidth="16" frameHeight="16"/>
-    <SubTexture name="ICON_MINIMAP_ICON_RED" x="54" y="56" width="16" height="12" frameX="0" frameY="-2" frameWidth="16" frameHeight="16"/>
+    <SubTexture name="ICON_MINIMAP_ARROW_BLUE" x="36" y="56" width="16" height="12" frameX="0" frameY="-2" frameWidth="16" frameHeight="16"/>
+    <SubTexture name="ICON_MINIMAP_ARROW_RED" x="54" y="56" width="16" height="12" frameX="0" frameY="-2" frameWidth="16" frameHeight="16"/>
     <SubTexture name="ICON_MINUS" x="116" y="50" width="10" height="4" frameX="-2" frameY="-6" frameWidth="16" frameHeight="16"/>
     <SubTexture name="ICON_PAPER_SCROLL" x="2" y="36" width="32" height="32"/>
     <SubTexture name="ICON_PAPER_SCROLL_ALERT" x="2" y="2" width="32" height="32"/>

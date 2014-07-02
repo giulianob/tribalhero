@@ -26,6 +26,9 @@ package src.Objects.Factories {
         public static function getStarlingImage(typeName: String): Image
         {
             var mainImage: Texture = StarlingStage.assets.getTexture(typeName);
+            if (mainImage === null) {
+                throw new Error("Could not find texture named " + typeName);
+            }
             return new Image(mainImage)
         }
 

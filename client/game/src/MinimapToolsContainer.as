@@ -1,20 +1,15 @@
 package src {
     import com.greensock.TweenMax;
-    import com.greensock.easing.Elastic;
-    import com.greensock.easing.Linear;
-    import com.greensock.easing.Quad;
 
     import fl.motion.AdjustColor;
 
     import flash.events.Event;
     import flash.events.MouseEvent;
     import flash.filters.ColorMatrixFilter;
-    import flash.geom.Matrix;
     import flash.net.URLRequest;
     import flash.net.navigateToURL;
 
     import src.Map.ScreenPosition;
-
     import src.UI.Components.SimpleTooltip;
     import src.UI.Dialog.GoToDialog;
 

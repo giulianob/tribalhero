@@ -55,18 +55,11 @@
 
 			Global.gameContainer.miniMap.objContainer.addObject(regionObject);
 
-			regionObject.addEventListener(TouchEvent.TOUCH, onObjectMouseOver);
+            new MinimapInfoTooltip(regionObject);
+			
 			mapFilter.apply(regionObject);
 			objects.push(regionObject);
 			return regionObject;
-		}
-
-		public function onObjectMouseOver(e: TouchEvent) : void {
-            if (e.touches.length !== 1 || e.touches[0].phase !== TouchPhase.HOVER) {
-                return;
-            }
-
-			new MinimapInfoTooltip(MiniMapRegionObject(e.target is MiniMapRegionObject ? e.touches[0].target : e.touches[0].target.parent));
 		}
 
 		public function moveWithCamera(camera: Camera):void

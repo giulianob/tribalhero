@@ -308,7 +308,7 @@
 		
 		public function setCityPointer(name: String): void {
 			if (cityPointer != null && cityPointer.getPointerName() != name) {
-				cityPointer.setIcon(SpriteFactory.getStarlingImage("ICON_MINIMAP_ICON_BLUE"));
+				cityPointer.setIcon(SpriteFactory.getStarlingImage("ICON_MINIMAP_ARROW_BLUE"));
 			} else if (cityPointer!=null) {
 				return;
 			}

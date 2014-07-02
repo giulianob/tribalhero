@@ -20,7 +20,7 @@ package src.Graphics {
                     for (var column: int = 0; column < Constants.tileSetTileW; column++) {
                         var initTileId: int = row * Constants.tileSetTileW + column;
 
-                        var tileTexture: Texture = Texture.fromTexture(tileset, new Rectangle(column * Constants.tileW, row * Constants.tileH * 2, Constants.tileW, Constants.tileH * 2));
+                        var tileTexture: Texture = Texture.fromTexture(tileset, new Rectangle(column * Constants.tileW, row * Constants.tileH, Constants.tileW, Constants.tileH));
                         tiles[initTileId] = new Image(tileTexture);
                     }
                 }

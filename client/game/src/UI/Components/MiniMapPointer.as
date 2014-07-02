@@ -19,7 +19,9 @@ package src.UI.Components
     import src.UI.LookAndFeel.GameLookAndFeel;
     import src.UI.Tooltips.Tooltip;
 
-	public class MiniMapPointer extends Sprite
+    import starling.utils.deg2rad;
+
+    public class MiniMapPointer extends Sprite
 	{
 		private var cityMinimapPoint:ScreenPosition;
 		private var center:Point;
@@ -123,7 +125,7 @@ package src.UI.Components
 				x = (int)(mapWidth / 2 + (dx > 0 ? 1 : -1) * xBasedOnYRadius);
 				y = (int)(mapHeight / 2 + (dy > 0 ? radiusY : -radiusY - 15)); //
 			}
-			TweenMax.to(pointer, 0, {transformAroundCenter: {shortRotation: {rotation: angleDegree}}});
+			TweenMax.to(pointer, 0, {transformAroundCenterStarling: {shortRotation: {rotation: deg2rad(angleDegree), useRadians: true}}});
 		}
 	}
 

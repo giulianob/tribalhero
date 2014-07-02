@@ -1,7 +1,5 @@
 package src.Objects {
 
-    import flash.filters.GlowFilter;
-
     import src.Constants;
     import src.Global;
     import src.Map.City;
@@ -54,7 +52,7 @@ package src.Objects {
 				
 			if (!bool && Constants.session.playerId == playerId && ObjectFactory.isType("HighlightedObjects", type)) {
                 disposeFilter();
-                filter = BlurFilter.createGlow(0x00A2FF, 0.5, 1);
+                filter = BlurFilter.createGlow(0x00A2FF, 0.9, 5);
 			}
 		}
 	}

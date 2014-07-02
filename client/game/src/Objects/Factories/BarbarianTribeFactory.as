@@ -11,7 +11,7 @@
 		}
 
         public static function getSpriteName(): String {
-            return "BARBARIAN_TRIBE_STRUCTURE";
+            return "DEFAULT_BARBARIAN_TRIBE_STRUCTURE";
         }
 
 		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, size: int, groupId: int, objectId: int, level: int, count: int): SimpleGameObject

@@ -1,6 +1,4 @@
 ﻿package src.UI.Cursors {
-    import flash.display.*;
-    import flash.events.*;
     import flash.geom.*;
 
     import src.*;
@@ -14,11 +12,11 @@
     import src.UI.Tooltips.*;
     import src.Util.*;
 
-    public class GroundAttackCursor extends MovieClip implements IDisposable
+    import starling.events.*;
+
+    public class GroundAttackCursor extends MapOverlayBase
 	{
 		private var objPosition: ScreenPosition = new ScreenPosition();
-
-		private var originPoint: Point;
 
 		private var cursor: GroundCircle;
 
@@ -35,8 +33,6 @@
 
 		public function GroundAttackCursor(city: City, onAccept: Function, troop: TroopStub = null):void
 		{
-			doubleClickEnabled = true;
-
 			this.troop = troop;
 			this.city = city;
 			this.mode = mode;
@@ -51,17 +47,10 @@
 
 			var size: int = Formula.troopRadius(troop);
 
-			cursor = new GroundCircle(size);
-			cursor.alpha = 0.6;
-
-			Global.map.objContainer.addObject(cursor, ObjectContainer.LOWER);
+			cursor = new GroundCircle(size, new ScreenPosition(), GroundCircle.GREEN);
 
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
-			addEventListener(MouseEvent.DOUBLE_CLICK, onMouseDoubleClick);
-			addEventListener(MouseEvent.CLICK, onMouseStop, true);
-			addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-			addEventListener(MouseEvent.MOUSE_OVER, onMouseStop);
-			addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+            addEventListener(TouchEvent.TOUCH, onTouched);
 
 			Global.gameContainer.setOverlaySprite(this);
 		}
@@ -78,14 +67,15 @@
 
 		public function onAddedToStage(e: Event):void
 		{
-			moveTo(stage.mouseX, stage.mouseY);
+			moveTo(Global.stage.mouseX, Global.stage.mouseY);
 		}
 
-		public function dispose():void
+		override public function dispose():void
 		{
+            super.dispose();
+
 			if (cursor != null)
 			{
-				Global.map.objContainer.removeObject(cursor, ObjectContainer.LOWER);
 				cursor.dispose();
 			}
 
@@ -98,37 +88,35 @@
 				highlightedObj.setHighlighted(false);
 				highlightedObj = null;
 			}
+
+            removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+            removeEventListener(TouchEvent.TOUCH, onTouched);
 		}
 
-		public function onMouseStop(event: MouseEvent):void
+        public function onTouched(event: TouchEvent): void {
+            var clickTouch: Touch = event.getTouch(this, TouchPhase.BEGAN);
+            if (clickTouch && clickTouch.tapCount == 2) {
+                onDoubleClicked();
+            }
+
+            var moveTouch: Touch = event.getTouch(this, TouchPhase.HOVER);
+            if (moveTouch) {
+                var mousePos: Point = TileLocator.getPointWithZoomFactor(moveTouch.globalX, moveTouch.globalY);
+                moveTo(mousePos.x, mousePos.y);
+            }
+
+            event.stopImmediatePropagation();
+        }
+
+		public function onDoubleClicked():void
 		{
-			event.stopImmediatePropagation();
-		}
-
-		public function onMouseDoubleClick(event: MouseEvent):void
-		{
-			if (Point.distance(TileLocator.getPointWithZoomFactor(event.stageX, event.stageY), originPoint) > 4) return;
-
-			event.stopImmediatePropagation();
-
-			if (highlightedObj == null) 
+			if (highlightedObj == null) {
 				return;
+            }
 			
-			if (onAccept != null)
+			if (onAccept != null) {
 				onAccept(this);
-		}
-
-		public function onMouseDown(event: MouseEvent):void
-		{
-			originPoint = TileLocator.getPointWithZoomFactor(event.stageX, event.stageY);
-		}
-
-		public function onMouseMove(event: MouseEvent):void
-		{
-			if (event.buttonDown) return;
-
-			var mousePos: Point = TileLocator.getPointWithZoomFactor(event.stageX, event.stageY);
-			moveTo(mousePos.x, mousePos.y);
+            }
 		}
 
 		public function moveTo(x: int, y: int):void
@@ -137,14 +125,9 @@
 
 			if (!pos.equals(objPosition))
 			{
-				Global.map.objContainer.removeObject(cursor, ObjectContainer.LOWER);
-
 				objPosition = pos;
 
-                cursor.x = cursor.primaryPosition.x = pos.x;
-                cursor.y = cursor.primaryPosition.y = pos.y;
-
-				Global.map.objContainer.addObject(cursor, ObjectContainer.LOWER);
+                cursor.moveTo(pos);
 
 				validate();
 			}
@@ -165,7 +148,7 @@
 
 			var objects: Array = Global.map.regions.getObjectsInTile(objPosition.toPosition(), [StructureObject, Stronghold, BarbarianTribe]);
 
-            cursor.visible = true;
+            cursor.draw();
 
 			if (objects.length == 0) {
 				Global.gameContainer.message.showMessage(StringHelper.localize("ATTACK_CHOOSE_TARGET"));
@@ -219,10 +202,10 @@
                 tooltip = new StrongholdTooltip(gameObj as Stronghold);
                 tooltip.show(gameObj);
 
-                cursor.visible = false;
+                cursor.clear();
 			}
             else {
-                cursor.visible = false;
+                cursor.clear();
             }
 		
 			gameObj.setHighlighted(true);

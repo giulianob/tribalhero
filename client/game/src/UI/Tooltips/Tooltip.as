@@ -216,7 +216,10 @@ package src.UI.Tooltips {
 				this.viewObj = null;
 			}
 
-            Global.stage.removeChild(container);
+            if (container.stage) {
+                Global.stage.removeChild(container);
+            }
+
             Global.stage.removeEventListener(flash.events.Event.ENTER_FRAME, enterFrame);
 		}
         

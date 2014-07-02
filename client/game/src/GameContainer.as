@@ -1,6 +1,8 @@
 ﻿package src {
-    import flash.display.Sprite;
 
+    import starling.display.Sprite;
+
+    import flash.display.Sprite;
     import flash.display.*;
     import flash.events.*;
     import flash.net.*;
@@ -16,7 +18,6 @@
 
     import src.Map.*;
     import src.Map.MiniMap.MiniMap;
-    import src.Objects.*;
     import src.UI.*;
     import src.UI.Components.*;
     import src.UI.Components.ScreenMessages.*;
@@ -38,20 +39,15 @@
 		private var sidebar: GameJSidebar;
 
 		//Container for sidebar
-		private var sidebarHolder: Sprite;
+		private var sidebarHolder: flash.display.Sprite;
 		
 		//Container for cmd line
-		private var cmdLineHolder: Sprite;
+		private var cmdLineHolder: flash.display.Sprite;
 
 		public var map: Map;
 
 		public var miniMap: MiniMap;
-		public var minimapHolder: Sprite;
 		private var minimapRefreshTimer: Timer = new Timer(500000, 0);
-
-		//Holds any overlay. Overlays are used for different cursor types.
-		private var mapOverlay: Sprite;
-		private var mapOverlayTarget: Sprite;
 
 		//HUD resources container
 		private var resourcesContainer: ResourcesContainer;
@@ -70,7 +66,7 @@
 
 		//On screen message component
 		public var screenMessage: ScreenMessagePanel;
-        public var screenMessageHolder: Sprite;
+        public var screenMessageHolder: flash.display.Sprite;
 
 		//Holds the tools above the minimap
 		public var minimapTools: MinimapToolsContainer;
@@ -93,6 +89,10 @@
 		// Game tutorial handler
 		private var tutorial: GameTutorial;
         private var lblCoords: JLabel;
+
+        internal var mapHolder: starling.display.Sprite;
+        private var miniMapHolder: starling.display.Sprite;
+        private var mapOverlayTarget: starling.display.DisplayObject;
 
 		public function GameContainer()
 		{
@@ -164,29 +164,30 @@
 			btnMenu.addEventListener(MouseEvent.CLICK, onMenuClick);		
 
 			// Set up holders
-			sidebarHolder = new Sprite();
+			sidebarHolder = new flash.display.Sprite();
 			sidebarHolder.x = Constants.screenW - GameJSidebar.WIDTH - 15;
 			sidebarHolder.y = 60;			
 			
-			cmdLineHolder = new Sprite();				
-			minimapHolder = new Sprite();
-            screenMessageHolder = new Sprite();
+			cmdLineHolder = new flash.display.Sprite();
+            screenMessageHolder = new flash.display.Sprite();
             screenMessageHolder.mouseEnabled = false;
             screenMessageHolder.mouseChildren = false;
 			
             addChild(screenMessageHolder);
 			addChild(cmdLineHolder);								
-			addChild(minimapHolder);				
+			addChild(minimapTools);
 			addChild(sidebarHolder);
-			
+
+            mapHolder = new starling.display.Sprite();
+            miniMapHolder = new starling.display.Sprite();
+            Global.starlingStage.addChild(mapHolder);
+            Global.starlingStage.addChild(miniMapHolder);
+
 			// Bar bg			
 			var barBgClass: Class = UIManager.getDefaults().get("GameMenu.bar");
 			barBg = new barBgClass() as DisplayObject;						
 			addChildAt(barBg, 1);
 			
-			// Minimap tools
-			minimapHolder.addChild(minimapTools);
-
 			// Set up minimap refresh timer
 			minimapRefreshTimer.addEventListener(TimerEvent.TIMER, minimapRefresh);
 			
@@ -415,20 +416,11 @@
 			(lstCities.getModel() as VectorListModel).clear();
 
 			// Add map
-            Global.starlingStage.addChild(map);
-            Global.starlingStage.addChild(miniMap);
+            mapHolder.addChild(map);
+            miniMapHolder.addChild(miniMap);
 
             // Set initial map zoom
-            map.scaleX = map.scaleY = camera.getZoomFactorPercentage();
-
-			// Create map overlay
-			this.mapOverlay = new Sprite();
-			this.mapOverlay.graphics.beginFill(0xCCFF00);
-			this.mapOverlay.graphics.drawRect(0, 0, Constants.screenW, Constants.screenH);
-			this.mapOverlay.visible = false;
-			this.mapOverlay.mouseEnabled = false;
-			this.mapOverlay.name = "Overlay";
-			addChild(this.mapOverlay);
+            mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactorPercentage();
 
 			// Populate city list
 			for each (var city: City in map.cities) {
@@ -441,7 +433,7 @@
 				selectedCity = lstCities.getSelectedItem().city;
 			}
 			else {
-				map.onMove();
+				map.move();
 			}
 
 			//Show resources box
@@ -455,7 +447,6 @@
 			// Add objects to resize manager
 			resizeManager = new ResizeManager(stage);
 
-			resizeManager.addObject(this.mapOverlay, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_TOP | ResizeManager.ANCHOR_LEFT | ResizeManager.ANCHOR_BOTTOM);
 			resizeManager.addObject(sidebarHolder, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_TOP);
 			resizeManager.addObject(barBg, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_LEFT);
 			resizeManager.addObject(resourcesContainer, ResizeManager.ANCHOR_TOP | ResizeManager.ANCHOR_RIGHT);
@@ -585,13 +576,13 @@
 				resizeManager.removeEventListener(Event.RESIZE, message.onResize);
 				miniMap.removeEventListener(MiniMap.NAVIGATE_TO_POINT, onMinimapNavigateToPoint);
 
-				Global.starlingStage.removeChild(map);
-                Global.starlingStage.removeChild(miniMap);
+				mapHolder.removeChild(map);
+                miniMapHolder.removeChild(miniMap);
 
                 map.dispose();
                 miniMap.dispose();
 
-				removeChild(mapOverlay);
+				setOverlaySprite(null);
 
 				map = null;
 				miniMap = null;
@@ -728,19 +719,12 @@
 			resourcesContainer.displayResources();
 		}
 
-		public function setOverlaySprite(object: Sprite):void
+		public function setOverlaySprite(object: starling.display.Sprite):void
 		{
 			if (this.mapOverlayTarget != null)
 			{
-				this.mapOverlayTarget.hitArea = null;
-
-				var disposeTmp: IDisposable = this.mapOverlayTarget as IDisposable;
-
-				if (disposeTmp != null)
-					disposeTmp.dispose();
-
 				mapHolder.removeChild(this.mapOverlayTarget);
-				this.mapOverlayTarget = null;
+                this.mapOverlayTarget.dispose();
 			}
 
 			this.mapOverlayTarget = object;
@@ -748,7 +732,6 @@
 			if (this.mapOverlayTarget != null)
 			{
 				mapHolder.addChild(this.mapOverlayTarget);
-				this.mapOverlayTarget.hitArea = this.mapOverlay;
 			}
 		}
 

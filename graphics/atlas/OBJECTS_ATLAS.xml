@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
-<!-- $TexturePacker:SmartUpdate:22fd965bd415b53a2c0136badc267d48:edf2e38c4e4aa1aed7ae7ac99098114f:3d6f789254fe6d2b935ad16c7400be7b$ -->
+<!-- $TexturePacker:SmartUpdate:2ae58faa4d2c9dbdace2843e134837a0:7cf8cbe349047d1056b1f256554d481b:3d6f789254fe6d2b935ad16c7400be7b$ -->
 <TextureAtlas imagePath="OBJECTS_ATLAS.png">
     <SubTexture name="FOREST_LVL_1" x="160" y="120" rotated="true" width="72" height="124"/>
     <SubTexture name="FOREST_LVL_2" x="164" y="2" rotated="true" width="79" height="116"/>

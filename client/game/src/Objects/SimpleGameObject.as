@@ -37,8 +37,7 @@ package src.Objects {
 			this.objectId = objectId;
 			
 			State = state;
-			
-			touchable = false;
+
 			addEventListener(OBJECT_UPDATE, onObjectUpdate);
 		}				
 

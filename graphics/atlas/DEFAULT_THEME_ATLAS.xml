@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
-<!-- $TexturePacker:SmartUpdate:06dd0b11cdd31b756f2219974b9cfbd2:8e22e65690da4876463945d4d3be6778:5b1367083d8bf503f01b1d6b13d5c924$ -->
+<!-- $TexturePacker:SmartUpdate:ab1bd8b105901d560b42ef6743e456cd:da82da1269ac05aeaca1ce69506980bf:5b1367083d8bf503f01b1d6b13d5c924$ -->
 <TextureAtlas imagePath="DEFAULT_THEME_ATLAS.png">
     <SubTexture name="DEFAULT_ARMORY_STRUCTURE" x="398" y="580" width="112" height="77"/>
     <SubTexture name="DEFAULT_BARBARIAN_TRIBE_STRUCTURE" x="236" y="289" width="211" height="119"/>
@@ -8,9 +8,10 @@
     <SubTexture name="DEFAULT_BASEMENT_STRUCTURE" x="2" y="881" rotated="true" width="59" height="98"/>
     <SubTexture name="DEFAULT_BASEMENT_TMP_STRUCTURE" x="355" y="543" rotated="true" width="41" height="69"/>
     <SubTexture name="DEFAULT_BLACKSMITH_STRUCTURE" x="134" y="724" width="116" height="77"/>
+    <SubTexture name="DEFAULT_BUILDING_1" x="63" y="881" rotated="true" width="49" height="80" frameX="0" frameY="-4" frameWidth="80" frameHeight="53"/>
+    <SubTexture name="DEFAULT_BUILDING_2" x="396" y="659" width="114" height="70" frameX="0" frameY="-6" frameWidth="114" frameHeight="76"/>
+    <SubTexture name="DEFAULT_BUILDING_3" x="396" y="659" width="114" height="70" frameX="0" frameY="-6" frameWidth="114" frameHeight="76"/>
     <SubTexture name="DEFAULT_CANNON_TOWER_STRUCTURE" x="361" y="805" rotated="true" width="74" height="67"/>
-    <SubTexture name="DEFAULT_CONSTRUCTION" x="396" y="659" width="114" height="70" frameX="0" frameY="-6" frameWidth="114" frameHeight="76"/>
-    <SubTexture name="DEFAULT_CONSTRUCTION_SMALL" x="63" y="881" rotated="true" width="49" height="80" frameX="0" frameY="-4" frameWidth="80" frameHeight="53"/>
     <SubTexture name="DEFAULT_DEAD_FIELD_STRUCTURE" x="366" y="731" width="109" height="72"/>
     <SubTexture name="DEFAULT_FARM_STRUCTURE" x="2" y="673" width="130" height="66"/>
     <SubTexture name="DEFAULT_FIELD_STRUCTURE" x="252" y="724" width="112" height="69"/>

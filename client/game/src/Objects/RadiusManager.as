@@ -1,14 +1,10 @@
 package src.Objects 
 {
-    import flash.events.Event;
+    import starling.events.Event;
 
-    import src.Global;
+    import src.Map.ScreenPosition;
     import src.UI.Components.GroundCircle;
 
-    /**
-	 * ...
-	 * @author Giuliano Barberi
-	 */
 	public class RadiusManager
 	{
 		private var radiusVisible: Boolean = false;
@@ -19,6 +15,7 @@ package src.Objects
 		public function RadiusManager(parentObj: SimpleGameObject) 
 		{
 			this.parentObj = parentObj;
+            this.circle = new GroundCircle(radius, new ScreenPosition(), GroundCircle.GREEN, true);
 		}
 		
 		public function showRadius(radius: int):void {
@@ -43,26 +40,12 @@ package src.Objects
 		{
 			if (radius == 0 || !radiusVisible)
 			{
-				if (circle)				
-					Global.map.objContainer.removeObject(circle, ObjectContainer.LOWER);
-					
-				circle = null;				
+				circle.clear();
 				return;
 			}
 
-			if (!circle)
-			{
-				circle = new GroundCircle(radius, true);
-				circle.alpha = 0.6;
-			}
-			else
-				Global.map.objContainer.removeObject(circle, ObjectContainer.LOWER);
-
-            circle.x = circle.primaryPosition.x = parentObj.x;
-            circle.y = circle.primaryPosition.y = parentObj.y;
-
-			Global.map.objContainer.addObject(circle, ObjectContainer.LOWER);
-		}		
+            circle.moveTo(parentObj.primaryPosition);
+		}
 	}
 
 }

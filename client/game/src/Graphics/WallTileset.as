@@ -24,9 +24,9 @@ package src.Graphics {
             if (wallTile == null) {
                 var tilesetsrcX:int = int(tileId % Constants.tileSetTileW) * Constants.tileW;
                 var tilesetsrcY:int = int(tileId / Constants.tileSetTileW) * Constants.tileH * 2;
-                var texture: Texture = StarlingStage.assets.getTexture(theme);
+                var texture: Texture = StarlingStage.assets.getTexture(getSpriteName(theme));
                 if (texture == null) {
-                    texture = StarlingStage.assets.getTexture(Theme.DEFAULT_THEME_ID);
+                    texture = StarlingStage.assets.getTexture(getSpriteName(Theme.DEFAULT_THEME_ID));
                 }
 
                 wallTile = Texture.fromTexture(texture, new Rectangle(
@@ -63,7 +63,7 @@ package src.Graphics {
         }
 
         public static function getSpriteName(theme: String): String {
-            return theme + "_WALL_TILESET";
+            return theme + "_WALL";
         }
     }
 }

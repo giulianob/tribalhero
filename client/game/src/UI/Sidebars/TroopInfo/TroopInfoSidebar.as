@@ -40,7 +40,7 @@
 			update();
 		}
 
-		public function onObjectUpdate(e: Event):void
+		public function onObjectUpdate(e: *):void
 		{
 			update();
 		}

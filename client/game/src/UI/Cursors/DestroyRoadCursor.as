@@ -1,10 +1,6 @@
 ﻿
 package src.UI.Cursors {
-    import flash.display.MovieClip;
-    import flash.events.Event;
-    import flash.events.MouseEvent;
     import flash.events.TimerEvent;
-    import flash.geom.ColorTransform;
     import flash.geom.Point;
     import flash.utils.Timer;
 
@@ -16,17 +12,20 @@ package src.UI.Cursors {
     import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
     import src.Util.BinaryList.BinaryList;
 
-    public class DestroyRoadCursor extends MovieClip implements IDisposable
+    import starling.events.Touch;
+
+    import starling.events.TouchEvent;
+    import starling.events.TouchPhase;
+
+    public class DestroyRoadCursor extends MapOverlayBase
 	{
 		private var objPosition: ScreenPosition = new ScreenPosition();
 
 		private var city: City;
 
-		private var originPoint: Point;
-
         private var destroyableRoads: BinaryList = new BinaryList(Position.sort, Position.compare);
 
-        private var cursor: SimpleObject;
+        private var cursor: GroundCircle;
 		private var destroyableArea: GroundCallbackCircle;
 		private var parentObj: SimpleGameObject;
 
@@ -38,8 +37,6 @@ package src.UI.Cursors {
 
 		public function init(parentObject: SimpleGameObject):void
 		{
-			doubleClickEnabled = true;
-
 			this.parentObj = parentObject;
 
 			city = Global.map.cities.get(parentObj.groupId);
@@ -49,33 +46,22 @@ package src.UI.Cursors {
 
             validateAllTiles();
 
-			cursor = new GroundCircle(0);
-			cursor.alpha = 0.7;
+			cursor = new GroundCircle(0, new ScreenPosition(), GroundCircle.GREEN);
 
-			destroyableArea = new GroundCallbackCircle(city.radius - 1, validateTileCallback);						
-			
-			destroyableArea.alpha = 0.3;
-			var pos: ScreenPosition = city.primaryPosition.toScreenPosition();
-            destroyableArea.x = destroyableArea.primaryPosition.x = pos.x;
-            destroyableArea.y = destroyableArea.primaryPosition.y = pos.y;
-
-			Global.map.objContainer.addObject(destroyableArea, ObjectContainer.LOWER);
+			destroyableArea = new GroundCallbackCircle(city.radius - 1, city.primaryPosition.toScreenPosition(), validateTileCallback);
+            destroyableArea.draw();
 
 			var sidebar: CursorCancelSidebar = new CursorCancelSidebar(parentObj);
 			Global.gameContainer.setSidebar(sidebar);
 
-			addEventListener(MouseEvent.DOUBLE_CLICK, onMouseDoubleClick);
-			addEventListener(MouseEvent.CLICK, onMouseStop, true);
-			addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-			addEventListener(MouseEvent.MOUSE_OVER, onMouseStop);
-			addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+            addEventListener(TouchEvent.TOUCH, onTouched);
 
 			Global.map.regions.addEventListener(RegionManager.REGION_UPDATED, update);
 
-			redrawLaterTimer.addEventListener(TimerEvent.TIMER, function(e: Event) : void {
+			redrawLaterTimer.addEventListener(TimerEvent.TIMER, function(e: *) : void {
 				redrawLaterTimer.stop();
                 validateAllTiles();
-				destroyableArea.redraw();
+				destroyableArea.draw();
                 validateBuilding();
 			});
 
@@ -91,83 +77,74 @@ package src.UI.Cursors {
             }
         }
 
-		public function update(e: Event = null) : void {
+		private function update(e: * = null) : void {
 			redrawLaterTimer.stop();
 			redrawLaterTimer.start();
 		}
 
-		public function dispose():void
+		override public function dispose():void
 		{
+            super.dispose();
+
 			Global.map.regions.removeEventListener(RegionManager.REGION_UPDATED, update);
 
 			Global.gameContainer.message.hide();
 
 			if (cursor != null)
 			{
-				if (cursor.stage != null) 
-					Global.map.objContainer.removeObject(cursor);
-					
-				if (destroyableArea.stage != null) 
-					Global.map.objContainer.removeObject(destroyableArea, ObjectContainer.LOWER);
+                cursor.dispose();
+                destroyableArea.dispose();
 			}
+
+            removeEventListener(TouchEvent.TOUCH, onTouched);
 		}
 
 		private function showCursors() : void {
-			if (cursor) cursor.visible = true;
+            cursor.draw();
 		}
 
 		private function hideCursors() : void {
-			if (cursor) cursor.visible = false;
+            cursor.clear();
 		}
 
-		public function onMouseStop(event: MouseEvent):void
+		public function onTouched(event: TouchEvent):void
 		{
-			event.stopImmediatePropagation();
+            var clickTouch: Touch = event.getTouch(this, TouchPhase.BEGAN);
+            if (clickTouch && clickTouch.tapCount == 2) {
+                onDoubleClicked();
+            }
+
+            var moveTouch: Touch = event.getTouch(this, TouchPhase.HOVER);
+            if (moveTouch) {
+                var mousePos: Point = TileLocator.getPointWithZoomFactor(moveTouch.globalX, moveTouch.globalY);
+                moveTo(mousePos.x, mousePos.y);
+            }
+
+            event.stopImmediatePropagation();
 		}
 
-		public function onMouseDoubleClick(event: MouseEvent):void
+		public function onDoubleClicked():void
 		{
-			if (!cursor.visible)
+			if (!cursor.visible) {
 				return;
-				
-			if (Point.distance(TileLocator.getPointWithZoomFactor(event.stageX, event.stageY), originPoint) > city.radius)
-				return;
-
-			event.stopImmediatePropagation();
+            }
 
 			var mapPos: Position = objPosition.toPosition();
 			Global.mapComm.Region.destroyRoad(parentObj.groupId, mapPos.x, mapPos.y);
 		}
 
-		public function onMouseDown(event: MouseEvent):void
+		public function moveTo(globalX: int, globalY: int) : void
 		{
-			originPoint = TileLocator.getPointWithZoomFactor(event.stageX, event.stageY);
-		}
-
-		public function onMouseMove(event: MouseEvent) : void
-		{
-			if (event.buttonDown) 
-				return;
-
-			var mousePos: Point = TileLocator.getPointWithZoomFactor(Math.max(0, event.stageX), Math.max(0, event.stageY));
 			var pos: ScreenPosition = TileLocator.getActualCoord(
-                    Global.gameContainer.camera.currentPosition.x + mousePos.x,
-                    Global.gameContainer.camera.currentPosition.y + mousePos.y);
+                    Global.gameContainer.camera.currentPosition.x + globalX,
+                    Global.gameContainer.camera.currentPosition.y + globalY);
 
 			if (!pos.equals(objPosition))
 			{
 				objPosition = pos;
 
-				//Object cursor
-				if (cursor.stage != null) {
-					Global.map.objContainer.removeObject(cursor);
-                }
+                cursor.moveTo(pos);
 
-                cursor.x = cursor.primaryPosition.x = pos.x;
-                cursor.y = cursor.primaryPosition.y = pos.y;
-				
-				Global.map.objContainer.addObject(cursor);
-				
 				validateBuilding();
 			}
 		}
@@ -221,10 +198,7 @@ package src.UI.Cursors {
 		}
 
         private function validateTileCallback(x: int, y: int): * {
-            // Get the screen position of the main building then we'll add the current tile x and y to get the point of this tile on the screen
-			var screenPosition: ScreenPosition = TileLocator.getScreenPosition(city.primaryPosition.x, city.primaryPosition.y);
-
-			if (!destroyableRoads.get(new ScreenPosition(screenPosition.x + x, screenPosition.y + y).toPosition())) {
+			if (!destroyableRoads.get(new ScreenPosition(x, y).toPosition())) {
 				return false;
             }
 

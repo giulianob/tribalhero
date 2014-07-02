@@ -2,8 +2,7 @@
 package src.UI.Cursors {
     import System.Linq.Enumerable;
 
-    import flash.display.*;
-    import flash.events.*;
+    import starling.events.*;
     import flash.geom.*;
 
     import src.*;
@@ -16,13 +15,11 @@ package src.UI.Cursors {
     import src.Util.*;
     import src.Util.BinaryList.BinaryList;
 
-    public class BuildStructureCursor extends MovieClip implements IDisposable
+    public class BuildStructureCursor extends MapOverlayBase
 	{		
 		private var objPosition: ScreenPosition = new ScreenPosition();
 
 		private var city: City;
-
-		private var originPoint: Point;
 
 		private var cursor: SimpleObject;
 		private var rangeCursor: GroundCircle;
@@ -40,8 +37,6 @@ package src.UI.Cursors {
 
 		public function BuildStructureCursor(theme: String, type: int, level: int, tilerequirement: String, parentObject: SimpleGameObject):void
 		{
-			doubleClickEnabled = true;
-
 			this.parentObj = parentObject;
 			this.type = type;
 			this.level = level;
@@ -71,26 +66,15 @@ package src.UI.Cursors {
                 validateTile(position);
             }
 
-			rangeCursor = new GroundCircle(structPrototype.radius, true, 0xec5800);
-			rangeCursor.alpha = 0.6;
+			rangeCursor = new GroundCircle(structPrototype.radius, new ScreenPosition(), 0xec5800);
 
-			buildableArea = new GroundCallbackCircle(size, validateTileCallback);
-			buildableArea.alpha = 0.3;
-
-			var pos: ScreenPosition = city.primaryPosition.toScreenPosition();
-            buildableArea.x = buildableArea.primaryPosition.x = pos.x;
-            buildableArea.y = buildableArea.primaryPosition.y = pos.y;
-
-			Global.map.objContainer.addObject(buildableArea, ObjectContainer.LOWER);
+			buildableArea = new GroundCallbackCircle(size, city.primaryPosition.toScreenPosition(), validateTileCallback);
+            buildableArea.draw();
 
 			var sidebar: CursorCancelSidebar = new CursorCancelSidebar(parentObj);
 			Global.gameContainer.setSidebar(sidebar);
 
-			addEventListener(MouseEvent.DOUBLE_CLICK, onMouseDoubleClick);
-			addEventListener(MouseEvent.CLICK, onMouseStop, true);
-			addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-			addEventListener(MouseEvent.MOUSE_OVER, onMouseStop);
-			addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+            addEventListener(TouchEvent.TOUCH, onTouched);
 
 			if (requiresRoad && !hasRoadNearby) {
 				Global.gameContainer.message.showMessage("This building must be connected to a road and there are no roads available. Build roads first by using your Town Center then try again.");
@@ -101,9 +85,13 @@ package src.UI.Cursors {
 			}
 		}
 
-		public function dispose():void
+		override public function dispose():void
 		{
-			Global.gameContainer.message.hide();
+            super.dispose();
+
+            removeEventListener(TouchEvent.TOUCH, onTouched);
+
+            Global.gameContainer.message.hide();
 
 			if (cursor != null)
 			{
@@ -111,12 +99,8 @@ package src.UI.Cursors {
                     Global.map.objContainer.removeObject(cursor);
                 }
 
-				if (rangeCursor.stage != null) {
-                    Global.map.objContainer.removeObject(rangeCursor, ObjectContainer.LOWER);
-                }
-				if (buildableArea.stage != null) {
-                    Global.map.objContainer.removeObject(buildableArea, ObjectContainer.LOWER);
-                }
+                rangeCursor.dispose();
+                buildableArea.dispose();
 			}
 		}
 
@@ -126,26 +110,32 @@ package src.UI.Cursors {
             }
 
 			if (rangeCursor) {
-                rangeCursor.visible = true;
+                rangeCursor.clear();
             }
 		}
 
 		private function hideCursors() : void {
 			if (cursor) cursor.visible = false;
-			if (rangeCursor) rangeCursor.visible = false;
+			if (rangeCursor) rangeCursor.clear();
 		}
 
-		public function onMouseStop(event: MouseEvent):void
+		public function onTouched(event: TouchEvent):void
 		{
-			event.stopImmediatePropagation();
+            var clickTouch: Touch = event.getTouch(this, TouchPhase.BEGAN);
+            if (clickTouch && clickTouch.tapCount == 2) {
+                onDoubleClicked();
+            }
+
+            var moveTouch: Touch = event.getTouch(this, TouchPhase.HOVER);
+            if (moveTouch) {
+                moveTo(moveTouch.globalX, moveTouch.globalY);
+            }
+
+            event.stopImmediatePropagation();
 		}
 
-		public function onMouseDoubleClick(event: MouseEvent):void
+		public function onDoubleClicked():void
 		{
-			if (Point.distance(TileLocator.getPointWithZoomFactor(event.stageX, event.stageY), originPoint) > city.radius) return;
-
-			event.stopImmediatePropagation();
-
 			var mapPos: Position = objPosition.toPosition();
 			Global.mapComm.Objects.buildStructure(parentObj.groupId, parentObj.objectId, type, level, mapPos.x, mapPos.y);
 
@@ -154,19 +144,12 @@ package src.UI.Cursors {
 			Global.map.selectObject(parentObj, false);
 		}
 
-		public function onMouseDown(event: MouseEvent):void
+		public function moveTo(globalX: int, globalY: int) : void
 		{
-			originPoint = TileLocator.getPointWithZoomFactor(event.stageX, event.stageY);
-		}
-
-		public function onMouseMove(event: MouseEvent) : void
-		{
-			if (event.buttonDown) return;
-
             // Take the mouse position but center the structure to it by aligning the cursor w/ the left most side of the structure
 			var mousePos: Point = TileLocator.getPointWithZoomFactor(
-                    Math.max(0, event.stageX - ((structPrototype.size-1) * Constants.tileW)/2),
-                    event.stageY
+                    Math.max(0, globalX - ((structPrototype.size-1) * Constants.tileW)/2),
+                    globalY
             );
 
 			var pos: ScreenPosition = TileLocator.getActualCoord(
@@ -177,22 +160,17 @@ package src.UI.Cursors {
 			{
 				objPosition = pos;
 			
-				if (rangeCursor.stage != null) {
-                    Global.map.objContainer.removeObject(rangeCursor, ObjectContainer.LOWER);
-                }
-
 				if (cursor.stage != null) {
                     Global.map.objContainer.removeObject(cursor);
                 }
 
-                rangeCursor.x = rangeCursor.primaryPosition.x = pos.x;
-                rangeCursor.y = rangeCursor.primaryPosition.y = pos.y;
+                rangeCursor.clear();
 
                 cursor.x = cursor.primaryPosition.x = pos.x;
                 cursor.y = cursor.primaryPosition.y = pos.y;
 				
 				if (validateBuilding()) {
-					Global.map.objContainer.addObject(rangeCursor, ObjectContainer.LOWER);
+                    rangeCursor.moveTo(pos);
 					Global.map.objContainer.addObject(cursor);
 				}
 			}
@@ -249,9 +227,7 @@ package src.UI.Cursors {
 
         private function validateTileCallback(x: int, y: int): * {
 
-            // Get the screen position of the main building then we'll add the current tile x and y to get the point of this tile on the screen
-			var point: ScreenPosition = city.primaryPosition.toScreenPosition();
-            var mapPosition:Position = new ScreenPosition(point.x + x, point.y + y).toPosition();
+            var mapPosition:Position = new ScreenPosition(x, y).toPosition();
 
             if (buildableTiles.get(mapPosition) == null) {
                 return 0xFFD700;

@@ -44,7 +44,7 @@ package src.UI.Sidebars.BarbarianTribeInfo {
             append(pnlGroups);
         }
 
-        public function onObjectUpdate(e: Event): void {
+        public function onObjectUpdate(e: *): void {
             update();
         }
 

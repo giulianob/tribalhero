@@ -393,7 +393,7 @@ package src.UI.Sidebars.ObjectInfo {
 			validateButtons();
 		}
 
-		public function onObjectUpdate(event: Event):void
+		public function onObjectUpdate(event: *):void
 		{
 			update();			
 		}

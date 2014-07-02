@@ -40,6 +40,7 @@
 		private var listenersDefined: Boolean;
 
 		private var regionSpace: Sprite;
+
 		public var objContainer: ObjectContainer;
 
 		public var cities: CityList = new CityList();
@@ -59,6 +60,7 @@
             regionSpace = new Sprite();
             objContainer = new ObjectContainer();
 
+            addChild(new MapOverlayBase());
             addChild(regionSpace);
             addChild(objContainer);
 
@@ -104,20 +106,20 @@
 			if (disable) {
 				if (listenersDefined)
 				{
-					stage.removeEventListener(MouseEvent.MOUSE_DOWN, eventMouseDown);
-					stage.removeEventListener(MouseEvent.MOUSE_MOVE, eventMouseMove);
-					stage.removeEventListener(MouseEvent.MOUSE_UP, eventMouseUp);
-					stage.removeEventListener(flash.events.Event.MOUSE_LEAVE, eventMouseLeave);
+                    Global.stage.removeEventListener(MouseEvent.MOUSE_DOWN, eventMouseDown);
+                    Global.stage.removeEventListener(MouseEvent.MOUSE_MOVE, eventMouseMove);
+                    Global.stage.removeEventListener(MouseEvent.MOUSE_UP, eventMouseUp);
+                    Global.stage.removeEventListener(flash.events.Event.MOUSE_LEAVE, eventMouseLeave);
 
 					listenersDefined = false;
 				}
 			}
 			else {
 				if (!listenersDefined) {
-					stage.addEventListener(MouseEvent.MOUSE_DOWN, eventMouseDown);
-					stage.addEventListener(MouseEvent.MOUSE_MOVE, eventMouseMove);
-					stage.addEventListener(MouseEvent.MOUSE_UP, eventMouseUp);
-					stage.addEventListener(flash.events.Event.MOUSE_LEAVE, eventMouseLeave);
+					Global.stage.addEventListener(MouseEvent.MOUSE_DOWN, eventMouseDown);
+                    Global.stage.addEventListener(MouseEvent.MOUSE_MOVE, eventMouseMove);
+                    Global.stage.addEventListener(MouseEvent.MOUSE_UP, eventMouseUp);
+                    Global.stage.addEventListener(flash.events.Event.MOUSE_LEAVE, eventMouseLeave);
 
 					listenersDefined = true;
 				}
@@ -373,14 +375,6 @@
 		//#################### Mouse/Keyboard Events ########################
 		//###################################################################
 
-		public function eventMouseClick(event: MouseEvent):void
-		{
-			Global.stage.focus = Global.gameContainer;
-			
-			if (Point.distance(new Point(event.stageX, event.stageY), originPoint) < 4)
-				doSelectedObject(null);
-		}
-
 		public function eventMouseDown(event: MouseEvent):void
 		{
 			originPoint = new Point(event.stageX, event.stageY);
@@ -395,11 +389,15 @@
 		{
 			mouseDown = false;
 
+            if (Point.distance(new Point(event.stageX, event.stageY), originPoint) < 4) {
+                doSelectedObject(null);
+            }
+
 			if (Constants.debug >= 4)
 				Util.log("MOUSE UP");
 		}
 
-		public function eventMouseLeave(event: Event):void
+		public function eventMouseLeave(event: flash.events.Event):void
 		{
 			mouseDown = false;			
 
@@ -433,13 +431,11 @@
 
 		public function eventAddedToStage(event: Event):void
 		{
-			addEventListener(MouseEvent.CLICK, eventMouseClick);
 			disableMouse(false);
 		}
 
 		public function eventRemovedFromStage(event: Event):void
 		{
-			removeEventListener(MouseEvent.CLICK, eventMouseClick);
 			disableMouse(true);
 		}
 
@@ -460,15 +456,15 @@
 			Global.gameContainer.miniMap.objContainer.moveWithCamera(camera.miniMapX, camera.miniMapY);
 		}
 
-		public function onResize(event: Event = null): void {
+		public function onResize(event: flash.events.Event): void {
 			Global.gameContainer.miniMap.redraw();
 			move(true);
 		}
 
-		public function onMove(event: Event = null) : void
+		public function onMove(event: flash.events.Event) : void
 		{
 			move();
 		}
-	}
+    }
 }
 

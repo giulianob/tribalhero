@@ -1,81 +1,77 @@
 ﻿package src.UI.Components {
-    import starling.display.*;
+    import flash.geom.Point;
 
     import src.Constants;
+    import src.Global;
     import src.Map.Position;
     import src.Map.ScreenPosition;
     import src.Map.TileLocator;
     import src.Objects.Factories.SpriteFactory;
+    import src.Objects.ObjectContainer;
     import src.Objects.SimpleObject;
 
-    import starling.display.Image;
-
-    import starling.events.Event;
-
-    public class GroundCallbackCircle extends SimpleObject
+    public class GroundCallbackCircle
 	{
-		private var circle: DisplayObjectContainer;
 		private var callback: Function;
+        private var size: int;
+        private var tiles: Array = [];
+        protected var mainPosition: ScreenPosition;
+        private var skipCenter: Boolean;
 
-		public function GroundCallbackCircle(size: int, callback: Function) {
-			super( -10, -10, size);
-			
+		public function GroundCallbackCircle(size: int, mainPosition: ScreenPosition, callback: Function, skipCenter: Boolean = false) {
 			this.size = size;
-			this.callback = callback;
-			addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
-			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
-		}
+            this.mainPosition = mainPosition;
+            this.callback = callback;
+            this.skipCenter = skipCenter;
+        }
 
-		public function redraw() : void {
-			drawCircle(size);
-		}
-		
-		private function onAddedToStage(e: Event):void
-		{
-			drawCircle(size);
-		}
+        public function moveTo(mainPosition: ScreenPosition): void {
+            this.mainPosition = mainPosition;
+            draw();
+        }
 
-		public function onRemovedFromStage(e: Event):void
-		{
-			dispose();
-		}
+		public function draw() : void {
+            clear();
 
-		private function drawCircle(size: int):void
-		{
-			this.size = size;
+			for each (var position: Position in TileLocator.foreachTile(size, size * 2 + 1, size, !skipCenter)) {
+                var tile: SimpleObject = new SimpleObject(0, 0, 1);
+                tile.setSprite(SpriteFactory.getStarlingImage("MASK_TILE"), new Point(0, 0));
 
-			if (circle != null)
-			dispose();
-
-			circle = new Sprite();
-			for each (var position: Position in TileLocator.foreachTile(size, size * 2 + 1, size)) {
-                var tile: Image = SpriteFactory.getStarlingImage("MASK_TILE");
                 var point: ScreenPosition = position.toScreenPosition();
-                tile.x = point.x - size * Constants.tileW;
-                tile.y = point.y - (size * Constants.tileH);
-                var colorTransform: * = callback(tile.x, tile.y);
+                var x: Number = mainPosition.x + point.x - size * Constants.tileW;
+                var y: Number = mainPosition.y + point.y - (size * Constants.tileH);
+                var colorTransform: * = callback(x, y);
 
-                if (colorTransform == false) {
+                if (colorTransform === false) {
                     continue;
                 }
 
-                circle.addChild(tile);
+                tile.x = tile.primaryPosition.x = x;
+                tile.y = tile.primaryPosition.y = y;
+                tile.sprite.color = colorTransform;
+                tile.alpha = 0.7;
+
+                Global.map.objContainer.addObject(tile, ObjectContainer.LOWER);
+                tiles.push(tile);
+            }
+		}
+
+		public function dispose():void
+		{
+			clear();
+		}
+
+        public function clear(): void {
+            for each (var tile: SimpleObject in tiles) {
+                Global.map.objContainer.removeObject(tile, ObjectContainer.LOWER);
             }
 
-			addChild(circle);
-		}
+            tiles = [];
+        }
 
-		override public function dispose():void 
-		{
-			super.dispose();
-			
-			if (circle)
-			{
-				removeChild(circle);
-				circle = null;
-			}
-		}
-
+        public function get visible(): Boolean {
+            return tiles.length > 0;
+        }
     }
 
 }

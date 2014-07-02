@@ -40,6 +40,7 @@ package src.Objects {
 		public function SimpleObject(objX: int, objY: int, size: int) {
 			super();
 
+            touchable = true;
             mapPriority = Constants.mapObjectPriority.simpleObject;
 			spriteContainer = new Sprite();
 			addChild(spriteContainer);
@@ -102,8 +103,9 @@ package src.Objects {
 		}
 		
 		public override function dispose(): void {
+            dispatchEventWith(DISPOSED);
+
             disposeFilter();
-            super.dispose();
 
             disposed = true;
 			if (objectCountDisplayObject != null) {
@@ -111,7 +113,7 @@ package src.Objects {
 				objectCountDisplayObject = null;
             }
 
-			dispatchEventWith(DISPOSED);
+            super.dispose();
 		}
 		
 		public function fadeIn(startFromCurrentAlpha: Boolean = false):void
@@ -137,7 +139,7 @@ package src.Objects {
 		{
             disposeFilter();
 			if (bool) {
-				filter = BlurFilter.createGlow(0xFFFFFF, 0.5, 1);
+				filter = BlurFilter.createGlow(0xFFFFFF, 0.9, 5);
 			}
 			
 			selected = bool;
@@ -151,7 +153,7 @@ package src.Objects {
 
             disposeFilter();
             if (bool != false) {
-                filter = BlurFilter.createGlow(0xFFDD00, 0.5, 1);
+                filter = BlurFilter.createGlow(0xFFDD00, 0.9, 5);
             }
 		}		
 		

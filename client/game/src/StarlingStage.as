@@ -22,9 +22,11 @@ package src {
             Starling.handleLostContext = true;
 
             var stageInitDeferred: Deferred = new Deferred();
-            var _starling: Starling = new Starling(StarlingStage, stage);
-            _starling.start();
-            _starling.addEventListener(Event.ROOT_CREATED, function(e: Event): void {
+            var queueInitDeferred: Deferred = new Deferred();
+
+            var starling: Starling = new Starling(StarlingStage, stage);
+            starling.start();
+            starling.addEventListener(Event.ROOT_CREATED, function(e: Event): void {
                 trace("Starling init complete. Mode is " + Starling.current.context.driverInfo);
 
                 Global.starlingStage = StarlingStage(e.data);
@@ -39,17 +41,17 @@ package src {
                 stageInitDeferred.resolve(null);
             });
 
-            assets.enqueue(StarlingAssets);
-
-            var queueInitDeferred: Deferred = new Deferred();
-            assets.loadQueue(function(ratio:Number):void
-            {
-                if (ratio == 1.0) {
-                    queueInitDeferred.resolve(null);
-                }
+            stageInitDeferred.promise.then(function(): void {
+                assets.enqueue(StarlingAssets);
+                assets.loadQueue(function(ratio:Number):void
+                {
+                    if (ratio == 1.0) {
+                        queueInitDeferred.resolve(null);
+                    }
+                });
             });
 
-            return Promise.all([queueInitDeferred.promise, stageInitDeferred.promise]);
+            return queueInitDeferred.promise;
         }
 
         private static function onResizeStage(e: *):void
@@ -62,7 +64,9 @@ package src {
             Starling.current.stage.stageWidth = viewPortRectangle.width;
             Starling.current.stage.stageHeight = viewPortRectangle.height;
 
-            Starling.current.showStatsAt("right", "bottom");
+            CONFIG::debug {
+                Starling.current.showStatsAt("right", "bottom");
+            }
         }
     }
 }

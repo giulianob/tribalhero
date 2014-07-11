@@ -1,7 +1,7 @@
 package src.Map.MiniMapDrawers {
+    import flash.display.DisplayObject;
     import flash.geom.ColorTransform;
 
-    import org.aswing.AssetIcon;
     import org.aswing.JToggleButton;
 
     import src.Constants;
@@ -9,6 +9,7 @@ package src.Map.MiniMapDrawers {
     import src.Map.MiniMap.MiniMapRegionObject;
     import src.Map.MiniMap.MinimapDotIcon;
     import src.Objects.Factories.ObjectFactory;
+    import src.Objects.Factories.SpriteFactory;
 
     public class MiniMapTroopDrawer implements IMiniMapObjectDrawer {
         private var friendToggleButton: JToggleButton = new JToggleButton();
@@ -19,20 +20,21 @@ package src.Map.MiniMapDrawers {
 
             var friendly: Boolean = Constants.session.tribe.isInTribe(obj.extraProps.tribeId);
             if (friendly && !friendToggleButton.isSelected()) {
-                icon = new MinimapDotIcon(2, 0xFFFF00);
+                icon = new MinimapDotIcon(false, 0xFFFF00);
             } else if (!friendly && !foeToggleButton.isSelected()) {
-                icon = new MinimapDotIcon(2, 0x990000);
+                icon = new MinimapDotIcon(false, 0x990000);
             }
 
             obj.setIcon(icon);
         }
 
         public function applyLegend(legend: MiniMapLegendPanel): void {
-            var icon: MINIMAP_TROOP_ICON = ObjectFactory.getIcon("MINIMAP_TROOP_ICON") as MINIMAP_TROOP_ICON;
+            var icon: DisplayObject = SpriteFactory.getFlashSprite("MINIMAP_SMALL_CIRCLE_SPRITE");
             icon.transform.colorTransform = new ColorTransform(0, 0, 0, 1, 255, 255, 0);
             legend.addToggleButton(friendToggleButton, "Friendly Troop", icon);
 
-            icon = ObjectFactory.getIcon("MINIMAP_TROOP_ICON") as MINIMAP_TROOP_ICON;
+            icon = SpriteFactory.getFlashSprite("MINIMAP_SMALL_CIRCLE_SPRITE");
+            icon.transform.colorTransform = new ColorTransform(0, 0, 0, 1, 153, 0, 0);
             legend.addToggleButton(foeToggleButton, "Enemy Troop", icon);
         }
 

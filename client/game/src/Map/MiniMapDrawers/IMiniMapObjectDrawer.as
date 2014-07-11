@@ -6,12 +6,14 @@
  * To change this template use File | Settings | File Templates.
  */
 package src.Map.MiniMapDrawers {
-import src.Map.MiniMap.MiniMapLegendPanel;
-import src.Map.MiniMap.MiniMapRegionObject;
+    import src.Map.MiniMap.MiniMapLegendPanel;
+    import src.Map.MiniMap.MiniMapRegionObject;
 
-public interface IMiniMapObjectDrawer {
-    function applyObject(obj: MiniMapRegionObject) : void;
-    function applyLegend(legend: MiniMapLegendPanel) : void;
-    function addOnChangeListener(callback : Function) : void;
-}
+    public interface IMiniMapObjectDrawer {
+        function applyObject(obj: MiniMapRegionObject): void;
+
+        function applyLegend(legend: MiniMapLegendPanel): void;
+
+        function addOnChangeListener(callback: Function): void;
+    }
 }

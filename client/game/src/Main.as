@@ -68,6 +68,8 @@
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 
             StarlingStage.init(stage).then(function(value: *): void {
+                new TribalHeroUITheme();
+
                 stage.showDefaultContextMenu = false;
 
                 Global.stage = stage;

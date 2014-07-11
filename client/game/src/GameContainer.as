@@ -130,7 +130,6 @@
 			chains.visible = false;
 
 			// Manually add coords.
-            // TODO: Change minimap tools into a regular JPanel
             lblCoords = new JLabel("", null, AsWingConstants.LEFT);
             lblCoords.mouseEnabled = false;
             lblCoords.setLocationXY(80, -20);

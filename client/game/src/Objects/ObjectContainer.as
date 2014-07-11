@@ -3,6 +3,8 @@ package src.Objects {
 
     import System.Linq.Enumerable;
 
+    import flash.display.DisplayObject;
+
     import flash.geom.Point;
 
     import starling.display.*;
@@ -138,11 +140,20 @@ package src.Objects {
 
 		public function onMouseMove(touch: Touch):void
 		{
+            if (hasInteractiveFlashObjectAtPosition(touch.globalX, touch.globalY)) {
+                resetDimmedObjects();
+                resetHighlightedObject();
+
+                return;
+            }
+
             var screenPos: ScreenPosition = TileLocator.getActualCoord(
                     touch.globalX * Global.gameContainer.camera.getZoomFactorOverOne() + Global.gameContainer.camera.currentPosition.x,
                     touch.globalY * Global.gameContainer.camera.getZoomFactorOverOne() + Global.gameContainer.camera.currentPosition.y);
 
-            if (screenPos.x < 0 || screenPos.y < 0) return;
+            if (screenPos.x < 0 || screenPos.y < 0) {
+                return;
+            }
 
 			var tilePos: Position = screenPos.toPosition();
 
@@ -254,6 +265,43 @@ package src.Objects {
 			highestObj.setHighlighted(true);			
 		}
 
+        private function hasInteractiveFlashObjectAtPosition(globalX: Number, globalY: Number): Boolean {
+            // this is temporary while we have UI built using regular stage
+            // we want to make those sprites block mouse access to starling sprites
+            // We need to check each object for visibility and also check if all of its parents have mouse children enabled
+
+            var objectsUnderPoint: Array = Global.stage.getObjectsUnderPoint(new Point(globalX, globalY));
+            for each (var flashDisplayObject: flash.display.DisplayObject in objectsUnderPoint) {
+                if (!flashDisplayObject.visible) {
+                    continue;
+                }
+
+                var flashInteractive: flash.display.InteractiveObject = flashDisplayObject as flash.display.InteractiveObject;
+                if (flashInteractive && !flashInteractive.mouseEnabled) {
+                    continue;
+                }
+
+                var parent: flash.display.DisplayObjectContainer = flashDisplayObject.parent;
+                var hasInvisibleParent: Boolean = false;
+                while (parent) {
+                    if (!parent.visible || !parent.mouseChildren) {
+                        hasInvisibleParent = true;
+                        break;
+                    }
+
+                    parent = parent.parent;
+                }
+
+                if (hasInvisibleParent) {
+                    continue;
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
 		public function resetObjects():void
 		{
 			resetHighlightedObject();
@@ -300,7 +348,7 @@ package src.Objects {
 			}
 		}
 		
-		public function addObject(obj: DisplayObject, layer: int = 0):void
+		public function addObject(obj: starling.display.DisplayObject, layer: int = 0):void
 		{
 			var simpleObj: SimpleObject = obj as SimpleObject;
 
@@ -397,7 +445,7 @@ package src.Objects {
             }
         }
 
-		public function removeObject(obj: DisplayObject, layer: int = 0, dispose: Boolean = true):void
+		public function removeObject(obj: starling.display.DisplayObject, layer: int = 0, dispose: Boolean = true):void
 		{
 			if (obj == null) {
 				return;
@@ -495,7 +543,7 @@ package src.Objects {
 			while (low <= high) {
 				var mid: int = (low + high) / 2;
 
-				var currentObj: DisplayObject = layer.getChildAt(mid) as DisplayObject;
+				var currentObj: starling.display.DisplayObject = layer.getChildAt(mid) as starling.display.DisplayObject;
 				var simpleObj: SimpleObject = currentObj as SimpleObject;
 				var objY: Number = simpleObj == null ? currentObj.y : simpleObj.primaryPosition.y;
                 var objPriority: int = simpleObj == null ? Constants.mapObjectPriority.displayObject : simpleObj.mapPriority;

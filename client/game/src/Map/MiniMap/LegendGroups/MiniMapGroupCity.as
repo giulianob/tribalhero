@@ -17,7 +17,7 @@ public class MiniMapGroupCity {
     private var troopDrawer : MiniMapTroopDrawer = new MiniMapTroopDrawer();
     private var legendPanel : MiniMapLegendPanel = new MiniMapLegendPanel();
 
-    public static const CITY_DEFAULT_COLOR: uint = 0x000099;
+    public static const CITY_DEFAULT_COLOR: * = { r: 255, g: 255, b: 255, hex: 0xFFFFFF };
 
     public static const DEFAULT_COLORS: Array = [
         { r: 200, g: 200, b: 200, hex: 0xc8c8c8 },

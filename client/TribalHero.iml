@@ -29,6 +29,9 @@
             <entry library-id="04d52bbe-d87d-44f9-8e58-923aca6965e1">
               <dependency linkage="Merged" />
             </entry>
+            <entry library-id="e13609b7-569f-4f39-b85c-d16a2a038337">
+              <dependency linkage="Merged" />
+            </entry>
           </entries>
           <sdk name="flexsdk" />
         </dependencies>
@@ -79,6 +82,16 @@
         <properties id="04d52bbe-d87d-44f9-8e58-923aca6965e1" />
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/swc/feathers/feathers.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="e13609b7-569f-4f39-b85c-d16a2a038337" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/swc/feathers/AeonDesktopTheme.swc!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

@@ -3,6 +3,7 @@
     import System.Linq.Enumerable;
 
     import flash.geom.Point;
+    import flash.geom.Rectangle;
 
     import src.Constants;
     import src.Events.NavigateEvent;
@@ -16,13 +17,11 @@
     import starling.display.*;
     import starling.display.graphics.RoundedRectangle;
     import starling.events.*;
-    import starling.extensions.pixelmask.PixelMaskDisplayObject;
 
     public class MiniMap extends Sprite
 	{
 		public static const NAVIGATE_TO_POINT: String = "NAVIGATE_TO_POINT";
 
-        private var maskedContainer:PixelMaskDisplayObject;
 		private var regionSpace: Sprite;
 		private var regions: MiniMapRegionList;
 		private var mapFilter: MiniMapDrawer = new MiniMapDrawer();
@@ -64,11 +63,8 @@
 			mapHolder.addChild(screenRect);
 			bg = new Sprite();
 
-            maskedContainer = new PixelMaskDisplayObject(-1, false);
-            maskedContainer.addChild(bg);
-            maskedContainer.addChild(mapHolder);
-
-            addChild(maskedContainer);
+            addChild(bg);
+            addChild(mapHolder);
 
 			resize(width, height);
 			
@@ -94,14 +90,13 @@
 			// Resize map
 			mapHolder.x = (this.miniMapWidth / 2) - (screenRect.width / 2);
 			mapHolder.y = (this.miniMapHeight / 2) - (screenRect.height / 2);
+            mapHolder.clipRect = new Rectangle(-mapHolder.x, -mapHolder.y, this.miniMapWidth, this.miniMapHeight);
 
             bg.removeChildren();
             var bgRect:RoundedRectangle = new RoundedRectangle(this.miniMapWidth, this.miniMapHeight);
             bgRect.material.color = 0x000000;
             bgRect.alpha = 0.8;
             bg.addChild(bgRect);
-
-            maskedContainer.mask = new RoundedRectangle(this.miniMapWidth, this.miniMapHeight);
 
             alignLegend();
 		}

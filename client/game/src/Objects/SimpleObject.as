@@ -5,6 +5,8 @@ package src.Objects {
 
     import flash.geom.Point;
 
+    import src.UI.Components.CountBubble;
+
     import starling.display.*;
 
     import src.Constants;
@@ -20,9 +22,8 @@ package src.Objects {
 				
 		private var onSelect: Function;
 		protected var selected: Boolean;						
-		
-		private var objectCountDisplayObject: DisplayObject;
-        private var objectCount: int;
+
+        private var objectCount: int = 1;
 
 		private var spriteContainer: Sprite;
         protected var spritePosition: Point;
@@ -44,6 +45,9 @@ package src.Objects {
             mapPriority = Constants.mapObjectPriority.simpleObject;
 			spriteContainer = new Sprite();
 			addChild(spriteContainer);
+
+            countBubble = new src.UI.Components.CountBubble(objectCount);
+            addChild(countBubble);
 			
 			this.primaryPosition.x = objX;
             this.primaryPosition.y = objY;
@@ -73,45 +77,22 @@ package src.Objects {
             return objectCount;
         }
 
-		public function setObjectCount(count: int) : void {
+        private var countBubble: src.UI.Components.CountBubble;
+
+        public function setObjectCount(count: int) : void {
             objectCount = count;
 
-			if (objectCountDisplayObject != null) {
-				removeChild(objectCountDisplayObject);
-				objectCountDisplayObject = null;
-			}
-			
-			if (count <= 1) {
-				return;		
-			}
+            countBubble.count = count;
+            countBubble.x = spritePosition.x - countBubble.width;
+            countBubble.y = 20;
+        }
 
-            /*
-            TODO: Count bubble
-			var bubble: CountBubble = new CountBubble();
-			bubble.mouseChildren = false;
-			bubble.txtUnreadCount.mouseEnabled = false;
-			bubble.txtUnreadCount.tabEnabled = false;
-			bubble.txtUnreadCount.text = count > 9 ? "!" : count.toString();
-			bubble.x = spritePosition.x - bubble.width;
-			bubble.y = 20;
-
-			
-			objectCountDisplayObject = bubble;
-			
-			addChild(bubble);
-			*/
-		}
-		
 		public override function dispose(): void {
             dispatchEventWith(DISPOSED);
 
             disposeFilter();
 
             disposed = true;
-			if (objectCountDisplayObject != null) {
-				removeChild(objectCountDisplayObject);
-				objectCountDisplayObject = null;
-            }
 
             super.dispose();
 		}
@@ -215,6 +196,8 @@ package src.Objects {
             spriteContainer.addChild(sprite);
 
             this._sprite = sprite;
+
+            setObjectCount(objectCount);
         }
 
         override public function get x(): Number {

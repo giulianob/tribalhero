@@ -11,11 +11,7 @@ package src.Map {
         override public function hitTest(localPoint: Point, forTouch: Boolean = false): DisplayObject {
             if (forTouch && (!visible || !touchable)) return null;
 
-            var theBounds:Rectangle = new Rectangle(0, 0, Constants.screenW, Constants.screenH);
-
-            if (theBounds.containsPoint(localPoint)) return this;
-
-            return null;
+            return this;
         }
     }
 }

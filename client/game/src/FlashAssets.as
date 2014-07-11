@@ -36,10 +36,6 @@
 			
 			//Minimap Icons
             MINIMAP_HIT_AREA;
-			MINIMAP_TROOP_ICON;
-			MINIMAP_FOREST_ICON;
-            MINIMAP_STRONGHOLD_ICON;
-            MINIMAP_BARBARIAN_TRIBE_ICON;
 			
 			//Passive Action Icons
 			PASSIVE_ATTACKING;
@@ -133,6 +129,15 @@
         // Icons
         [Embed(source = "../../../graphics/icons/general/ICON_COIN.png")]
         public static const ICON_COIN: Class;
+
+        [Embed(source = "../../../graphics/icons/general/MINIMAP_LARGE_CIRCLE_SPRITE.png")]
+        public static const MINIMAP_LARGE_CIRCLE_SPRITE: Class;
+
+        [Embed(source = "../../../graphics/icons/general/MINIMAP_SMALL_CIRCLE_SPRITE.png")]
+        public static const MINIMAP_SMALL_CIRCLE_SPRITE: Class;
+
+        [Embed(source = "../../../graphics/icons/general/DOT_SPRITE.png")]
+        public static const DOT_SPRITE: Class;
 
         // Achievement Icons
 		[Embed(source = "../../../graphics/icons/achievements/anvil-gold.png")]		

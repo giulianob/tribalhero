@@ -8,15 +8,12 @@ package src.Map.MiniMapDrawers {
     import src.Map.MiniMap.LegendGroups.MiniMapGroupCity;
     import src.Map.MiniMap.MiniMapLegendPanel;
     import src.Map.MiniMap.MiniMapRegionObject;
+    import src.Objects.Factories.ObjectFactory;
     import src.Objects.Factories.SpriteFactory;
     import src.Util.StringHelper;
 
     import starling.display.Image;
 
-    /**
-     * ...
-     * @author Anthony Lam
-     */
     public class MiniMapCityNewbie implements IMiniMapObjectDrawer {
         private var cityButton: JToggleButton = new JToggleButton();
         private var newbieButton: JToggleButton = new JToggleButton();
@@ -33,7 +30,7 @@ package src.Map.MiniMapDrawers {
                 }
 
                 dotSprite = SpriteFactory.getStarlingImage("DOT_SPRITE");
-                dotSprite.color = MiniMapGroupCity.CITY_DEFAULT_COLOR;
+                dotSprite.color = MiniMapGroupCity.CITY_DEFAULT_COLOR.hex;
                 obj.setIcon(dotSprite);
             } else if (obj.extraProps.isNewbie) {
                 if (newbieButton.isSelected()) {
@@ -55,15 +52,16 @@ package src.Map.MiniMapDrawers {
         }
 
         public function applyLegend(legend: MiniMapLegendPanel): void {
-            var icon: DisplayObject = new DOT_SPRITE;
+            var icon: DisplayObject = SpriteFactory.getFlashSprite("DOT_SPRITE");
+            icon.transform.colorTransform = new ColorTransform(0, 0, 0, 1, MiniMapGroupCity.CITY_DEFAULT_COLOR.r, MiniMapGroupCity.CITY_DEFAULT_COLOR.g, MiniMapGroupCity.CITY_DEFAULT_COLOR.b);
             legend.addToggleButton(cityButton, StringHelper.localize("MINIMAP_LEGEND_CITY"), icon);
 
-            icon = new DOT_SPRITE;
-            icon.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[3].r, DEFAULT_COLORS[3].g, DEFAULT_COLORS[3].b);
+            icon = SpriteFactory.getFlashSprite("DOT_SPRITE");
+            icon.transform.colorTransform = new ColorTransform(0, 0, 0, 1, DEFAULT_COLORS[3].r, DEFAULT_COLORS[3].g, DEFAULT_COLORS[3].b);
             legend.addToggleButton(newbieButton, StringHelper.localize("MINIMAP_LEGEND_NEWBIE_YES"), icon);
 
-            icon = new DOT_SPRITE;
-            icon.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[0].r, DEFAULT_COLORS[0].g, DEFAULT_COLORS[0].b);
+            icon = SpriteFactory.getFlashSprite("DOT_SPRITE");
+            icon.transform.colorTransform = new ColorTransform(0, 0, 0, 1, DEFAULT_COLORS[0].r, DEFAULT_COLORS[0].g, DEFAULT_COLORS[0].b);
             legend.addToggleButton(saltyButton, StringHelper.localize("MINIMAP_LEGEND_NEWBIE_NO"), icon);
         }
 

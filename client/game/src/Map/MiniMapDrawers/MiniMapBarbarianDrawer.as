@@ -1,26 +1,26 @@
 package src.Map.MiniMapDrawers {
+    import flash.display.DisplayObject;
+    import flash.geom.ColorTransform;
+
     import org.aswing.JToggleButton;
 
     import src.Map.MiniMap.MiniMapLegendPanel;
     import src.Map.MiniMap.MiniMapRegionObject;
     import src.Map.MiniMap.MinimapDotIcon;
-    import src.Objects.Factories.ObjectFactory;
     import src.Objects.Factories.SpriteFactory;
-
-    import starling.display.Image;
 
     public class MiniMapBarbarianDrawer implements IMiniMapObjectDrawer {
         private var toggleButton: JToggleButton = new JToggleButton();
 
         public function applyObject(obj: MiniMapRegionObject): void {
             if (toggleButton.isSelected()) return;
-            var icon: MinimapDotIcon = new MinimapDotIcon(4, 0x0066FF, obj.extraProps.level);
+            var icon: MinimapDotIcon = new MinimapDotIcon(true, 0x0066FF, obj.extraProps.level);
             obj.setIcon(icon);
         }
 
         public function applyLegend(legend: MiniMapLegendPanel): void {
-            var icon: MINIMAP_BARBARIAN_TRIBE_ICON = ObjectFactory.getIcon("MINIMAP_BARBARIAN_TRIBE_ICON") as MINIMAP_BARBARIAN_TRIBE_ICON;
-            icon.alpha = 0.5;
+            var icon: DisplayObject = SpriteFactory.getFlashSprite("MINIMAP_LARGE_CIRCLE_SPRITE");
+            icon.transform.colorTransform = new ColorTransform(0, 0, 0, 1, 0, 102, 255);
             legend.addToggleButton(toggleButton, "Barbarian", icon);
         }
 

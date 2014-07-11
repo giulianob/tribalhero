@@ -1,23 +1,20 @@
-package src.Map.MiniMapDrawers
-{
-import flash.display.*;
-import flash.geom.*;
+package src.Map.MiniMapDrawers {
+    import flash.display.*;
+    import flash.geom.*;
 
-import org.aswing.AssetIcon;
+    import org.aswing.JToggleButton;
 
-import org.aswing.JToggleButton;
-
-import src.Global;
-import src.Map.MiniMap.LegendGroups.MiniMapGroupCity;
-import src.Map.MiniMap.MiniMapLegendPanel;
-import src.Map.MiniMap.MiniMapRegionObject;
+    import src.Global;
+    import src.Map.MiniMap.LegendGroups.MiniMapGroupCity;
+    import src.Map.MiniMap.MiniMapLegendPanel;
+    import src.Map.MiniMap.MiniMapRegionObject;
+    import src.Objects.Factories.ObjectFactory;
     import src.Objects.Factories.SpriteFactory;
     import src.Util.StringHelper;
 
     import starling.display.Image;
 
-    public class MiniMapCityDifficulty implements IMiniMapObjectDrawer
-	{
+    public class MiniMapCityDifficulty implements IMiniMapObjectDrawer {
         private var cityButton: JToggleButton = new JToggleButton();
         private var strongestButton: JToggleButton = new JToggleButton();
         private var strongButton: JToggleButton = new JToggleButton();
@@ -25,15 +22,15 @@ import src.Map.MiniMap.MiniMapRegionObject;
         private var weakButton: JToggleButton = new JToggleButton();
         private var weakestButton: JToggleButton = new JToggleButton();
 
-        private var DEFAULT_COLORS : * = MiniMapGroupCity.DEFAULT_COLORS;
+        private var DEFAULT_COLORS: * = MiniMapGroupCity.DEFAULT_COLORS;
 
-        public function applyObject(obj: MiniMapRegionObject) : void {
+        public function applyObject(obj: MiniMapRegionObject): void {
             var dotSprite: Image;
 
             if (Global.map.cities.get(obj.groupId)) {
-                if(cityButton.isSelected()) return;
+                if (cityButton.isSelected()) return;
                 dotSprite = SpriteFactory.getStarlingImage("DOT_SPRITE");
-                dotSprite.color = MiniMapGroupCity.CITY_DEFAULT_COLOR;
+                dotSprite.color = MiniMapGroupCity.CITY_DEFAULT_COLOR.hex;
                 obj.setIcon(dotSprite);
             } else {
                 // Apply the difficulty transformation to the tile
@@ -52,33 +49,33 @@ import src.Map.MiniMap.MiniMapRegionObject;
             }
         }
 
-        public function applyLegend(legend: MiniMapLegendPanel) : void {
-            var icon: DisplayObject = new DOT_SPRITE;
-            legend.addToggleButton(cityButton,StringHelper.localize("MINIMAP_LEGEND_CITY"),icon);
+        public function applyLegend(legend: MiniMapLegendPanel): void {
+            var icon: DisplayObject = SpriteFactory.getFlashSprite("DOT_SPRITE");
+            icon.transform.colorTransform = new ColorTransform(0, 0, 0, 1, MiniMapGroupCity.CITY_DEFAULT_COLOR.r, MiniMapGroupCity.CITY_DEFAULT_COLOR.g, MiniMapGroupCity.CITY_DEFAULT_COLOR.b);
+            legend.addToggleButton(cityButton, StringHelper.localize("MINIMAP_LEGEND_CITY"), icon);
 
-            icon = new DOT_SPRITE;
-            icon.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[4].r, DEFAULT_COLORS[4].g, DEFAULT_COLORS[4].b);
-            legend.addToggleButton(strongestButton,StringHelper.localize("MINIMAP_LEGEND_DIFFICULTY_STRONGEST"),icon);
+            icon = SpriteFactory.getFlashSprite("DOT_SPRITE");
+            icon.transform.colorTransform = new ColorTransform(0, 0, 0, 1, DEFAULT_COLORS[4].r, DEFAULT_COLORS[4].g, DEFAULT_COLORS[4].b);
+            legend.addToggleButton(strongestButton, StringHelper.localize("MINIMAP_LEGEND_DIFFICULTY_STRONGEST"), icon);
 
-            icon = new DOT_SPRITE;
-            icon.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[3].r, DEFAULT_COLORS[3].g, DEFAULT_COLORS[3].b);
-            legend.addToggleButton(strongButton,StringHelper.localize("MINIMAP_LEGEND_DIFFICULTY_STRONG"),icon);
+            icon = SpriteFactory.getFlashSprite("DOT_SPRITE");
+            icon.transform.colorTransform = new ColorTransform(0, 0, 0, 1, DEFAULT_COLORS[3].r, DEFAULT_COLORS[3].g, DEFAULT_COLORS[3].b);
+            legend.addToggleButton(strongButton, StringHelper.localize("MINIMAP_LEGEND_DIFFICULTY_STRONG"), icon);
 
-            icon = new DOT_SPRITE;
-            icon.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[2].r, DEFAULT_COLORS[2].g, DEFAULT_COLORS[2].b);
-            legend.addToggleButton(normalButton,StringHelper.localize("MINIMAP_LEGEND_DIFFICULTY_NORMAL"),icon);
+            icon = SpriteFactory.getFlashSprite("DOT_SPRITE");
+            icon.transform.colorTransform = new ColorTransform(0, 0, 0, 1, DEFAULT_COLORS[2].r, DEFAULT_COLORS[2].g, DEFAULT_COLORS[2].b);
+            legend.addToggleButton(normalButton, StringHelper.localize("MINIMAP_LEGEND_DIFFICULTY_NORMAL"), icon);
 
-            icon = new DOT_SPRITE;
-            icon.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[1].r, DEFAULT_COLORS[1].g, DEFAULT_COLORS[1].b);
-            legend.addToggleButton(weakButton,StringHelper.localize("MINIMAP_LEGEND_DIFFICULTY_WEAK"),icon);
+            icon = SpriteFactory.getFlashSprite("DOT_SPRITE");
+            icon.transform.colorTransform = new ColorTransform(0, 0, 0, 1, DEFAULT_COLORS[1].r, DEFAULT_COLORS[1].g, DEFAULT_COLORS[1].b);
+            legend.addToggleButton(weakButton, StringHelper.localize("MINIMAP_LEGEND_DIFFICULTY_WEAK"), icon);
 
-            icon = new DOT_SPRITE;
-            icon.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[0].r, DEFAULT_COLORS[0].g, DEFAULT_COLORS[0].b);
-            legend.addToggleButton(weakestButton,StringHelper.localize("MINIMAP_LEGEND_DIFFICULTY_WEAKEST"),icon);
-
+            icon = SpriteFactory.getFlashSprite("DOT_SPRITE");
+            icon.transform.colorTransform = new ColorTransform(0, 0, 0, 1, DEFAULT_COLORS[0].r, DEFAULT_COLORS[0].g, DEFAULT_COLORS[0].b);
+            legend.addToggleButton(weakestButton, StringHelper.localize("MINIMAP_LEGEND_DIFFICULTY_WEAKEST"), icon);
         }
 
-        public function addOnChangeListener(callback:Function):void {
+        public function addOnChangeListener(callback: Function): void {
             cityButton.addActionListener(callback);
             strongestButton.addActionListener(callback);
             strongButton.addActionListener(callback);

@@ -21,6 +21,7 @@
 		public var targetX: int;
 		public var targetY: int;
 		public var troop: TroopStub;
+        public var theme: String;
 
 		public var template: UnitTemplateManager = new UnitTemplateManager();
 		
@@ -29,8 +30,9 @@
         private var defaultPosition: Point;
         private var isOverWall: Boolean;
 
-		public function TroopObject(type: int, state: GameObjectState, defaultSprite: DisplayObjectContainer, defaultPosition: Point, objX: int, objY: int, size: int, playerId: int, cityId: int, objectId: int) {
+		public function TroopObject(theme: String, type: int, state: GameObjectState, defaultSprite: DisplayObjectContainer, defaultPosition: Point, objX: int, objY: int, size: int, playerId: int, cityId: int, objectId: int) {
 			super(type, state, objX, objY, size, playerId, cityId, objectId);
+            this.theme = theme;
             this.defaultSprite = defaultSprite;
             this.defaultPosition = defaultPosition;
 

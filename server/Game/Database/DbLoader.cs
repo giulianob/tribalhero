@@ -567,7 +567,8 @@ namespace Game.Database
                                                         (byte)reader["radius"],
                                                         (decimal)reader["alignment_point"],
                                                         (string)reader["default_theme_id"],
-                                                        (string)reader["wall_theme_id"]);
+                                                        (string)reader["wall_theme_id"],
+                                                        (string)reader["troop_theme_id"]);
 
                     city.DbPersisted = true;
                     city.LootStolen = (uint)reader["loot_stolen"];
@@ -1091,7 +1092,8 @@ namespace Game.Database
                     var troopObject = gameObjectFactory.CreateTroopObject((uint)reader["id"],
                                                                           stub,
                                                                           (uint)reader["x"],
-                                                                          (uint)reader["y"]);
+                                                                          (uint)reader["y"],
+                                                                          (string)reader["theme_id"]);
                     troopObject.TargetX = (uint)reader["target_x"];
                     troopObject.TargetY = (uint)reader["target_y"];
                     troopObject.DbPersisted = true;

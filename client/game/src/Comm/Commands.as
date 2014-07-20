@@ -86,6 +86,7 @@ package src.Comm {
 		public static const CITY_HIDE_NEW_UNITS_UPDATE: int = 468;
 		public static const CITY_HAS_AP_BONUS: int = 469;
 		public static const CITY_DEFAULT_THEME_UPDATE: int = 470;
+		public static const CITY_TROOP_THEME_UPDATE: int = 471;
 		public static const CITY_BATTLE_STARTED: int = 490;
 		public static const CITY_BATTLE_ENDED: int = 491;
 		public static const CITY_NEW_UPDATE: int = 497;
@@ -113,7 +114,8 @@ package src.Comm {
 		public static const TROOP_SWITCH_MODE: int = 619;
 		public static const TROOP_TRANSFER: int = 620;
 		public static const LOCAL_TROOP_MOVE: int = 621;	
-		
+		public static const TROOP_SET_THEME: int = 622;
+
         public static const BATTLE_SUBSCRIBE: int = 700;
         public static const BATTLE_UNSUBSCRIBE: int = 701;
         public static const BATTLE_ATTACK: int = 702;
@@ -171,5 +173,6 @@ package src.Comm {
         public static const STORE_PURCHASE_ITEM: int = 1202;
         public static const STORE_SET_DEFAULT_THEME: int = 1203;
         public static const STORE_THEME_APPLY_TO_ALL: int = 1204;
+        public static const STORE_SET_TROOP_THEME: int = 1205;
 	}
 }

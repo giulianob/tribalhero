@@ -344,6 +344,12 @@ DEFAULT_THEME_DESCRIPTION,The original Tribal Hero theme.
 PIRATES_THEME_NAME,Shipwrecked Pirates
 PIRATES_THEME_DESCRIPTION,"At the edge of the world, where land meets ocean, a group of bandits have joined together to strike terror into the heart of the world. No longer bound by water, Shipwrecked Pirates have appeared to conquer the lands of Tribal Hero with buildings inspired by sailing the high seas."
 ,
+FEUDALJAPAN_THEME_NAME,Feudal Japan
+FEUDALJAPAN_THEME_DESCRIPTION,"In the Land of the rising sun, Simplicity Functionality and Beauty are not only the way of life, but also the philosophy of architecture and warfare. Experience this new building set inspired by Ancient Japanese culture."
+,
+WARELEPHANT_THEME_NAME,War Elephant
+WARELEPHANT_THEME_DESCRIPTION,"TODO"
+,
 STORE_DIALOG_TITLE,Store
 STORE_DIALOG_PURCHASED_ITEMS,Items Owned
 STORE_DIALOG_CURRENT_BALANCE,Current Balance:
@@ -358,7 +364,8 @@ STORE_VIEW_THEME_APPLY_ALL,Change all existing structures to this theme
 STORE_VIEW_THEME_APPLY_WALL,Change wall to this theme
 STORE_VIEW_THEME_CHOOSE_CITY_HEADER_LABEL,Choose a city:
 STORE_VIEW_THEME_SET_DEFAULT,Make all new structures use this theme
-STORE_VIEW_THEME_SET_INSTRUCTIONS,Note: You can also change the theme for individual structures by selecting a structure on the map and choosing a different theme in the structure sidebar.
+STORE_VIEW_THEME_SET_TROOP_DEFAULT,Make all new troops use this theme
+STORE_VIEW_THEME_SET_INSTRUCTIONS,You can also change the theme for individual structures/troops by selecting it on the map and choosing a different theme on the sidebar.
 ,
 STORE_BUY_COINS_DIALOG_TITLE,Purchase Coins
 STORE_BUY_COINS_DIALOG_DESCRIPTION,You must refill your account with coins before you can complete this purchase. All prices are in U.S. Dollars (USD$)

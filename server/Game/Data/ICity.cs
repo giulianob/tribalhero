@@ -151,6 +151,8 @@ namespace Game.Data
 
         string WallTheme { get; set; }
 
+        string TroopTheme { get; set; }
+
         City.DeletedState Deleted { get; set; }
 
         IActionWorker Worker { get; }

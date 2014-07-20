@@ -156,6 +156,10 @@ namespace Game.Comm.Channel
             {
                 DefaultThemeUpdate(city);
             }
+            else if (ev.PropertyName == city.GetProperty(c => c.TroopTheme))
+            {
+                TroopThemeUpdate(city);
+            }
         }
 
         private void TroopManagerTroopRemoved(ICity city, TroopStubEventArgs args)
@@ -286,6 +290,22 @@ namespace Game.Comm.Channel
                     var packet = new Packet(Command.CityDefaultThemeUpdate);
                     packet.AddUInt32(city.Id);
                     packet.AddString(city.DefaultTheme);
+                    return packet;
+                });
+        }
+
+        private void TroopThemeUpdate(ICity city)
+        {
+            if (!ShouldUpdate(city))
+            {
+                return;
+            }
+
+            channel.Post(GetChannelName(city), () =>
+                {
+                    var packet = new Packet(Command.CityTroopThemeUpdate);
+                    packet.AddUInt32(city.Id);
+                    packet.AddString(city.TroopTheme);
                     return packet;
                 });
         }

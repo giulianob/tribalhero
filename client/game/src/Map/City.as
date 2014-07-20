@@ -31,6 +31,7 @@ package src.Map {
 		public var value: int = 0;
 		public var ap: Number = 0;
         public var defaultTheme: String;
+        public var troopTheme: String;
 
 		public var hideNewUnits: Boolean;
 
@@ -64,7 +65,8 @@ package src.Map {
                              inBattle: Boolean,
                              hideNewUnits : Boolean,
                              ap: Number,
-                             defaultTheme: String) {
+                             defaultTheme: String,
+                             troopTheme: String) {
 			this.id = id;
 			this.resources = resources;
 			this.radius = radius;
@@ -77,12 +79,12 @@ package src.Map {
 			this.hideNewUnits = hideNewUnits;
 			this.value = value;
             this.defaultTheme = defaultTheme;
+            this.troopTheme = troopTheme;
 
             troops = new TroopManager(this);
 
 			dispatchEvent(new Event(RESOURCES_UPDATE));
 		}
-
 
 		public function nearObjectsByRadius(mindist: int, maxdist: int, position: Position, size: int, type: int): Array
 		{

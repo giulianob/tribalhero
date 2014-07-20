@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using Game.Data.Stronghold;
+using Game.Data.Troop;
 using Game.Setup;
 
 namespace Game.Data
@@ -110,6 +111,34 @@ namespace Game.Data
             stronghold.BeginUpdate();
             stronghold.Theme = id;
             stronghold.EndUpdate();
+
+            return Error.Ok;
+        }
+
+        public Error SetTroopTheme(ITroopObject troop, string id)
+        {
+            if (!HasTheme(troop.City.Owner, id))
+            {
+                return Error.ThemeNotPurchased;
+            }
+
+            troop.BeginUpdate();
+            troop.Theme = id;
+            troop.EndUpdate();
+
+            return Error.Ok;
+        }
+
+        public Error SetDefaultTroopTheme(ICity city, string id)
+        {
+            if (!HasTheme(city.Owner, id))
+            {
+                return Error.ThemeNotPurchased;
+            }
+
+            city.BeginUpdate();
+            city.TroopTheme = id;
+            city.EndUpdate();
 
             return Error.Ok;
         }

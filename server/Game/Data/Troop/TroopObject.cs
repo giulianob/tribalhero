@@ -25,6 +25,21 @@ namespace Game.Data.Troop
 
         private uint targetY;
 
+        private string theme;
+
+        public string Theme
+        {
+            get
+            {
+                return theme;
+            }
+            set
+            {
+                CheckUpdateMode();
+                theme = value;
+            }
+        }
+
         public ITroopStub Stub { get; set; }
 
         public uint TargetX
@@ -87,16 +102,13 @@ namespace Game.Data.Troop
             }
         }
 
-        #region Constructors
-
-        public TroopObject(uint id, ITroopStub stub, uint x, uint y, IDbManager dbManager) 
+        public TroopObject(uint id, ITroopStub stub, uint x, uint y, string theme, IDbManager dbManager) 
             : base(id, x, y)
         {
+            this.theme = theme;
             this.dbManager = dbManager;
             Stub = stub;
         }
-
-        #endregion
 
         #region Updates
 
@@ -163,8 +175,6 @@ namespace Game.Data.Troop
             }
         }
 
-        #region IPersistableObject Members
-
         public string DbTable
         {
             get
@@ -194,7 +204,8 @@ namespace Game.Data.Troop
                         new DbColumn("target_y", TargetY, DbType.UInt32),
                         new DbColumn("in_world", InWorld, DbType.Boolean),
                         new DbColumn("state", (byte)State.Type, DbType.Boolean),
-                        new DbColumn("state_parameters", XmlSerializer.SerializeList(State.Parameters.ToArray()), DbType.String)
+                        new DbColumn("state_parameters", XmlSerializer.SerializeList(State.Parameters.ToArray()), DbType.String),
+                        new DbColumn("theme_id", Theme, DbType.String),
                 };
             }
         }
@@ -220,8 +231,6 @@ namespace Game.Data.Troop
         }
 
         public bool DbPersisted { get; set; }
-
-        #endregion
 
         public override int Hash
         {

@@ -1,6 +1,5 @@
 package src.UI.Dialog {
-    import com.codecatalyst.promise.Deferred;
-
+    import flash.display.DisplayObject;
     import flash.events.Event;
 
     import org.aswing.*;
@@ -90,74 +89,20 @@ package src.UI.Dialog {
                 });
             }
             else {
-                var applyAllDropDown: JPopupMenu = new JPopupMenu();
-                applyAllDropDown.append(createChooseCityHeaderLabel());
-
-                for each (var city: City in Global.map.cities) {
-                    applyAllDropDown.append(createApplyAllMenuItem(city));
-                }
-
-                var btnApplyAll: JButton = new JButton(t("STORE_VIEW_THEME_APPLY_ALL"));
-                btnApplyAll.addActionListener(function(e: Event): void {
-                    if (Global.map.cities.size() == 1) {
-                        viewModel.applyAllTheme(Global.map.cities.getByIndex(0));
-                    }
-                    else {
-                        if (applyAllDropDown.isVisible()) {
-                            applyAllDropDown.setVisible(false);
-                        }
-                        else {
-                            applyAllDropDown.show(btnApplyAll, 0, btnApplyAll.getHeight());
-                        }
-                    }
-                });
-
-                var applyWallDropDown: JPopupMenu = new JPopupMenu();
-                applyWallDropDown.append(createChooseCityHeaderLabel());
-
-                for each (city in Global.map.cities) {
-                    applyWallDropDown.append(createSetWallThemeMenuItem(city));
-                }
-
-                var btnSetWallTheme: JButton = new JButton(t("STORE_VIEW_THEME_APPLY_WALL"));
-                btnSetWallTheme.addActionListener(function(e: Event): void {
-                    if (Global.map.cities.size() == 1) {
-                        viewModel.applyWallTheme(Global.map.cities.getByIndex(0));
-                    }
-                    else {
-                        if (applyWallDropDown.isVisible()) {
-                            applyWallDropDown.setVisible(false);
-                        }
-                        else {
-                            applyWallDropDown.show(btnSetWallTheme, 0, btnSetWallTheme.getHeight());
-                        }
-                    }
-                });
-
-                var setDefaultThemeDropDown: JPopupMenu = new JPopupMenu();
-                setDefaultThemeDropDown.append(createChooseCityHeaderLabel());
-                for each (city in Global.map.cities) {
-                    setDefaultThemeDropDown.append(createSetDefaultThemeMenuItem(city));
-                }
-
-                var btnSetDefault: JButton = new JButton(t("STORE_VIEW_THEME_SET_DEFAULT"));
-                btnSetDefault.addActionListener(function(e: Event): void {
-                    if (Global.map.cities.size() == 1) {
-                        viewModel.setDefaultTheme(Global.map.cities.getByIndex(0));
-                    }
-                    else {
-                        if (setDefaultThemeDropDown.isVisible()) {
-                            setDefaultThemeDropDown.setVisible(false);
-                        }
-                        else {
-                            setDefaultThemeDropDown.show(btnSetDefault, 0, btnSetDefault.getHeight());
-                        }
-                    }
-                });
+                /* Player has purchased theme */
 
                 var pnlSetThemeRow: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5, AsWingConstants.CENTER));
                 pnlSetThemeRow.setPreferredWidth(300);
-                pnlSetThemeRow.appendAll(btnApplyAll, btnSetWallTheme, btnSetDefault);
+
+                if (viewModel.areStructuresIncluded()) {
+                    applyThemeToAllStructures(pnlSetThemeRow);
+                    applyWallDropdown(pnlSetThemeRow);
+                    setDefaultStructureTheme(pnlSetThemeRow);
+                }
+
+                if (viewModel.isTroopIncluded()) {
+                    applyDefaultTroopDropdown(pnlSetThemeRow);
+                }
 
                 var helpLabel: MultilineLabel = new MultilineLabel(t("STORE_VIEW_THEME_SET_INSTRUCTIONS"), 3, 100);
                 GameLookAndFeel.changeClass(helpLabel, "darkText");
@@ -172,6 +117,121 @@ package src.UI.Dialog {
 
             gridStoreItems.addEventListener(GridListItemEvent.ITEM_ROLL_OUT, onItemRollOut);
             gridStoreItems.addEventListener(GridListItemEvent.ITEM_ROLL_OVER, onItemRollOver);
+        }
+
+        private function applyDefaultTroopDropdown(container: JPanel): void {
+            var setDefaultTroopThemeDropdown: JPopupMenu = new JPopupMenu();
+            setDefaultTroopThemeDropdown.append(createChooseCityHeaderLabel());
+            for each (var city: City in Global.map.cities) {
+                setDefaultTroopThemeDropdown.append(createSetDefaultTroopThemeMenuItem(city));
+            }
+
+            var btnSetDefault: JButton = new JButton(t("STORE_VIEW_THEME_SET_TROOP_DEFAULT"));
+            btnSetDefault.addActionListener(function(e: Event): void {
+                if (Global.map.cities.size() == 1) {
+                    viewModel.setDefaultTroopTheme(Global.map.cities.getByIndex(0));
+                }
+                else {
+                    if (setDefaultTroopThemeDropdown.isVisible()) {
+                        setDefaultTroopThemeDropdown.setVisible(false);
+                    }
+                    else {
+                        setDefaultTroopThemeDropdown.show(btnSetDefault, 0, btnSetDefault.getHeight());
+                    }
+                }
+            });
+
+            container.append(btnSetDefault);
+        }
+
+        private function setDefaultStructureTheme(container: JPanel): void {
+            var setDefaultThemeDropDown: JPopupMenu = new JPopupMenu();
+            setDefaultThemeDropDown.append(createChooseCityHeaderLabel());
+            for each (var city: City in Global.map.cities) {
+                setDefaultThemeDropDown.append(createSetDefaultThemeMenuItem(city));
+            }
+
+            var btnSetDefault: JButton = new JButton(t("STORE_VIEW_THEME_SET_DEFAULT"));
+            btnSetDefault.addActionListener(function(e: Event): void {
+                if (Global.map.cities.size() == 1) {
+                    viewModel.setDefaultTheme(Global.map.cities.getByIndex(0));
+                }
+                else {
+                    if (setDefaultThemeDropDown.isVisible()) {
+                        setDefaultThemeDropDown.setVisible(false);
+                    }
+                    else {
+                        setDefaultThemeDropDown.show(btnSetDefault, 0, btnSetDefault.getHeight());
+                    }
+                }
+            });
+
+            container.append(btnSetDefault);
+        }
+
+        private function applyWallDropdown(container: JPanel): void {
+            if (!viewModel.isWallIncluded()) {
+                return;
+            }
+
+            var applyWallDropDown: JPopupMenu = new JPopupMenu();
+            applyWallDropDown.append(createChooseCityHeaderLabel());
+
+            for each (var city: City in Global.map.cities) {
+                applyWallDropDown.append(createSetWallThemeMenuItem(city));
+            }
+
+            var btnSetWallTheme: JButton = new JButton(t("STORE_VIEW_THEME_APPLY_WALL"));
+            btnSetWallTheme.addActionListener(function(e: Event): void {
+                if (Global.map.cities.size() == 1) {
+                    viewModel.applyWallTheme(Global.map.cities.getByIndex(0));
+                }
+                else {
+                    if (applyWallDropDown.isVisible()) {
+                        applyWallDropDown.setVisible(false);
+                    }
+                    else {
+                        applyWallDropDown.show(btnSetWallTheme, 0, btnSetWallTheme.getHeight());
+                    }
+                }
+            });
+
+            container.append(btnSetWallTheme);
+        }
+
+        private function applyThemeToAllStructures(container: JPanel): void {
+            var applyAllDropDown: JPopupMenu = new JPopupMenu();
+            applyAllDropDown.append(createChooseCityHeaderLabel());
+
+            for each (var city: City in Global.map.cities) {
+                applyAllDropDown.append(createApplyAllMenuItem(city));
+            }
+
+            var btnApplyAll: JButton = new JButton(t("STORE_VIEW_THEME_APPLY_ALL"));
+            btnApplyAll.addActionListener(function(e: Event): void {
+                if (Global.map.cities.size() == 1) {
+                    viewModel.applyAllTheme(Global.map.cities.getByIndex(0));
+                }
+                else {
+                    if (applyAllDropDown.isVisible()) {
+                        applyAllDropDown.setVisible(false);
+                    }
+                    else {
+                        applyAllDropDown.show(btnApplyAll, 0, btnApplyAll.getHeight());
+                    }
+                }
+            });
+
+            container.append(btnApplyAll);
+        }
+
+        private function createSetDefaultTroopThemeMenuItem(city: City): Component {
+            var menuItem: JMenuItem = new JMenuItem(city.name);
+            menuItem.addActionListener(function(): void {
+                viewModel.setDefaultTroopTheme(city);
+            });
+
+            return menuItem;
         }
 
         private function createSetDefaultThemeMenuItem(city: City): Component {

@@ -21,6 +21,7 @@ namespace Game.Logic.Procedures
                             formula.GetInitialCityRadius(),
                             formula.GetInitialAp(),
                             Theme.DEFAULT_THEME_ID,
+                            Theme.DEFAULT_THEME_ID,
                             Theme.DEFAULT_THEME_ID);
 
             var mainBuildingPosition = cityPosition.Left();

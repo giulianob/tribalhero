@@ -32,12 +32,15 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly IStructureCsvFactory structureCsvFactory;
 
+        private IThemeManager themeManager;
+
         public TroopCommandsModule(IActionFactory actionFactory,
                                    IStructureCsvFactory structureCsvFactory,
                                    IGameObjectLocator gameObjectLocator,
                                    Formula formula,
                                    ILocker locker,
-                                   ITroopObjectInitializerFactory troopObjectInitializerFactory)
+                                   ITroopObjectInitializerFactory troopObjectInitializerFactory, 
+                                   IThemeManager themeManager)
         {
             this.actionFactory = actionFactory;
             this.structureCsvFactory = structureCsvFactory;
@@ -45,6 +48,7 @@ namespace Game.Comm.ProcessorCommands
             this.formula = formula;
             this.locker = locker;
             this.troopObjectInitializerFactory = troopObjectInitializerFactory;
+            this.themeManager = themeManager;
         }
 
         public override void RegisterCommands(IProcessor processor)
@@ -61,6 +65,41 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.TroopAttackBarbarianTribe, AttackBarbarianTribe);
             processor.RegisterCommand(Command.TroopModeSwitch, ModeSwitch);
             processor.RegisterCommand(Command.TroopTransfer, Transfer);
+            processor.RegisterCommand(Command.TroopSetTheme, TroopSetTheme);
+        }
+
+        private void TroopSetTheme(Session session, Packet packet)
+        {
+            uint cityId;
+            uint troopId;
+            string theme;
+
+            try
+            {
+                cityId = packet.GetUInt32();
+                troopId = packet.GetUInt32();
+                theme = packet.GetString();
+            }
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            ICity city;
+            ITroopObject troop;
+            locker.Lock(cityId, troopId, out city, out troop).Do(() =>
+            {
+                if (city == null || troop == null || city.Owner != session.Player)
+                {
+                    ReplyError(session, packet, Error.ObjectNotFound);
+                    return;
+                }
+
+                var result = themeManager.SetTroopTheme(troop, theme);
+
+                ReplyWithResult(session, packet, result);
+            });
         }
 
         private void Transfer(Session session, Packet packet)

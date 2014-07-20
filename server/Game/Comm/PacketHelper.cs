@@ -88,6 +88,12 @@ namespace Game.Comm
                 packet.AddUInt32(gameObj.City.Owner.PlayerId);
             }
 
+            var troopObj = obj as ITroopObject;
+            if (troopObj != null)
+            {
+                packet.AddString(troopObj.Theme);
+            }
+
             IHasLevel objHasLevel = obj as IHasLevel;
             if (objHasLevel != null)
             {
@@ -432,6 +438,7 @@ namespace Game.Comm
             packet.AddByte(city.Battle != null ? (byte)1 : (byte)0);
             packet.AddByte(city.HideNewUnits ? (byte)1 : (byte)0);
             packet.AddString(city.DefaultTheme);
+            packet.AddString(city.TroopTheme);
 
             //City Actions
             AddToPacket(new List<GameAction>(city.Worker.GetVisibleActions()), packet, true);

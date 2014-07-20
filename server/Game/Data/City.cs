@@ -144,6 +144,8 @@ namespace Game.Data
         private readonly BattleProcedure battleProcedure;
 
         private string defaultTheme;
+        
+        private string troopTheme;
 
         private string wallTheme;
 
@@ -242,6 +244,21 @@ namespace Game.Data
                 CheckUpdateMode();
 
                 defaultTheme = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string TroopTheme
+        {
+            get
+            {
+                return troopTheme;
+            }
+            set
+            {
+                CheckUpdateMode();
+
+                troopTheme = value;
                 RaisePropertyChanged();
             }
         }
@@ -596,6 +613,7 @@ namespace Game.Data
                     byte radius,
                     decimal ap,
                     string defaultTheme,
+                    string troopTheme,
                     string wallTheme,
                     IActionWorker worker,
                     CityNotificationManager notifications,
@@ -623,6 +641,7 @@ namespace Game.Data
             AlignmentPoint = ap;
             DefaultTheme = defaultTheme;
             WallTheme = wallTheme;
+            TroopTheme = troopTheme;
             Resource = resource;
 
             Worker = worker;
@@ -783,7 +802,7 @@ namespace Game.Data
 
         public ITroopObject CreateTroopObject(ITroopStub stub, uint x, uint y)
         {
-            var troopObject = gameObjectFactory.CreateTroopObject(objectIdGen.GetNext(), stub, x, y);
+            var troopObject = gameObjectFactory.CreateTroopObject(objectIdGen.GetNext(), stub, x, y, TroopTheme);
             Add(troopObject.ObjectId, troopObject, true);
             return troopObject;
         }
@@ -849,6 +868,7 @@ namespace Game.Data
                         new DbColumn("deleted", Deleted, DbType.Int32),
                         new DbColumn("default_theme_id", DefaultTheme, DbType.String),
                         new DbColumn("wall_theme_id", WallTheme, DbType.String),
+                        new DbColumn("troop_theme_id", TroopTheme, DbType.String),
                 };
             }
         }

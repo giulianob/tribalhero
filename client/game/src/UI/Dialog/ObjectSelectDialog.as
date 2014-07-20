@@ -95,7 +95,7 @@
 			
 			var scrollPnl: JScrollPane = new JScrollPane(viewPort, JScrollPane.SCROLLBAR_NEVER, JScrollPane.SCROLLBAR_AS_NEEDED);			
 			scrollPnl.setConstraints("South");
-			scrollPnl.setPreferredSize(new IntDimension(400, 125));
+			scrollPnl.setPreferredSize(new IntDimension(400, 150));
 			
 			//component layout
 			append(lblTitle);

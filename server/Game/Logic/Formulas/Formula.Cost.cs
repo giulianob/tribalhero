@@ -255,6 +255,8 @@ namespace Game.Logic.Formulas
 
             foreach (var structure in city)
             {
+                if (ObjectTypeFactory.IsStructureType("NoInfluencePoint",structure)) continue;
+                
                 for (var lvl = 0; lvl <= structure.Lvl; lvl++)
                 {
                     resource.Add(StructureCsvFactory.GetCost(structure.Type, lvl));

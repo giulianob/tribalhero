@@ -30,13 +30,15 @@ namespace Game.Logic.Actions
 
         private readonly IWorld world;
 
+        private readonly TechnologyFactory technologyFactory;
 
         public CityRebuildPassiveAction(IActionFactory actionFactory,
                                         ILocker locker,
                                         CallbackProcedure callbackProcedure,
                                         IStructureCsvFactory structureCsvFactory,
                                         CityProcedure cityProcedure,
-                                        IWorld world)
+                                        IWorld world,
+                                        TechnologyFactory technologyFactory)
         {
             this.actionFactory = actionFactory;
             this.locker = locker;
@@ -44,6 +46,7 @@ namespace Game.Logic.Actions
             this.structureCsvFactory = structureCsvFactory;
             this.cityProcedure = cityProcedure;
             this.world = world;
+            this.technologyFactory = technologyFactory;
         }
 
         public CityRebuildPassiveAction(uint id,
@@ -55,8 +58,9 @@ namespace Game.Logic.Actions
                                         CallbackProcedure callbackProcedure,
                                         IStructureCsvFactory structureCsvFactory,
                                         CityProcedure cityProcedure,
-                                        IWorld world)
-                : this(actionFactory, locker, callbackProcedure, structureCsvFactory, cityProcedure, world)
+                                        IWorld world,
+                                        TechnologyFactory technologyFactory)
+            : this(actionFactory, locker, callbackProcedure, structureCsvFactory, cityProcedure, world, technologyFactory)
         {
             this.cityId = id;
             this.resource = resource;
@@ -168,6 +172,18 @@ namespace Game.Logic.Actions
                 cranny.Properties.Add("Iron", resource.Iron);
                 cranny.Properties.Add("Structure Upgrades", structureUpgrades);
                 cranny.Properties.Add("Technology Upgrades", technologyUpgrades);
+
+                cranny.Technologies.BeginUpdate();
+                if (structureUpgrades > 0)
+                {
+                    cranny.Technologies.Add(new Technology(technologyFactory.GetTechnologyBase(30131, 1)), true);
+                }
+
+                if (technologyUpgrades > 0)
+                {
+                    cranny.Technologies.Add(new Technology(technologyFactory.GetTechnologyBase(30132, 1)), true);
+                }
+                cranny.Technologies.EndUpdate();
 
                 if (!world.Regions.Add(cranny))
                 {

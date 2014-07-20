@@ -44,7 +44,22 @@ namespace Game.Logic.Actions
 
         public StructureBuildActiveAction CreateStructureBuildActiveAction(uint cityId, ushort type, uint x, uint y, byte level)
         {
-            return new StructureBuildActiveAction(cityId, type, x, y, level, kernel.Get<IObjectTypeFactory>(), kernel.Get<IWorld>(), kernel.Get<Formula>(), kernel.Get<IRequirementCsvFactory>(), kernel.Get<IStructureCsvFactory>(), kernel.Get<ILocker>(), kernel.Get<Procedure>(), kernel.Get<IRoadPathFinder>(), kernel.Get<ITileLocator>(), kernel.Get<CallbackProcedure>());
+            return new StructureBuildActiveAction(cityId,
+                                                  type,
+                                                  x,
+                                                  y,
+                                                  level,
+                                                  kernel.Get<IObjectTypeFactory>(),
+                                                  kernel.Get<IWorld>(),
+                                                  kernel.Get<Formula>(),
+                                                  kernel.Get<IRequirementCsvFactory>(),
+                                                  kernel.Get<IStructureCsvFactory>(),
+                                                  kernel.Get<ILocker>(),
+                                                  kernel.Get<Procedure>(),
+                                                  kernel.Get<IRoadPathFinder>(),
+                                                  kernel.Get<ITileLocator>(),
+                                                  kernel.Get<CallbackProcedure>(),
+                                                  kernel.Get<InstantProcedure>());
         }
 
         public ResourceSendActiveAction CreateResourceSendActiveAction(uint cityId, uint structureId, uint targetCityId, Resource resource)
@@ -110,7 +125,7 @@ namespace Game.Logic.Actions
 
         public TechnologyUpgradeActiveAction CreateTechnologyUpgradeActiveAction(uint cityId, uint structureId, uint techId)
         {
-            return new TechnologyUpgradeActiveAction(cityId, structureId, techId, kernel.Get<IWorld>(), kernel.Get<Formula>(), kernel.Get<ILocker>(), kernel.Get<TechnologyFactory>(), kernel.Get<CallbackProcedure>());
+            return new TechnologyUpgradeActiveAction(cityId, structureId, techId, kernel.Get<IWorld>(), kernel.Get<Formula>(), kernel.Get<ILocker>(), kernel.Get<TechnologyFactory>(), kernel.Get<CallbackProcedure>(),kernel.Get<InstantProcedure>());
         }
 
         public CityRadiusChangePassiveAction CreateCityRadiusChangePassiveAction()
@@ -139,7 +154,8 @@ namespace Game.Logic.Actions
                                                 kernel.Get<CallbackProcedure>(),
                                                 kernel.Get<IStructureCsvFactory>(),
                                                 kernel.Get<CityProcedure>(),
-                                                kernel.Get<IWorld>());
+                                                kernel.Get<IWorld>(),
+                                                kernel.Get<TechnologyFactory>());
         }
 
         public StructureSelfDestroyActiveAction CreateStructureSelfDestroyActiveAction(uint cityId, uint objectId)
@@ -159,7 +175,7 @@ namespace Game.Logic.Actions
 
         public StructureUpgradeActiveAction CreateStructureUpgradeActiveAction(uint cityId, uint structureId)
         {
-            return new StructureUpgradeActiveAction(cityId, structureId, kernel.Get<IStructureCsvFactory>(), kernel.Get<Formula>(), kernel.Get<IWorld>(), kernel.Get<Procedure>(), kernel.Get<ILocker>(), kernel.Get<IRequirementCsvFactory>(), kernel.Get<IObjectTypeFactory>(), kernel.Get<CallbackProcedure>());
+            return new StructureUpgradeActiveAction(cityId, structureId, kernel.Get<IStructureCsvFactory>(), kernel.Get<Formula>(), kernel.Get<IWorld>(), kernel.Get<Procedure>(), kernel.Get<ILocker>(), kernel.Get<IRequirementCsvFactory>(), kernel.Get<IObjectTypeFactory>(), kernel.Get<CallbackProcedure>(), kernel.Get<InstantProcedure>());
         }
 
         public PropertyCreatePassiveAction CreatePropertyCreatePassiveAction()

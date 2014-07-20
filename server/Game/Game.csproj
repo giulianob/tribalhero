@@ -408,6 +408,7 @@
     <Compile Include="Logic\IReferenceManager.cs" />
     <Compile Include="Logic\Notifications\NotificationManagerFactory.cs" />
     <Compile Include="Logic\Procedures\CityProcedure.cs" />
+    <Compile Include="Logic\Procedures\InstantProcedure.cs" />
     <Compile Include="Logic\ReferenceManagerFactory.cs" />
     <Compile Include="Logic\Requirements\DistributedPointSystemRequirement.cs" />
     <Compile Include="Logic\Requirements\LayoutRequirements\ILayoutRequirement.cs" />

@@ -23,6 +23,7 @@ package src.UI.Tooltips {
 
 		private var structPrototype: StructurePrototype;
 		private var nextStructPrototype: StructurePrototype;
+        private var instantBuild: Boolean;
 
 		private var parentObj: StructureObject;
 
@@ -43,11 +44,12 @@ package src.UI.Tooltips {
 		private var pnlResources:JPanel;
 		private var nextStatsBox: StructureStatBox;
 
-		public function StructureUpgradeTooltip(parentObj: StructureObject, structPrototype: StructurePrototype, nextStructPrototype: StructurePrototype)
+		public function StructureUpgradeTooltip(parentObj: StructureObject, structPrototype: StructurePrototype, nextStructPrototype: StructurePrototype, instantBuild: Boolean)
 		{
 			this.parentObj = parentObj;
 			this.structPrototype = structPrototype;
 			this.nextStructPrototype = nextStructPrototype;
+            this.instantBuild = instantBuild;
 		}
 
 		override public function draw(): void
@@ -74,7 +76,12 @@ package src.UI.Tooltips {
 			if (nextStructPrototype != null)
 			{
 				lblNextLvlDescription.setText(nextStructPrototype.getDescription());
-				lblNextLvlTime.setText(DateUtil.formatTime(Formula.buildTime(parentObj, nextStructPrototype.buildTime, parentObj.getCorrespondingCityObj().techManager)));
+
+                if(instantBuild) {
+                    lblNextLvlTime.setText("Instant");
+                } else {
+				    lblNextLvlTime.setText(DateUtil.formatTime(Formula.buildTime(parentObj, nextStructPrototype.buildTime, parentObj.getCorrespondingCityObj().techManager)));
+                }
 
 				if (nextStructPrototype.layouts.length > 0 || (missingRequirements != null && missingRequirements.length > 0))
 				{

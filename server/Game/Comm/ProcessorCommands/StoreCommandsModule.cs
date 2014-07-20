@@ -26,6 +26,7 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.StoreGetItems, GetItems);
             processor.RegisterCommand(Command.StorePurchaseItem, PurchaseItem);
             processor.RegisterCommand(Command.StoreSetDefaultTheme, SetDefaultTheme);
+            processor.RegisterCommand(Command.StoreSetTroopTheme, SetTroopTheme);
             processor.RegisterCommand(Command.StoreApplyThemeToAll, ApplyThemeToAll);
         }
 
@@ -86,6 +87,37 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 var result = themeManager.SetDefaultTheme(city, itemId);
+
+                ReplyWithResult(session, packet, result);
+            });
+        }
+
+        private void SetTroopTheme(Session session, Packet packet)
+        {
+            uint cityId;
+            string itemId;
+
+            try
+            {
+                cityId = packet.GetUInt32();
+                itemId = packet.GetString();
+            }
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            locker.Lock(session.Player).Do(() =>
+            {
+                var city = session.Player.GetCity(cityId);
+                if (city == null)
+                {
+                    ReplyError(session, packet, Error.CityNotFound);
+                    return;
+                }
+
+                var result = themeManager.SetDefaultTroopTheme(city, itemId);
 
                 ReplyWithResult(session, packet, result);
             });

@@ -6,13 +6,17 @@ package src.UI.ViewModels {
     import src.Global;
     import src.Graphics.WallTileset;
     import src.Map.City;
+    import src.Objects.Factories.ObjectFactory;
     import src.Objects.Factories.StrongholdFactory;
     import src.Objects.Factories.StructureFactory;
+    import src.Objects.Factories.TroopFactory;
+    import src.Objects.Prototypes.ObjectTypePrototype;
     import src.Objects.Prototypes.StructurePrototype;
     import src.Objects.Store.IStoreAsset;
     import src.Objects.Store.StoreItemTheme;
     import src.Objects.Store.StrongholdStoreAsset;
     import src.Objects.Store.StructureStoreAsset;
+    import src.Objects.Store.TroopStoreAsset;
     import src.Objects.Store.WallStoreAsset;
     import src.UI.ViewModel;
 
@@ -22,6 +26,7 @@ package src.UI.ViewModels {
         public static const EVENT_COMPLETED_APPLY_ALL_THEME: String = "EVENT_COMPLETED_APPLY_ALL_THEME";
         public static const EVENT_COMPLETED_APPLY_WALL_THEME: String = "EVENT_COMPLETED_APPLY_WALL_THEME";
         public static const EVENT_COMPLETED_SET_DEFAULT_THEME: String = "EVENT_COMPLETED_SET_DEFAULT_THEME";
+        public static const EVENT_COMPLETED_SET_DEFAULT_TROOP_THEME: String = "EVENT_COMPLETED_SET_DEFAULT_TROOP_THEME";
 
         private var item: StoreItemTheme;
 
@@ -41,6 +46,14 @@ package src.UI.ViewModels {
             return Assets.doesSpriteExist(WallTileset.getSpriteName(theme.id));
         }
 
+        public function isTroopIncluded(): Boolean {
+            return Assets.doesSpriteExist(TroopFactory.getSpriteName(theme.id));
+        }
+
+        public function areStructuresIncluded(): Boolean {
+            return Assets.doesSpriteExist(StructureFactory.getSpriteName(theme.id, ObjectFactory.getFirstType("MainBuilding"), 1));
+        }
+
         public function getThemeAssets(): Array {
             var themeItems: Array = [];
 
@@ -50,6 +63,10 @@ package src.UI.ViewModels {
 
             if (isWallIncluded()) {
                 themeItems.push(new WallStoreAsset(item));
+            }
+
+            if (isTroopIncluded()) {
+                themeItems.push(new TroopStoreAsset(item));
             }
 
             for each (var structurePrototype: StructurePrototype in StructureFactory.getAllStructureTypes()) {
@@ -87,6 +104,12 @@ package src.UI.ViewModels {
         public function setDefaultTheme(city: City): void {
             Global.mapComm.Store.setDefaultTheme(city.id, theme.themeId).then(function(): void {
                 dispatch(EVENT_COMPLETED_SET_DEFAULT_THEME);
+            });
+        }
+
+        public function setDefaultTroopTheme(city: *): void {
+            Global.mapComm.Store.setDefaultTroopTheme(city.id, theme.themeId).then(function(): void {
+                dispatch(EVENT_COMPLETED_SET_DEFAULT_TROOP_THEME);
             });
         }
     }

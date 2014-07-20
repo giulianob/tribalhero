@@ -43,9 +43,9 @@ namespace Game.Data
             return structure;
         }
 
-        public ITroopObject CreateTroopObject(uint id, ITroopStub stub, uint x, uint y)
+        public ITroopObject CreateTroopObject(uint id, ITroopStub stub, uint x, uint y, string theme)
         {
-            return new TroopObject(id, stub, x, y, kernel.Get<IDbManager>());            
+            return new TroopObject(id, stub, x, y, theme, kernel.Get<IDbManager>());            
         }
     }
 }

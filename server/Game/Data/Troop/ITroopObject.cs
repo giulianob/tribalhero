@@ -12,5 +12,7 @@ namespace Game.Data.Troop
         uint TargetY { get; set; }
 
         TroopStats Stats { get; set; }
+
+        string Theme { get; set; }
     }
 }

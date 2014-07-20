@@ -427,7 +427,7 @@ namespace Game.Comm.ProcessorCommands
                     ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
-
+                
                 var region = world.Regions.GetRegion(regionId);
                 if (region == null)
                 {

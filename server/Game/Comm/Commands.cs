@@ -191,6 +191,8 @@ namespace Game.Comm
         CityHasApBonus = 469,
 
         CityDefaultThemeUpdate = 470,
+        
+        CityTroopThemeUpdate = 471,
 
         CityBattleStarted = 490,
 
@@ -237,6 +239,8 @@ namespace Game.Comm
         TroopTransfer = 620,
 
         TroopLocalSet = 621,
+        
+        TroopSetTheme = 622,
 
         #endregion
 
@@ -385,6 +389,8 @@ namespace Game.Comm
         StoreSetDefaultTheme = 1203,
 
         StoreApplyThemeToAll = 1204,
+
+        StoreSetTroopTheme = 1205,
 
         #endregion
     }

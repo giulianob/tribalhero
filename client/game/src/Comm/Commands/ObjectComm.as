@@ -83,6 +83,7 @@
 					break;
 				case ObjectFactory.TYPE_TROOP_OBJ:
 					obj.playerId = packet.readUInt();
+                    obj.theme = packet.readString();
 					break;
 				case ObjectFactory.TYPE_STRONGHOLD:
 					obj.lvl = packet.readUByte();
@@ -112,7 +113,7 @@
 				case ObjectFactory.TYPE_FOREST:
 					return ForestFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.size, obj.groupId, obj.id);
 				case ObjectFactory.TYPE_TROOP_OBJ:
-					return TroopFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.size, obj.playerId, obj.groupId, obj.id);
+					return TroopFactory.getInstance(obj.theme, obj.type, obj.state, coord.x, coord.y, obj.size, obj.playerId, obj.groupId, obj.id);
 				case ObjectFactory.TYPE_STRONGHOLD:
 					return StrongholdFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.size, obj.groupId, obj.id, obj.lvl, obj.tribeId, obj.gateMax, obj.themeId);
 				case ObjectFactory.TYPE_BARBARIAN_TRIBE:
@@ -599,6 +600,16 @@
         public function setStructureTheme(cityId: int, objectId: int, theme: String): void {
             var packet: Packet = new Packet();
             packet.cmd = Commands.STRUCTURE_SET_THEME;
+            packet.writeUInt(cityId);
+            packet.writeUInt(objectId);
+            packet.writeString(theme);
+
+            session.write(packet, mapComm.catchAllErrors);
+        }
+
+        public function setTroopTheme(cityId: int, objectId: int, theme: String): void {
+            var packet: Packet = new Packet();
+            packet.cmd = Commands.TROOP_SET_THEME;
             packet.writeUInt(cityId);
             packet.writeUInt(objectId);
             packet.writeString(theme);

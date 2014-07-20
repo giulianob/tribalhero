@@ -112,7 +112,7 @@
 			if (type >= 1000)
 				sprite = StructureFactory.getSprite(theme, type, level);
 			else if (type == 100)
-				sprite = TroopFactory.getSprite();
+				sprite = TroopFactory.getSprite(theme);
 			else
 				sprite = UnitFactory.getSprite(type, level, forDarkBackground);
 
@@ -141,8 +141,10 @@
                 var structure: StructureObject = StructureObject(obj);
 				sprite = StructureFactory.getSprite(structure.theme, structure.type, structure.level, withPosition);
             }
-			else if (obj is TroopObject)
-				sprite = TroopFactory.getSprite();
+			else if (obj is TroopObject) {
+                var troop: TroopObject = TroopObject(obj);
+				sprite = TroopFactory.getSprite(troop.theme);
+            }
 			else if (obj is Forest)
 				sprite = ForestFactory.getSprite();
 			else if (obj is NewCityPlaceholder)

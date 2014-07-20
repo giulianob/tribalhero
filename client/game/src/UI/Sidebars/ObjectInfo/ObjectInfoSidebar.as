@@ -104,7 +104,7 @@ package src.UI.Sidebars.ObjectInfo {
             var sprite: DisplayObject = StructureFactory.getSprite(theme, gameObject.type, gameObject.level);
             Util.resizeSprite(sprite, 85, 85);
 
-            var menuItem: JMenuItem = new JMenuItem(StringHelper.localize("THEME_" + theme), new AssetIcon(sprite));
+            var menuItem: JMenuItem = new JMenuItem(StringHelper.localize(theme + "_THEME_NAME"), new AssetIcon(sprite));
 
             var capturedTheme: String = theme;
             menuItem.addActionListener(function(e: Event): void {
@@ -147,7 +147,7 @@ package src.UI.Sidebars.ObjectInfo {
 					addStatRow("OBJECT_INFO_SIDEBAR_HP_LABEL", gameObject.hp.toString() + "/" + structPrototype.hp.toString());
 				}
 
-                themeLink.setText(StringHelper.localize("THEME_" + gameObject.theme));
+                themeLink.setText(StringHelper.localize(gameObject.theme + "_THEME_NAME"));
                 addStatRow("OBJECT_INFO_SIDEBAR_THEME_LABEL", themeLink);
 
 				if (structPrototype.maxlabor > 0) {

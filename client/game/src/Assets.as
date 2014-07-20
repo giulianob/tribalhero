@@ -575,5 +575,146 @@
         [Embed(source = "../../../graphics/themes/pirates/GRAPE_FIELD_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = "25", y = "7")]
         public static const PIRATES_GRAPE_FIELD_STRUCTURE: Class;
+
+        // Feudal Japan structure pack
+        [Embed(source = "../../../graphics/themes/feudaljapan/WALL.png")]
+        public static const FEUDALJAPAN_WALL_TILESET: Class;
+
+        [Embed(source = "../../../graphics/themes/feudaljapan/THUMBNAIL.png")]
+        public static const FEUDALJAPAN_THEME_THUMBNAIL: Class;
+
+        [Embed(source = "../../../graphics/themes/feudaljapan/BANNER.png")]
+        public static const FEUDALJAPAN_THEME_BANNER: Class;
+
+        [Embed(source = "../../../graphics/themes/default/CONSTRUCTION_SMALL.png")]
+        [EmbedPosition(name = "map", x = 32, y = "1")]
+        public static const FEUDALJAPAN_BUILDING_1: Class;
+
+        [Embed(source = "../../../graphics/themes/default/CONSTRUCTION.png")]
+        [EmbedPosition(name = "map", x = 102, y = "-3")]
+        public static const FEUDALJAPAN_BUILDING_2: Class;
+
+        [Embed(source = "../../../graphics/themes/default/CONSTRUCTION.png")]
+        [EmbedPosition(name = "map", x = 177, y = "68")]
+        public static const FEUDALJAPAN_BUILDING_3: Class;
+
+        [Embed(source = "../../../graphics/themes/feudaljapan/ARMORY_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "26", y = "-11")]
+        public static const FEUDALJAPAN_ARMORY_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/feudaljapan/FIELD_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "34", y = "9")]
+        public static const FEUDALJAPAN_FIELD_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/feudaljapan/BARRACK_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "17", y = "-53")]
+        public static const FEUDALJAPAN_BARRACK_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/feudaljapan/FOUNDRY_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "5", y = "-29")]
+        public static const FEUDALJAPAN_FOUNDRY_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/feudaljapan/STRONGHOLD_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "7", y = "-88")]
+        public static const FEUDALJAPAN_STRONGHOLD_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/feudaljapan/FARM_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "12", y = "-8")]
+        public static const FEUDALJAPAN_FARM_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/feudaljapan/MARKET_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "18", y = "3")]
+        public static const FEUDALJAPAN_MARKET_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/feudaljapan/REFINERY_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "-7", y = "-47")]
+        public static const FEUDALJAPAN_REFINERY_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/feudaljapan/STABLE_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "40", y = "-30")]
+        public static const FEUDALJAPAN_STABLE_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/feudaljapan/TOWER_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "34", y = "-34")]
+        public static const FEUDALJAPAN_TOWER_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/feudaljapan/TOWNCENTER_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "88", y = "-93")]
+        public static const FEUDALJAPAN_TOWNCENTER_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/feudaljapan/TRADING_POST_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "21", y = "-82")]
+        public static const FEUDALJAPAN_TRADING_POST_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/feudaljapan/UNIVERSITY_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "47", y = "-60")]
+        public static const FEUDALJAPAN_UNIVERSITY_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/feudaljapan/LUMBERMILL_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "11", y = "-5")]
+        public static const FEUDALJAPAN_LUMBERMILL_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/feudaljapan/WORKSHOP_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "39", y = "-36")]
+        public static const FEUDALJAPAN_WORKSHOP_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/feudaljapan/TRAINING_GROUND_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "28", y = "-74")]
+        public static const FEUDALJAPAN_TRAINING_GROUND_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/feudaljapan/CANNON_TOWER_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "34", y = "-34")]
+        public static const FEUDALJAPAN_CANNON_TOWER_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/feudaljapan/BLACKSMITH_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "21", y = "-42")]
+        public static const FEUDALJAPAN_BLACKSMITH_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/feudaljapan/BASEMENT_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "6", y = "4")]
+        public static const FEUDALJAPAN_BASEMENT_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/feudaljapan/BASEMENT_TMP_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "26", y = "11")]
+        public static const FEUDALJAPAN_BASEMENT_TMP_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/feudaljapan/FOREST_CAMP_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "24", y = "8")]
+        public static const FEUDALJAPAN_FOREST_CAMP_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/feudaljapan/DEAD_FIELD_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "34", y = "9")]
+        public static const FEUDALJAPAN_DEAD_FIELD_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/feudaljapan/GRAPE_FIELD_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "28", y = "7")]
+        public static const FEUDALJAPAN_GRAPE_FIELD_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/feudaljapan/TRIBAL_CARNIVAL_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "22", y = "-14")]
+        public static const FEUDALJAPAN_TRIBAL_CARNIVAL_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/feudaljapan/TRIBAL_FAIR_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "30", y = "5")]
+        public static const FEUDALJAPAN_TRIBAL_FAIR_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/feudaljapan/TRIBAL_FESTIVAL_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "17", y = "9")]
+        public static const FEUDALJAPAN_TRIBAL_FESTIVAL_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/feudaljapan/TRIBAL_GATHERING_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "21", y = "-7")]
+        public static const FEUDALJAPAN_TRIBAL_GATHERING_STRUCTURE: Class;
+
+        /* War Elephant Theme */
+        [Embed(source = "../../../graphics/themes/warelephant/TROOP.png")]
+        [EmbedPosition(name = "map", x = "30", y = "-50")]
+        public static const WARELEPHANT_TROOP: Class;
+
+        [Embed(source = "../../../graphics/themes/warelephant/TROOP.png")]
+        public static const WARELEPHANT_THEME_THUMBNAIL: Class;
+
+        [Embed(source = "../../../graphics/themes/warelephant/BANNER.png")]
+        public static const WARELEPHANT_THEME_BANNER: Class;
     }
 }

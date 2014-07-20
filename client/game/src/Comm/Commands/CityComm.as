@@ -87,7 +87,10 @@
                 case Commands.CITY_DEFAULT_THEME_UPDATE:
 					onReceiveDefaultThemeUpdate(e.packet);
 					break;
-				case Commands.CITY_BATTLE_ENDED: 
+                case Commands.CITY_TROOP_THEME_UPDATE:
+				    onReceiveTroopThemeUpdate(e.packet);
+					break;
+				case Commands.CITY_BATTLE_ENDED:
 				case Commands.CITY_BATTLE_STARTED: 
 					onReceiveBattleStateChange(e.packet);
 					break;
@@ -132,6 +135,19 @@
 			if (city != null)
 			{
                 city.defaultTheme = themeId;
+			}
+		}
+
+        public function onReceiveTroopThemeUpdate(packet:Packet):void
+		{
+			var cityId:int = packet.readUInt();
+            var themeId:String = packet.readString();
+
+			var city:City = Global.map.cities.get(cityId);
+
+			if (city != null)
+			{
+                city.troopTheme = themeId;
 			}
 		}
 

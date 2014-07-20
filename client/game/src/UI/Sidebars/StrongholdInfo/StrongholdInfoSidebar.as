@@ -90,7 +90,7 @@
                         }
                     });
 
-                    themeLink.setText(t("THEME_" + stronghold.theme));
+                    themeLink.setText(t(stronghold.theme + "_THEME_NAME"));
                     addStatRow(t("OBJECT_INFO_SIDEBAR_THEME_LABEL"), themeLink);
 
                     var storeLink: JLabelButton = new JLabelButton(t("OBJECT_INFO_SIDEBAR_BUY_MORE_THEMES"), null, AsWingConstants.LEFT);
@@ -121,7 +121,7 @@
             var sprite: DisplayObject = StrongholdFactory.getSprite(theme);
             Util.resizeSprite(sprite, 85, 85);
 
-            var menuItem: JMenuItem = new JMenuItem(t("THEME_" + theme), new AssetIcon(sprite));
+            var menuItem: JMenuItem = new JMenuItem(t(theme + "_THEME_NAME"), new AssetIcon(sprite));
 
             var capturedTheme: String = theme;
             menuItem.addActionListener(function(e: Event): void {

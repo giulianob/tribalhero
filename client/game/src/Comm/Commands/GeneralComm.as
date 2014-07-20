@@ -196,8 +196,9 @@
 			var inBattle: Boolean = packet.readByte() == 1;
 			var hideNewUnits: Boolean = packet.readByte() == 1;
             var defaultTheme: String = packet.readString();
+            var troopTheme: String = packet.readString();
 
-			var city: City = new City(id, name, position, radius, resources, attackPoint, defensePoint, cityValue, inBattle, hideNewUnits, ap, defaultTheme);
+			var city: City = new City(id, name, position, radius, resources, attackPoint, defensePoint, cityValue, inBattle, hideNewUnits, ap, defaultTheme, troopTheme);
 
 			// Add the name of this city to the list of city names
 			Global.map.usernames.cities.add(new Username(id, name));

@@ -1,4 +1,5 @@
 ﻿package src.UI.Sidebars.TroopInfo {
+    import flash.display.DisplayObject;
     import flash.events.*;
     import flash.utils.Timer;
 
@@ -11,9 +12,11 @@
     import src.Map.*;
     import src.Objects.*;
     import src.Objects.Actions.*;
+    import src.Objects.Factories.TroopFactory;
     import src.Objects.Troop.*;
     import src.UI.Components.CityLabel;
     import src.UI.Components.PlayerLabel;
+    import src.UI.Flows.StoreFlow;
     import src.UI.GameJSidebar;
     import src.UI.Sidebars.ObjectInfo.Buttons.*;
     import src.Util.*;
@@ -29,6 +32,9 @@
 		private var troopObj: TroopObject;
 
 		private var t:Timer = new Timer(1000);
+        private var themeLink: JLabelButton;
+        private var themeDropdown: JPopupMenu;
+        private var city: City;
 
 		public function TroopInfoSidebar(troopObj: TroopObject)
 		{
@@ -36,9 +42,57 @@
 
 			troopObj.addEventListener(SimpleGameObject.OBJECT_UPDATE, onObjectUpdate);
 
+            this.city = Global.map.cities.get(troopObj.cityId);
+
+            if (city) {
+                themeDropdown = new JPopupMenu();
+
+                for each (var theme: String in Constants.session.themesPurchased) {
+                    var newSprite: String = TroopFactory.getSpriteName(theme);
+                    if (!Assets.doesSpriteExist(newSprite)) {
+                        continue;
+                    }
+
+                    themeDropdown.append(createThemeMenuItem(theme));
+                }
+
+                themeDropdown.append(new JSeparator());
+
+                themeLink = new JLabelButton("", null, AsWingConstants.LEFT);
+                themeLink.addActionListener(function (e: Event): void {
+                    if (!themeDropdown.isVisible()) {
+                        themeDropdown.show(themeLink, 0, themeLink.getHeight());
+                    }
+                    else {
+                        themeDropdown.setVisible(false);
+                    }
+                });
+
+                var storeLink: JLabelButton = new JLabelButton(StringHelper.localize("OBJECT_INFO_SIDEBAR_BUY_MORE_THEMES"), null, AsWingConstants.LEFT);
+                themeDropdown.append(storeLink);
+
+                storeLink.addActionListener(function (e: Event): void {
+                    new StoreFlow().showStore();
+                });
+            }
+
 			createUI();
 			update();
 		}
+
+        private function createThemeMenuItem(theme: String): JMenuItem {
+            var sprite: DisplayObject = TroopFactory.getSprite(theme);
+            Util.resizeSprite(sprite, 85, 85);
+
+            var menuItem: JMenuItem = new JMenuItem(StringHelper.localize(theme + "_THEME_NAME"), new AssetIcon(sprite));
+
+            var capturedTheme: String = theme;
+            menuItem.addActionListener(function(e: Event): void {
+                Global.mapComm.Objects.setTroopTheme(troopObj.groupId, troopObj.objectId, capturedTheme);
+            });
+
+            return menuItem
+        }
 
 		public function onObjectUpdate(e: Event):void
 		{
@@ -57,13 +111,14 @@
 
 			var buttons: Array = [];
 
-			var city: City = Global.map.cities.get(troopObj.cityId);
-
 			if (city != null) {
 				addStatRow("Radius", troopObj.attackRadius.toString());
 				addStatRow("Speed", troopObj.speed.toFixed(1));
-				
-				buttons.push(new ViewDestinationButton(troopObj, new Position(troopObj.targetX, troopObj.targetY)));
+
+                themeLink.setText(StringHelper.localize(troopObj.theme + "_THEME_NAME"));
+                addStatRow(StringHelper.localize("OBJECT_INFO_SIDEBAR_THEME_LABEL"), themeLink);
+
+                buttons.push(new ViewDestinationButton(troopObj, new Position(troopObj.targetX, troopObj.targetY)));
 			}
 
 			//Special Case Buttons

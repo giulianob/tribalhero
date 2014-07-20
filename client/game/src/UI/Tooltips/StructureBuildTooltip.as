@@ -38,12 +38,14 @@
 		private var statsBox: StructureStatBox;
 		
 		private var city: City;
+        private var instantBuild: Boolean;
 
-		public function StructureBuildTooltip(parentObj: StructureObject, structPrototype: StructurePrototype)
+		public function StructureBuildTooltip(parentObj: StructureObject, structPrototype: StructurePrototype, instantBuild: Boolean)
 		{
 			this.parentObj = parentObj;
 			this.structPrototype = structPrototype;
-			this.city = Global.map.cities.get(parentObj.cityId);			
+			this.city = Global.map.cities.get(parentObj.cityId);
+            this.instantBuild = instantBuild;
 		}		
 		
 		override public function draw(): void
@@ -67,7 +69,11 @@
 				return label;
 			};
 
-			lblTime.setText(DateUtil.formatTime(Formula.buildTime(parentObj, structPrototype.buildTime, parentObj.getCorrespondingCityObj().techManager)));
+            if(instantBuild) {
+                lblTime.setText("Instant");
+            } else {
+                lblTime.setText(DateUtil.formatTime(Formula.buildTime(parentObj, structPrototype.buildTime, parentObj.getCorrespondingCityObj().techManager)));
+            }
 
 			if (structPrototype.layouts.length > 0 || (missingRequirements != null && missingRequirements.length > 0))
 			{

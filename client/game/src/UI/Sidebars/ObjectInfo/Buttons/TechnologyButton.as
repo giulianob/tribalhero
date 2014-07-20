@@ -5,7 +5,9 @@
  */
 
 package src.UI.Sidebars.ObjectInfo.Buttons {
-    import flash.events.Event;
+import System.Linq.Enumerable;
+
+import flash.events.Event;
     import flash.events.MouseEvent;
 
     import src.Global;
@@ -24,18 +26,25 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		private var techToolTip: TechnologyTooltip;
 
+        private var instantBuild: Boolean;
+
         public function TechnologyButton(parentObj:StructureObject, techPrototype: TechnologyPrototype) {
-			super(parentObj, techPrototype.getName());
+            super(parentObj, techPrototype.getName());
 
-			this.techPrototype = techPrototype;
+            this.techPrototype = techPrototype;
 
-			techToolTip = new TechnologyTooltip(parentObj, techPrototype);
+            var city:City = Global.map.cities.get(parentObj.groupId);
 
-			addEventListener(MouseEvent.CLICK, onMouseClick);
-			addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
-			addEventListener(MouseEvent.MOUSE_MOVE, onMouseOver);
-			addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
-		}
+            instantBuild = Enumerable.from(city.techManager.getEffects(EffectPrototype.EFFECT_INSTANT_BUILD, EffectPrototype.INHERIT_ALL)).any();
+
+            techToolTip = new TechnologyTooltip(parentObj, techPrototype, null, instantBuild);
+
+
+            addEventListener(MouseEvent.CLICK, onMouseClick);
+            addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
+            addEventListener(MouseEvent.MOUSE_MOVE, onMouseOver);
+            addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
+        }
 
 		public function onMouseOver(event: MouseEvent):void
 		{
@@ -108,6 +117,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			}
 
 			return Global.map.cities.get(parentObj.groupId).resources.GreaterThanOrEqual(nextTechPrototype.resources);
+
 		}
 	}
 

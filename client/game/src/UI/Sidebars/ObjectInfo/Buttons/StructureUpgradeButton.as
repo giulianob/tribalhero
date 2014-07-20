@@ -1,29 +1,28 @@
 ﻿
 package src.UI.Sidebars.ObjectInfo.Buttons {
-    import flash.events.Event;
-    import flash.events.MouseEvent;
+import System.Linq.Enumerable;
 
-    import org.aswing.AssetIcon;
+import flash.events.Event;
+import flash.events.MouseEvent;
 
-    import src.Global;
-    import src.Map.City;
-    import src.Map.CityObject;
-    import src.Objects.Actions.ActionButton;
-    import src.Objects.Actions.BuildAction;
-    import src.Objects.Actions.CurrentActiveAction;
-    import src.Objects.Actions.StructureUpgradeAction;
-    import src.Objects.Effects.Formula;
-    import src.Objects.Factories.ObjectFactory;
-    import src.Objects.Factories.StructureFactory;
-    import src.Objects.Prototypes.EffectReqPrototype;
-    import src.Objects.Prototypes.StructurePrototype;
-    import src.Objects.SimpleGameObject;
-    import src.Objects.StructureObject;
-    import src.UI.Tooltips.StructureUpgradeTooltip;
-    import src.Util.StringHelper;
-    import src.Util.Util;
+import org.aswing.AssetIcon;
 
-    public class StructureUpgradeButton extends ActionButton
+import src.Global;
+import src.Map.City;
+import src.Map.CityObject;
+import src.Objects.Actions.ActionButton;
+import src.Objects.Effects.Formula;
+import src.Objects.Factories.StructureFactory;
+import src.Objects.Prototypes.EffectPrototype;
+import src.Objects.Prototypes.EffectReqPrototype;
+import src.Objects.Prototypes.StructurePrototype;
+import src.Objects.SimpleGameObject;
+import src.Objects.StructureObject;
+import src.UI.Tooltips.StructureUpgradeTooltip;
+import src.Util.StringHelper;
+import src.Util.Util;
+
+public class StructureUpgradeButton extends ActionButton
 	{
 		private var nextStructPrototype: StructurePrototype;
 
@@ -38,7 +37,15 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 			nextStructPrototype = StructureFactory.getPrototype(structPrototype.type, (structPrototype.level + 1));
 
-			upgradeToolTip = new StructureUpgradeTooltip(parentObj as StructureObject, structPrototype, nextStructPrototype);
+            var city:City = Global.map.cities.get(parentObj.groupId);
+
+            var instantBuild:Boolean = Enumerable.from(city.techManager.getEffects(EffectPrototype.EFFECT_INSTANT_BUILD, EffectPrototype.INHERIT_ALL)).any();
+
+            upgradeToolTip = new StructureUpgradeTooltip(parentObj as StructureObject, structPrototype, nextStructPrototype, instantBuild);
+
+            if (instantBuild) {
+                this.setText(this.getText() + " *");
+            }
 
 			addEventListener(MouseEvent.CLICK, onMouseClick);
 			addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);

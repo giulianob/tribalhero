@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<application xmlns="http://ns.adobe.com/air/application/2.7">
+<application xmlns="http://ns.adobe.com/air/application/3.9">
   <id>air.TribalHero</id>
   <versionNumber>0.1</versionNumber>
   <supportedProfiles>mobileDevice</supportedProfiles>
@@ -40,7 +40,7 @@
     <systemChrome>standard</systemChrome>
     <aspectRatio>landscape</aspectRatio>
     <autoOrients>false</autoOrients>
-    <renderMode>gpu</renderMode>
+    <renderMode>direct</renderMode>
   </initialWindow>
   <icon>
     <image72x72>icons/icon_72.png</image72x72>

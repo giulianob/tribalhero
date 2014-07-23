@@ -262,6 +262,10 @@ namespace Game.Module.Remover
                     city.ScheduleRemove(mainBuilding, false);
                     mainBuilding.EndUpdate();
 
+                    city.BeginUpdate();
+                    city.Deleted = City.DeletedState.DeletingCityOnly;
+                    city.EndUpdate();
+
                     Reschedule(SHORT_RETRY);
                     return;
                 }

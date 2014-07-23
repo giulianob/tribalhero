@@ -580,6 +580,9 @@ namespace Game.Database
                     // Restart city remover if needed
                     switch(city.Deleted)
                     {
+                        case City.DeletedState.DeletingCityOnly:
+                            cityRemoverFactory.CreateCityRemover(city.Id).Start(true);
+                            break;
                         case City.DeletedState.Deleting:
                             city.Owner.Add(city);
                             CityRemover cr = cityRemoverFactory.CreateCityRemover(city.Id);

@@ -33,6 +33,8 @@ namespace Game.Data
             Deleting,
 
             Deleted,
+
+            DeletingCityOnly
         }
 
         #region Events

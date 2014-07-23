@@ -583,6 +583,15 @@
 			miniMap.addPointer(new MiniMapPointer(city.primaryPosition.x, city.primaryPosition.y, city.name));
 		}
 
+        public function removeCityFromUI(cityName:String): void {
+            (lstCities.getModel() as VectorListModel).clear();
+            for each (var city: City in map.cities) {
+                trace(city.name);
+                addCityToUI(city);
+            }
+            miniMap.removePointer(cityName);
+        }
+
 		public function clearAllSelections() : void
 		{
 			if (map)

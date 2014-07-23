@@ -62,7 +62,7 @@ public class MoveCityButton extends ActionButton
         {
             var dlg: CreateCityDialog = new CreateCityDialog(function(sender: CreateCityDialog) : void {
                 var mapPos: Position = newCityPlaceholder.primaryPosition.toPosition();
-                Global.mapComm.Region.moveCity(Global.gameContainer.selectedCity.id, mapPos.x, mapPos.y, sender.getCityName());
+                Global.mapComm.Region.moveCity(Global.gameContainer.selectedCity.id, Global.gameContainer.selectedCity.name, mapPos.x, mapPos.y, sender.getCityName());
                 sender.getFrame().dispose();
             });
 

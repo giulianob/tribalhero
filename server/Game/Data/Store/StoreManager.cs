@@ -5,7 +5,7 @@ namespace Game.Data.Store
 {
     public class StoreManager : IStoreManager
     {
-        private List<StoreItem> items;
+        private List<StoreItem> items = new List<StoreItem>();
 
         public IEnumerable<StoreItem> Items
         {

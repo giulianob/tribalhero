@@ -1,10 +1,15 @@
-﻿using Amib.Threading;
+﻿using System;
+using Amib.Threading;
+using Common;
+using Game.Util;
 using Action = System.Action;
 
 namespace Game.Logic
 {
     public class SmartThreadPoolTaskScheduler : ITaskScheduler
     {
+        private static readonly ILogger Logger = LoggerFactory.Current.GetLogger<Engine>();
+
         private readonly IWorkItemsGroup workItemsGroup;
 
         public SmartThreadPoolTaskScheduler(IWorkItemsGroup workItemsGroup)
@@ -14,7 +19,21 @@ namespace Game.Logic
 
         public void QueueWorkItem(Action task)
         {
-            workItemsGroup.QueueWorkItem(() => task(), WorkItemPriority.Normal);
+            workItemsGroup.QueueWorkItem(delegate(WorkItemPriority priority)
+            {
+                try
+                {
+                    task();
+                }
+                catch(Exception e)
+                {
+                    Logger.Error("Unhandled exception in smartthreadpool queue work item");
+                    Engine.UnhandledExceptionHandler(e);
+
+                    throw;
+                }
+            }, WorkItemPriority.Normal);            
+
         }
     }
 }

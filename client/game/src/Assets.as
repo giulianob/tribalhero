@@ -387,7 +387,7 @@
         public static const DEFAULT_TRIBAL_FESTIVAL_STRUCTURE: Class;
 
         [Embed(source = "../../../graphics/themes/default/STRONGHOLD_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = 106, y = "-46")]
+        [EmbedPosition(name = "map", x = 14, y = "-52")]
         public static const DEFAULT_STRONGHOLD_STRUCTURE: Class;
 
         [Embed(source = "../../../graphics/themes/default/TRIBAL_GATHERING_STRUCTURE.png")]
@@ -505,7 +505,7 @@
         public static const PIRATES_FOUNDRY_STRUCTURE: Class;
 
         [Embed(source = "../../../graphics/themes/pirates/STRONGHOLD_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "117", y = "-94")]
+        [EmbedPosition(name = "map", x = "35", y = "-96")]
         public static const PIRATES_STRONGHOLD_STRUCTURE: Class;
 
         [Embed(source = "../../../graphics/themes/pirates/FARM_STRUCTURE.png")]
@@ -607,7 +607,7 @@
         public static const FEUDALJAPAN_FIELD_STRUCTURE: Class;
 
         [Embed(source = "../../../graphics/themes/feudaljapan/BARRACK_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "17", y = "-53")]
+        [EmbedPosition(name = "map", x = "24", y = "-53")]
         public static const FEUDALJAPAN_BARRACK_STRUCTURE: Class;
 
         [Embed(source = "../../../graphics/themes/feudaljapan/FOUNDRY_STRUCTURE.png")]
@@ -615,7 +615,7 @@
         public static const FEUDALJAPAN_FOUNDRY_STRUCTURE: Class;
 
         [Embed(source = "../../../graphics/themes/feudaljapan/STRONGHOLD_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "7", y = "-88")]
+        [EmbedPosition(name = "map", x = "-3", y = "-90")]
         public static const FEUDALJAPAN_STRONGHOLD_STRUCTURE: Class;
 
         [Embed(source = "../../../graphics/themes/feudaljapan/FARM_STRUCTURE.png")]
@@ -623,7 +623,7 @@
         public static const FEUDALJAPAN_FARM_STRUCTURE: Class;
 
         [Embed(source = "../../../graphics/themes/feudaljapan/MARKET_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "18", y = "3")]
+        [EmbedPosition(name = "map", x = "15", y = "3")]
         public static const FEUDALJAPAN_MARKET_STRUCTURE: Class;
 
         [Embed(source = "../../../graphics/themes/feudaljapan/REFINERY_STRUCTURE.png")]

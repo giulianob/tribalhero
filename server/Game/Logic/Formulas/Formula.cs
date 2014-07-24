@@ -146,7 +146,7 @@ namespace Game.Logic.Formulas
         public virtual int GetCropRate(ICity city)
         {
             double[] lvlBonus = {1, 1, 1, 1, 1, 1, 1, 1.1, 1.1, 1.2, 1.2, 1.3, 1.3, 1.4, 1.4, 1.5};
-            return 40 + city.Lvl * 5 +
+            return 60 + city.Lvl * 5 +
                    (int)
                    city.Sum(x => ObjectTypeFactory.IsStructureType("Crop", x) ? x.Stats.Labor * lvlBonus[x.Lvl] : 0);
         }

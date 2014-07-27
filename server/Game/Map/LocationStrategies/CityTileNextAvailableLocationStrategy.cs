@@ -7,8 +7,6 @@ namespace Game.Map.LocationStrategies
 {
     public class CityTileNextAvailableLocationStrategy : ILocationStrategy
     {
-        private const int SKIP = 1;
-        
         private readonly MapFactory mapFactory;
 
         private readonly Formula formula;
@@ -41,7 +39,7 @@ namespace Game.Map.LocationStrategies
 
                 Position point = locations[mapFactory.Index];
 
-                mapFactory.Index += SKIP;
+                mapFactory.Index += 1;
 
                 // Check if objects already on that point
                 var objects = gameObjectLocator.Regions.GetObjectsInTile(point.X, point.Y);
@@ -63,7 +61,7 @@ namespace Game.Map.LocationStrategies
                 
                 position = new Position(point.X, point.Y);
 
-                if (mapFactory.Index % 10 == 0)
+                if (mapFactory.Index % 3 == 0)
                 {
                     mapFactory.Index += 1;
                 }

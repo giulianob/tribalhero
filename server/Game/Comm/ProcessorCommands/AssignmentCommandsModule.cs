@@ -48,6 +48,53 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.TribeStrongholdAssignmentCreate, CreateStrongholdAssignment);
             processor.RegisterCommand(Command.TribeAssignmentJoin, Join);
             processor.RegisterCommand(Command.TribeAssignmentEdit, Edit);
+            processor.RegisterCommand(Command.TribeAssignmentRemoveTroop, RemoveTroop);
+        }
+
+        private void RemoveTroop(Session session, Packet packet)
+        {
+            int assignmentId;
+            uint cityId;
+            ushort stubId;
+
+            try
+            {
+                assignmentId = packet.GetInt32();
+                cityId = packet.GetUInt32();
+                stubId = packet.GetUInt16();
+            }
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            if (!session.Player.IsInTribe)
+            {
+                ReplyError(session, packet, Error.TribesmanNotPartOfTribe);
+                return;                
+            }
+
+            ITribe tribe = session.Player.Tribesman.Tribe;
+            locker.Lock(session.Player, tribe).Do(() =>
+            {
+                var city = session.Player.GetCity(cityId);
+                if (city == null)
+                {
+                    ReplyError(session, packet, Error.CityNotFound);
+                    return;
+                }
+
+                ITroopStub stub;
+                if (!city.Troops.TryGetStub(stubId, out stub))
+                {
+                    ReplyError(session, packet, Error.ObjectNotFound);
+                    return;
+                }
+
+                Error result = tribe.RemoveFromAssignment(assignmentId, session.Player, stub);
+                ReplyWithResult(session, packet, result);
+            });
         }
 
         private void CreateStrongholdAssignment(Session session, Packet packet)
@@ -169,7 +216,7 @@ namespace Game.Comm.ProcessorCommands
                 var city = cities[cityId];
 
                 // Make sure city belongs to player and he is in a tribe
-                if (city.Owner != session.Player || city.Owner.Tribesman == null)
+                if (city.Owner != session.Player || !city.Owner.IsInTribe)
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;
@@ -241,6 +288,12 @@ namespace Game.Comm.ProcessorCommands
                 ReplyError(session, packet, Error.Unexpected);
                 return;
             }
+            
+            if (!session.Player.IsInTribe)
+            {
+                ReplyError(session, packet, Error.TribesmanNotPartOfTribe);
+                return;                
+            }
 
             ITribe tribe = session.Player.Tribesman.Tribe;
             locker.Lock(session.Player, tribe).Do(() =>
@@ -290,6 +343,12 @@ namespace Game.Comm.ProcessorCommands
             {
                 ReplyError(session, packet, Error.Unexpected);
                 return;
+            }
+            
+            if (!session.Player.IsInTribe)
+            {
+                ReplyError(session, packet, Error.TribesmanNotPartOfTribe);
+                return;                
             }
 
             ITribe tribe = session.Player.Tribesman.Tribe;

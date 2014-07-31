@@ -21,12 +21,12 @@ import src.Global;
 
 import src.UI.GameJPanel;
 
-public class AssignmenetEditDescriptionDialog extends GameJPanel {
+public class AssignmentEditDescriptionDialog extends GameJPanel {
     private var assignment: *;
     private var btnOk: JButton;
     private var txtDescription: JTextArea;
 
-    public function AssignmenetEditDescriptionDialog(assignment: *, onChange: Function = null):void
+    public function AssignmentEditDescriptionDialog(assignment: *, onChange: Function = null):void
     {
         title = "Edit Assignment Description";
 
@@ -34,8 +34,13 @@ public class AssignmenetEditDescriptionDialog extends GameJPanel {
 
         btnOk = new JButton();
         btnOk.addActionListener(function(e: Event = null): void {
-            if (onChange != null)
-                onChange(txtDescription.getText());
+            getFrame().dispose();
+
+            Global.mapComm.Tribe.editAssignment(assignment, txtDescription.getText()).then(function(): void {
+                if (onChange != null) {
+                    onChange();
+                }
+            });
         });
 
         createUI();

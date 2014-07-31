@@ -336,6 +336,8 @@ namespace Game.Comm
 
         TribeAssignmentEdit = 1025,
 
+        TribeAssignmentRemoveTroop = 1026,
+
         TribeChannelNotification = 1031,
 
         TribeChannelUpdate = 1051,

@@ -44,8 +44,7 @@ namespace Testing.TribeTests
 
         /// <summary>
         ///     When an assignment is rescheduled for the first time
-        ///     Then it should schedule itself at the proper time
-        ///     And save itself
+        ///     Then it should schedule itself immediatelly
         /// </summary>
         [Fact]
         public void WhenScheduled()
@@ -65,9 +64,6 @@ namespace Testing.TribeTests
             var initializer = Substitute.For<ITroopObjectInitializerFactory>();
 
             SystemClock.SetClock(startTime);
-
-            // troop should be dispatched a minute later
-            formula.MoveTimeTotal(stub, Arg.Any<int>(), true).Returns(300);
 
             Assignment assignment = new Assignment(tribe,
                                                    TARGET_X,
@@ -91,7 +87,7 @@ namespace Testing.TribeTests
 
             scheduler.Received().Put(assignment);
             dbManager.Received().Save(assignment);
-            assignment.Time.Should().Be(targetTime.AddMinutes(-5));
+            assignment.Time.Should().Be(startTime);
         }
 
         /// <summary>
@@ -115,7 +111,7 @@ namespace Testing.TribeTests
             var procedure = Substitute.For<Procedure>();
             var radiusLocator = Substitute.For<ITileLocator>();
             var actionFactory = Substitute.For<IActionFactory>();
-            var locker = Substitute.For<ILocker>();
+            var locker = new LockerStub(gameObjectLocator);
             var initializer = Substitute.For<ITroopObjectInitializerFactory>();
             ICity newCity;
             var newStub = CreateStub(out newCity);
@@ -151,16 +147,19 @@ namespace Testing.TribeTests
             assignment.Add(stub);
             assignment.Add(newStub);
             assignment.Add(newStub2);
-
+            assignment.TroopCount.Should().Be(3);
+            dbManager.Received(3).Save(assignment);
             scheduler.Received(3).Put(assignment);
-            assignment.Time.Should().Be(expectedTime);
+
+            assignment.Callback(null);
+            
+            assignment.Time.Should().Be(expectedTime);            
         }
-
-
+        
         /// <summary>
         /// Given original player has already been dispatched
-        /// When new player joins
-        /// Then assignment should reschedule
+        /// When new player joins then assignment should reschedule
+        /// and dispatching the new troop should set the time to the target time
         /// </summary>
         [Fact]
         public void WhenSomeoneAlreadyDispatched()
@@ -225,13 +224,16 @@ namespace Testing.TribeTests
 
             // Dispatch first troop
             assignment.Callback(null);
+            assignment.TroopCount.Should().Be(0);
 
             // Add new troop
             assignment.Add(newStub);
+            assignment.TroopCount.Should().Be(1);
+            assignment.Time.Should().Be(SystemClock.Now);
 
-            formula.Received(3).MoveTimeTotal(Arg.Any<ITroopStub>(), 0, true);
-            scheduler.Received(3).Put(assignment);
-            assignment.Time.Should().Be(targetTime.AddSeconds(-120));
+            assignment.Callback(null);
+            assignment.Time.Should().Be(targetTime);
+            assignment.TroopCount.Should().Be(0);
         }
 
         /// <summary>
@@ -354,7 +356,7 @@ namespace Testing.TribeTests
                 stub
             };
 
-            assignment.Reschedule();
+            assignment.Callback(null);
             assignment.Time.Should().Be(targetTime.AddMinutes(-5));
 
             SystemClock.SetClock(targetTime.AddSeconds(-90));

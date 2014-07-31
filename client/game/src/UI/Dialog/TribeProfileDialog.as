@@ -2,6 +2,7 @@
 {
     import System.Collection.Generic.IGrouping;
     import System.Linq.Enumerable;
+    import System.Linq.Option.Option;
 
     import com.adobe.serialization.json.JSONDecoder;
 
@@ -38,6 +39,8 @@
     {
         private var profileData: * ;
 
+        private var assignmentInfoDialog: AssignmentInfoDialog;
+
         private var pnlHeader: JPanel;
         private var pnlInfoContainer: JPanel;
 
@@ -46,7 +49,6 @@
         private var pnlTabs: JTabbedPane;
         private var pnlInfoTabs: JTabbedPane;
 
-        private var updateTimer: Timer;
         private var pnlStrongholds:JPanel;
         private var remoteReports:RemoteReportList;
         private var localReports:LocalReportList;
@@ -92,6 +94,19 @@
                 createInfoTab();
                 createStrongholdList();
                 createOngoingAttacksList();
+
+                // Reopen info dialog
+                if (assignmentInfoDialog != null && assignmentInfoDialog.getFrame()) {
+                    assignmentInfoDialog.getFrame().dispose();
+
+                    var hasAssignment: Option = Enumerable.from(profileData.assignments).firstOrNone(function(assignment: *) {
+                        return assignmentInfoDialog.assignment.id == assignment.id;
+                    });
+
+                    if (hasAssignment.isSome) {
+                        showAssignmentInfo(hasAssignment.value);
+                    }
+                }
             });
         }
 
@@ -386,13 +401,8 @@
                 var btnEdit: JLabelButton = new JLabelButton("Edit Description", null, AsWingConstants.LEFT);
 
                 btnEdit.addActionListener(function(e:Event): void {
-                    var edit: AssignmenetEditDescriptionDialog = new AssignmenetEditDescriptionDialog(assignment, function(desc:String):void {
-                        Global.mapComm.Tribe.editAssignment(assignment, desc);
-                        edit.getFrame().dispose();
-
-                        lblDescription.setText(desc);
-                        if (desc != "")
-                            new SimpleTooltip(lblDescription, desc);
+                    var edit: AssignmentEditDescriptionDialog = new AssignmentEditDescriptionDialog(assignment, function():void {
+                        update();
                     });
                     edit.show();
                 });
@@ -408,8 +418,7 @@
             pnlContainer.appendAll(pnlHeader, pnlBottom);
 
             btnDetails.addActionListener(function(e: Event): void {
-                var info: AssignmentInfoDialog = new AssignmentInfoDialog(assignment);
-                info.show();
+                showAssignmentInfo(assignment);
             });
 
             btnJoin.addActionListener(function(e: Event): void {
@@ -418,6 +427,14 @@
             });
 
             return pnlContainer;
+        }
+
+        private function showAssignmentInfo(assignment: *): void {
+            assignmentInfoDialog = new AssignmentInfoDialog(assignment, function (): void {
+                update();
+            });
+
+            assignmentInfoDialog.show();
         }
 
         private function createAssignmentTab() : Container {

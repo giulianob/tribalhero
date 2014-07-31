@@ -1,4 +1,6 @@
 package src.UI.Dialog {
+    import System.Linq.Enumerable;
+
     import fl.lang.Locale;
 
     import mx.utils.StringUtil;
@@ -12,18 +14,18 @@ package src.UI.Dialog {
     import src.UI.Components.*;
     import src.UI.Components.TroopCompositionGridList.TroopCompositionGridList;
     import src.UI.LookAndFeel.*;
-    import src.UI.Tooltips.*;
     import src.Util.StringHelper;
 
     public class AssignmentInfoDialog extends GameJPanel {
 
-		private var assignment: * ;
-		private var tooltip: SimpleTroopStubTooltip;
+		public var assignment: * ;
+        private var onChange: Function;
 
-		public function AssignmentInfoDialog(assignment: *):void
+		public function AssignmentInfoDialog(assignment: *, onChange: Function):void
 		{
 			title = "Assignment Information";
 
+            this.onChange = onChange;
 			this.assignment = assignment;
 
 			createUI();
@@ -46,7 +48,9 @@ package src.UI.Dialog {
 		}
 
 		private function createUI(): void {
-			setPreferredSize(new IntDimension(350, 500));
+            removeAll();
+
+			setPreferredSize(new IntDimension(450, 500));
 			setLayout(new BorderLayout(5));
 
 			var pnlHeader: JPanel = new JPanel(new BorderLayout(5, 5));
@@ -80,16 +84,31 @@ package src.UI.Dialog {
 
             var total: TroopStub = new TroopStub();
 			var pnlTroops: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
-			for each (var troop:* in assignment.troops) {
+			for each (var troop: * in assignment.troops) {
 				var troopHolder: JPanel = new JPanel(new BorderLayout(5));
 
 				var lblPlayerCity: PlayerCityLabel = new PlayerCityLabel(troop.playerId, troop.cityId, troop.playerName, troop.cityName);
 				lblPlayerCity.setConstraints("Center");
 
-				var lblUnits: JLabelButton = new SimpleTroopStubLabel("View Units", troop.stub);
-				lblUnits.setConstraints("East");
+                var actionsHolder: JPanel = new JPanel(new FlowLayout(AsWingConstants.RIGHT, 10, 10, false));
+                actionsHolder.setConstraints("East");
 
-				troopHolder.appendAll(lblPlayerCity, lblUnits);
+                if (Global.map.cities.get(troop.cityId)) {
+                    var lblRemove: JLabelButton = new JLabelButton("Remove");
+                    var cityId: int = troop.cityId;
+                    var stubId: int = troop.stub.id;
+                    var assignmentId: int = assignment.id;
+                    lblRemove.addActionListener(function(): void {
+                        removeStub(assignmentId, cityId, stubId);
+                    });
+
+                    actionsHolder.append(lblRemove);
+                }
+
+				var lblUnits: JLabelButton = new SimpleTroopStubLabel("View Units", troop.stub);
+
+                actionsHolder.appendAll(lblUnits);
+				troopHolder.appendAll(lblPlayerCity, actionsHolder);
 				pnlTroops.append(troopHolder);
                 total.addTroop(troop.stub);
 			}
@@ -102,6 +121,21 @@ package src.UI.Dialog {
 			pnlHeader.appendAll(pnlDetails, lblCountdown);
 			appendAll(pnlHeader, scrollTroops);
 		}
+
+        private function removeStub(assignmentId: int, cityId: int, stubId: int): void {
+            InfoDialog.showMessageDialog("Confirm", "Are you sure you want to remove the troop from this assignment?", function(result: int): void {
+                if (result != JOptionPane.YES) {
+                    return;
+                }
+
+                Global.mapComm.Tribe.removeFromAssignment(assignmentId, cityId, stubId).then(function(): void {
+                    if (onChange != null) {
+                        onChange();
+                    }
+                })
+
+            }, null, true, true, JOptionPane.YES | JOptionPane.NO);
+        }
 	}
 
 }

@@ -21,6 +21,8 @@ namespace Game.Data.Tribe
 {
     public class Tribe : ITribe
     {
+        private readonly IChannel channel;
+
         public const string DB_TABLE = "tribes";
 
         public const int MEMBERS_PER_LEVEL = 5;
@@ -69,7 +71,8 @@ namespace Game.Data.Tribe
                      IAssignmentFactory assignmentFactory,
                      ICityManager cityManager,
                      IStrongholdManager strongholdManager,
-                     ITileLocator tileLocator)
+                     ITileLocator tileLocator,
+                     IChannel channel)
                 : this(
                         owner: owner,
                         name: name,
@@ -86,7 +89,8 @@ namespace Game.Data.Tribe
                         assignmentFactory: assignmentFactory,
                         cityManager: cityManager,
                         strongholdManager: strongholdManager,
-                        tileLocator: tileLocator)
+                        tileLocator: tileLocator,
+                        channel: channel)
         {
         }
 
@@ -105,7 +109,8 @@ namespace Game.Data.Tribe
                      IAssignmentFactory assignmentFactory,
                      ICityManager cityManager,
                      IStrongholdManager strongholdManager, 
-                     ITileLocator tileLocator)
+                     ITileLocator tileLocator,
+                     IChannel channel)
         {
             LeavingTribesmates = new List<LeavingTribesmate>();
 
@@ -116,6 +121,7 @@ namespace Game.Data.Tribe
             this.cityManager = cityManager;
             this.strongholdManager = strongholdManager;
             this.tileLocator = tileLocator;
+            this.channel = channel;
             Owner = owner;
             Level = level;
             Resource = resource;
@@ -337,7 +343,7 @@ namespace Game.Data.Tribe
 
             if (tribesman.Player.Session != null)
             {
-                Global.Current.Channel.Subscribe(tribesman.Player.Session, "/TRIBE/" + Id);
+                channel.Subscribe(tribesman.Player.Session, "/TRIBE/" + Id);
             }
 
             TribesmanJoined.Raise(this, new TribesmanEventArgs {Tribe = this, Player = tribesman.Player});
@@ -400,7 +406,7 @@ namespace Game.Data.Tribe
             // TODO: Move event out
             if (player.Session != null)
             {
-                Global.Current.Channel.Unsubscribe(player.Session, "/TRIBE/" + Id);
+                channel.Unsubscribe(player.Session, "/TRIBE/" + Id);
 
                 if (wasKicked)
                 {
@@ -413,20 +419,46 @@ namespace Game.Data.Tribe
             return Error.Ok;
         }
 
+        public Error RemoveFromAssignment(int assignmentId, IPlayer player, ITroopStub stub)
+        {
+            if (stub.City.Owner != player)
+            {
+                return Error.TribesmanNotAuthorized;
+            }
+            
+            Assignment assignment = player.Tribesman.Tribe.Assignments.FirstOrDefault(x => x.Id == assignmentId);
+            if (assignment == null)
+            {
+                return Error.AssignmentDone;
+            }
+
+            if (!assignment.RemoveStub(stub))
+            {
+                return Error.AssignmentDone;
+            }
+
+            procedure.TroopStubDelete(stub.City, stub);
+
+            SendUpdate();
+            return Error.Ok;
+        }
+
         public Error EditAssignment(IPlayer player, int assignmentId, string desc)
         {
             // Make sure this player is ranked high enough
-            if (player.Tribesman == null ||
-                !player.Tribesman.Tribe.HasRight(player.PlayerId, TribePermission.AssignmentCreate))
+            if (!player.IsInTribe || !player.Tribesman.Tribe.HasRight(player.PlayerId, TribePermission.AssignmentCreate))
+            {
                 return Error.TribesmanNotAuthorized;
+            }
 
             // TODO: Clean this up
             Assignment assignment = player.Tribesman.Tribe.Assignments.FirstOrDefault(x => x.Id == assignmentId);
             if (assignment == null)
+            {
                 return Error.AssignmentDone;
+            }
 
-            assignment.Description = desc;
-            dbManager.Save(assignment);
+            assignment.EditDescription(desc);            
             SendUpdate();
             return Error.Ok;
         }

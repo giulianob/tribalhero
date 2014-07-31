@@ -189,7 +189,7 @@ namespace Game.Data.Tribe
         /// <summary>
         ///     Description of assignement
         /// </summary>
-        public string Description { get; set; }
+        public string Description { get; private set; }
 
         /// <summary>
         ///     Number of stubs that have already been dispatched
@@ -320,7 +320,6 @@ namespace Game.Data.Tribe
                 {
                     case TroopState.Battle:
                         RemoveStub(stub);
-                        Reschedule();
                         break;
                 }
             }
@@ -333,14 +332,24 @@ namespace Game.Data.Tribe
         private void OnStubRemoved(ITroopStub stub)
         {
             RemoveStub(stub);
-            Reschedule();
         }
 
         /// <summary>
         ///     Removes a stub from the assignment
         /// </summary>
         /// <param name="stub"></param>
-        private void RemoveStub(ITroopStub stub)
+        public bool RemoveStub(ITroopStub stub)
+        {
+            if (!RemoveStubWithoutRescheduling(stub))
+            {
+                return false;
+            }
+
+            Reschedule();
+            return true;
+        }
+
+        private bool RemoveStubWithoutRescheduling(ITroopStub stub)
         {
             lock (assignmentLock)
             {
@@ -348,12 +357,14 @@ namespace Game.Data.Tribe
 
                 if (assignmentTroop == null)
                 {
-                    return;
+                    return false;
                 }
 
                 stub.OnRemoved -= OnStubRemoved;
                 stub.OnStateSwitched -= StubOnStateSwitched;
                 assignmentTroops.Remove(assignmentTroop);
+
+                return true;
             }
         }
 
@@ -479,19 +490,47 @@ namespace Game.Data.Tribe
                               {
                                   troopToDispatch.DepartureTime = departureTime;
                               }
-                                      // If a troop dispatches, then we set the troop to dispatched.
+                              // If a troop dispatches, then we set the troop to dispatched.
                               else if (Dispatch(troopToDispatch.Stub))
                               {
                                   troopToDispatch.Dispatched = true;
                               }
-                                      // Otherwise, if dispatch fails, then we remove it.
+                              // Otherwise, if dispatch fails, then we remove it.
                               else
                               {
-                                  RemoveStub(troopToDispatch.Stub);
+                                  RemoveStubWithoutRescheduling(troopToDispatch.Stub);
                               }
                           }
 
-                          Reschedule();
+                          // Take the quickest stub or the final target time.
+                          Time = assignmentTroops.Any(s => !s.Dispatched)
+                                         ? assignmentTroops.Where(s => !s.Dispatched).Min(x => x.DepartureTime)
+                                         : TargetTime;
+
+                          // If there are stubs that have not been dispatched or we haven't reached the time that the assignment should be over then we just reschedule it.
+                          if (assignmentTroops.Any(x => !x.Dispatched) || TargetTime.CompareTo(SystemClock.Now) > 0)
+                          {                              
+                              scheduler.Put(this);
+                              dbManager.Save(this);
+                          }
+                          else
+                          {
+                              // Remove all stubs from the assignment before removing it completely                
+                              var stubs = assignmentTroops.Select(x => x.Stub).ToList();
+
+                              foreach (var stub in stubs)
+                              {
+                                  RemoveStubWithoutRescheduling(stub);
+                              }
+
+                              AssignmentComplete(this);
+
+                              // Delete the assignment
+                              if (DbPersisted)
+                              {
+                                  dbManager.Delete(this);
+                              }
+                          }
                       }
                   });
         }
@@ -502,42 +541,23 @@ namespace Game.Data.Tribe
         /// </summary>
         public void Reschedule()
         {
-            // If this has been scheduled then remove
-            if (IsScheduled)
+            lock (assignmentLock)
             {
-                scheduler.Remove(this);
-            }
+                if (IsScheduled)
+                {
+                    scheduler.Remove(this);
+                }
 
-            // Take the quickest stub or the final target time.
-            Time = assignmentTroops.Any(s => !s.Dispatched)
-                           ? assignmentTroops.Where(s => !s.Dispatched).Min(x => x.DepartureTime)
-                           : TargetTime;
-
-            // If there are stubs that have not been dispatched or we haven't reached the time that the assignment should be over then we just reschedule it.
-            if (assignmentTroops.Any(x => !x.Dispatched) || TargetTime.CompareTo(SystemClock.Now) > 0)
-            {
-                dbManager.Save(this);
+                Time = SystemClock.Now;
                 scheduler.Put(this);
+                dbManager.Save(this);
             }
-            else
-            {
-                // Remove all stubs from the assignment before removing it completely                
-                var stubs = assignmentTroops.Select(x => x.Stub).ToList();
+        }
 
-                foreach (var stub in stubs)
-                {
-                    RemoveStub(stub);
-                }
-
-                // Call assignment complete
-                AssignmentComplete(this);
-
-                // Delete the obj
-                if (DbPersisted)
-                {
-                    dbManager.Delete(this);
-                }
-            }
+        public void EditDescription(string description)
+        {
+            Description = description;
+            dbManager.Save(this);
         }
 
         #endregion

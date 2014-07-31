@@ -1,5 +1,7 @@
 ﻿package src.Comm.Commands {
 
+    import com.codecatalyst.promise.Promise;
+
     import src.*;
     import src.Comm.*;
     import src.Map.*;
@@ -511,20 +513,26 @@
             loader.load("/tribe_logs/listing", [ { key: "page", value: page }]);
         }
 
-        public function onEditAssignment(packet: Packet, custom: * ):void {
-            if (MapComm.tryShowError(packet))
-                return;
-        }
-
-        public function editAssignment(assignment: *, description: String): void {
+        public function editAssignment(assignment: *, description: String): Promise {
             var packet: Packet = new Packet();
             packet.cmd = Commands.TRIBE_ASSIGNMENT_EDIT;
             packet.writeInt(assignment.id);
             packet.writeString(description);
 
-            session.write(packet, onEditAssignment, null );
+            mapComm.showLoading();
+            return session.write(packet, mapComm.catchAllErrors, null);
         }
 
+        public function removeFromAssignment(assignmentId: int, cityId: int, stubId: int): Promise {
+            var packet: Packet = new Packet();
+            packet.cmd = Commands.TRIBE_ASSIGNMENT_REMOVE_TROOP;
+            packet.writeInt(assignmentId);
+            packet.writeUInt(cityId);
+            packet.writeUShort(stubId);
+
+            mapComm.showLoading();
+            return session.write(packet, mapComm.catchAllErrors, null);
+        }
     }
 
 }

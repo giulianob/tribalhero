@@ -88,6 +88,8 @@ namespace Game.Data.Tribe
 
         Error EditAssignment(IPlayer player, int assignmentId, string description);
 
+        Error RemoveFromAssignment(int assignmentId, IPlayer player, ITroopStub stub);
+
         Error Transfer(uint newOwnerPlayerId);
 
         void DbLoaderAddAssignment(Assignment assignment);
@@ -112,8 +114,7 @@ namespace Game.Data.Tribe
 
         event EventHandler<TribesmanEventArgs> TribesmanRankChanged;
 
-        event EventHandler<TribeEventArgs> Upgraded;
-
+        event EventHandler<TribeEventArgs> Upgraded;        
     }
 
 }

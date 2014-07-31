@@ -4,6 +4,7 @@ using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup.DependencyInjection;
+using Game.Util;
 using Persistance;
 
 namespace Game.Data.Tribe
@@ -34,7 +35,8 @@ namespace Game.Data.Tribe
                              kernel.Get<IAssignmentFactory>(),
                              kernel.Get<ICityManager>(),
                              kernel.Get<IStrongholdManager>(),
-                             kernel.Get<ITileLocator>());
+                             kernel.Get<ITileLocator>(),
+                             kernel.Get<IChannel>());
         }
 
         public ITribe CreateTribe(IPlayer owner, string name)
@@ -47,7 +49,8 @@ namespace Game.Data.Tribe
                              kernel.Get<IAssignmentFactory>(),
                              kernel.Get<ICityManager>(),
                              kernel.Get<IStrongholdManager>(),
-                             kernel.Get<ITileLocator>());
+                             kernel.Get<ITileLocator>(),
+                             kernel.Get<IChannel>());
         }
     }
 }

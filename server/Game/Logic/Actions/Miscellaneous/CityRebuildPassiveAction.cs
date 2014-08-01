@@ -32,13 +32,19 @@ namespace Game.Logic.Actions
 
         private readonly TechnologyFactory technologyFactory;
 
+        private readonly ITileLocator tileLocator;
+
+        private readonly IObjectTypeFactory objectTypeFactory;
+
         public CityRebuildPassiveAction(IActionFactory actionFactory,
                                         ILocker locker,
                                         CallbackProcedure callbackProcedure,
                                         IStructureCsvFactory structureCsvFactory,
                                         CityProcedure cityProcedure,
                                         IWorld world,
-                                        TechnologyFactory technologyFactory)
+                                        TechnologyFactory technologyFactory,
+                                        ITileLocator tileLocator,
+                                        IObjectTypeFactory objectTypeFactory)
         {
             this.actionFactory = actionFactory;
             this.locker = locker;
@@ -47,6 +53,8 @@ namespace Game.Logic.Actions
             this.cityProcedure = cityProcedure;
             this.world = world;
             this.technologyFactory = technologyFactory;
+            this.tileLocator = tileLocator;
+            this.objectTypeFactory = objectTypeFactory;
         }
 
         public CityRebuildPassiveAction(uint id,
@@ -59,8 +67,10 @@ namespace Game.Logic.Actions
                                         IStructureCsvFactory structureCsvFactory,
                                         CityProcedure cityProcedure,
                                         IWorld world,
-                                        TechnologyFactory technologyFactory)
-            : this(actionFactory, locker, callbackProcedure, structureCsvFactory, cityProcedure, world, technologyFactory)
+                                        TechnologyFactory technologyFactory,
+                                        ITileLocator tileLocator,
+                                        IObjectTypeFactory objectTypeFactory)
+            : this(actionFactory, locker, callbackProcedure, structureCsvFactory, cityProcedure, world, technologyFactory, tileLocator, objectTypeFactory)
         {
             this.cityId = id;
             this.resource = resource;
@@ -158,7 +168,12 @@ namespace Game.Logic.Actions
                 // build cranny
                 
                 // find resource tile
-                var position = newCity.MainBuilding.PrimaryPosition.Left();
+                var positions =
+                        tileLocator.ForeachTile(newCity.MainBuilding.PrimaryPosition.X, newCity.MainBuilding.PrimaryPosition.Y, newCity.Radius)
+                                   .Where(p => objectTypeFactory.IsTileType("TileResource", world.Regions.GetTileType(p.X, p.Y)))
+                                   .ToList();
+                var position = positions.Shuffle((int)cityId).First();
+                
 
                 // build object
 

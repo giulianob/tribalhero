@@ -137,17 +137,18 @@ namespace Game.Setup
 
         #region Stronghold Settings
 
-        public static int stronghold_generate = 150;
+        public static int stronghold_generate = 300;
         public static int stronghold_activation_check_interval_in_sec = 3600;
         public static int stronghold_cities_per_level = 5;
         public static int stronghold_radius_per_level = 10;
-        public static int stronghold_radius_base = 100;        
+        public static int stronghold_radius_base = 75;        
         public static double stronghold_npc_randomness = 0.4;
         public static int stronghold_fixed_upkeep = 0;
         public static int stronghold_gate_limit;
         public static int stronghold_battle_meter;
         public static bool stronghold_bypass_activation = false;       
-        
+        public static bool queue_disabled;
+
         #endregion
 
         #region City Settings
@@ -190,7 +191,7 @@ namespace Game.Setup
             }
         }
 
-        public static readonly Dictionary<string, string> ExtraProperties = new Dictionary<string, string>();
+        public static readonly Dictionary<string, string> ExtraProperties = new Dictionary<string, string>();        
 
         public static void LoadConfigFile(string settingsFile = null)
         {

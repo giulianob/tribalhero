@@ -17,13 +17,17 @@ namespace Game.Setup
 
         private object value;
 
+        protected SystemVariable()
+        {
+        }
+
         public SystemVariable(string key, object value)
         {
             this.key = key;
             this.value = value;
         }
 
-        public string Key
+        public virtual string Key
         {
             get
             {
@@ -35,7 +39,7 @@ namespace Game.Setup
             }
         }
 
-        public object Value
+        public virtual object Value
         {
             get
             {

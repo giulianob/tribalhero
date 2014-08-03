@@ -399,14 +399,23 @@ namespace Game.Database
             // Set system variable defaults
             if (!SystemVariableManager.ContainsKey("System.time"))
             {
-                SystemVariableManager.Add("System.time", new SystemVariable("System.time", DateTime.UtcNow));
+                var systemTimeVar = new SystemVariable("System.time", DateTime.UtcNow);
+                SystemVariableManager.Add(systemTimeVar.Key, systemTimeVar);
+                DbManager.Save(systemTimeVar);
             }
 
+            if (!SystemVariableManager.ContainsKey("Stronghold.neutral_check"))
+            {
+                var strongholdNeutralActivationVar = new SystemVariable("Stronghold.neutral_check", DateTime.UtcNow);
+                SystemVariableManager.Add(strongholdNeutralActivationVar.Key, strongholdNeutralActivationVar);
+                DbManager.Save(strongholdNeutralActivationVar);
+            }
 
             if (!SystemVariableManager.ContainsKey("Server.date"))
             {
-                SystemVariableManager.Add("Server.date", new SystemVariable("Server.date", DateTime.UtcNow));
-                DbManager.Save(SystemVariableManager["Server.date"]);
+                var serverDateVar = new SystemVariable("Server.date", DateTime.UtcNow);
+                SystemVariableManager.Add(serverDateVar.Key, serverDateVar);
+                DbManager.Save(serverDateVar);
             }
 
             #endregion

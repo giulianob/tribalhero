@@ -260,6 +260,7 @@ _________ _______ _________ ______   _______  _
             {
                 strongholdManager.Generate(Config.stronghold_generate);
             }            
+
             strongholdActivationChecker.Start(TimeSpan.FromSeconds(Config.stronghold_activation_check_interval_in_sec));            
             strongholdChecker.Start();
             strongholdManagerLogger.Listen(strongholdManager);
@@ -275,7 +276,10 @@ _________ _______ _________ ______   _______  _
             Market.Init();
             
             // Start listening  for queue events
-            queueListener.Start(Config.api_domain);
+            if (!Config.queue_disabled)
+            {
+                queueListener.Start(Config.api_domain);
+            }
 
             // Start store sync
             storeSync.Start();

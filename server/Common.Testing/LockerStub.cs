@@ -6,6 +6,11 @@ namespace Common.Testing
 {
     public class LockerStub : DefaultLocker
     {
+        public LockerStub(params object[] objects)
+                : this(new GameObjectLocatorStub())
+        {            
+        }
+        
         public LockerStub(IGameObjectLocator locator)
                 : base(() => new MultiObjectLockStub(), () => new CallbackLock(() => new MultiObjectLockStub()), locator)
         {

@@ -143,7 +143,7 @@ namespace Game.Battle
                 var playersDefenders = Defenders.Where(combatGroup => combatGroup.BelongsTo(player)).ToList();
                 if (playersDefenders.Any())
                 {
-                    if (attackersUpkeepTotal > 500)
+                    if (attackersUpkeepTotal > 1000)
                     {
                         return Error.Ok;
                     }
@@ -160,7 +160,7 @@ namespace Game.Battle
                 var playersAttackers = Attackers.Where(co => co.BelongsTo(player)).ToList();
                 if (playersAttackers.Any())
                 {
-                    if (attackersUpkeepTotal > 500)
+                    if (attackersUpkeepTotal > 1000)
                     {
                         return Error.Ok;
                     }

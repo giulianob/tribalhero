@@ -9,6 +9,8 @@ namespace Game.Battle
     {
         int UpkeepExcludingWaitingToJoinBattle { get; }
 
+        int UpkeepTotal { get; }
+
         int UpkeepNotParticipatedInRound(uint round);
 
         bool HasInRange(ICombatObject attacker);

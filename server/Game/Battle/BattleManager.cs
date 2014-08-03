@@ -135,6 +135,7 @@ namespace Game.Battle
                     return Error.Ok;
                 }
 
+                int attackersUpkeepTotal = Attackers.UpkeepTotal;
                 int defendersRoundsLeft = int.MaxValue;
                 int attackersRoundsLeft = int.MaxValue;
 
@@ -142,10 +143,13 @@ namespace Game.Battle
                 var playersDefenders = Defenders.Where(combatGroup => combatGroup.BelongsTo(player)).ToList();
                 if (playersDefenders.Any())
                 {
-                    defendersRoundsLeft =
-                            playersDefenders.Min(
-                                                 combatGroup =>
-                                                 combatGroup.Min(combatObject => Config.battle_min_rounds - combatObject.RoundsParticipated));
+                    if (attackersUpkeepTotal > 500)
+                    {
+                        return Error.Ok;
+                    }
+
+                    defendersRoundsLeft = playersDefenders.Min(combatGroup =>
+                                                               combatGroup.Min(combatObject => Config.battle_min_rounds - combatObject.RoundsParticipated));
                     if (defendersRoundsLeft < 0)
                     {
                         return Error.Ok;
@@ -156,10 +160,13 @@ namespace Game.Battle
                 var playersAttackers = Attackers.Where(co => co.BelongsTo(player)).ToList();
                 if (playersAttackers.Any())
                 {
-                    attackersRoundsLeft =
-                            playersAttackers.Min(
-                                                 combatGroup =>
-                                                 combatGroup.Min(combatObject => Config.battle_min_rounds - combatObject.RoundsParticipated));
+                    if (attackersUpkeepTotal > 500)
+                    {
+                        return Error.Ok;
+                    }
+
+                    attackersRoundsLeft = playersAttackers.Min(combatGroup =>
+                                                               combatGroup.Min(combatObject => Config.battle_min_rounds - combatObject.RoundsParticipated));
                     if (attackersRoundsLeft < 0)
                     {
                         return Error.Ok;

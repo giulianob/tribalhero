@@ -58,6 +58,14 @@ namespace Game.Battle
             }
         }
 
+        public int UpkeepTotal
+        {
+            get
+            {
+                return AllCombatObjects().Sum(obj => obj.Upkeep);
+            }
+        }
+
         public int UpkeepNotParticipatedInRound(uint round)
         {
             return AllAliveCombatObjects()

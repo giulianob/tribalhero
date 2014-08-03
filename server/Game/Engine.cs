@@ -276,7 +276,10 @@ _________ _______ _________ ______   _______  _
             Market.Init();
             
             // Start listening  for queue events
-            queueListener.Start(Config.api_domain);
+            if (!Config.queue_disabled)
+            {
+                queueListener.Start(Config.api_domain);
+            }
 
             // Start store sync
             storeSync.Start();

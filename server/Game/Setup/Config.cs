@@ -147,7 +147,8 @@ namespace Game.Setup
         public static int stronghold_gate_limit;
         public static int stronghold_battle_meter;
         public static bool stronghold_bypass_activation = false;       
-        
+        public static bool queue_disabled;
+
         #endregion
 
         #region City Settings
@@ -190,7 +191,7 @@ namespace Game.Setup
             }
         }
 
-        public static readonly Dictionary<string, string> ExtraProperties = new Dictionary<string, string>();
+        public static readonly Dictionary<string, string> ExtraProperties = new Dictionary<string, string>();        
 
         public static void LoadConfigFile(string settingsFile = null)
         {

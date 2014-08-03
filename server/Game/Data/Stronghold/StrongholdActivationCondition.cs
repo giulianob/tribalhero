@@ -10,5 +10,10 @@ namespace Game.Data.Stronghold
         {
             return stronghold.NearbyCitiesCount >= cityPerLevel * stronghold.Lvl;
         }
+
+        public int Score(IStronghold stronghold)
+        {
+            return stronghold.NearbyCitiesCount - cityPerLevel * stronghold.Lvl;
+        }
     }
 }

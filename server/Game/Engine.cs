@@ -260,6 +260,7 @@ _________ _______ _________ ______   _______  _
             {
                 strongholdManager.Generate(Config.stronghold_generate);
             }            
+
             strongholdActivationChecker.Start(TimeSpan.FromSeconds(Config.stronghold_activation_check_interval_in_sec));            
             strongholdChecker.Start();
             strongholdManagerLogger.Listen(strongholdManager);

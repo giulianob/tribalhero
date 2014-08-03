@@ -3,5 +3,7 @@
     public interface IStrongholdActivationCondition
     {
         bool ShouldActivate(IStronghold stronghold);
+
+        int Score(IStronghold stronghold);
     }
 }

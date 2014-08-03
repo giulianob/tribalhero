@@ -61,7 +61,7 @@ namespace Launcher
                 Console.Out.Write("Are you sure you want to empty the database?(Y/N):");
                 if (!Console.ReadKey().Key.ToString().ToLower().Equals("y"))
                 {
-                    return;
+                    Config.database_empty = false;
                 }
             }
 

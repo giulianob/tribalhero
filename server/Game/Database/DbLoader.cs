@@ -528,7 +528,6 @@ namespace Game.Database
             #region Cities
 
             var cityFactory = Kernel.Get<ICityFactory>();
-            var cityRemoverFactory = Kernel.Get<ICityRemoverFactory>();
 
             logger.Info("Loading cities...");
             using (var reader = DbManager.Select(City.DB_TABLE))
@@ -574,24 +573,7 @@ namespace Game.Database
                     city.Value = (ushort)reader["value"];
                     city.Deleted = (City.DeletedState)reader["deleted"];
 
-                    // Add to world
                     World.Cities.DbLoaderAdd(city);
-
-                    // Restart city remover if needed
-                    switch(city.Deleted)
-                    {
-                        case City.DeletedState.DeletingCityOnly:
-                            cityRemoverFactory.CreateCityRemover(city.Id).Start(true);
-                            break;
-                        case City.DeletedState.Deleting:
-                            city.Owner.Add(city);
-                            CityRemover cr = cityRemoverFactory.CreateCityRemover(city.Id);
-                            cr.Start(true);
-                            break;
-                        case City.DeletedState.NotDeleted:
-                            city.Owner.Add(city);
-                            break;
-                    }
                 }
             }
 

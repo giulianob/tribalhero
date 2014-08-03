@@ -189,6 +189,8 @@ namespace Game.Data
 
         bool IsUpdating { get; }
 
+        bool InWorld { get; }
+
         void BeginUpdate();
 
         void EndUpdate();

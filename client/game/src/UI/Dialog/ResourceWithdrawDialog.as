@@ -51,7 +51,7 @@ public class ResourceWithdrawDialog extends GameJPanel
 
 		public function onWithdraw(e: Event) : void {
 			if (amount().total() == 0) {
-				InfoDialog.showMessageDialog("Error", "No resources selected to send");
+				InfoDialog.showMessageDialog("Error", "No resources selected to withdraw!");
 				return;
 			}
 

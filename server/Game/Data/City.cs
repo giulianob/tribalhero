@@ -862,6 +862,14 @@ namespace Game.Data
             }
         }
 
+        public bool InWorld
+        {
+            get
+            {
+                return Deleted == DeletedState.Deleting || Deleted == DeletedState.NotDeleted;
+            }
+        }
+
         public MiniMapRegion.ObjectType MiniMapObjectType
         {
             get

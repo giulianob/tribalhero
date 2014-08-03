@@ -9,6 +9,11 @@
             return true;
         }
 
+        public int Score(IStronghold stronghold)
+        {
+            return 0;
+        }
+
         #endregion
     }
 }

@@ -13,7 +13,7 @@ namespace Game.Data.Stronghold
 
         private static readonly int[] LevelProbability = {0, 8, 16, 23, 30, 37, 43, 49, 55, 60, 65, 70, 74, 78, 82, 85, 88, 91, 94, 97, 100};
 
-        private const int MIN_DISTANCE_AWAY_FROM_STRONGHOLDS = 200;
+        private const int MIN_DISTANCE_AWAY_FROM_STRONGHOLDS = 150;
 
         private static readonly int CitiesPerLevel = Config.stronghold_cities_per_level;
 

@@ -176,6 +176,7 @@
     <Compile Include="MapTests\RegionManagerTests.cs" />
     <Compile Include="MiniMapRegionTests\MiniMapRegionTest.cs" />
     <Compile Include="PlayerTests\AchievementListTest.cs" />
+    <Compile Include="StrongholdTests\StrongholdActivaitonCheckerTests.cs" />
     <Compile Include="TribeTests\TribeManagerTests.cs" />
     <Compile Include="TroopTests\StationedPartialTroopObjectInitializerTests.cs" />
     <Compile Include="TroopTests\SimpleStubTests.cs" />

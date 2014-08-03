@@ -102,7 +102,9 @@ namespace Testing.BattleTests
             /// <summary>
             ///     Set the upkeep manually in tests
             /// </summary>
-            public int UpkeepExcludingWaitingToJoinBattle { get; private set; }
+            public int UpkeepExcludingWaitingToJoinBattle { get; set; }
+
+            public int UpkeepTotal { get; set; }
 
             public int UpkeepNotParticipatedInRound(uint round)
             {

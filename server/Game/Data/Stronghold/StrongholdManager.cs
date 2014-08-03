@@ -152,6 +152,7 @@ namespace Game.Data.Stronghold
                 {
                     break;
                 }
+
                 var limit = formula.StrongholdGateLimit(level);
                 IStronghold stronghold = strongholdFactory.CreateStronghold(idGenerator.GetNext(),
                                                                             name, 
@@ -161,6 +162,7 @@ namespace Game.Data.Stronghold
                                                                             limit, 
                                                                             Convert.ToInt32(limit),
                                                                             Theme.DEFAULT_THEME_ID);
+
                 using (dbManager.GetThreadTransaction())
                 {
                     Add(stronghold);

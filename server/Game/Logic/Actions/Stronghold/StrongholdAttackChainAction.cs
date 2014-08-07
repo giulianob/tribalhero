@@ -367,6 +367,10 @@ namespace Game.Logic.Actions
                     city.Owner.Tribesman.Tribe.AttackPoint += troopObject.Stats.AttackPoint;
                 }
 
+                city.BeginUpdate();
+                city.AttackPoint += troopObject.Stats.AttackPoint;
+                city.EndUpdate();
+
                 // Remove troop if he's dead
                 if (TroopIsDead(troopObject, city))
                 {

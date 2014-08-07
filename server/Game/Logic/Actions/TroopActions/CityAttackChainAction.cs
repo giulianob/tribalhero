@@ -266,7 +266,7 @@ namespace Game.Logic.Actions
 
                 // Calculate how many attack points to give to the city
                 city.BeginUpdate();
-                city.AttackPoint += formula.GetAttackPoint(troopObject.Stats.AttackPoint);
+                city.AttackPoint += troopObject.Stats.AttackPoint;
                 city.EndUpdate();
 
                 // Check if troop is still alive

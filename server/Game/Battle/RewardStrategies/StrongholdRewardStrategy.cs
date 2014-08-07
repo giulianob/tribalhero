@@ -31,6 +31,11 @@ namespace Game.Battle.RewardStrategies
             {
                 stronghold.Tribe.DefensePoint += defensePoints;
             }
+
+            if (defensePoints > 0)
+            {
+                attacker.ReceiveReward(defensePoints, null);
+            }
         }
     }
 }

@@ -24,7 +24,8 @@ package src.Objects.Technologies {
                 "WEAPON_EXPORT_TECHNOLOGY",
                 "SPIKE_BARRICADE_TECHNOLOGY",
                 "HANZO_SWORD_TECHNOLOGY",
-                "BASIC_TRAINING_TECHNOLOGY"
+                "BASIC_TRAINING_TECHNOLOGY",
+                "GATE_DMG_RESEARCH_TECHNOLOGY"
             ];
 
             if (key == "SUNDANCE_TECHNOLOGY") {

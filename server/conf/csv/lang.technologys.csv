@@ -445,3 +445,10 @@ INSTANT_WORKSHOP_TECHNOLOGY_LVL_7,First 7 of Catapults and Helepolises of the ci
 INSTANT_WORKSHOP_TECHNOLOGY_LVL_8,First 8 of Catapults and Helepolises of the city will be trained immediately.  (Stacks additively up to 30)
 INSTANT_WORKSHOP_TECHNOLOGY_LVL_9,First 9 of Catapults and Helepolises of the city will be trained immediately.  (Stacks additively up to 30)
 INSTANT_WORKSHOP_TECHNOLOGY_LVL_10,First 10 of Catapults and Helepolises of the city will be trained immediately.  (Stacks additively up to 30)
+,
+GATE_DMG_RESEARCH_TECHNOLOGY_NAME,Stronghold Gate Offensive Boost
+GATE_DMG_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Stronghold Gate by 20%.
+GATE_DMG_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Stronghold Gate by 40%.
+GATE_DMG_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Stronghold Gate by 60%.
+GATE_DMG_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Stronghold Gate by 80%.
+GATE_DMG_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Stronghold Gate by 100%.

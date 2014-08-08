@@ -9,16 +9,6 @@ namespace Game.Logic.Formulas
     public partial class Formula
     {
         /// <summary>
-        ///     Gets the ammount of attack points that should be received
-        /// </summary>
-        /// <param name="enemiesKilled">Value of enemy units killed</param>
-        /// <returns></returns>
-        public virtual int GetAttackPoint(int enemiesKilled)
-        {
-            return Math.Max(0, enemiesKilled);
-        }
-
-        /// <summary>
         ///     Gets the ammount of attack points the attacker should receive for killing an enemy.
         /// </summary>
         /// <param name="type">Type of unit killed</param>

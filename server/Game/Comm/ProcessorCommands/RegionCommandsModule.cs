@@ -141,7 +141,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                world.Roads.CreateRoad(x, y);
+                world.Roads.CreateRoad(x, y, city.RoadTheme);
 
                 world.Regions.UnlockRegion(x, y);
 
@@ -258,7 +258,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                world.Roads.DestroyRoad(x, y);
+                world.Roads.DestroyRoad(x, y, city.RoadTheme);
 
                 world.Regions.UnlockRegion(x, y);
                 session.Write(reply);

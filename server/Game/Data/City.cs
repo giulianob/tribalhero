@@ -145,6 +145,8 @@ namespace Game.Data
 
         private string defaultTheme;
         
+        private string roadTheme;
+        
         private string troopTheme;
 
         private string wallTheme;
@@ -244,6 +246,21 @@ namespace Game.Data
                 CheckUpdateMode();
 
                 defaultTheme = value;
+                RaisePropertyChanged();
+            }
+        }
+        
+        public string RoadTheme
+        {
+            get
+            {
+                return roadTheme;
+            }
+            set
+            {
+                CheckUpdateMode();
+
+                roadTheme = value;
                 RaisePropertyChanged();
             }
         }
@@ -613,6 +630,7 @@ namespace Game.Data
                     byte radius,
                     decimal ap,
                     string defaultTheme,
+                    string roadTheme,
                     string troopTheme,
                     string wallTheme,
                     IActionWorker worker,
@@ -640,6 +658,7 @@ namespace Game.Data
             PrimaryPosition = position;
             AlignmentPoint = ap;
             DefaultTheme = defaultTheme;
+            RoadTheme = roadTheme;
             WallTheme = wallTheme;
             TroopTheme = troopTheme;
             Resource = resource;
@@ -867,6 +886,7 @@ namespace Game.Data
                         new DbColumn("y", PrimaryPosition.Y, DbType.UInt32),
                         new DbColumn("deleted", Deleted, DbType.Int32),
                         new DbColumn("default_theme_id", DefaultTheme, DbType.String),
+                        new DbColumn("road_theme_id", RoadTheme, DbType.String),
                         new DbColumn("wall_theme_id", WallTheme, DbType.String),
                         new DbColumn("troop_theme_id", TroopTheme, DbType.String),
                 };

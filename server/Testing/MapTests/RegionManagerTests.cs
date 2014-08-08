@@ -46,7 +46,7 @@ namespace Testing.MapTests
                     new Position(0, 2),
             });
 
-            var result = regionManager.LockRegions(10, 20, 3);
+            var result = regionManager.LockMultitileRegions(10, 20, 3);
 
             lockedRegions.Should().Equal(region1, region2, region3);
             result.Should().Equal(new ushort[] { 0, 1, 2 });
@@ -67,7 +67,7 @@ namespace Testing.MapTests
                     new Position(1, 1),
             });
 
-            regionManager.LockRegions(10, 20, 3);
+            regionManager.LockMultitileRegions(10, 20, 3);
 
             lockedRegions.Should().BeEmpty();
         }

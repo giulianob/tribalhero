@@ -1,5 +1,6 @@
 #region
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
@@ -225,20 +226,41 @@ namespace Game.Logic.Formulas
         }
 
         /// <summary>
-        ///     Returns the highest X for 1 count available or 0 if none is found
+        ///     Returns the total unit for the price of paidFor
         /// </summary>
         /// <param name="tech"></param>
+        /// <param name="paidFor"></param>
         /// <returns></returns>
-        public virtual int GetXForOneCount(ITechnologyManager tech)
+        public virtual int GetXForYTotal(ITechnologyManager tech, int paidFor)
         {
             var effects = tech.GetEffects(EffectCode.XFor1, EffectInheritance.Invisible);
 
             if (effects.Count == 0)
             {
-                return int.MaxValue;
+                return paidFor;
             }
 
-            return effects.Min(x => (int)x.Value[0]);
+            var effect = effects.OrderByDescending(x => (decimal)(int)x.Value[0] / (int)x.Value[1]).First();
+            return paidFor * (int)effect.Value[0] / (int)effect.Value[1];
+        }
+
+        /// <summary>
+        ///     Returns the total unit for the price of paidFor
+        /// </summary>
+        /// <param name="tech"></param>
+        /// <param name="total"></param>
+        /// <returns></returns>
+        public virtual int GetXForYPaidFor(ITechnologyManager tech, int total)
+        {
+            var effects = tech.GetEffects(EffectCode.XFor1, EffectInheritance.Invisible);
+
+            if (effects.Count == 0)
+            {
+                return total;
+            }
+
+            var effect = effects.OrderByDescending(x => (decimal)(int)x.Value[0] / (int)x.Value[1]).First();
+            return (int)Math.Ceiling((decimal)total / (int)effect.Value[0] * (int)effect.Value[1]);
         }
 
         public virtual Resource GetInitialCityResources()

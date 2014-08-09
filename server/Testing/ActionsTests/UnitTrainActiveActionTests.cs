@@ -29,7 +29,9 @@ namespace Testing.ActionsTests
                         TotalCost = new Resource(13, 14, 28, 25, 3) * 1,
                         InstantTrainCount = 0,
                         TrainCount = 1,
-                        XForOne = ushort.MaxValue,
+                        // no technology
+                        TotalCount = 1,
+                        TotalPaidFor = 0,
                         CompletedTraining = 0,
 
                         ExpectedRefundAmount = new Resource(13, 14, 28, 25, 3) * 1,
@@ -46,7 +48,9 @@ namespace Testing.ActionsTests
                         TotalCost = new Resource(13, 14, 28, 25, 3) * 57,
                         InstantTrainCount = 0,
                         TrainCount = 57,
-                        XForOne = 2,
+                        // 3 for 2
+                        TotalCount = 85,
+                        TotalPaidFor = 0,
                         CompletedTraining = 0,
 
                         ExpectedRefundAmount = new Resource(13, 14, 28, 25, 3) * 57,
@@ -54,7 +58,7 @@ namespace Testing.ActionsTests
                         ExpectedQueuedCount = 85
                     }
                 };
-
+                
                 yield return new object[]
                 {
                     new UserCancelledTestData
@@ -63,7 +67,9 @@ namespace Testing.ActionsTests
                         TotalCost = new Resource(13, 14, 28, 25, 3) * 57,
                         InstantTrainCount = 7,                        
                         TrainCount = 57,
-                        XForOne = ushort.MaxValue,
+                        // no technology
+                        TotalCount = 57,
+                        TotalPaidFor = 7,
                         CompletedTraining = 0,                        
 
                         ExpectedRefundAmount = new Resource(13, 14, 28, 25, 3) * 50,
@@ -71,7 +77,7 @@ namespace Testing.ActionsTests
                         ExpectedQueuedCount = 50
                     }
                 };
-
+                
                 yield return new object[]
                 {
                     new UserCancelledTestData
@@ -80,7 +86,9 @@ namespace Testing.ActionsTests
                         TotalCost = new Resource(13, 14, 28, 25, 3) * 57,
                         InstantTrainCount = 7,                        
                         TrainCount = 57,
-                        XForOne = 2,
+                        // 3 for 2
+                        TotalCount = 85,
+                        TotalPaidFor = 5,
                         CompletedTraining = 0,                        
 
                         ExpectedRefundAmount = new Resource(13, 14, 28, 25, 3) * 52,
@@ -88,7 +96,7 @@ namespace Testing.ActionsTests
                         ExpectedQueuedCount = 78
                     }
                 };
-
+                
                 yield return new object[]
                 {
                     new UserCancelledTestData
@@ -97,7 +105,9 @@ namespace Testing.ActionsTests
                         TotalCost = new Resource(13, 14, 28, 25, 3) * 57,
                         InstantTrainCount = 8,                        
                         TrainCount = 57,
-                        XForOne = 2,
+                        // 3 for 2
+                        TotalCount = 85,
+                        TotalPaidFor = 6,
                         CompletedTraining = 0,                        
 
                         ExpectedRefundAmount = new Resource(13, 14, 28, 25, 3) * 51,
@@ -105,7 +115,7 @@ namespace Testing.ActionsTests
                         ExpectedQueuedCount = 77
                     }
                 };
-
+                
                 yield return new object[]
                 {
                     new UserCancelledTestData
@@ -114,7 +124,9 @@ namespace Testing.ActionsTests
                         TotalCost = new Resource(13, 14, 28, 25, 3) * 57,
                         InstantTrainCount = 9,                        
                         TrainCount = 57,
-                        XForOne = 2,
+                        // 3 for 2
+                        TotalCount = 85,
+                        TotalPaidFor = 6,
                         CompletedTraining = 0,                        
 
                         ExpectedRefundAmount = new Resource(13, 14, 28, 25, 3) * 51,
@@ -122,7 +134,7 @@ namespace Testing.ActionsTests
                         ExpectedQueuedCount = 76
                     }
                 };
-
+                
                 yield return new object[]
                 {
                     new UserCancelledTestData
@@ -131,7 +143,9 @@ namespace Testing.ActionsTests
                         TotalCost = new Resource(13, 14, 28, 25, 3) * 57,
                         InstantTrainCount = 7,                        
                         TrainCount = 57,
-                        XForOne = 2,
+                        // 3 for 2
+                        TotalCount = 85,
+                        TotalPaidFor = 12,
                         CompletedTraining = 10,
 
                         ExpectedRefundAmount = new Resource(13, 14, 28, 25, 3) * 45,
@@ -148,12 +162,14 @@ namespace Testing.ActionsTests
                         TotalCost = new Resource(13, 14, 28, 25, 3) * 769,
                         InstantTrainCount = 132,                        
                         TrainCount = 769,
-                        XForOne = 3,
+                        // 3 for 2
+                        TotalCount = 1153,
+                        TotalPaidFor = 182,
                         CompletedTraining = 141,
 
-                        ExpectedRefundAmount = new Resource(13, 14, 28, 25, 3) * 564,
+                        ExpectedRefundAmount = new Resource(13, 14, 28, 25, 3) * 587,
                         ExpectedCityReceivedCount = 273,
-                        ExpectedQueuedCount = 893
+                        ExpectedQueuedCount = 1021
                     }
                 };
             }
@@ -166,12 +182,14 @@ namespace Testing.ActionsTests
             [FrozenMock] UnitFactory unitFactory,
             [Frozen] IWorld world,
             ICity city,
-            IStructure structure)
+            IStructure structure,
+            ITechnologyManager technologyManager)
         {
             ushort trainedCount = 0;
 
             formula.GetInstantTrainCount(structure).ReturnsForAnyArgs(testData.InstantTrainCount);
-            formula.GetXForOneCount(structure.Technologies).Returns(testData.XForOne);            
+            formula.GetXForYTotal(technologyManager, testData.TrainCount).Returns(testData.TotalCount);
+            formula.GetXForYPaidFor(technologyManager, testData.InstantTrainCount + testData.CompletedTraining).Returns(testData.TotalPaidFor);
             formula.UnitTrainCost(city, 100, 0).Returns(testData.CostPerUnit);
             formula.GetActionCancelResource(DateTime.MinValue, null)
                    .ReturnsForAnyArgs(c => c.Arg<Resource>());
@@ -186,6 +204,7 @@ namespace Testing.ActionsTests
             city.Id.Returns<uint>(1);
             
             structure.City.Returns(city);
+            structure.Technologies.Returns(technologyManager);
 
             IStructure outStructure;
             ICity outCity;
@@ -235,7 +254,9 @@ namespace Testing.ActionsTests
             
             public Resource TotalCost { get; set; }
             
-            public int XForOne { get; set; }
+            public int TotalCount { get; set; }
+
+            public int TotalPaidFor { get; set; }
 
             public int InstantTrainCount { get; set; }
 

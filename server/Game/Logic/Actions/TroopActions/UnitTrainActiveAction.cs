@@ -110,7 +110,8 @@ namespace Game.Logic.Actions
             
             cost = formula.UnitTrainCost(structure.City, type, unitLvl);
             Resource totalCost = cost * count;
-            ActionCount = (ushort)(count + count / formula.GetXForOneCount(structure.Technologies));
+            
+            ActionCount = (ushort)(formula.GetXForYTotal(structure.Technologies,count));
 
             if (!structure.City.Resource.HasEnough(totalCost))
             {
@@ -121,7 +122,7 @@ namespace Game.Logic.Actions
             structure.City.Resource.Subtract(totalCost);
             structure.City.EndUpdate();
 
-            ushort instantTrainCount = (ushort)Math.Min(formula.GetInstantTrainCount(structure),count);
+            ushort instantTrainCount = (ushort)Math.Min(formula.GetInstantTrainCount(structure), ActionCount);
             ActionCount -= instantTrainCount;
 
             structure.City.DefaultTroop.BeginUpdate();
@@ -227,10 +228,9 @@ namespace Game.Logic.Actions
 
                 if (!wasKilled)
                 {
-                    int xfor1 = formula.GetXForOneCount(structure.Technologies);
-                    int totalordered = count + count / xfor1;
+                    int totalordered = formula.GetXForYTotal(structure.Technologies, count);
                     int totaltrained = totalordered - ActionCount;
-                    int totalpaidunit = totaltrained - (totaltrained / (xfor1 + 1));
+                    int totalpaidunit = formula.GetXForYPaidFor(structure.Technologies, totaltrained);
                     int totalrefund = count - totalpaidunit;
                     Resource totalCost = cost * totalrefund;
 

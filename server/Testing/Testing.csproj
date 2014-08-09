@@ -156,6 +156,7 @@
     <Compile Include="FormulaTests\BattleFormulaTest.cs" />
     <Compile Include="FormulaTests\InstantTrainTest.cs" />
     <Compile Include="FormulaTests\LaborMoveTest.cs" />
+    <Compile Include="FormulaTests\XForYFormula.cs" />
     <Compile Include="FormulaTests\PureVirtualTests.cs" />
     <Compile Include="FormulaTests\StrongholdFormulaTest.cs" />
     <Compile Include="FormulaTests\TimeTest.cs" />

@@ -41,9 +41,10 @@ TexturePacker.exe %DEFAULT_SETTINGS%^
   --sheet atlas\ICONS_ATLAS.png^
   icons\general
 
-:: Misc Objects (e.g. forests) and War Elephant Theme
+:: Misc Objects (e.g. forests), War Elephant Theme, and Cobblestone Road theme
 TexturePacker.exe %DEFAULT_SETTINGS%^
   --data atlas\OBJECTS_ATLAS.xml^
   --sheet atlas\OBJECTS_ATLAS.png^
   objects^
-  themes\warelephant
+  themes\warelephant^
+  themes\cobblestone

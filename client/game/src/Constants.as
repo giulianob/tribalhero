@@ -31,7 +31,8 @@ package src
 
 		/* ROAD CONSTANTS */
 		public static const road_start_tile_id: int = 60;
-		public static const road_end_tile_id: int = 90;
+		public static const road_end_tile_id: int = 126;
+        public static const roadThemes: Array = ["DEFAULT", "COBBLESTONE"];
 
 		/* MAP CONSTANTS */					
 		public static const tileW:int = 160;

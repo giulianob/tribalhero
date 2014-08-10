@@ -14,6 +14,14 @@ namespace Game.Map
 {
     public class RoadManager : IRoadManager
     {
+        public static readonly Dictionary<string, ushort> ThemeRoadIndexes = new Dictionary<string, ushort>
+        {
+            // If editing this list also make sure to edit the road_start_tile_id/road_end_tile_id
+            // in both server and client
+            {Theme.DEFAULT_THEME_ID, 60},
+            {"COBBLESTONE", 96}
+        };
+
         [Flags]
         private enum RoadPositions
         {
@@ -38,7 +46,11 @@ namespace Game.Map
 
         private readonly ITileLocator tileLocator;
 
-        public RoadManager(IRegionManager regionManager, IObjectTypeFactory objectTypeFactory, IChannel channel, IRegionLocator regionLocator, ITileLocator tileLocator)
+        public RoadManager(IRegionManager regionManager,
+                           IObjectTypeFactory objectTypeFactory,
+                           IChannel channel,
+                           IRegionLocator regionLocator,
+                           ITileLocator tileLocator)
         {
             this.regionManager = regionManager;
             this.objectTypeFactory = objectTypeFactory;
@@ -61,7 +73,7 @@ namespace Game.Map
 
             foreach (var position in tileLocator.ForeachMultitile(structure))
             {
-                CreateRoad(position.X, position.Y);
+                CreateRoad(position.X, position.Y, structure.City.RoadTheme);
             }
         }
 
@@ -75,7 +87,7 @@ namespace Game.Map
 
             foreach (var position in tileLocator.ForeachMultitile(structure))
             {
-                DestroyRoad(position.X, position.Y);
+                DestroyRoad(position.X, position.Y, structure.City.RoadTheme);
             }
         }
 
@@ -96,7 +108,41 @@ namespace Game.Map
             }
         }
 
-        public void CreateRoad(uint x, uint y)
+        public void ChangeRoadTheme(ICity city, string oldTheme, string newTheme)
+        {
+            var updates = new Dictionary<ushort, List<TileUpdate>>();
+            var oldThemeIndex = ThemeRoadIndexes[oldTheme];
+            var newThemeIndex = ThemeRoadIndexes[newTheme];
+
+            foreach (var position in tileLocator.ForeachTile(city.PrimaryPosition.X, city.PrimaryPosition.Y, city.Radius))
+            {
+                var tileType = regionManager.GetTileType(position.X, position.Y);
+                if (!IsRoad(tileType))
+                {
+                    continue;
+                }
+
+                var newRoadType = (ushort)(tileType - oldThemeIndex + newThemeIndex);
+                regionManager.SetTileType(position.X, position.Y, newRoadType, false);
+
+                var regionId = regionLocator.GetRegionIndex(position.X, position.Y);                
+                var update = new TileUpdate(position.X, position.Y, newRoadType);                                
+                List<TileUpdate> list;
+                if (!updates.TryGetValue(regionId, out list))
+                {
+                    list = new List<TileUpdate> {update};
+                    updates.Add(regionId, list);
+                }
+                else
+                {
+                    updates[regionId].Add(update);
+                }
+            }
+
+            SendUpdate(updates);
+        }
+
+        public void CreateRoad(uint x, uint y, string theme)
         {
             var tilePosition = new Position(x, y);
             var tiles = new List<Position>(5)
@@ -112,12 +158,14 @@ namespace Game.Map
 
             for (int i = 0; i < tiles.Count; i++)
             {
-                ushort regionId = regionLocator.GetRegionIndex(tiles[i].X, tiles[i].Y);
-                var update = new TileUpdate(tiles[i].X, tiles[i].Y, CalculateRoad(tiles[i].X, tiles[i].Y, i == 0));
-                if (!update.TileType.HasValue)
+                var newRoadType = CalculateRoad(tiles[i].X, tiles[i].Y, i == 0, ThemeRoadIndexes[theme]);                
+                if (!newRoadType.HasValue)
                 {
                     continue; // Not a road here
                 }
+                
+                ushort regionId = regionLocator.GetRegionIndex(tiles[i].X, tiles[i].Y);
+                var update = new TileUpdate(tiles[i].X, tiles[i].Y, newRoadType);
 
                 List<TileUpdate> list;
                 if (!updates.TryGetValue(regionId, out list))
@@ -134,7 +182,7 @@ namespace Game.Map
             SendUpdate(updates);
         }
 
-        public void DestroyRoad(uint x, uint y)
+        public void DestroyRoad(uint x, uint y, string themeId)
         {
             var tilePosition = new Position(x, y);
             var tiles = new List<Position>(5)
@@ -161,7 +209,7 @@ namespace Game.Map
                 }
                 else
                 {
-                    update = new TileUpdate(tiles[i].X, tiles[i].Y, CalculateRoad(tiles[i].X, tiles[i].Y, false));
+                    update = new TileUpdate(tiles[i].X, tiles[i].Y, CalculateRoad(tiles[i].X, tiles[i].Y, false, ThemeRoadIndexes[themeId]));
                 }
 
                 if (!update.TileType.HasValue)
@@ -184,7 +232,7 @@ namespace Game.Map
             SendUpdate(updates);
         }
 
-        private ushort? CalculateRoad(uint x, uint y, bool createHere)
+        private ushort? CalculateRoad(uint x, uint y, bool createHere, ushort startTileIndex)
         {
             if (x <= 1 || y <= 1 || x >= Config.map_width || y >= Config.map_height)
             {
@@ -344,7 +392,7 @@ namespace Game.Map
                 return null;
             }
 
-            roadType += Config.road_start_tile_id;
+            roadType += startTileIndex;
             regionManager.SetTileType(x, y, roadType.Value, false);
 
             return roadType;

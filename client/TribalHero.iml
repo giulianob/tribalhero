@@ -46,6 +46,54 @@
         <packaging-android />
         <packaging-ios />
       </configuration>
+      <configuration name="TribalHero Android" target-platform="Mobile" pure-as="true" main-class="src.Preloader" output-file="TribalHero_Android.swf" output-folder="$MODULE_DIR$/bin">
+        <dependencies>
+          <entries>
+            <entry library-name="TheMiner_en" library-level="project">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-name="Linq_Flash" library-level="project">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-name="greensock" library-level="project">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-name="flash" library-level="project">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-name="as3corelib" library-level="project">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-name="Game" library-level="project">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-id="e9555dc4-061c-4289-bbce-78cc585491e3">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-id="244020c5-c2ba-4ffd-b51e-40d635888d88">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-id="4496d7fa-8d0c-4d8d-b995-20d81f054bf4">
+              <dependency linkage="Merged" />
+            </entry>
+          </entries>
+          <sdk name="flexsdk" />
+        </dependencies>
+        <compiler-options>
+          <map>
+            <entry key="compiler.debug.swf" value="true" />
+            <entry key="compiler.define" value="CONFIG::debug&#9;true" />
+          </map>
+          <option name="additionalConfigFilePath" value="$MODULE_DIR$/GameConfig.xml" />
+        </compiler-options>
+        <packaging-air-desktop />
+        <packaging-android enabled="true" use-generated-descriptor="false" custom-descriptor-path="$MODULE_DIR$/mobile/application.xml" package-file-name="TribalHero_Android">
+          <files-to-package>
+            <FilePathAndPathInPackage file-path="$MODULE_DIR$/mobile/icons" path-in-package="icons" />
+          </files-to-package>
+        </packaging-android>
+        <packaging-ios package-file-name="TribalHero_Android" />
+      </configuration>
     </configurations>
     <compiler-options />
   </component>
@@ -90,6 +138,36 @@
     <orderEntry type="module-library" exported="">
       <library type="flex">
         <properties id="e13609b7-569f-4f39-b85c-d16a2a038337" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/swc/feathers/AeonDesktopTheme.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="e9555dc4-061c-4289-bbce-78cc585491e3" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/swc/starling/starling.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="244020c5-c2ba-4ffd-b51e-40d635888d88" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/swc/feathers/feathers.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="4496d7fa-8d0c-4d8d-b995-20d81f054bf4" />
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/swc/feathers/AeonDesktopTheme.swc!/" />
         </CLASSES>

@@ -53,7 +53,7 @@ namespace Game.Setup
         public static uint region_width = 34;
         public static uint region_height = 62;
         public static ushort road_start_tile_id = 60;
-        public static ushort road_end_tile_id = 90;
+        public static ushort road_end_tile_id = 126;
         public static uint minimap_region_width = 100;
         public static uint minimap_region_height = 100;
         public static int friend_invite_radius = 250;
@@ -62,7 +62,7 @@ namespace Game.Setup
 
         #region Database Settings
 
-        public static string database_schema_version = "20140713152850";
+        public static string database_schema_version = "20140803202024";
         public static bool database_verbose;
         public static bool database_empty;
         public static bool database_load_players = true;

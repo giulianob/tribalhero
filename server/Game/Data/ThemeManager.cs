@@ -3,16 +3,30 @@ using System.Linq;
 using System.Threading;
 using Game.Data.Stronghold;
 using Game.Data.Troop;
+using Game.Map;
 using Game.Setup;
 
 namespace Game.Data
 {
     public class ThemeManager : IThemeManager
     {
+        private readonly IRoadManager roadManager;
+
+        private readonly IRegionManager regionManager;
+        
+        private readonly ITileLocator tileLocator;
+
         private readonly List<Theme> themes = new List<Theme>();
 
         private readonly ReaderWriterLockSlim updateLock = new ReaderWriterLockSlim();
-        
+
+        public ThemeManager(IRoadManager roadManager, IRegionManager regionManager, ITileLocator tileLocator)
+        {
+            this.roadManager = roadManager;
+            this.regionManager = regionManager;
+            this.tileLocator = tileLocator;
+        }
+
         public List<Theme> Themes
         {
             get
@@ -157,6 +171,28 @@ namespace Game.Data
             // Due to how the client gets wall updates we need to do force the main structure to update
             city.MainBuilding.BeginUpdate();
             city.MainBuilding.EndUpdate();
+
+            return Error.Ok;
+        }
+
+        public Error SetRoadTheme(ICity city, string id)
+        {
+            if (!HasTheme(city.Owner, id))
+            {
+                return Error.ThemeNotPurchased;
+            }
+
+            var previousTheme = city.RoadTheme;
+
+            city.BeginUpdate();
+            city.RoadTheme = id;
+            city.EndUpdate();
+
+            var lockedRegions = regionManager.LockRegions(tileLocator.ForeachTile(city.PrimaryPosition.X, city.PrimaryPosition.Y, city.Radius));
+            
+            roadManager.ChangeRoadTheme(city, previousTheme, id);
+            
+            regionManager.UnlockRegions(lockedRegions);
 
             return Error.Ok;
         }

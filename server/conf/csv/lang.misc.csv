@@ -347,6 +347,9 @@ PIRATES_THEME_DESCRIPTION,"At the edge of the world, where land meets ocean, a g
 FEUDALJAPAN_THEME_NAME,Feudal Japan
 FEUDALJAPAN_THEME_DESCRIPTION,"In the Land of the rising sun, Simplicity Functionality and Beauty are not only the way of life, but also the philosophy of architecture and warfare. Experience this new building set inspired by Ancient Japanese culture."
 ,
+COBBLESTONE_THEME_NAME,Cobblestone Road
+COBBLESTONE_THEME_DESCRIPTION,"An elegant road made from large cobblestones."
+,
 WARELEPHANT_THEME_NAME,War Elephant
 WARELEPHANT_THEME_DESCRIPTION,"Rampage through your opponent's city atop a towering behemoth, bring new meaning to crushing your enemies with style!"
 ,
@@ -362,6 +365,7 @@ STORE_VIEW_THEME_DIALOG_STRONGHOLD_AND_WALL_INCLUDED,Stronghold and Wall Set Inc
 STORE_VIEW_THEME_DIALOG_BUY,Buy for {0}
 STORE_VIEW_THEME_APPLY_ALL,Change all existing structures to this theme
 STORE_VIEW_THEME_APPLY_WALL,Change wall to this theme
+STORE_VIEW_THEME_APPLY_ROAD,Change road to this theme
 STORE_VIEW_THEME_CHOOSE_CITY_HEADER_LABEL,Choose a city:
 STORE_VIEW_THEME_SET_DEFAULT,Make all new structures use this theme
 STORE_VIEW_THEME_SET_TROOP_DEFAULT,Make all new troops use this theme

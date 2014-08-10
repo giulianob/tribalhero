@@ -123,6 +123,8 @@ namespace Game.Data
         /// </summary>
         string DefaultTheme { get; set; }
 
+        string RoadTheme { get; set; }
+
         /// <summary>
         ///     Player that owns this city
         /// </summary>

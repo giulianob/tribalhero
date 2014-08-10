@@ -55,7 +55,10 @@ package src.UI.Dialog {
             var previewTabs: JTabbedPane = new JTabbedPane();
             previewTabs.setPreferredHeight(220);
             previewTabs.appendTab(pnlPreviewImage, t("STORE_VIEW_THEME_DIALOG_PREVIEW_TAB"));
-            previewTabs.appendTab(Util.createTopAlignedScrollPane(gridStoreItems), t("STORE_VIEW_THEME_DIALOG_DETAIL_TAB"));
+
+            if (gridStoreItems.getModel().getSize()) {
+                previewTabs.appendTab(Util.createTopAlignedScrollPane(gridStoreItems), t("STORE_VIEW_THEME_DIALOG_DETAIL_TAB"));
+            }
 
             appendAll(lblTitle, lblDescription);
 
@@ -99,6 +102,8 @@ package src.UI.Dialog {
                     applyWallDropdown(pnlSetThemeRow);
                     setDefaultStructureTheme(pnlSetThemeRow);
                 }
+
+                applyRoadDropdown(pnlSetThemeRow);
 
                 if (viewModel.isTroopIncluded()) {
                     applyDefaultTroopDropdown(pnlSetThemeRow);
@@ -199,6 +204,36 @@ package src.UI.Dialog {
             container.append(btnSetWallTheme);
         }
 
+        private function applyRoadDropdown(container: JPanel): void {
+            if (!viewModel.isRoadIncluded()) {
+                return;
+            }
+
+            var applyRoadDropDown: JPopupMenu = new JPopupMenu();
+            applyRoadDropDown.append(createChooseCityHeaderLabel());
+
+            for each (var city: City in Global.map.cities) {
+                applyRoadDropDown.append(createSetRoadThemeMenuItem(city));
+            }
+
+            var btnSetRoadTheme: JButton = new JButton(t("STORE_VIEW_THEME_APPLY_ROAD"));
+            btnSetRoadTheme.addActionListener(function(e: Event): void {
+                if (Global.map.cities.size() == 1) {
+                    viewModel.applyRoadTheme(Global.map.cities.getByIndex(0));
+                }
+                else {
+                    if (applyRoadDropDown.isVisible()) {
+                        applyRoadDropDown.setVisible(false);
+                    }
+                    else {
+                        applyRoadDropDown.show(btnSetRoadTheme, 0, btnSetRoadTheme.getHeight());
+                    }
+                }
+            });
+
+            container.append(btnSetRoadTheme);
+        }
+
         private function applyThemeToAllStructures(container: JPanel): void {
             var applyAllDropDown: JPopupMenu = new JPopupMenu();
             applyAllDropDown.append(createChooseCityHeaderLabel());
@@ -262,6 +297,15 @@ package src.UI.Dialog {
             var menuItem: JMenuItem = new JMenuItem(city.name);
             menuItem.addActionListener(function(): void {
                 viewModel.applyWallTheme(city);
+            });
+
+            return menuItem;
+        }
+
+        private function createSetRoadThemeMenuItem(city: City): Component {
+            var menuItem: JMenuItem = new JMenuItem(city.name);
+            menuItem.addActionListener(function(): void {
+                viewModel.applyRoadTheme(city);
             });
 
             return menuItem;

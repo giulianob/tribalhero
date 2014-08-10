@@ -1,6 +1,7 @@
 ﻿using System;
 using Game.Data;
 using Game.Data.Store;
+using Game.Map;
 using Game.Setup;
 using Game.Util.Locking;
 

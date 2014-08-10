@@ -52,7 +52,7 @@ namespace Game.Map
 
         void Unload();
 
-        IEnumerable<ushort> LockRegions(uint x, uint y, byte size);
+        IEnumerable<ushort> LockMultitileRegions(uint x, uint y, byte size);
 
         void UnlockRegions(IEnumerable<ushort> regionIds);
 
@@ -63,5 +63,7 @@ namespace Game.Map
         void SubscribeRegion(Session session, ushort id);
 
         void UnsubscribeRegion(Session session, ushort id);
+
+        IEnumerable<ushort> LockRegions(IEnumerable<Position> positions);
     }
 }

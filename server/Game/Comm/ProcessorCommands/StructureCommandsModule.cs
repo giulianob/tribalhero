@@ -68,6 +68,7 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.CityHasApBonus, GetCityHasApBonus);
             processor.RegisterCommand(Command.StructureSetTheme, StructureSetTheme);
             processor.RegisterCommand(Command.WallSetTheme, WallSetTheme);
+            processor.RegisterCommand(Command.RoadSetTheme, RoadSetTheme);
         }
         
         private void WallSetTheme(Session session, Packet packet)
@@ -96,6 +97,37 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 var result = themeManager.SetWallTheme(city, theme);
+
+                ReplyWithResult(session, packet, result);
+            });
+        }
+        
+        private void RoadSetTheme(Session session, Packet packet)
+        {
+            uint cityId;
+            string theme;
+
+            try
+            {
+                cityId = packet.GetUInt32();
+                theme = packet.GetString();
+            }
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            ICity city;
+            locker.Lock(cityId, out city).Do(() =>
+            {
+                if (city == null || city.Owner != session.Player)
+                {
+                    ReplyError(session, packet, Error.ObjectNotFound);
+                    return;
+                }
+
+                var result = themeManager.SetRoadTheme(city, theme);
 
                 ReplyWithResult(session, packet, result);
             });

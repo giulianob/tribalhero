@@ -22,6 +22,7 @@ namespace Game.Logic.Procedures
                             formula.GetInitialAp(),
                             Theme.DEFAULT_THEME_ID,
                             Theme.DEFAULT_THEME_ID,
+                            Theme.DEFAULT_THEME_ID,
                             Theme.DEFAULT_THEME_ID);
 
             var mainBuildingPosition = cityPosition.Left();

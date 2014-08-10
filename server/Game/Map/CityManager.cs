@@ -8,6 +8,8 @@ using System.Text.RegularExpressions;
 using Game.Data;
 using Game.Data.Events;
 using Game.Logic.Procedures;
+using Game.Module;
+using Game.Module.Remover;
 using Game.Setup;
 using Game.Util;
 using Persistance;
@@ -24,13 +26,16 @@ namespace Game.Map
 
         private readonly IRegionManager regionManager;
 
+        private readonly ICityRemoverFactory cityRemoverFactory;
+
         public event EventHandler<NewCityEventArgs> CityAdded = (sender, args) => { };
         public event EventHandler<EventArgs> CityRemoved = (sender, args) => { };
 
-        public CityManager(IDbManager dbManager, IRegionManager regionManager)
+        public CityManager(IDbManager dbManager, IRegionManager regionManager, ICityRemoverFactory cityRemoverFactory)
         {
             this.dbManager = dbManager;
             this.regionManager = regionManager;
+            this.cityRemoverFactory = cityRemoverFactory;
         }
 
         public int Count
@@ -60,11 +65,14 @@ namespace Game.Map
                 //Set resource cap
                 procedure.SetResourceCap(iter.Current);
 
-                //Set up the city region (for minimap)
-                MiniMapRegion region;
-                if (regionManager.MiniMapRegions.TryGetMiniMapRegion(iter.Current.PrimaryPosition.X, iter.Current.PrimaryPosition.Y, out region))
+                if (iter.Current.InWorld)
                 {
-                    region.Add(iter.Current);
+                    //Set up the city region (for minimap)
+                    MiniMapRegion region;
+                    if (regionManager.MiniMapRegions.TryGetMiniMapRegion(iter.Current.PrimaryPosition.X, iter.Current.PrimaryPosition.Y, out region))
+                    {
+                        region.Add(iter.Current);
+                    }
                 }
             }
         }
@@ -130,6 +138,22 @@ namespace Game.Map
             }
 
             CityAdded(city, new NewCityEventArgs(false));
+
+            // Restart city remover if needed
+            switch (city.Deleted)
+            {
+                case City.DeletedState.DeletingCityOnly:
+                    cityRemoverFactory.CreateCityRemover(city.Id).Start(true);
+                    break;
+                case City.DeletedState.Deleting:
+                    city.Owner.Add(city);
+                    CityRemover cr = cityRemoverFactory.CreateCityRemover(city.Id);
+                    cr.Start(true);
+                    break;
+                case City.DeletedState.NotDeleted:
+                    city.Owner.Add(city);
+                    break;
+            }
         }
 
         private void RegisterEvents(ICity city)

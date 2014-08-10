@@ -464,6 +464,9 @@ namespace CSVToXML
                         case ActionType.TribeContributeActive:
                             writer.WriteStartElement("TribeContribute");
                             break;
+                        case ActionType.ResourceWithdrawActive:
+                            writer.WriteStartElement("ResourceWithdraw");
+                            break;
                         default:
                             writer.WriteStartElement("MISSING_WORKER_ACTION");
                             writer.WriteAttributeString("name", Enum.GetName(typeof(ActionType), req.Type));

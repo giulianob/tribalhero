@@ -37,7 +37,7 @@ namespace Game.Logic.Actions
 
         private readonly ICityFactory cityFactory;
 
-        private readonly Procedure procedure;
+        private readonly CityProcedure cityProcedure;
 
         private readonly IBarbarianTribeManager barbarianTribeManager;
 
@@ -59,7 +59,7 @@ namespace Game.Logic.Actions
                                        IObjectTypeFactory objectTypeFactory,
                                        IStructureCsvFactory structureCsvFactory,
                                        ICityFactory cityFactory,
-                                       Procedure procedure,
+                                       CityProcedure cityProcedure,
                                        IBarbarianTribeManager barbarianTribeManager,
                                        CallbackProcedure callbackProcedure)
         {
@@ -71,7 +71,7 @@ namespace Game.Logic.Actions
             this.objectTypeFactory = objectTypeFactory;
             this.structureCsvFactory = structureCsvFactory;
             this.cityFactory = cityFactory;
-            this.procedure = procedure;
+            this.cityProcedure = cityProcedure;
             this.barbarianTribeManager = barbarianTribeManager;
             this.callbackProcedure = callbackProcedure;
         }
@@ -88,10 +88,10 @@ namespace Game.Logic.Actions
                                        IObjectTypeFactory objectTypeFactory,
                                        IStructureCsvFactory structureCsvFactory,
                                        ICityFactory cityFactory,
-                                       Procedure procedure,
+                                       CityProcedure cityProcedure,
                                        IBarbarianTribeManager barbarianTribeManager,
                                        CallbackProcedure callbackProcedure)
-                : this(actionFactory, cityRemoverFactory, formula, world, locker, objectTypeFactory, structureCsvFactory, cityFactory, procedure, barbarianTribeManager, callbackProcedure)
+            : this(actionFactory, cityRemoverFactory, formula, world, locker, objectTypeFactory, structureCsvFactory, cityFactory, cityProcedure, barbarianTribeManager, callbackProcedure)
         {
             this.cityId = cityId;
             this.x = x;
@@ -205,7 +205,7 @@ namespace Game.Logic.Actions
                 var cityPosition = new Position(x, y);
 
                 // Creating New City
-                procedure.CreateCity(cityFactory, city.Owner, cityName, 0, cityPosition, barbarianTribeManager, out newCity);                
+                cityProcedure.CreateCity(cityFactory, city.Owner, cityName, 0, cityPosition, barbarianTribeManager, out newCity);                
 
                 world.Regions.SetTileType(x, y, 0, true);
 
@@ -281,7 +281,7 @@ namespace Game.Logic.Actions
                 structureCsvFactory.GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl + 1));
                 structure.EndUpdate();
 
-                procedure.InitCity(newCity, callbackProcedure, actionFactory);
+                cityProcedure.InitCity(newCity, callbackProcedure, actionFactory);
 
                 newCity.Worker.DoPassive(newCity, actionFactory.CreateCityPassiveAction(newCity.Id), false);
                 StateChange(ActionState.Completed);

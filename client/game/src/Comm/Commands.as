@@ -87,11 +87,13 @@ package src.Comm {
 		public static const CITY_HAS_AP_BONUS: int = 469;
 		public static const CITY_DEFAULT_THEME_UPDATE: int = 470;
 		public static const CITY_TROOP_THEME_UPDATE: int = 471;
+		public static const CITY_RESOURCES_WITHDRAW: int = 472;
 		public static const CITY_BATTLE_STARTED: int = 490;
 		public static const CITY_BATTLE_ENDED: int = 491;
 		public static const CITY_NEW_UPDATE: int = 497;
 		public static const CITY_CREATE: int = 498;
 		public static const CITY_CREATE_INITIAL: int = 499;
+        public static const CITY_MOVE: int = 500;
 		
 		public static const FOREST_INFO: int = 350;
         public static const FOREST_CAMP_CREATE: int = 351;

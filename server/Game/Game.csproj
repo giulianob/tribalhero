@@ -398,7 +398,9 @@
     <Compile Include="Logic\Actions\BarbarianTribe\BarbarianTribeAttackChainAction.cs" />
     <Compile Include="Logic\Actions\BarbarianTribe\BarbarianTribeEngageAttackPassiveAction.cs" />
     <Compile Include="Logic\Actions\BarbarianTribe\BarbarianTribeBattlePassiveAction.cs" />
+    <Compile Include="Logic\Actions\Miscellaneous\CityRebuildPassiveAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\CityResourceCapUpdatePassiveAction.cs" />
+    <Compile Include="Logic\Actions\ResourceActions\ResourceWithdrawActiveAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\ForestCampLaborUpdatePassiveAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\ForestCampRateUpdatePassiveAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\ResourceRateUpdatePassiveAction.cs" />
@@ -434,6 +436,8 @@
     <Compile Include="Logic\ITaskScheduler.cs" />
     <Compile Include="Logic\LimitedConcurrencyLevelTaskScheduler.cs" />
     <Compile Include="Logic\Notifications\NotificationManagerFactory.cs" />
+    <Compile Include="Logic\Procedures\CityProcedure.cs" />
+    <Compile Include="Logic\Procedures\InstantProcedure.cs" />
     <Compile Include="Logic\ReferenceManagerFactory.cs" />
     <Compile Include="Logic\Requirements\DistributedPointSystemRequirement.cs" />
     <Compile Include="Logic\Requirements\LayoutRequirements\ILayoutRequirement.cs" />
@@ -485,7 +489,6 @@
     <Compile Include="Logic\PassiveAction.cs" />
     <Compile Include="Logic\Procedures\CityBattleProcedure.cs" />
     <Compile Include="Logic\Procedures\BarbarianTribeBattleProcedure.cs" />
-    <Compile Include="Logic\Procedures\Procedure.CityCreate.cs" />
     <Compile Include="Logic\Procedures\Procedure.Structure.cs" />
     <Compile Include="Logic\Procedures\StrongholdBattleProcedure.cs" />
     <Compile Include="Logic\Requirements\EffectRequirement.cs" />
@@ -543,6 +546,7 @@
     <Compile Include="Map\RoadPathFinder.cs" />
     <Compile Include="Logic\IGameTask.cs" />
     <Compile Include="Module\Chat.cs" />
+    <Compile Include="Module\Remover\AllButYouSelector.cs" />
     <Compile Include="Module\IQueueListener.cs" />
     <Compile Include="Module\QueueListener.cs" />
     <Compile Include="Module\Remover\CityRemover.cs" />

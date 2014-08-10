@@ -193,6 +193,8 @@ namespace Game.Comm
         CityDefaultThemeUpdate = 470,
         
         CityTroopThemeUpdate = 471,
+        
+        CityResourceWithdraw = 472,
 
         CityBattleStarted = 490,
 
@@ -203,6 +205,8 @@ namespace Game.Comm
         CityCreate = 498,
 
         CityCreateInitial = 499,
+
+        CityMove = 500,
 
         #endregion
 

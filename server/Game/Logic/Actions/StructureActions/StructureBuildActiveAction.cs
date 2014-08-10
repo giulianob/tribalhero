@@ -10,6 +10,7 @@ using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
+using JetBrains.Annotations;
 
 #endregion
 
@@ -37,6 +38,8 @@ namespace Game.Logic.Actions
 
         private readonly CallbackProcedure callbackProcedure;
 
+        private readonly InstantProcedure instantProcedure;
+
         private ushort type;
 
         private readonly IWorld world;
@@ -62,7 +65,8 @@ namespace Game.Logic.Actions
                                           Procedure procedure,
                                           IRoadPathFinder roadPathFinder,
                                           ITileLocator tileLocator, 
-                                          CallbackProcedure callbackProcedure)  
+                                          CallbackProcedure callbackProcedure,
+                                          InstantProcedure instantProcedure)  
         {
             this.objectTypeFactory = objectTypeFactory;
             this.world = world;
@@ -74,6 +78,7 @@ namespace Game.Logic.Actions
             this.roadPathFinder = roadPathFinder;
             this.tileLocator = tileLocator;
             this.callbackProcedure = callbackProcedure;
+            this.instantProcedure = instantProcedure;
         }
 
         public StructureBuildActiveAction(uint cityId,
@@ -90,8 +95,9 @@ namespace Game.Logic.Actions
                                           Procedure procedure,
                                           IRoadPathFinder roadPathFinder,
                                           ITileLocator tileLocator, 
-                                          CallbackProcedure callbackProcedure)  
-            : this(objectTypeFactory, world, formula, requirementCsvFactory, structureCsvFactory, concurrency, procedure, roadPathFinder, tileLocator, callbackProcedure)
+                                          CallbackProcedure callbackProcedure,
+                                          InstantProcedure instantProcedure)  
+            : this(objectTypeFactory, world, formula, requirementCsvFactory, structureCsvFactory, concurrency, procedure, roadPathFinder, tileLocator, callbackProcedure, instantProcedure)
         {
             this.cityId = cityId;
             this.type = type;
@@ -250,10 +256,16 @@ namespace Game.Logic.Actions
             structureId = structure.ObjectId;
 
             // add to queue for completion
-            var buildTime = formula.BuildTime(structureBaseStats.BuildTime, city, city.Technologies);
-            endTime = SystemClock.Now.AddSeconds(CalculateTime(buildTime));
-            BeginTime = SystemClock.Now;
-
+            if (instantProcedure.BuildNext(city, structure))
+            {
+                endTime = beginTime = SystemClock.Now;
+            }
+            else
+            {
+                var buildTime = formula.BuildTime(structureBaseStats.BuildTime, city, city.Technologies);
+                endTime = SystemClock.Now.AddSeconds(CalculateTime(buildTime));
+                BeginTime = SystemClock.Now;
+            }
             city.References.Add(structure, this);
 
             world.Regions.UnlockRegions(lockedRegions);

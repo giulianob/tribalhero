@@ -8,7 +8,8 @@
     import src.Global;
     import src.Map.City;
     import src.Objects.Effects.Formula;
-    import src.Objects.StructureObject;
+import src.Objects.Resources;
+import src.Objects.StructureObject;
     import src.UI.Components.TradeResourcesPanel;
     import src.UI.GameJPanel;
 
@@ -61,7 +62,8 @@
 		public function createUI(): void {
 			setLayout(new SoftBoxLayout(AsWingConstants.VERTICAL, 0, AsWingConstants.TOP));
 
-			pnlResource = new TradeResourcesPanel(structure,Formula.contributeCapacity(structure.level));
+            var capacity:int = Formula.contributeCapacity(structure.level);
+			pnlResource = new TradeResourcesPanel(structure,new Resources(capacity,capacity,capacity,capacity,capacity));
 
 			pnlBottom = new JPanel();
 			pnlBottom.setSize(new IntDimension(200, 10));

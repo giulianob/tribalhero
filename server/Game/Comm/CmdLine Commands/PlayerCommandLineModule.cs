@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using Game.Data;
 using Game.Data.Tribe;
+using Game.Logic.Formulas;
 using Game.Map;
 using Game.Module;
 using Game.Module.Remover;
@@ -38,6 +39,8 @@ namespace Game.Comm
 
         private readonly TechnologyFactory technologyFactory;
 
+        private readonly Formula formula;
+
         private readonly IPlayersRemoverFactory playerRemoverFactory;
 
         private readonly IPlayerSelectorFactory playerSelectorFactory;
@@ -56,7 +59,8 @@ namespace Game.Comm
                                        ILocker locker,
                                        IStructureCsvFactory structureFactory,
                                        UnitFactory unitFactory,
-                                       TechnologyFactory technologyFactory)
+                                       TechnologyFactory technologyFactory,
+                                       Formula formula)
         {
             this.playerRemoverFactory = playerRemoverFactory;
             this.playerSelectorFactory = playerSelectorFactory;
@@ -69,6 +73,7 @@ namespace Game.Comm
             this.structureFactory = structureFactory;
             this.unitFactory = unitFactory;
             this.technologyFactory = technologyFactory;
+            this.formula = formula;
         }
 
         public void RegisterCommands(CommandLineProcessor processor)
@@ -98,6 +103,33 @@ namespace Game.Comm
             processor.RegisterCommand("giveachievement", GiveAchievement, PlayerRights.Admin);
             processor.RegisterCommand("givesupporterachievement", GiveSupporterAchievement, PlayerRights.Admin);
             processor.RegisterCommand("calculateexpensivecities", CalculateExpensiveCities, PlayerRights.Bureaucrat);
+            processor.RegisterCommand("deleteallplayers", DeleteAllPlayers, PlayerRights.Admin);
+        }
+
+        public string DeleteAllPlayers(Session session, string[] parms)
+        {
+            bool help = false;
+            try
+            {
+                var p = new OptionSet
+                {
+                    {"?|help|h", v => help = true},
+                };
+                p.Parse(parms);
+            }
+            catch (Exception)
+            {
+                help = true;
+            }
+
+            if (help)
+            {
+                return "calculateexpensivecities --servertitle=servertitle";
+            }
+            PlayersRemover playersRemover =
+                    playerRemoverFactory.CreatePlayersRemover(playerSelectorFactory.CreateAllButYouSelector(session.Player));
+
+            return string.Format("OK! Deleting {0} players.", playersRemover.DeletePlayers());
         }
 
         public string CalculateExpensiveCities(Session session, string[] parms)
@@ -129,32 +161,13 @@ namespace Game.Comm
             
             foreach (var city in world.Cities.AllCities())
             {
-                decimal expenses = 0m;
+                Resource resource;
+                int structureUpgrades;
+                int technologyUpgraes;
 
-                foreach (var structure in city)
-                {
-                    for (var lvl = 0; lvl <= structure.Lvl; lvl++)
-                    {
-                        expenses += calculateCost(structureFactory.GetCost(structure.Type, lvl));
-                    }
-                    
-                    foreach (var technology in structure.Technologies)
-                    {
-                        for (var lvl = 0; lvl <= technology.Level; lvl++)
-                        {
-                            expenses += calculateCost(technologyFactory.GetTechnology(technology.Type, (byte)lvl).TechBase.Resources);
-                        }
-                    }
-                }
+                formula.GetCityExpense(city, out resource, out structureUpgrades, out technologyUpgraes);
 
-                foreach (var unit in city.Template)
-                {
-                    for (var lvl = 1; lvl <= unit.Value.Lvl; lvl++)
-                    {                        
-                        expenses += calculateCost(unitFactory.GetUpgradeCost(unit.Value.Type, lvl));
-                    }                    
-
-                }
+                decimal expenses = calculateCost(resource);
 
                 values.Add(new {City = city, Expenses = expenses});
             }

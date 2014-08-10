@@ -335,3 +335,7 @@ Type,Level,Index,Max,Option,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 3005,1,0,1,,//tribal stuff,,,,,,,
 2108,1,0,1,,//forest camp,,,,,,,
 3011,1,0,1,,//grape field,,,,,,,
+,,,,,,,,,,,,
+//cranny,,,,,,,,,,,,
+3013,1,0,1,,,,,,,,,
+3013,1,1,1,,resource_withdraw,,,,,,,

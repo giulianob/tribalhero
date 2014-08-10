@@ -9,13 +9,15 @@
     import src.Map.*;
     import src.Objects.*;
     import src.UI.GameJSidebar;
-    import src.UI.Sidebars.NewCityPlaceholder.Buttons.NewCityButton;
+import src.UI.Sidebars.NewCityPlaceholder.Buttons.MoveCityButton;
+import src.UI.Sidebars.NewCityPlaceholder.Buttons.NewCityButton;
 
     public class NewCityPlaceholderSidebar extends GameJSidebar
 	{
 		private var pnlGroups: JPanel;		
 		private var newCityPlaceholderObj: NewCityPlaceholder;
-		private var newCityButton: NewCityButton;
+        private var moveCityButton: MoveCityButton;
+        private var newCityButton: NewCityButton;
 
 		public function NewCityPlaceholderSidebar(newCityPlaceholderObj: NewCityPlaceholder)
 		{
@@ -25,8 +27,11 @@
 
 			this.newCityButton = new NewCityButton(newCityPlaceholderObj);
 			pnlGroups.append(newCityButton);
-			
-			update();
+
+            this.moveCityButton = new MoveCityButton(newCityPlaceholderObj);
+            pnlGroups.append(moveCityButton);
+
+            update();
 			Global.gameContainer.selectedCity.addEventListener(City.RESOURCES_UPDATE, onResourcesUpdate);
 		}
 	
@@ -44,7 +49,12 @@
 				newCityButton.disable();
 			else
 				newCityButton.enable();
-		}
+
+            if (!moveCityButton.validateButton())
+                moveCityButton.disable();
+            else
+                moveCityButton.enable();
+        }
 
 		private function createUI() : void
 		{

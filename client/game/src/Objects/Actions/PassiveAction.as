@@ -17,7 +17,8 @@
 		public static const STRONGHOLD_DEFENSE: int = 254;
 		public static const FOREST_CAMP_HARVEST: int = 310;		
 		public static const STRUCTURE_CHANGE: int = 5103;
-		public static const CREATE_CITY: int = 505;		
+		public static const CREATE_CITY: int = 505;
+        public static const MOVE_CITY: int =506;
         public static const BARBARIAN_TRIBE_ATTACK: int = 710;		
 		
 		private static var actionLookup: Array = new Array(
@@ -28,6 +29,7 @@
 			{type: STRUCTURE_SELF_DESTROY, description: "Time Left", notificationDescription: selfDestroyNotification, icon: "PASSIVE_DEFENDING", cancellable: false },
 			{type: STRUCTURE_CHANGE, description: "Converting", notificationDescription: noNotification, icon: "PASSIVE_DEFENDING", cancellable: false },
 			{type: CREATE_CITY, description: "Building City", notificationDescription: noNotification, icon: "PASSIVE_DEFENDING", cancellable: false },
+            {type: MOVE_CITY, description: "Rebuilding City", notificationDescription: noNotification, icon: "PASSIVE_DEFENDING", cancellable: false },
 			{type: STRONGHOLD_ATTACK, description: "Attacking", notificationDescription: attackNotification, icon: "PASSIVE_ATTACKING", cancellable: false },
 			{type: STRONGHOLD_DEFENSE, description: "Defending", notificationDescription: defenseNotification, icon: "PASSIVE_DEFENDING", cancellable: false },
             {type: BARBARIAN_TRIBE_ATTACK, description: "Attacking", notificationDescription: attackNotification, icon: "PASSIVE_ATTACKING", cancellable: false }

@@ -44,7 +44,22 @@ namespace Game.Logic.Actions
 
         public StructureBuildActiveAction CreateStructureBuildActiveAction(uint cityId, ushort type, uint x, uint y, byte level)
         {
-            return new StructureBuildActiveAction(cityId, type, x, y, level, kernel.Get<IObjectTypeFactory>(), kernel.Get<IWorld>(), kernel.Get<Formula>(), kernel.Get<IRequirementCsvFactory>(), kernel.Get<IStructureCsvFactory>(), kernel.Get<ILocker>(), kernel.Get<Procedure>(), kernel.Get<IRoadPathFinder>(), kernel.Get<ITileLocator>(), kernel.Get<CallbackProcedure>());
+            return new StructureBuildActiveAction(cityId,
+                                                  type,
+                                                  x,
+                                                  y,
+                                                  level,
+                                                  kernel.Get<IObjectTypeFactory>(),
+                                                  kernel.Get<IWorld>(),
+                                                  kernel.Get<Formula>(),
+                                                  kernel.Get<IRequirementCsvFactory>(),
+                                                  kernel.Get<IStructureCsvFactory>(),
+                                                  kernel.Get<ILocker>(),
+                                                  kernel.Get<Procedure>(),
+                                                  kernel.Get<IRoadPathFinder>(),
+                                                  kernel.Get<ITileLocator>(),
+                                                  kernel.Get<CallbackProcedure>(),
+                                                  kernel.Get<InstantProcedure>());
         }
 
         public ResourceSendActiveAction CreateResourceSendActiveAction(uint cityId, uint structureId, uint targetCityId, Resource resource)
@@ -77,6 +92,17 @@ namespace Game.Logic.Actions
             return new ResourceGatherActiveAction(cityId, objectId, kernel.Get<ILocker>(), kernel.Get<IObjectTypeFactory>(), kernel.Get<IWorld>(), kernel.Get<IActionFactory>());
         }
 
+        public ResourceWithdrawActiveAction CreateResourceWithdrawActiveAction(uint cityId, uint objectId, Resource resource)
+        {
+            return new ResourceWithdrawActiveAction(cityId,
+                                                    objectId,
+                                                    resource,
+                                                    kernel.Get<ILocker>(),
+                                                    kernel.Get<IObjectTypeFactory>(),
+                                                    kernel.Get<IWorld>(),
+                                                    kernel.Get<IActionFactory>());
+        }
+
         public CityEngageDefensePassiveAction CreateCityEngageDefensePassiveAction(uint cityId, uint troopObjectId, FormationType formationType)
         {
             return new CityEngageDefensePassiveAction(cityId, troopObjectId, formationType, kernel.Get<BattleProcedure>(), kernel.Get<CityBattleProcedure>(), kernel.Get<IGameObjectLocator>());
@@ -99,7 +125,7 @@ namespace Game.Logic.Actions
 
         public TechnologyUpgradeActiveAction CreateTechnologyUpgradeActiveAction(uint cityId, uint structureId, uint techId)
         {
-            return new TechnologyUpgradeActiveAction(cityId, structureId, techId, kernel.Get<IWorld>(), kernel.Get<Formula>(), kernel.Get<ILocker>(), kernel.Get<TechnologyFactory>(), kernel.Get<CallbackProcedure>());
+            return new TechnologyUpgradeActiveAction(cityId, structureId, techId, kernel.Get<IWorld>(), kernel.Get<Formula>(), kernel.Get<ILocker>(), kernel.Get<TechnologyFactory>(), kernel.Get<CallbackProcedure>(),kernel.Get<InstantProcedure>());
         }
 
         public CityRadiusChangePassiveAction CreateCityRadiusChangePassiveAction()
@@ -114,7 +140,24 @@ namespace Game.Logic.Actions
 
         public CityCreatePassiveAction CreateCityCreatePassiveAction(uint cityId, uint x, uint y, string cityName)
         {
-            return new CityCreatePassiveAction(cityId, x, y, cityName, kernel.Get<IActionFactory>(), kernel.Get<ICityRemoverFactory>(), kernel.Get<Formula>(), kernel.Get<IWorld>(), kernel.Get<ILocker>(), kernel.Get<IObjectTypeFactory>(), kernel.Get<IStructureCsvFactory>(), kernel.Get<ICityFactory>(), kernel.Get<Procedure>(), kernel.Get<IBarbarianTribeManager>(), kernel.Get<CallbackProcedure>());
+            return new CityCreatePassiveAction(cityId, x, y, cityName, kernel.Get<IActionFactory>(), kernel.Get<ICityRemoverFactory>(), kernel.Get<Formula>(), kernel.Get<IWorld>(), kernel.Get<ILocker>(), kernel.Get<IObjectTypeFactory>(), kernel.Get<IStructureCsvFactory>(), kernel.Get<ICityFactory>(), kernel.Get<CityProcedure>(), kernel.Get<IBarbarianTribeManager>(), kernel.Get<CallbackProcedure>());
+        }
+
+        public CityRebuildPassiveAction CreateCityRebuildPassiveAction(uint cityId, Resource resource, int structureUpgrades, int technologyUpgrades)
+        {
+            return new CityRebuildPassiveAction(cityId,
+                                                resource,
+                                                structureUpgrades,
+                                                technologyUpgrades,
+                                                kernel.Get<IActionFactory>(),
+                                                kernel.Get<ILocker>(),
+                                                kernel.Get<CallbackProcedure>(),
+                                                kernel.Get<IStructureCsvFactory>(),
+                                                kernel.Get<CityProcedure>(),
+                                                kernel.Get<IWorld>(),
+                                                kernel.Get<TechnologyFactory>(),
+                                                kernel.Get<ITileLocator>(),
+                                                kernel.Get<IObjectTypeFactory>());
         }
 
         public StructureSelfDestroyActiveAction CreateStructureSelfDestroyActiveAction(uint cityId, uint objectId)
@@ -134,7 +177,7 @@ namespace Game.Logic.Actions
 
         public StructureUpgradeActiveAction CreateStructureUpgradeActiveAction(uint cityId, uint structureId)
         {
-            return new StructureUpgradeActiveAction(cityId, structureId, kernel.Get<IStructureCsvFactory>(), kernel.Get<Formula>(), kernel.Get<IWorld>(), kernel.Get<Procedure>(), kernel.Get<ILocker>(), kernel.Get<IRequirementCsvFactory>(), kernel.Get<IObjectTypeFactory>(), kernel.Get<CallbackProcedure>());
+            return new StructureUpgradeActiveAction(cityId, structureId, kernel.Get<IStructureCsvFactory>(), kernel.Get<Formula>(), kernel.Get<IWorld>(), kernel.Get<Procedure>(), kernel.Get<ILocker>(), kernel.Get<IRequirementCsvFactory>(), kernel.Get<IObjectTypeFactory>(), kernel.Get<CallbackProcedure>(), kernel.Get<InstantProcedure>());
         }
 
         public PropertyCreatePassiveAction CreatePropertyCreatePassiveAction()

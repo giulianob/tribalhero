@@ -20,7 +20,7 @@ namespace Game.Module.Remover
     {
         private readonly ILogger logger = LoggerFactory.Current.GetLogger<CityRemover>();
 
-        private const double SHORT_RETRY = 5;
+        private const double SHORT_RETRY = .1;
 
         private const double LONG_RETRY = 90;
 
@@ -90,6 +90,35 @@ namespace Game.Module.Remover
         public DateTime Time { get; private set; }
 
         public bool IsScheduled { get; set; }
+
+        public bool CanBeRemovedImmediately()
+        {
+            ICity city;
+            IStructure mainBuilding;
+
+            if (!world.TryGetObjects(cityId, out city))
+            {
+                throw new Exception("City not found");
+            }
+
+            return locker.Lock(GetForeignTroopLockList, new object[] {city}, city)
+                                      .Do(() =>
+                {
+                    if (city == null)
+                        return false;
+
+                    if (city.Battle != null)
+                        return false;
+
+                    if (city.Troops.StationedHere().Any())
+                        return false;
+
+                    if (city.Troops.MyStubs().Count() > 1)
+                        return false;
+
+                    return true;
+                });
+        }
 
         public void Callback(object custom)
         {
@@ -232,6 +261,10 @@ namespace Game.Module.Remover
                     world.Regions.Remove(mainBuilding);
                     city.ScheduleRemove(mainBuilding, false);
                     mainBuilding.EndUpdate();
+
+                    city.BeginUpdate();
+                    city.Deleted = City.DeletedState.DeletingCityOnly;
+                    city.EndUpdate();
 
                     Reschedule(SHORT_RETRY);
                     return;

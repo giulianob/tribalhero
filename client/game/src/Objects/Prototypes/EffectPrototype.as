@@ -23,6 +23,8 @@
         public static const EFFECT_POINT_SYSTEM_VALUE: int= 105;
         public static const EFFECT_DEFENSE_BONUS: int =106;
         public static const EFFECT_ATTACK_BONUS: int =107;
+        public static const EFFECT_INSTANT_BUILD: int =108;
+        public static const EFFECT_INSTANT_RESEARCH: int = 109;
 		
 		public static const LOCATION_OBJECT: int = 0;
 		public static const LOCATION_CITY: int = 1;

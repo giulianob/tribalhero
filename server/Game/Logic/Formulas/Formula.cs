@@ -17,13 +17,16 @@ namespace Game.Logic.Formulas
 		{
 		}
 	
-        public Formula(IObjectTypeFactory objectTypeFactory, UnitFactory unitFactory, IStructureCsvFactory structureFactory, ISystemVariableManager systemVariableManager)
+        public Formula(IObjectTypeFactory objectTypeFactory, UnitFactory unitFactory, IStructureCsvFactory structureFactory, ISystemVariableManager systemVariableManager, TechnologyFactory technologyFactory)
         {
+            TechnologyFactory = technologyFactory;
             SystemVariableManager = systemVariableManager;
             ObjectTypeFactory = objectTypeFactory;
             UnitFactory = unitFactory;
 	    	StructureCsvFactory = structureFactory;
         }
+
+        public virtual TechnologyFactory TechnologyFactory { get; set; }
 
         public virtual IObjectTypeFactory ObjectTypeFactory { get; set; }
 

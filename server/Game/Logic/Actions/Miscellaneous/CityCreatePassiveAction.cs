@@ -177,7 +177,7 @@ namespace Game.Logic.Actions
                 return Error.ResourceNotEnough;
             }
 
-            var lockedRegions = world.Regions.LockRegions(x, y, formula.GetInitialCityRadius());
+            var lockedRegions = world.Regions.LockMultitileRegions(x, y, formula.GetInitialCityRadius());
 
             if (!objectTypeFactory.IsTileType("CityStartTile", world.Regions.GetTileType(x, y)))
             {

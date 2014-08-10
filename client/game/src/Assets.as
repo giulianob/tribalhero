@@ -576,6 +576,13 @@
         [EmbedPosition(name = "map", x = "25", y = "7")]
         public static const PIRATES_GRAPE_FIELD_STRUCTURE: Class;
 
+        // Cobblestone road pack
+        [Embed(source = "../../../graphics/themes/cobblestone/THUMBNAIL.png")]
+        public static const COBBLESTONE_THEME_THUMBNAIL: Class;
+
+        [Embed(source = "../../../graphics/themes/cobblestone/BANNER.png")]
+        public static const COBBLESTONE_THEME_BANNER: Class;
+
         // Feudal Japan structure pack
         [Embed(source = "../../../graphics/themes/feudaljapan/WALL.png")]
         public static const FEUDALJAPAN_WALL_TILESET: Class;

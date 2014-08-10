@@ -93,6 +93,15 @@ package src.Comm.Commands {
             return mapComm.send(session, packet);
         }
 
+        public function setRoadTheme(cityId: int, theme: String): Promise {
+            var packet: Packet = new Packet();
+            packet.cmd = Commands.ROAD_SET_THEME;
+            packet.writeUInt(cityId);
+            packet.writeString(theme);
+
+            return mapComm.send(session, packet);
+        }
+
         public function setDefaultTroopTheme(cityId: int, theme: String): Promise {
             var packet: Packet = new Packet();
             packet.cmd = Commands.STORE_SET_TROOP_THEME;

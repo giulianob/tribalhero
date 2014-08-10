@@ -80,7 +80,10 @@ namespace Game.Logic.Procedures
                             cityPosition,
                             formula.GetInitialCityResources(),
                             formula.GetInitialCityRadius(),
-                            formula.GetInitialAp());
+                            formula.GetInitialAp(),
+                            Theme.DEFAULT_THEME_ID,
+                            Theme.DEFAULT_THEME_ID,
+                            Theme.DEFAULT_THEME_ID);
 
             var mainBuildingPosition = cityPosition.Left();
             IStructure mainBuilding = city.CreateStructure(2000, beginningLevel, mainBuildingPosition.X, mainBuildingPosition.Y);

@@ -38,7 +38,7 @@ namespace Game.Data
         {
             get
             {
-                return limit;
+                return limit <= 0 ? 99999 : limit;
             }
             set
             {

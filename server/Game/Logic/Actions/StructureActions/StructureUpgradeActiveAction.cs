@@ -40,6 +40,8 @@ namespace Game.Logic.Actions
 
         private readonly CallbackProcedure callbackProcedure;
 
+        private readonly InstantProcedure instantProcedure;
+
         public StructureUpgradeActiveAction(IStructureCsvFactory structureCsvFactory,
                                             Formula formula,
                                             IWorld world,
@@ -47,7 +49,8 @@ namespace Game.Logic.Actions
                                             ILocker locker,
                                             IRequirementCsvFactory requirementCsvFactory,
                                             IObjectTypeFactory objectTypeFactory,
-                                            CallbackProcedure callbackProcedure)
+                                            CallbackProcedure callbackProcedure,
+                                            InstantProcedure instantProcedure)
         {
             this.structureCsvFactory = structureCsvFactory;
             this.formula = formula;
@@ -57,6 +60,7 @@ namespace Game.Logic.Actions
             this.requirementCsvFactory = requirementCsvFactory;
             this.objectTypeFactory = objectTypeFactory;
             this.callbackProcedure = callbackProcedure;
+            this.instantProcedure = instantProcedure;
         }
 
         public StructureUpgradeActiveAction(uint cityId,
@@ -68,8 +72,9 @@ namespace Game.Logic.Actions
                                             ILocker locker,
                                             IRequirementCsvFactory requirementCsvFactory,
                                             IObjectTypeFactory objectTypeFactory,
-                                            CallbackProcedure callbackProcedure)
-            : this(structureCsvFactory, formula, world, procedure, locker, requirementCsvFactory, objectTypeFactory, callbackProcedure)
+                                            CallbackProcedure callbackProcedure,
+                                            InstantProcedure instantProcedure)
+            : this(structureCsvFactory, formula, world, procedure, locker, requirementCsvFactory, objectTypeFactory, callbackProcedure, instantProcedure)
         {
             this.cityId = cityId;
             this.structureId = structureId;
@@ -145,9 +150,16 @@ namespace Game.Logic.Actions
             structure.City.Resource.Subtract(cost);
             structure.City.EndUpdate();
 
-            var buildTime = formula.BuildTime(structureCsvFactory.GetTime(structure.Type, (byte)(structure.Lvl + 1)), city, structure.Technologies);
-            endTime = SystemClock.Now.AddSeconds(CalculateTime(buildTime));
-            BeginTime = SystemClock.Now;
+            if (instantProcedure.BuildNext(city, structure))
+            {
+                endTime = BeginTime = SystemClock.Now;
+            }
+            else
+            {
+                var buildTime = formula.BuildTime(structureCsvFactory.GetTime(structure.Type, (byte)(structure.Lvl + 1)), city, structure.Technologies);
+                endTime = SystemClock.Now.AddSeconds(CalculateTime(buildTime));
+                BeginTime = SystemClock.Now;
+            }
 
             return Error.Ok;
         }

@@ -33,17 +33,21 @@ namespace Game.Logic.Actions
 
         private readonly CallbackProcedure callbackProcedure;
 
+        private readonly InstantProcedure instantProcedure;
+
         public TechnologyUpgradeActiveAction(IWorld world,
                                              Formula formula,
                                              ILocker locker,
                                              TechnologyFactory technologyFactory,
-                                             CallbackProcedure callbackProcedure)
+                                             CallbackProcedure callbackProcedure,
+                                             InstantProcedure instantProcedure)
         {
             this.world = world;
             this.formula = formula;
             this.locker = locker;
             this.technologyFactory = technologyFactory;
             this.callbackProcedure = callbackProcedure;
+            this.instantProcedure = instantProcedure;
         }
 
         public TechnologyUpgradeActiveAction(uint cityId,
@@ -53,8 +57,9 @@ namespace Game.Logic.Actions
                                              Formula formula,
                                              ILocker locker,
                                              TechnologyFactory technologyFactory,
-                                             CallbackProcedure callbackProcedure)
-            : this(world, formula, locker, technologyFactory, callbackProcedure)
+                                             CallbackProcedure callbackProcedure,
+                                             InstantProcedure instantProcedure)
+            : this(world, formula, locker, technologyFactory, callbackProcedure, instantProcedure)
         {
             this.cityId = cityId;
             this.structureId = structureId;
@@ -166,8 +171,15 @@ namespace Game.Logic.Actions
             city.Resource.Subtract(techBase.Resources);
             city.EndUpdate();
 
-            BeginTime = DateTime.UtcNow;
-            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(formula.BuildTime((int)techBase.Time, city, city.Technologies)));
+            if (instantProcedure.ResearchNext(city))
+            {
+                beginTime = endTime = SystemClock.Now;
+            }
+            else
+            {
+                BeginTime = SystemClock.Now;
+                endTime = SystemClock.Now.AddSeconds(CalculateTime(formula.BuildTime((int)techBase.Time, city, city.Technologies)));
+            }
 
             return Error.Ok;
         }

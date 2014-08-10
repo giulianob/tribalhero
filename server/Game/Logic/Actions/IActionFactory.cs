@@ -37,6 +37,8 @@ namespace Game.Logic.Actions
 
         ResourceGatherActiveAction CreateResourceGatherActiveAction(uint cityId, uint objectId);
 
+        ResourceWithdrawActiveAction CreateResourceWithdrawActiveAction(uint cityId, uint objectId, Resource resource);
+
         CityEngageDefensePassiveAction CreateCityEngageDefensePassiveAction(uint cityId, uint troopObjectId, FormationType formationType);
 
         CityEngageAttackPassiveAction CreateCityEngageAttackPassiveAction(uint cityId,
@@ -58,6 +60,8 @@ namespace Game.Logic.Actions
         TechnologyCreatePassiveAction CreateTechnologyCreatePassiveAction();
 
         CityCreatePassiveAction CreateCityCreatePassiveAction(uint cityId, uint x, uint y, string cityName);
+
+        CityRebuildPassiveAction CreateCityRebuildPassiveAction(uint cityId, Resource resource, int structureUpgrades, int technologyUpgrades);
 
         StructureSelfDestroyActiveAction CreateStructureSelfDestroyActiveAction(uint cityId, uint objectId);
 

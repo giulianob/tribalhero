@@ -1,42 +1,50 @@
 ﻿
 package src.UI.Sidebars.ObjectInfo.Buttons {
-    import flash.events.Event;
-    import flash.events.MouseEvent;
+import System.Linq.Enumerable;
 
-    import src.Global;
-    import src.Map.City;
-    import src.Map.CityObject;
-    import src.Objects.*;
-    import src.Objects.Actions.ActionButton;
-    import src.Objects.Actions.BuildAction;
-    import src.Objects.Actions.CurrentActiveAction;
-    import src.Objects.Actions.StructureUpgradeAction;
-    import src.Objects.Effects.Formula;
-    import src.Objects.Factories.*;
-    import src.Objects.Prototypes.*;
-    import src.UI.Cursors.*;
-    import src.UI.Tooltips.StructureBuildTooltip;
-    import src.Util.StringHelper;
-    import src.Util.Util;
+import flash.events.Event;
+import flash.events.MouseEvent;
 
-    public class BuildButton extends ActionButton
+import src.Global;
+import src.Map.City;
+import src.Map.CityObject;
+import src.Objects.*;
+import src.Objects.Actions.ActionButton;
+import src.Objects.Actions.BuildAction;
+import src.Objects.Effects.Formula;
+import src.Objects.Factories.*;
+import src.Objects.Prototypes.*;
+import src.UI.Cursors.*;
+import src.UI.Tooltips.StructureBuildTooltip;
+import src.Util.StringHelper;
+import src.Util.Util;
+
+public class BuildButton extends ActionButton
 	{
-		private var structPrototype: StructurePrototype;
+
+        private var structPrototype: StructurePrototype;
 		private var buildToolTip: StructureBuildTooltip;
 
-		public function BuildButton(parentObj: SimpleGameObject, structPrototype: StructurePrototype)
-		{
-			super(parentObj, structPrototype.getName());
+		public function BuildButton(parentObj: SimpleGameObject, structPrototype: StructurePrototype) {
+            super(parentObj, structPrototype.getName());
 
-			this.structPrototype = structPrototype;
+            this.structPrototype = structPrototype;
 
-			buildToolTip = new StructureBuildTooltip(parentObj as StructureObject, structPrototype);
+            var city:City = Global.map.cities.get(parentObj.groupId);
 
-			addEventListener(MouseEvent.CLICK, onMouseClick);
-			addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
-			addEventListener(MouseEvent.MOUSE_MOVE, onMouseOver);
-			addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
-		}
+            var instantBuild:Boolean = Enumerable.from(city.techManager.getEffects(EffectPrototype.EFFECT_INSTANT_BUILD, EffectPrototype.INHERIT_ALL)).any() &&
+                    !ObjectFactory.isType("NoInstantUpgrade",structPrototype.type);
+
+            buildToolTip = new StructureBuildTooltip(parentObj as StructureObject, structPrototype, instantBuild);
+            if (instantBuild) {
+                this.setText(this.getText() + " *");
+            }
+            addEventListener(MouseEvent.CLICK, onMouseClick);
+            addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
+            addEventListener(MouseEvent.MOUSE_MOVE, onMouseOver);
+            addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
+
+        }
 
 		public function onMouseOver(event: MouseEvent):void
 		{

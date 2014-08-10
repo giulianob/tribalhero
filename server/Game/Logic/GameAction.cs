@@ -89,6 +89,8 @@ namespace Game.Logic
 
         ForestCampLaborUpdatePassive = 314,
 
+        ResourceWithdrawActive = 315,
+
         TechnologyCreatePassive = 400,
 
         TechnologyDeletePassive = 401,
@@ -104,6 +106,8 @@ namespace Game.Logic
         CityResourceCapUpdatePassive = 504,
 
         CityCreatePassive = 505,
+
+        CityRebuildPassive = 506,
 
         RoadBuildActive = 510,
 

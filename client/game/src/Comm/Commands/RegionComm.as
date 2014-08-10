@@ -47,8 +47,28 @@
 			packet.writeString(cityName);
 			session.write(packet, mapComm.catchAllErrors);
 		}
-		
-		public function buildRoad(cityId: int, x: int, y: int) : void {
+
+        public function onReceiveMoveCity(packet:Packet, cityName:String):void {
+            if(MapComm.tryShowError(packet)) return;
+
+            var index : int = Enumerable.from(Global.map.cities).takeWhile(function(city: City):Boolean{
+                return city.name!=cityName;
+            }).count();
+            Global.map.cities.removeByIndex(index);
+            Global.gameContainer.removeCityFromUI(cityName);
+
+        }
+        public function moveCity(cityId: int, cityName:String, x: int, y: int, newCityName: String) : void {
+            var packet: Packet = new Packet();
+            packet.cmd = Commands.CITY_MOVE;
+            packet.writeUInt(cityId);
+            packet.writeUInt(x);
+            packet.writeUInt(y);
+            packet.writeString(newCityName);
+            session.write(packet, onReceiveMoveCity, cityName);
+        }
+
+        public function buildRoad(cityId: int, x: int, y: int) : void {
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.REGION_ROAD_BUILD;
 			packet.writeUInt(cityId);

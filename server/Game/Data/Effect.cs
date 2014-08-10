@@ -112,6 +112,10 @@ namespace Game.Data
 
         DefenseBonus = 106,
 
-        AttackBonus = 107
+        AttackBonus = 107,
+
+        InstantStructureBuild = 108,
+
+        InstantTechnologyBuild = 109
     }
 }

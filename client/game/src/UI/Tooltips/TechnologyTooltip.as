@@ -19,6 +19,7 @@ package src.UI.Tooltips {
 
 		public var techPrototype: TechnologyPrototype;
 		public var nextTechPrototype: TechnologyPrototype;
+        public var instantResearch: Boolean;
 
 		public var missingRequirements: Array;
 
@@ -35,10 +36,11 @@ package src.UI.Tooltips {
 		private var pnlFooter:JPanel;
 		private var pnlResources:JPanel;
 
-		public function TechnologyTooltip(parentObj: StructureObject, techPrototype: TechnologyPrototype, nextTechPrototype: TechnologyPrototype = null) {
+		public function TechnologyTooltip(parentObj: StructureObject, techPrototype: TechnologyPrototype, nextTechPrototype: TechnologyPrototype = null, instantResearch: Boolean = false) {
 			this.parentObj = parentObj;
 			this.techPrototype = techPrototype;
 			this.nextTechPrototype = nextTechPrototype;
+            this.instantResearch = instantResearch;
 		}
 
 		override public function draw(): void
@@ -77,7 +79,12 @@ package src.UI.Tooltips {
 				ui.append(pnlNextLvl);
 
 				lblNextLvlDescription.setText(nextTechPrototype.getDescription());
-				lblNextLvlTime.setText(DateUtil.formatTime(Formula.buildTime(parentObj, nextTechPrototype.time, parentObj.getCorrespondingCityObj().techManager)));
+
+                if(instantResearch) {
+                    lblNextLvlTime.setText("Instant");
+                } else {
+				    lblNextLvlTime.setText(DateUtil.formatTime(Formula.buildTime(parentObj, nextTechPrototype.time, parentObj.getCorrespondingCityObj().techManager)));
+                }
 
 				if (missingRequirements != null && missingRequirements.length > 0)
 				{

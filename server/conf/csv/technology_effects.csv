@@ -565,3 +565,7 @@ TechType,Lvl,Effect,Location,IsPrivate,P1,P2,P3,P4,P5
 22048,8,UnitTrainInstantTime,City,FALSE,2204,BarrackUnits,40,150,
 22048,9,UnitTrainInstantTime,City,FALSE,2204,BarrackUnits,45,150,
 22048,10,UnitTrainInstantTime,City,FALSE,2204,BarrackUnits,50,150,
+,,,,,,,,,
+// instant build,,,,,,,,,
+30131,1,InstantStructureBuild,City,FALSE,,,,,
+30132,1,InstantTechnologyBuild,City,FALSE,,,,,

@@ -86,8 +86,10 @@ namespace Game.Logic.Procedures
                 {
                     const string warnMessage =
                             @"Now that you are out of newbie protection, other players are able to attack you. Someone has just finished attacking your town and has probably taken some resources from you. You can see how strong the attack was and how much resources they took in the battle report that was generated for this battle. 
-You have several things you can do to help protect your city from attacks. The first is to build a basement which can be done from your lumbermill. Basements will protect up to a certain amount of resources from being looted. If you plan on going offline for a while, your basements can also build temporary basements which will extend the amount of protected resources. 
-Another option is increase your city's defenses. The best way to do this early in the game is to build some towers. Towers are built from the training ground or barrack and provide defense for structures within its radius. Any units in your city will also join the battle but be careful since an attacker may kill your entire army in a battle. You can hide your units if you don't want them to defend your town when you get attacked.
+You have several things you can do to help protect your city from attacks.
+1) The first is to build a basement which can be done from your lumbermill. Basements will protect up to a certain amount of resources from being looted. If you plan on going offline for a while, your basements can also build temporary basements which will extend the amount of protected resources.
+2) Another option is increase your city's defense. The best way to do this early in the game is to build some towers. Towers are built from the training ground or barrack and provide defense for structures within its radius. Any units in your city will also join the battle but be careful since an attacker may kill your entire army in a battle. You can hide your units if you don't want them to defend your town when you get attacked.
+3) If you find yourself undefendable against repeated attacks by one or more players, you can rebuild your city at a new location with a small penalty.
 Good luck and feel free to ask for help in the chat if you have any questions.";
 
                     targetCity.Owner.SendSystemMessage(null, "Your city has been attacked", warnMessage);

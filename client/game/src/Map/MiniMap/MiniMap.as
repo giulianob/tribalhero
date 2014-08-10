@@ -308,6 +308,18 @@
 			pointers.push(pointer);
 			addChild(pointer);
 		}
+
+        public function removePointer(name: String): void {
+            var pointer: MiniMapPointer = Enumerable.from(pointers).first(function(p:MiniMapPointer):Boolean {
+                return p.getPointerName() == name;
+            });
+
+            removeChild(pointer);
+            if(pointer!=null) {
+                var index: int = pointers.indexOf(pointer);
+                pointers.slice(index,index);
+            }
+        }
 		
 		public function setCityPointer(name: String): void {
 			if (cityPointer != null && cityPointer.getPointerName() != name) {

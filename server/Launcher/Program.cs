@@ -43,6 +43,7 @@ namespace Launcher
             }
 
             Log.Info("The game has begun");
+
             Engine.AttachExceptionHandler();
             Config.LoadConfigFile(settingsFile);
 

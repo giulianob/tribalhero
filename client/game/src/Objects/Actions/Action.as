@@ -19,7 +19,7 @@ package src.Objects.Actions {
 			{ name: "Upgrade Units", icon: ICON_UPGRADE, actions: [ UnitUpgradeButton ] },				
 			{ name: "Convert Structure", icon: ICON_HAMMER, actions: [ StructureChangeButton ] },
 			{ name: "Research", icon: ICON_BOOK, actions: [ TechnologyButton ] },			
-			{ name: "Other", icon: ICON_QUESTION, actions: [ DefaultActionButton, ForestCampBuildButton, LaborMoveButton, BuildRoadButton, DestroyRoadButton, MarketButton, ViewDestinationButton, ViewBattleButton, ViewUnitsButton, ForestCampRemoveButton, StructureUserDowngradeButton, SendResourcesButton, StructureSelfDestroyButton, ResourceGatherButton, TribeContributeButton, SendAttackButton, SendReinforcementButton] },
+			{ name: "Other", icon: ICON_QUESTION, actions: [ DefaultActionButton, ForestCampBuildButton, LaborMoveButton, BuildRoadButton, DestroyRoadButton, MarketButton, ViewDestinationButton, ViewBattleButton, ViewUnitsButton, ForestCampRemoveButton, StructureUserDowngradeButton, SendResourcesButton, StructureSelfDestroyButton, ResourceGatherButton, TribeContributeButton, SendAttackButton, SendReinforcementButton, ResourceWithdrawButton] },
 		];	
 		
 		public static const CONCURRENCY_STANDALONE: int = 1;
@@ -39,6 +39,7 @@ package src.Objects.Actions {
 			308: CONCURRENCY_CONCURRENT, // FOREST CAMP BUILD
 			309: CONCURRENCY_NORMAL, // FOREST CAMP REMOVE
 			311: CONCURRENCY_CONCURRENT, // RESOURCE GATHER
+            312: CONCURRENCY_NORMAL,
 			402: CONCURRENCY_NORMAL, // TECH UPGRADE
 			510: CONCURRENCY_CONCURRENT, // ROAD BUILD
 			511: CONCURRENCY_CONCURRENT, // ROAD DESTROY
@@ -84,6 +85,7 @@ package src.Objects.Actions {
 		public static const FOREST_CAMP_BUILD: int = 308;
 		public static const FOREST_CAMP_REMOVE: int = 309;
 		public static const RESOURCES_GATHER: int = 311;
+        public static const RESOURCES_WITHDRAW: int = 312;
         public static const TECHNOLOGY_UPGRADE: int = 402;
 		public static const ROAD_BUILD: int = 510;
 		public static const ROAD_DESTROY: int = 511;
@@ -92,7 +94,7 @@ package src.Objects.Actions {
 		public static const BARBARIAN_TRIBE_ATTACK_CHAIN: int = 710;
 		public static const DEFAULT_ACTION: int = 801;
 		public static const TRIBE_CONTRIBUTE: int = 1018;
-		
+
 		public var actionType: int;
 		public var effectReq: EffectReqManager;
 		public var effectReqInherit: int;

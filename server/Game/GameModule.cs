@@ -230,6 +230,7 @@ namespace Game
             container.Register<CityBattleProcedure>(Lifestyle.Singleton);
             container.Register<BarbarianTribeBattleProcedure>(Lifestyle.Singleton);
             container.Register<CallbackProcedure>(Lifestyle.Singleton);
+            container.Register<InstantProcedure>(Lifestyle.Singleton);
             container.Register<Random>(() => new Random());
             container.Register<ISystemVariableManager, SystemVariableManager>(Lifestyle.Singleton);
             container.Register<SystemVariablesUpdater>(Lifestyle.Singleton);            

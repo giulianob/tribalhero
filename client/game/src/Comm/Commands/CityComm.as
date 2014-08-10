@@ -502,7 +502,19 @@
 			
 			session.write(packet, mapComm.catchAllErrors);
 		}
-		
+
+        public function withdrawResources(resources:Resources, cityId:int, objId:int, onWithdawComplete: Function):void {
+            var packet:Packet = new Packet();
+            packet.cmd = Commands.CITY_RESOURCES_WITHDRAW;
+            packet.writeUInt(cityId);
+            packet.writeUInt(objId);
+            packet.writeInt(resources.crop);
+            packet.writeInt(resources.gold);
+            packet.writeInt(resources.iron);
+            packet.writeInt(resources.wood);
+            session.write(packet, onWithdawComplete);
+        }
+
 		public function technologyUpgrade(cityId:int, parent:int, type:int):void
 		{
 			var packet:Packet = new Packet();

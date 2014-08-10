@@ -246,5 +246,42 @@ namespace Game.Logic.Formulas
             influencePoints = (80 + 50 * cityCount) * cityCount;
             wagons = 50 * cityCount;
         }
+
+        public void GetCityExpense(ICity city, out Resource resource, out int structureUpgrades, out int technologyUpgrades)
+        {
+            resource = new Resource();
+            structureUpgrades = 0;
+            technologyUpgrades = 0;
+
+            foreach (var structure in city)
+            {
+                if (ObjectTypeFactory.IsStructureType("NoInfluencePoint",structure)) continue;
+                
+                for (var lvl = 0; lvl <= structure.Lvl; lvl++)
+                {
+                    resource.Add(StructureCsvFactory.GetCost(structure.Type, lvl));
+                    if (lvl > 0)
+                        ++structureUpgrades;
+                }
+
+                foreach (var technology in structure.Technologies)
+                {
+                    for (var lvl = 0; lvl <= technology.Level; lvl++)
+                    {
+                        resource += TechnologyFactory.GetTechnology(technology.Type, (byte)lvl).TechBase.Resources;
+                        if (lvl > 0)
+                            ++technologyUpgrades;
+                    }
+                }
+            }
+
+            foreach (var unit in city.Template)
+            {
+                for (var lvl = 1; lvl <= unit.Value.Lvl; lvl++)
+                {
+                    resource += UnitFactory.GetUpgradeCost(unit.Value.Type, lvl);
+                }
+            }
+        }
     }
 }

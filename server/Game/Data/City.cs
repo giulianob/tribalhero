@@ -34,6 +34,8 @@ namespace Game.Data
             Deleting,
 
             Deleted,
+
+            DeletingCityOnly
         }
 
         #region Events
@@ -914,6 +916,14 @@ namespace Game.Data
                 bw.Write((byte)(battleProcedure.IsNewbieProtected(Owner) ? 1 : 0));
                 ms.Position = 0;
                 return ms.ToArray();
+            }
+        }
+
+        public bool InWorld
+        {
+            get
+            {
+                return Deleted == DeletedState.Deleting || Deleted == DeletedState.NotDeleted;
             }
         }
 

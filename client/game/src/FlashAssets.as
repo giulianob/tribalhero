@@ -577,5 +577,12 @@
 
         [Embed(source = "../../../graphics/themes/warelephant/WARELEPHANT_BANNER.png")]
         public static const WARELEPHANT_THEME_BANNER: Class;
+
+        // Cobblestone road pack
+        [Embed(source = "../../../graphics/themes/cobblestone/COBBLESTONE_THUMBNAIL.png")]
+        public static const COBBLESTONE_THEME_THUMBNAIL: Class;
+
+        [Embed(source = "../../../graphics/themes/cobblestone/COBBLESTONE_BANNER.png")]
+        public static const COBBLESTONE_THEME_BANNER: Class;
     }
 }

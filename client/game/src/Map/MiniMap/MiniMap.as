@@ -1,43 +1,39 @@
 ﻿package src.Map.MiniMap
 {
-    import src.Map.*;
     import System.Linq.Enumerable;
 
-    import flash.display.Sprite;
-    import flash.events.Event;
-    import flash.events.MouseEvent;
     import flash.geom.Point;
-
-    import org.aswing.ASColor;
-    import org.aswing.graphics.Graphics2D;
-    import org.aswing.graphics.SolidBrush;
+    import flash.geom.Rectangle;
 
     import src.Constants;
+    import src.Events.NavigateEvent;
     import src.Global;
-    import src.Map.MiniMapDrawers.*;
+    import src.Map.*;
+    import src.Objects.Factories.SpriteFactory;
     import src.Objects.ObjectContainer;
     import src.UI.Components.MiniMapPointer;
     import src.Util.Util;
 
-	public class MiniMap extends Sprite
+    import starling.display.*;
+    import starling.display.graphics.RoundedRectangle;
+    import starling.events.*;
+
+    public class MiniMap extends Sprite
 	{
 		public static const NAVIGATE_TO_POINT: String = "NAVIGATE_TO_POINT";
 
 		private var regionSpace: Sprite;
 		private var regions: MiniMapRegionList;
-		private var filter: MiniMapDrawer = new MiniMapDrawer();
+		private var mapFilter: MiniMapDrawer = new MiniMapDrawer();
 		private var legend: MiniMapLegend = new MiniMapLegend();
 		private var pendingRegions: Array = [];
 
-
-
 		public var objContainer: ObjectContainer;
 
-		private var screenRect: Sprite;
+		private var screenRect: Shape;
 		private var mapHolder: Sprite;
 		private var bg: Sprite;
-		private var mapMask: Sprite;
-		
+
 		private var pointers: Array = [];
 		private var pointersVisible: Boolean = false;
 		private var cityPointer: MiniMapPointer;
@@ -50,6 +46,8 @@
 
 		public function MiniMap(width: int, height: int)
 		{
+            addEventListener(TouchEvent.TOUCH, onNavigate);
+
 			regions = new MiniMapRegionList();
 
 			regionSpace = new Sprite();
@@ -58,29 +56,20 @@
 
 			mapHolder = new Sprite();
 
-			screenRect = new Sprite();
+			screenRect = new Shape();
 			
 			mapHolder.addChild(regionSpace);
 			mapHolder.addChild(objContainer);
 			mapHolder.addChild(screenRect);
-
-
 			bg = new Sprite();
 
-			addEventListener(MouseEvent.CLICK, onNavigate);
-
-			mapMask = new Sprite();
-
-			addChild(bg);
-			addChild(mapHolder);
-			addChild(mapMask);
-
-			mask = mapMask;
+            addChild(bg);
+            addChild(mapHolder);
 
 			resize(width, height);
 			
-            filter.addOnChangeListener(onFilterChange);
-            filter.applyLegend(legend);
+            mapFilter.addOnChangeListener(onFilterChange);
+            mapFilter.applyLegend(legend);
 
 			addEventListener(Event.REMOVED_FROM_STAGE, function(e: Event): void {
 				legend.hide();
@@ -92,7 +81,7 @@
 			var tilesW: Number = (Constants.screenW * Global.gameContainer.camera.getZoomFactorOverOne()) / Constants.tileW + 0.5;
 			var tilesH: Number = (Constants.screenH * Global.gameContainer.camera.getZoomFactorOverOne()) / Constants.tileH + 0.5;
 
-			if (tilesW * Constants.miniMapTileW < this.miniMapWidth && tilesH * Constants.miniMapTileH < this.miniMapHeight) {			
+			if (tilesW * Constants.miniMapTileW < this.miniMapWidth && tilesH * Constants.miniMapTileH < this.miniMapHeight) {
 				screenRect.graphics.clear();
 				screenRect.graphics.lineStyle(1, 0xFFFFFF, 0.8);
 				screenRect.graphics.drawRect(0, 0, tilesW * Constants.miniMapTileW, tilesH * Constants.miniMapTileH);
@@ -101,22 +90,20 @@
 			// Resize map
 			mapHolder.x = (this.miniMapWidth / 2) - (screenRect.width / 2);
 			mapHolder.y = (this.miniMapHeight / 2) - (screenRect.height / 2);
+            mapHolder.clipRect = new Rectangle(-mapHolder.x, -mapHolder.y, this.miniMapWidth, this.miniMapHeight);
 
-			bg.graphics.clear();
-			var g: Graphics2D = new Graphics2D(bg.graphics);
-			bg.alpha = 0.8;
-			g.fillRoundRect(new SolidBrush(ASColor.BLACK), 0, 0, this.miniMapWidth, this.miniMapHeight, 10);
+            bg.removeChildren();
+            var bgRect:RoundedRectangle = new RoundedRectangle(this.miniMapWidth, this.miniMapHeight);
+            bgRect.material.color = 0x000000;
+            bgRect.alpha = 0.8;
+            bg.addChild(bgRect);
 
-			mapMask.graphics.clear();
-			g = new Graphics2D(mapMask.graphics);
-			g.fillRoundRect(new SolidBrush(ASColor.BLACK), 0, 0, this.miniMapWidth, this.miniMapHeight, 10);	
-            
             alignLegend();
 		}
 		
         public function onFilterChange():void {
             for each(var region:MiniMapRegion in regions) {
-                region.setFilter(filter);
+                region.setFilter(mapFilter);
             }
             showLegend();
             redraw();
@@ -134,29 +121,34 @@
 			legend.hide();
 		}
 
-		private function onNavigate(e: MouseEvent) : void {
+		private function onNavigate(e: TouchEvent) : void {
 
-			var currentMousePoint: Point = new Point(stage.mouseX, stage.mouseY);
-			if (Point.distance(currentMousePoint, lastClickPoint) > 10 || (new Date().time) - lastClick > 350) {
-				lastClick = new Date().time;
-				lastClickPoint = currentMousePoint;
-				return;
-			}
+            var touch: Touch = e.getTouch(this, TouchPhase.ENDED);
 
-			lastClick = new Date().time;
-			//Calculate where the user clicked in real map position
-			var camX: int = Global.gameContainer.camera.miniMapX - mapHolder.x;
-			var camY: int = Global.gameContainer.camera.miniMapY - mapHolder.y;
+            if (touch != null) {
 
-			var local: Point = this.globalToLocal(new Point(e.stageX, e.stageY));
-			var centeredOffsetX: int = local.x;
-			var centeredOffsetY: int = local.y;
+                var currentMousePoint: Point = new Point(touch.globalX, touch.globalY);
+                if (Point.distance(currentMousePoint, lastClickPoint) > 10 || (new Date().time) - lastClick > 350) {
+                    lastClick = new Date().time;
+                    lastClickPoint = currentMousePoint;
+                    return;
+                }
 
-			var mapX: int = ((camX + centeredOffsetX) / Constants.miniMapTileW) * Constants.tileW;
-			var mapY: int = ((camY + centeredOffsetY) / Constants.miniMapTileH) * Constants.tileH;
+                lastClick = new Date().time;
+                //Calculate where the user clicked in real map position
+                var camX: int = Global.gameContainer.camera.miniMapX - mapHolder.x;
+                var camY: int = Global.gameContainer.camera.miniMapY - mapHolder.y;
 
-			var event: MouseEvent = new MouseEvent(NAVIGATE_TO_POINT, true, false, mapX, mapY);
-			dispatchEvent(event);
+                var local: Point = touch.getLocation(this);
+                var centeredOffsetX: int = local.x;
+                var centeredOffsetY: int = local.y;
+
+                var mapX: int = ((camX + centeredOffsetX) / Constants.miniMapTileW) * Constants.tileW;
+                var mapY: int = ((camY + centeredOffsetY) / Constants.miniMapTileH) * Constants.tileH;
+
+                var event: NavigateEvent = new NavigateEvent(NAVIGATE_TO_POINT, mapX, mapY);
+                dispatchEvent(event);
+            }
 		}
 
 		public function resize(width: int, height: int) : void {
@@ -174,7 +166,7 @@
 			if (Constants.debug >= 2)
 			Util.log("Adding city region: " + id);
 
-			var newRegion: MiniMapRegion = new MiniMapRegion(id,filter);
+			var newRegion: MiniMapRegion = new MiniMapRegion(id,mapFilter);
 
 			for (var i:int = pendingRegions.length - 1; i >= 0; i--)
 			{
@@ -311,7 +303,7 @@
 		
 		public function setCityPointer(name: String): void {
 			if (cityPointer != null && cityPointer.getPointerName() != name) {
-				cityPointer.setIcon(new ICON_MINIMAP_ARROW_BLUE());
+				cityPointer.setIcon(SpriteFactory.getStarlingImage("ICON_MINIMAP_ARROW_BLUE"));
 			} else if (cityPointer!=null) {
 				return;
 			}
@@ -319,8 +311,9 @@
 			cityPointer = Enumerable.from(pointers).first(function(p:MiniMapPointer):Boolean {
 				return p.getPointerName() == name;
 			});
+
 			if (cityPointer != null) {
-				cityPointer.setIcon(new ICON_MINIMAP_ARROW_RED());
+				cityPointer.setIcon(SpriteFactory.getStarlingImage("ICON_MINIMAP_ARROW_RED"));
 			}
 		}
 		

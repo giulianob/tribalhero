@@ -52,3 +52,4 @@ glob:client/*.apk
 
 syntax: glob
 client/.idea/workspace.xml
+client/mobile/dist/TribalHero.apk

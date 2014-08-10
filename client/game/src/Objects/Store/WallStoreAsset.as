@@ -19,7 +19,7 @@ package src.Objects.Store {
 
         public function thumbnail(): Sprite {
             var sprite: Sprite = new Sprite();
-            var wall: Bitmap = WallTileset.getTile(item.themeId, 0);
+            var wall: Bitmap = WallTileset.getFlashTile(item.themeId, 0);
             wall.y = Constants.tileH/4;
             sprite.addChild(wall);
             return sprite;

@@ -2,13 +2,15 @@
 package src.Objects {
     import com.greensock.TweenMax;
 
-    import flash.display.DisplayObject;
-    import flash.events.Event;
+    import starling.display.*;
+
     import flash.geom.Point;
 
     import src.Constants;
 
     import src.Objects.States.GameObjectState;
+
+    import starling.events.Event;
 
     public class SimpleGameObject extends SimpleObject {
 		
@@ -35,8 +37,7 @@ package src.Objects {
 			this.objectId = objectId;
 			
 			State = state;
-			
-			mouseEnabled = false;
+
 			addEventListener(OBJECT_UPDATE, onObjectUpdate);
 		}				
 
@@ -81,7 +82,7 @@ package src.Objects {
             }
         }
 
-        public override function setSprite(sprite: DisplayObject, spritePosition: Point): void {
+        public override function setSprite(sprite: Image, spritePosition: Point): void {
             super.setSprite(sprite, spritePosition);
 
             alignIcon();

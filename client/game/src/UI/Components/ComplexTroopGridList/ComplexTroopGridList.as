@@ -17,6 +17,7 @@
 
     import src.Global;
     import src.Map.City;
+    import src.Objects.Factories.SpriteFactory;
     import src.Objects.Factories.UnitFactory;
     import src.Objects.Prototypes.UnitPrototype;
     import src.Objects.Troop.*;
@@ -136,7 +137,7 @@
 					}
 
 					var unitPrototype: UnitPrototype = UnitFactory.getPrototype(unit.type, level);
-					var icon: DisplayObject = UnitFactory.getSprite(unit.type, level, tooltipMode) as DisplayObject;
+					var icon: DisplayObject = SpriteFactory.getFlashSprite(UnitFactory.getSpriteName(unit.type, level, tooltipMode));
 
 					(ts.getModel() as VectorListModel).append( { source: icon, name: (unitPrototype != null ? unitPrototype.getName() : unit.type), data: unit, level: level, tooltipMode: tooltipMode } );
 				}

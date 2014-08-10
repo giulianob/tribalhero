@@ -1,11 +1,10 @@
 ﻿package src.UI.Tooltips
 {
-    import flash.events.Event;
     import flash.events.MouseEvent;
 
     import org.aswing.AsWingConstants;
-import org.aswing.AssetIcon;
-	import org.aswing.JLabel;
+    import org.aswing.AssetIcon;
+    import org.aswing.JLabel;
     import org.aswing.SoftBoxLayout;
 
     import src.Global;
@@ -15,16 +14,16 @@ import org.aswing.AssetIcon;
     import src.Map.Username;
     import src.Objects.Factories.ObjectFactory;
     import src.UI.LookAndFeel.GameLookAndFeel;
-import src.Util.DateUtil;
+    import src.Util.DateUtil;
 
-	/**
-	 * ...
-	 * @author
-	 */
-	public class MinimapInfoTooltip extends Tooltip
+    import starling.events.Event;
+    import starling.events.Touch;
+    import starling.events.TouchEvent;
+    import starling.events.TouchPhase;
+
+    public class MinimapInfoTooltip extends Tooltip
 	{
 		private var obj: MiniMapRegionObject;
-		private var tooltip: TextTooltip;
 
 		private var disposed: Boolean = false;
 
@@ -33,7 +32,7 @@ import src.Util.DateUtil;
 			this.obj = obj;
 
 			obj.addEventListener(Event.REMOVED_FROM_STAGE, dispose);
-			obj.addEventListener(MouseEvent.ROLL_OUT, dispose);
+            obj.addEventListener(TouchEvent.TOUCH, onTouched);
 
 			// City tooltip
 			if (obj.type == ObjectFactory.TYPE_CITY) 
@@ -51,6 +50,17 @@ import src.Util.DateUtil;
 				createBarbarianTribeUI();
 			
 		}
+
+        private function onTouched(event: TouchEvent): void {
+            var touch: Touch = event.getTouch(obj, TouchPhase.HOVER);
+
+            if (!touch) {
+                hide();
+            }
+            else {
+                show(obj);
+            }
+        }
 
 		private function createForestUI() : void {
 			if (disposed) return;
@@ -77,8 +87,6 @@ import src.Util.DateUtil;
             }
 
 			ui.append(lblDistance);
-
-			show(obj);
 		}		
 		
 		private function createCityUI(username: Username, custom: * ) : void {
@@ -102,8 +110,6 @@ import src.Util.DateUtil;
 			ui.append(lblName);
 			ui.append(lblLvl);
 			ui.append(lblDistance);
-
-			show(obj);
 		}
 
 		private function onUpdateTribeName(username: Username, custom: * ) : void {
@@ -141,8 +147,6 @@ import src.Util.DateUtil;
 				GameLookAndFeel.changeClass(lblTribe, "Tooltip.text");
 				ui.append(lblTribe);
 			}
-			
-			show(obj);
 		}		
 		
 		private function createTroopUI(username: Username, custom: * ) : void {
@@ -162,8 +166,6 @@ import src.Util.DateUtil;
 
 			ui.append(lblName);
 			ui.append(lblDistance);
-
-			show(obj);
 		}		
 		
 		private function createBarbarianTribeUI() : void {
@@ -191,16 +193,18 @@ import src.Util.DateUtil;
 			ui.append(lblLvl);
 			ui.append(lblCampsRemain);
 			ui.append(lblDistance);
-
-			show(obj);
 		}		
 
-		private function dispose(e: Event = null) : void {
-			if (disposed) return;
+		private function dispose(e: * = null) : void {
+			if (disposed) {
+                return;
+            }
 
 			disposed = true;
-			ui.removeEventListener(MouseEvent.ROLL_OUT, dispose);
-			ui.removeEventListener(Event.REMOVED_FROM_STAGE, dispose);
+
+            obj.removeEventListener(TouchEvent.TOUCH, onTouched);
+            obj.removeEventListener(Event.REMOVED_FROM_STAGE, dispose);
+
 			hide();
 		}
 	}

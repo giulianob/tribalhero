@@ -1,7 +1,5 @@
 package src.UI.Tooltips 
 {
-    import flash.display.DisplayObject;
-
     public class ActionButtonTooltip extends Tooltip
 	{
 		protected var drawTooltip: Boolean = false;
@@ -9,7 +7,7 @@ package src.UI.Tooltips
 		public function ActionButtonTooltip() {	
 		}
 		
-		override public function show(obj:DisplayObject):void 
+		override public function show(obj: *):void
 		{
 			drawTooltip = true;
 			draw();

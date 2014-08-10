@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
+<!-- $TexturePacker:SmartUpdate:47310533707df42cf2335d2bffbc198e:02d56cc8fd6931718e565325009b0267:3d6f789254fe6d2b935ad16c7400be7b$ -->
+<TextureAtlas imagePath="OBJECTS_ATLAS.png">
+    <SubTexture name="FOREST_LVL_1" x="97" y="328" rotated="true" width="72" height="124"/>
+    <SubTexture name="FOREST_LVL_2" x="159" y="179" rotated="true" width="79" height="116"/>
+    <SubTexture name="FOREST_LVL_3" x="84" y="179" rotated="true" width="73" height="147"/>
+    <SubTexture name="FOREST_LVL_4" x="2" y="341" rotated="true" width="93" height="156"/>
+    <SubTexture name="MASK_TILE" x="2" y="179" rotated="true" width="80" height="160"/>
+    <SubTexture name="WARELEPHANT_BANNER" x="2" y="2" width="450" height="175"/>
+    <SubTexture name="WARELEPHANT_TROOP" x="171" y="297" width="100" height="114"/>
+</TextureAtlas>

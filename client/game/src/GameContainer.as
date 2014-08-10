@@ -1,4 +1,8 @@
 ﻿package src {
+
+    import starling.display.Sprite;
+
+    import flash.display.Sprite;
     import flash.display.*;
     import flash.events.*;
     import flash.net.*;
@@ -10,9 +14,10 @@
     import org.aswing.event.*;
     import org.aswing.geom.*;
 
+    import src.Events.NavigateEvent;
+
     import src.Map.*;
     import src.Map.MiniMap.MiniMap;
-    import src.Objects.*;
     import src.UI.*;
     import src.UI.Components.*;
     import src.UI.Components.ScreenMessages.*;
@@ -34,19 +39,15 @@
 		private var sidebar: GameJSidebar;
 
 		//Container for sidebar
-		private var sidebarHolder: Sprite;
+		private var sidebarHolder: flash.display.Sprite;
 		
 		//Container for cmd line
-		private var cmdLineHolder: Sprite;
+		private var cmdLineHolder: flash.display.Sprite;
 
 		public var map: Map;
-		public var miniMap: MiniMap;				
-		public var minimapHolder: Sprite;
-		private var minimapRefreshTimer: Timer = new Timer(500000, 0);
 
-		//Holds any overlay. Overlays are used for different cursor types.
-		private var mapOverlay: Sprite;
-		private var mapOverlayTarget: Sprite;
+		public var miniMap: MiniMap;
+		private var minimapRefreshTimer: Timer = new Timer(500000, 0);
 
 		//HUD resources container
 		private var resourcesContainer: ResourcesContainer;
@@ -65,7 +66,7 @@
 
 		//On screen message component
 		public var screenMessage: ScreenMessagePanel;
-        public var screenMessageHolder: Sprite;
+        public var screenMessageHolder: flash.display.Sprite;
 
 		//Holds the tools above the minimap
 		public var minimapTools: MinimapToolsContainer;
@@ -88,6 +89,10 @@
 		// Game tutorial handler
 		private var tutorial: GameTutorial;
         private var lblCoords: JLabel;
+
+        internal var mapHolder: starling.display.Sprite;
+        private var miniMapHolder: starling.display.Sprite;
+        private var mapOverlayTarget: starling.display.DisplayObject;
 
 		public function GameContainer()
 		{
@@ -125,7 +130,6 @@
 			chains.visible = false;
 
 			// Manually add coords.
-            // TODO: Change minimap tools into a regular JPanel
             lblCoords = new JLabel("", null, AsWingConstants.LEFT);
             lblCoords.mouseEnabled = false;
             lblCoords.setLocationXY(80, -20);
@@ -159,29 +163,30 @@
 			btnMenu.addEventListener(MouseEvent.CLICK, onMenuClick);		
 
 			// Set up holders
-			sidebarHolder = new Sprite();
+			sidebarHolder = new flash.display.Sprite();
 			sidebarHolder.x = Constants.screenW - GameJSidebar.WIDTH - 15;
 			sidebarHolder.y = 60;			
 			
-			cmdLineHolder = new Sprite();				
-			minimapHolder = new Sprite();
-            screenMessageHolder = new Sprite();
+			cmdLineHolder = new flash.display.Sprite();
+            screenMessageHolder = new flash.display.Sprite();
             screenMessageHolder.mouseEnabled = false;
             screenMessageHolder.mouseChildren = false;
 			
             addChild(screenMessageHolder);
 			addChild(cmdLineHolder);								
-			addChild(minimapHolder);				
+			addChild(minimapTools);
 			addChild(sidebarHolder);
-			
+
+            mapHolder = new starling.display.Sprite();
+            miniMapHolder = new starling.display.Sprite();
+            Global.starlingStage.addChild(mapHolder);
+            Global.starlingStage.addChild(miniMapHolder);
+
 			// Bar bg			
 			var barBgClass: Class = UIManager.getDefaults().get("GameMenu.bar");
 			barBg = new barBgClass() as DisplayObject;						
 			addChildAt(barBg, 1);
 			
-			// Minimap tools
-			minimapHolder.addChild(minimapTools);
-
 			// Set up minimap refresh timer
 			minimapRefreshTimer.addEventListener(TimerEvent.TIMER, minimapRefresh);
 			
@@ -409,21 +414,12 @@
 			// Clear current city list
 			(lstCities.getModel() as VectorListModel).clear();
 
-			// Add map			
-			mapHolder.addChild(map);
-			minimapHolder.addChild(miniMap);
+			// Add map
+            mapHolder.addChild(map);
+            miniMapHolder.addChild(miniMap);
 
             // Set initial map zoom
             mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactorPercentage();
-
-			// Create map overlay
-			this.mapOverlay = new MovieClip();
-			this.mapOverlay.graphics.beginFill(0xCCFF00);
-			this.mapOverlay.graphics.drawRect(0, 0, Constants.screenW, Constants.screenH);
-			this.mapOverlay.visible = false;
-			this.mapOverlay.mouseEnabled = false;
-			this.mapOverlay.name = "Overlay";
-			addChild(this.mapOverlay);
 
 			// Populate city list
 			for each (var city: City in map.cities) {
@@ -436,7 +432,7 @@
 				selectedCity = lstCities.getSelectedItem().city;
 			}
 			else {
-				map.onMove();
+				map.move();
 			}
 
 			//Show resources box
@@ -450,7 +446,6 @@
 			// Add objects to resize manager
 			resizeManager = new ResizeManager(stage);
 
-			resizeManager.addObject(this.mapOverlay, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_TOP | ResizeManager.ANCHOR_LEFT | ResizeManager.ANCHOR_BOTTOM);
 			resizeManager.addObject(sidebarHolder, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_TOP);
 			resizeManager.addObject(barBg, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_LEFT);
 			resizeManager.addObject(resourcesContainer, ResizeManager.ANCHOR_TOP | ResizeManager.ANCHOR_RIGHT);
@@ -580,10 +575,13 @@
 				resizeManager.removeEventListener(Event.RESIZE, message.onResize);
 				miniMap.removeEventListener(MiniMap.NAVIGATE_TO_POINT, onMinimapNavigateToPoint);
 
-				map.dispose();
 				mapHolder.removeChild(map);
-				removeChild(mapOverlay);
-				minimapHolder.removeChild(miniMap);
+                miniMapHolder.removeChild(miniMap);
+
+                map.dispose();
+                miniMap.dispose();
+
+				setOverlaySprite(null);
 
 				map = null;
 				miniMap = null;
@@ -634,7 +632,7 @@
 				sidebar.show(sidebarHolder);								
 			}					
 			
-			stage.focus = map;
+			stage.focus = this;
 		}
 		
 		public function closeAllFrames(onlyClosableFrames: Boolean = false) : void {
@@ -720,19 +718,12 @@
 			resourcesContainer.displayResources();
 		}
 
-		public function setOverlaySprite(object: Sprite):void
+		public function setOverlaySprite(object: starling.display.Sprite):void
 		{
 			if (this.mapOverlayTarget != null)
 			{
-				this.mapOverlayTarget.hitArea = null;
-
-				var disposeTmp: IDisposable = this.mapOverlayTarget as IDisposable;
-
-				if (disposeTmp != null)
-					disposeTmp.dispose();
-
 				mapHolder.removeChild(this.mapOverlayTarget);
-				this.mapOverlayTarget = null;
+                this.mapOverlayTarget.dispose();
 			}
 
 			this.mapOverlayTarget = object;
@@ -740,7 +731,6 @@
 			if (this.mapOverlayTarget != null)
 			{
 				mapHolder.addChild(this.mapOverlayTarget);
-				this.mapOverlayTarget.hitArea = this.mapOverlay;
 			}
 		}
 
@@ -771,16 +761,16 @@
 			selectedCity = lstCities.getSelectedItem().city;
 			displayResources();						
 			
-			stage.focus = map;
+			stage.focus = this;
 			miniMap.setCityPointer(selectedCity.name);
 		}
 
-		private function onMinimapNavigateToPoint(e: MouseEvent) : void {
+		private function onMinimapNavigateToPoint(e: NavigateEvent) : void {
 			if (minimapTools.minimapZoomed) {
                 minimapTools.zoomIntoMinimap(false);
 			}
 
-			Global.map.camera.ScrollToCenter(new ScreenPosition(e.localX, e.localY));
+			Global.map.camera.ScrollToCenter(new ScreenPosition(e.x, e.y));
 		}
 		
 		public function setUnreadMessageCount(unreadMessages: int): void

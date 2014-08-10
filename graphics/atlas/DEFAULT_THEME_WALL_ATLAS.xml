@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
+<!-- $TexturePacker:SmartUpdate:ac78d47ee38f6385362aee4b83a1e148:5abbd9b26d2ac007faa3ab4953b133b6:9ee934fcc2b5a081b534a678a7a1b147$ -->
+<TextureAtlas imagePath="DEFAULT_THEME_WALL_ATLAS.png">
+    <SubTexture name="DEFAULT_WALL" x="2" y="2" rotated="true" width="400" height="1920" frameX="0" frameY="-80" frameWidth="2048" frameHeight="640"/>
+</TextureAtlas>

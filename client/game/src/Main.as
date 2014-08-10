@@ -25,7 +25,9 @@
     import src.UI.LookAndFeel.*;
     import src.UI.TweenPlugins.DynamicPropsPlugin;
     import src.UI.TweenPlugins.TransformAroundCenterPlugin;
+    import src.UI.TweenPlugins.TransformAroundCenterStarlingPlugin;
     import src.UI.TweenPlugins.TransformAroundPointPlugin;
+    import src.UI.TweenPlugins.TransformAroundPointStarlingPlugin;
     import src.Util.*;
 
     CONFIG::debug {
@@ -61,85 +63,92 @@
 		}        
 		
 		public function init(e: Event = null) : void {
-			removeEventListener(Event.ADDED_TO_STAGE, init);							
-            
-            stage.showDefaultContextMenu = false;
+            var self:Main = this;
 
-            Global.musicPlayer = new MusicPlayer();
+			removeEventListener(Event.ADDED_TO_STAGE, init);
 
-			CONFIG::debug {
-			    stage.addChild(new TheMiner());
-            }
-			
-			//Init actionLinq
-			EnumerationExtender.Initialize();
-			
-			//Init ASWING			
-			AsWingManager.initAsStandard(this);				
-			UIManager.setLookAndFeel(new GameLookAndFeel());
-			
-			//Init TweenLite
-			TweenPlugin.activate([DynamicPropsPlugin, TransformMatrixPlugin, TransformAroundCenterPlugin, TransformAroundPointPlugin]);
-            OverwriteManager.init(OverwriteManager.AUTO);
+            StarlingStage.init(stage).then(function(value: *): void {
+                new TribalHeroUITheme();
 
-			//Init stage options
-			stage.stageFocusRect = false;
-			stage.scaleMode = StageScaleMode.NO_SCALE;
-			stage.align = StageAlign.TOP_LEFT;
-			
-			Global.main = this;
+                stage.showDefaultContextMenu = false;
 
-			//Init right context menu for debugging
-			CONFIG::debug {
-				var fm_menu:ContextMenu = new ContextMenu();
-				var dump:ContextMenuItem = new ContextMenuItem("Dump stage");
-				dump.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, function(e:Event):void { Util.dumpDisplayObject(stage); } );
-				var dumpRegionQueryInfo:ContextMenuItem = new ContextMenuItem("Dump region query info");
-				dumpRegionQueryInfo.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, function(e:Event):void {
-					if (!Global.map) return;
-					Util.log("Pending regions:" + Util.implode(',', Global.map.pendingRegions));
-				} );
-				fm_menu.customItems.push(dump);
-				fm_menu.customItems.push(dumpRegionQueryInfo);
-				contextMenu = fm_menu;
-			}
+                Global.stage = stage;
+                Global.musicPlayer = new MusicPlayer();
 
-			//Flash params
-			parms = loaderInfo.parameters;
+                CONFIG::debug {
+                    stage.addChild(new TheMiner());
+                }
 
-			//GameContainer
-			Global.gameContainer = gameContainer = new GameContainer();
-			addChild(gameContainer);
+                //Init actionLinq
+                EnumerationExtender.Initialize();
 
-			//Packet Counter
-			if (Constants.debug > 0) {
-				packetCounter = new GeneralCounter("pkts");
-				packetCounter.y = Constants.screenH - 64;
-				addChild(packetCounter);
-			}
+                //Init ASWING
+                AsWingManager.initAsStandard(self);
+                UIManager.setLookAndFeel(new GameLookAndFeel());
 
-            Constants.mainWebsite = parms.mainWebsite || Constants.mainWebsite;
+                //Init TweenLite
+                TweenPlugin.activate([DynamicPropsPlugin, TransformMatrixPlugin, TransformAroundCenterPlugin, TransformAroundPointPlugin, TransformAroundPointStarlingPlugin, TransformAroundCenterStarlingPlugin]);
+                OverwriteManager.init(OverwriteManager.AUTO);
 
-            if (parms.playerName) {
-                Constants.session.playerName = parms.playerName;
-            }
+                //Init stage options
+                stage.stageFocusRect = false;
+                stage.scaleMode = StageScaleMode.NO_SCALE;
+                stage.align = StageAlign.TOP_LEFT;
 
-            if (parms.hostname) {
-                Constants.session.hostname = parms.hostname;
-            }
+                Global.main = self;
 
-			//Define login type and perform login action
-			if (parms.lsessid)
-			{
-				siteVersion = parms.siteVersion;
-				Constants.session.loginKey = parms.lsessid;
-				loadData();
-			}
-			else
-			{
-				siteVersion = new Date().getTime().toString();
-				showLoginDialog();
-			}			                                         
+                //Init right context menu for debugging
+                CONFIG::debug {
+                    var fm_menu:ContextMenu = new ContextMenu();
+                    var dump:ContextMenuItem = new ContextMenuItem("Dump stage");
+                    dump.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, function(e:Event):void { Util.dumpDisplayObject(stage); } );
+                    var dumpRegionQueryInfo:ContextMenuItem = new ContextMenuItem("Dump region query info");
+                    dumpRegionQueryInfo.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, function(e:Event):void {
+                        if (!Global.map) return;
+                        Util.log("Pending regions:" + Util.implode(',', Global.map.pendingRegions));
+                    } );
+                    fm_menu.customItems.push(dump);
+                    fm_menu.customItems.push(dumpRegionQueryInfo);
+                    contextMenu = fm_menu;
+                }
+
+                //Flash params
+                parms = loaderInfo.parameters;
+
+                //GameContainer
+                Global.gameContainer = gameContainer = new GameContainer();
+                addChild(gameContainer);
+
+                //Packet Counter
+                if (Constants.debug > 0) {
+                    packetCounter = new GeneralCounter("pkts");
+                    packetCounter.y = Constants.screenH - 64;
+                    addChild(packetCounter);
+                }
+
+                Constants.mainWebsite = parms.mainWebsite || Constants.mainWebsite;
+
+                if (parms.playerName) {
+                    Constants.session.playerName = parms.playerName;
+                }
+
+                if (parms.hostname) {
+                    Constants.session.hostname = parms.hostname;
+                }
+
+                //Define login type and perform login action
+                if (parms.lsessid)
+                {
+                    siteVersion = parms.siteVersion;
+                    Constants.session.loginKey = parms.lsessid;
+                    loadData();
+                }
+                else
+                {
+                    siteVersion = new Date().getTime().toString();
+                    showLoginDialog();
+                }
+            }).done();
 		}
 
 		private function loadData(): void

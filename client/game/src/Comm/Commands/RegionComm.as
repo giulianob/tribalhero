@@ -113,8 +113,8 @@
 			for (var i:int = 0; i < regionCnt; i++)
 			{
 				var id: int = packet.readUShort();
-                trace("Region " + id);
-				var mapArray:Array = packet.read2dShortArray(Constants.regionTileW, Constants.regionTileH);
+
+                var mapArray:Array = packet.read2dShortArray(Constants.regionTileW, Constants.regionTileH);
 
 				var newRegion: Region = Global.map.addRegion(id, mapArray);
 

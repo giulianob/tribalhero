@@ -3,17 +3,18 @@ package src.Objects {
 
     import com.greensock.TweenMax;
 
-    import flash.display.DisplayObject;
-    import flash.display.MovieClip;
-    import flash.display.Sprite;
-    import flash.events.Event;
-    import flash.filters.GlowFilter;
     import flash.geom.Point;
+
+    import src.UI.Components.CountBubble;
+
+    import starling.display.*;
 
     import src.Constants;
     import src.Map.ScreenPosition;
 
-    public class SimpleObject extends MovieClip {
+    import starling.filters.BlurFilter;
+
+    public class SimpleObject extends Sprite {
 		
 		public static const DISPOSED: String = "DISPOSED";
 		
@@ -21,9 +22,8 @@ package src.Objects {
 				
 		private var onSelect: Function;
 		protected var selected: Boolean;						
-		
-		private var objectCountDisplayObject: DisplayObject;
-        private var objectCount: int;
+
+        private var objectCount: int = 1;
 
 		private var spriteContainer: Sprite;
         protected var spritePosition: Point;
@@ -36,12 +36,18 @@ package src.Objects {
 
         public var isHighestPriority: Boolean;
 
+        private var _sprite: Image;
+
 		public function SimpleObject(objX: int, objY: int, size: int) {
 			super();
 
+            touchable = true;
             mapPriority = Constants.mapObjectPriority.simpleObject;
 			spriteContainer = new Sprite();
 			addChild(spriteContainer);
+
+            countBubble = new src.UI.Components.CountBubble(objectCount);
+            addChild(countBubble);
 			
 			this.primaryPosition.x = objX;
             this.primaryPosition.y = objY;
@@ -71,38 +77,24 @@ package src.Objects {
             return objectCount;
         }
 
-		public function setObjectCount(count: int) : void {
+        private var countBubble: src.UI.Components.CountBubble;
+
+        public function setObjectCount(count: int) : void {
             objectCount = count;
 
-			if (objectCountDisplayObject != null) {
-				removeChild(objectCountDisplayObject);
-				objectCountDisplayObject = null;
-			}
-			
-			if (count <= 1) {
-				return;		
-			}
-			
-			var bubble: CountBubble = new CountBubble();
-			bubble.mouseChildren = false;
-			bubble.txtUnreadCount.mouseEnabled = false;
-			bubble.txtUnreadCount.tabEnabled = false;
-			bubble.txtUnreadCount.text = count > 9 ? "!" : count.toString();
-			bubble.x = spritePosition.x - bubble.width;
-			bubble.y = 20;
-			
-			objectCountDisplayObject = bubble;
-			
-			addChild(bubble);
-		}
-		
-		public function dispose(): void {
-			disposed = true;
-			if (objectCountDisplayObject != null) {
-				removeChild(objectCountDisplayObject);
-				objectCountDisplayObject = null;
-            }
-			dispatchEvent(new Event(DISPOSED));
+            countBubble.count = count;
+            countBubble.x = spritePosition.x - countBubble.width;
+            countBubble.y = 20;
+        }
+
+		public override function dispose(): void {
+            dispatchEventWith(DISPOSED);
+
+            disposeFilter();
+
+            disposed = true;
+
+            super.dispose();
 		}
 		
 		public function fadeIn(startFromCurrentAlpha: Boolean = false):void
@@ -125,27 +117,25 @@ package src.Objects {
 		}
 
 		public function setSelected(bool: Boolean = false):void
-		{			
+		{
+            disposeFilter();
 			if (bool) {
-				filters = [new GlowFilter(0xFFFFFF, 0.5, 16, 16, 3)];
+				filter = BlurFilter.createGlow(0xFFFFFF, 0.9, 5);
 			}
 			
 			selected = bool;
-			
-			if (!bool) {
-				setHighlighted(false);
-			}
 		}
 
 		public function setHighlighted(bool: Boolean = false):void
 		{
-			if (selected)
+			if (selected) {
 				return;
+            }
 
-			if (bool == false)			
-				filters = [];			
-			else			
-				filters = [new GlowFilter(0xFFDD00, 0.5, 16, 16, 3)];			
+            disposeFilter();
+            if (bool != false) {
+                filter = BlurFilter.createGlow(0xFFDD00, 0.9, 5);
+            }
 		}		
 		
 		public function distance(x_1: int, y_1: int): int
@@ -196,12 +186,18 @@ package src.Objects {
 				return 0;
 		}
 
-        public function setSprite(sprite: DisplayObject, spritePosition: Point): void {
-            spriteContainer.removeChildren();
+        public function setSprite(sprite: Image, spritePosition: Point): void {
+            sprite.x = spritePosition.x;
+            sprite.y = spritePosition.y;
 
             this.spritePosition = spritePosition;
 
+            spriteContainer.removeChildren();
             spriteContainer.addChild(sprite);
+
+            this._sprite = sprite;
+
+            setObjectCount(objectCount);
         }
 
         override public function get x(): Number {
@@ -228,6 +224,17 @@ package src.Objects {
             visible = isHighestPriority;
             this.isHighestPriority = isHighestPriority;
         }
-	}
+
+        protected function disposeFilter(): void {
+            if (filter != null) {
+                filter.dispose();
+                filter = null;
+            }
+        }
+
+        public function get sprite(): Image {
+            return _sprite;
+        }
+    }
 	
 }

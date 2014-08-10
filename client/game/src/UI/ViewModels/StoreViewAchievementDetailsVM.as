@@ -1,5 +1,5 @@
 package src.UI.ViewModels {
-    import src.Assets;
+    import src.FlashAssets;
     import src.Constants;
     import src.Global;
     import src.Map.City;

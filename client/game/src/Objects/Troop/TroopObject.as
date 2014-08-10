@@ -2,16 +2,13 @@
     import System.Linq.Enumerable;
     import System.Linq.Option.Option;
 
-    import flash.display.Bitmap;
-    import flash.display.DisplayObjectContainer;
     import flash.geom.Point;
 
-    import src.Assets;
-
     import src.Constants;
-    import src.Global;
     import src.Objects.*;
     import src.Objects.States.GameObjectState;
+
+    import starling.display.*;
 
     public class TroopObject extends GameObject {
 
@@ -26,11 +23,11 @@
 		public var template: UnitTemplateManager = new UnitTemplateManager();
 		
 		private var radiusManager: RadiusManager;
-        private var defaultSprite: DisplayObjectContainer;
+        private var defaultSprite: Image;
         private var defaultPosition: Point;
         private var isOverWall: Boolean;
 
-		public function TroopObject(theme: String, type: int, state: GameObjectState, defaultSprite: DisplayObjectContainer, defaultPosition: Point, objX: int, objY: int, size: int, playerId: int, cityId: int, objectId: int) {
+		public function TroopObject(theme: String, type: int, state: GameObjectState, defaultSprite: Image, defaultPosition: Point, objX: int, objY: int, size: int, playerId: int, cityId: int, objectId: int) {
 			super(type, state, objX, objY, size, playerId, cityId, objectId);
             this.theme = theme;
             this.defaultSprite = defaultSprite;
@@ -76,7 +73,7 @@
                 }
 
                 var wallObject: WallObject = wallObjectResult.value;
-                var wallSprite: Bitmap = wallObject.getTroopOverlappingAsset();
+                var wallSprite: Image = wallObject.getTroopOverlappingAsset();
                 setSprite(wallSprite, new Point());
                 isOverWall = true;
                 return;

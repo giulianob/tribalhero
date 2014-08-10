@@ -57,38 +57,23 @@
 			return unitPrototypes.get([type, level]);
 		}
 
-		public static function getSprite(type: int, level: int, forDarkBackground: Boolean = false): DisplayObjectContainer
-		{
-			var unitPrototype: UnitPrototype = getPrototype(type, level);
-			var objRef: Class;
+        public static function getSpriteName(type: int, level: int, forDarkBackground: Boolean = false): String {
+            var unitPrototype: UnitPrototype = getPrototype(type, level);
+            var typeName: String;
 
-			if (unitPrototype == null)
-			{
-				Util.log("Missing unit prototype. type: " + type.toString() + " lvl: " + level.toString() + " Loading generic unit");
-				objRef = getDefinitionByName("DEFAULT_UNIT") as Class;
-			}
-			else
-			{
-				var spriteClass: String = unitPrototype.spriteClass;
+            if (unitPrototype == null)
+            {
+                throw new Error("Missing unit prototype. type: " + type.toString() + " lvl: " + level.toString());
+            }
 
-				if (forDarkBackground) {
-					spriteClass = spriteClass.replace("_UNIT", "_DARK_UNIT");
-				}
+            typeName = unitPrototype.spriteClass;
 
-				try
-				{
-					objRef = getDefinitionByName(spriteClass) as Class;
-				}
-				catch (error: Error)
-				{
-					Util.log("Missing sprite " + spriteClass + ". Loading generic unit");
-					objRef = getDefinitionByName("DEFAULT_UNIT") as Class;
-				}
-			}
+            if (forDarkBackground) {
+                typeName = typeName.replace("_UNIT", "_DARK_UNIT");
+            }
 
-			return new objRef() as DisplayObjectContainer;
-		}
-
+            return typeName;
+        }
 	}
 
 }

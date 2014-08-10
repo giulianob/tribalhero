@@ -144,7 +144,7 @@
 			onAmountChange(e);
 		}
 		
-		public function onAmountChange(e:Event):void
+		public function onAmountChange(e: *):void
 		{
 			var pricePerResource:int = 0;
 			switch (lstResourceType.getSelectedItem())

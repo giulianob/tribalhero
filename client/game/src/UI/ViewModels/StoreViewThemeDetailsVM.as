@@ -1,7 +1,7 @@
 package src.UI.ViewModels {
     import System.Linq.Enumerable;
 
-    import src.Assets;
+    import src.FlashAssets;
     import src.Constants;
     import src.Global;
     import src.Graphics.WallTileset;
@@ -39,19 +39,19 @@ package src.UI.ViewModels {
         }
 
         public function isStrongholdIncluded(): Boolean {
-            return Assets.doesSpriteExist(StrongholdFactory.getSpriteName(theme.id));
+            return FlashAssets.doesSpriteExist(StrongholdFactory.getSpriteName(theme.id));
         }
 
         public function isWallIncluded(): Boolean {
-            return Assets.doesSpriteExist(WallTileset.getSpriteName(theme.id));
+            return FlashAssets.doesSpriteExist(WallTileset.getSpriteName(theme.id));
         }
 
         public function isTroopIncluded(): Boolean {
-            return Assets.doesSpriteExist(TroopFactory.getSpriteName(theme.id));
+            return FlashAssets.doesSpriteExist(TroopFactory.getSpriteName(theme.id));
         }
 
         public function areStructuresIncluded(): Boolean {
-            return Assets.doesSpriteExist(StructureFactory.getSpriteName(theme.id, ObjectFactory.getFirstType("MainBuilding"), 1));
+            return FlashAssets.doesSpriteExist(StructureFactory.getSpriteName(theme.id, ObjectFactory.getFirstType("MainBuilding"), 1));
         }
 
         public function getThemeAssets(): Array {
@@ -70,7 +70,7 @@ package src.UI.ViewModels {
             }
 
             for each (var structurePrototype: StructurePrototype in StructureFactory.getAllStructureTypes()) {
-                if (Assets.doesSpriteExist(structurePrototype.getSpriteName(theme.id))) {
+                if (FlashAssets.doesSpriteExist(structurePrototype.getSpriteName(theme.id))) {
                     themeItems.push(new StructureStoreAsset(item, structurePrototype));
                 }
             }

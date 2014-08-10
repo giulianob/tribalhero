@@ -1,10 +1,3 @@
-/**
- * Created with IntelliJ IDEA.
- * User: OscarMike
- * Date: 2/23/14
- * Time: 1:09 AM
- * To change this template use File | Settings | File Templates.
- */
 package src.Map.MiniMap.LegendGroups {
 import src.Map.MiniMapDrawers.*;
 
@@ -24,12 +17,14 @@ public class MiniMapGroupCity {
     private var troopDrawer : MiniMapTroopDrawer = new MiniMapTroopDrawer();
     private var legendPanel : MiniMapLegendPanel = new MiniMapLegendPanel();
 
+    public static const CITY_DEFAULT_COLOR: * = { r: 255, g: 255, b: 255, hex: 0xFFFFFF };
+
     public static const DEFAULT_COLORS: Array = [
-        { r: 200, g: 200, b: 200 },
-        { r: 0, g: 156, b: 20 },
-        { r: 255, g: 255, b: 0},
-        { r: 255, g: 100, b: 0 },
-        { r: 255, g: 0, b: 0 }
+        { r: 200, g: 200, b: 200, hex: 0xc8c8c8 },
+        { r: 0, g: 156, b: 20, hex: 0x009c14 },
+        { r: 255, g: 255, b: 0, hex: 0xffff00 },
+        { r: 255, g: 100, b: 0, hex: 0xff6400 },
+        { r: 255, g: 0, b: 0, hex: 0xff0000 }
     ];
 
     public function MiniMapGroupCity() {
@@ -79,10 +74,6 @@ public class MiniMapGroupCity {
     }
 
     public function addOnChangeListener(callback:Function):void {
-        this.callback=callback;
-    }
-
-    public function addOnLegendChangeListener(callback:Function):void {
         this.callback=callback;
     }
 

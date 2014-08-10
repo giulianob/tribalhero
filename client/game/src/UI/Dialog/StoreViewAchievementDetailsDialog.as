@@ -9,7 +9,7 @@ package src.UI.Dialog {
     import org.aswing.SoftBoxLayout;
     import org.aswing.ext.MultilineLabel;
 
-    import src.Assets;
+    import src.FlashAssets;
 
     import src.Global;
     import src.UI.GameJPanel;
@@ -36,7 +36,7 @@ package src.UI.Dialog {
             setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
             setPreferredWidth(540);
 
-            btnBuy = new JButton(t("STORE_VIEW_ACHIEVEMENT_DIALOG_BUY", viewModel.achievement.cost), new AssetIcon(Assets.getInstance("ICON_COIN")));
+            btnBuy = new JButton(t("STORE_VIEW_ACHIEVEMENT_DIALOG_BUY", viewModel.achievement.cost), new AssetIcon(FlashAssets.getInstance("ICON_COIN")));
             btnBuy.setHorizontalTextPosition(AsWingConstants.LEFT);
             btnBuy.setIconTextGap(0);
 

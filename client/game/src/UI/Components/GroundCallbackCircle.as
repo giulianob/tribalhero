@@ -1,94 +1,77 @@
 ﻿package src.UI.Components {
-    import flash.display.Bitmap;
-    import flash.display.BitmapData;
-    import flash.display.DisplayObject;
-    import flash.display.DisplayObjectContainer;
-    import flash.display.MovieClip;
-    import flash.events.Event;
+    import flash.geom.Point;
 
-    import src.Assets;
     import src.Constants;
+    import src.Global;
     import src.Map.Position;
     import src.Map.ScreenPosition;
     import src.Map.TileLocator;
+    import src.Objects.Factories.SpriteFactory;
+    import src.Objects.ObjectContainer;
     import src.Objects.SimpleObject;
 
-    public class GroundCallbackCircle extends SimpleObject
+    public class GroundCallbackCircle
 	{
-		private var circle: DisplayObjectContainer;
-		private var tiles: Array;
 		private var callback: Function;
+        private var size: int;
+        private var tiles: Array = [];
+        protected var mainPosition: ScreenPosition;
+        private var skipCenter: Boolean;
 
-		public function GroundCallbackCircle(size: int, callback: Function) {
-			super( -10, -10, size);
-			
+		public function GroundCallbackCircle(size: int, mainPosition: ScreenPosition, callback: Function, skipCenter: Boolean = false) {
 			this.size = size;
-			this.callback = callback;
-			addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
-			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
-		}
+            this.mainPosition = mainPosition;
+            this.callback = callback;
+            this.skipCenter = skipCenter;
+        }
 
-		public function redraw() : void {
-			drawCircle(size);
-		}
-		
-		private function onAddedToStage(e: Event):void
-		{
-			drawCircle(size);
-		}
+        public function moveTo(mainPosition: ScreenPosition): void {
+            this.mainPosition = mainPosition;
+            draw();
+        }
 
-		public function onRemovedFromStage(e: Event):void
-		{
-			dispose();
-		}
+		public function draw() : void {
+            clear();
 
-		private function drawCircle(size: int):void
-		{
-			this.size = size;
+			for each (var position: Position in TileLocator.foreachTile(size, size * 2 + 1, size, !skipCenter)) {
+                var tile: SimpleObject = new SimpleObject(0, 0, 1);
+                tile.setSprite(SpriteFactory.getStarlingImage("MASK_TILE"), new Point(0, 0));
 
-			if (circle != null)
-			dispose();
-
-			circle = new MovieClip();
-			tiles = [];
-			for each (var position: Position in TileLocator.foreachTile(size, size * 2 + 1, size)) {
-                var tiledata: DisplayObject = Assets.getInstance("MASK_TILE");
-                var tile: Bitmap = new Bitmap(new BitmapData(Constants.tileW, Constants.tileH, true, 0x000000));
-                tile.smoothing = true;
                 var point: ScreenPosition = position.toScreenPosition();
-                tile.x = point.x - size * Constants.tileW;
-                tile.y = point.y - (size * Constants.tileH);
-                var colorTransform: * = callback(tile.x, tile.y);
-                if (colorTransform == false) {
+                var x: Number = mainPosition.x + point.x - size * Constants.tileW;
+                var y: Number = mainPosition.y + point.y - (size * Constants.tileH);
+                var colorTransform: * = callback(x, y);
+
+                if (colorTransform === false) {
                     continue;
                 }
-                tile.bitmapData.draw(tiledata, null, colorTransform);
-                circle.addChild(tile);
+
+                tile.x = tile.primaryPosition.x = x;
+                tile.y = tile.primaryPosition.y = y;
+                tile.sprite.color = colorTransform;
+                tile.alpha = 0.7;
+
+                Global.map.objContainer.addObject(tile, ObjectContainer.LOWER);
                 tiles.push(tile);
             }
-
-			addChild(circle);
 		}
 
-		override public function dispose():void 
+		public function dispose():void
 		{
-			super.dispose();
-			
-			if (circle)
-			{
-				removeChild(circle);
-				circle = null;
-			}
-
-			if (tiles)
-			{
-				for each(var tile: Bitmap in tiles)
-				tile.bitmapData.dispose();
-
-				tiles = null;
-			}
+			clear();
 		}
 
+        public function clear(): void {
+            for each (var tile: SimpleObject in tiles) {
+                Global.map.objContainer.removeObject(tile, ObjectContainer.LOWER);
+            }
+
+            tiles = [];
+        }
+
+        public function get visible(): Boolean {
+            return tiles.length > 0;
+        }
     }
 
 }

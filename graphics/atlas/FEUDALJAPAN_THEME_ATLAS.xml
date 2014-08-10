@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
+<!-- $TexturePacker:SmartUpdate:f9c2f0efca3ec9a2351375339c6a4cc8:919fae485eb51f698e5164d472e50f5f:1f6bb7365c10907fb27d57e59bbac0a2$ -->
+<TextureAtlas imagePath="FEUDALJAPAN_THEME_ATLAS.png">
+    <SubTexture name="FEUDALJAPAN_ARMORY_STRUCTURE" x="288" y="424" width="119" height="71"/>
+    <SubTexture name="FEUDALJAPAN_BARRACK_STRUCTURE" x="570" y="171" width="261" height="152" frameX="-10" frameY="0" frameWidth="271" frameHeight="152"/>
+    <SubTexture name="FEUDALJAPAN_BASEMENT_STRUCTURE" x="569" y="325" width="147" height="71"/>
+    <SubTexture name="FEUDALJAPAN_BASEMENT_TMP_STRUCTURE" x="718" y="325" width="112" height="55" frameX="0" frameY="-1" frameWidth="114" frameHeight="57"/>
+    <SubTexture name="FEUDALJAPAN_BLACKSMITH_STRUCTURE" x="718" y="382" rotated="true" width="111" height="133" frameX="-2" frameY="0" frameWidth="135" frameHeight="111"/>
+    <SubTexture name="FEUDALJAPAN_CANNON_TOWER_STRUCTURE" x="200" y="412" width="86" height="84" frameX="0" frameY="-2" frameWidth="86" frameHeight="86"/>
+    <SubTexture name="FEUDALJAPAN_DEAD_FIELD_STRUCTURE" x="526" y="476" width="92" height="53" frameX="-1" frameY="-2" frameWidth="96" frameHeight="55"/>
+    <SubTexture name="FEUDALJAPAN_FARM_STRUCTURE" x="442" y="300" width="125" height="73" frameX="0" frameY="-3" frameWidth="125" frameHeight="79"/>
+    <SubTexture name="FEUDALJAPAN_FIELD_STRUCTURE" x="2" y="557" width="97" height="54" frameX="0" frameY="-4" frameWidth="103" frameHeight="60"/>
+    <SubTexture name="FEUDALJAPAN_FOREST_CAMP_STRUCTURE" x="151" y="498" width="111" height="51" frameX="-2" frameY="0" frameWidth="115" frameHeight="51"/>
+    <SubTexture name="FEUDALJAPAN_FOUNDRY_STRUCTURE" x="2" y="456" width="147" height="99" frameX="0" frameY="-1" frameWidth="147" frameHeight="101"/>
+    <SubTexture name="FEUDALJAPAN_GRAPE_FIELD_STRUCTURE" x="151" y="551" width="108" height="62" frameX="0" frameY="-1" frameWidth="112" frameHeight="64"/>
+    <SubTexture name="FEUDALJAPAN_LUMBERMILL_STRUCTURE" x="565" y="398" width="140" height="76"/>
+    <SubTexture name="FEUDALJAPAN_MARKET_STRUCTURE" x="218" y="202" rotated="true" width="68" height="120" frameX="0" frameY="-1" frameWidth="124" frameHeight="70"/>
+    <SubTexture name="FEUDALJAPAN_REFINERY_STRUCTURE" x="288" y="300" width="152" height="122" frameX="-7" frameY="-2" frameWidth="166" frameHeight="126"/>
+    <SubTexture name="FEUDALJAPAN_STABLE_STRUCTURE" x="2" y="202" width="214" height="107" frameX="-15" frameY="-7" frameWidth="248" frameHeight="117"/>
+    <SubTexture name="FEUDALJAPAN_STRONGHOLD_STRUCTURE" x="288" y="2" width="280" height="170" frameX="-16" frameY="-14" frameWidth="310" frameHeight="204"/>
+    <SubTexture name="FEUDALJAPAN_THUMBNAIL" x="2" y="311" width="196" height="143" frameX="-16" frameY="-3" frameWidth="232" frameHeight="151"/>
+    <SubTexture name="FEUDALJAPAN_TOWER_STRUCTURE" x="200" y="324" width="86" height="86" frameX="0" frameY="-4" frameWidth="86" frameHeight="90"/>
+    <SubTexture name="FEUDALJAPAN_TOWNCENTER_STRUCTURE" x="2" y="2" width="284" height="198" frameX="-1" frameY="-3" frameWidth="296" frameHeight="202"/>
+    <SubTexture name="FEUDALJAPAN_TRADING_POST_STRUCTURE" x="570" y="2" width="266" height="167" frameX="-5" frameY="-17" frameWidth="284" frameHeight="189"/>
+    <SubTexture name="FEUDALJAPAN_TRAINING_GROUND_STRUCTURE" x="838" y="2" rotated="true" width="165" height="262" frameX="-4" frameY="-6" frameWidth="268" frameHeight="171"/>
+    <SubTexture name="FEUDALJAPAN_TRIBAL_CARNIVAL_STRUCTURE" x="288" y="497" width="115" height="67" frameX="0" frameY="-2" frameWidth="123" frameHeight="81"/>
+    <SubTexture name="FEUDALJAPAN_TRIBAL_FAIR_STRUCTURE" x="2" y="613" width="93" height="62"/>
+    <SubTexture name="FEUDALJAPAN_TRIBAL_FESTIVAL_STRUCTURE" x="442" y="375" width="121" height="48" frameX="-3" frameY="-7" frameWidth="127" frameHeight="60"/>
+    <SubTexture name="FEUDALJAPAN_TRIBAL_GATHERING_STRUCTURE" x="409" y="425" width="115" height="76" frameX="-4" frameY="0" frameWidth="121" frameHeight="76"/>
+    <SubTexture name="FEUDALJAPAN_UNIVERSITY_STRUCTURE" x="833" y="266" rotated="true" width="159" height="216" frameX="0" frameY="-3" frameWidth="222" frameHeight="167"/>
+    <SubTexture name="FEUDALJAPAN_WORKSHOP_STRUCTURE" x="288" y="174" width="252" height="124" frameX="0" frameY="-6" frameWidth="254" frameHeight="130"/>
+</TextureAtlas>

@@ -1,6 +1,8 @@
 package src.Objects.Store {
     import flash.display.Sprite;
 
+    import src.Objects.Factories.SpriteFactory;
+
     import src.Objects.Factories.StrongholdFactory;
 
     public class StrongholdStoreAsset implements IStoreAsset {
@@ -15,7 +17,7 @@ package src.Objects.Store {
         }
 
         public function thumbnail(): Sprite {
-            return Sprite(StrongholdFactory.getSprite(item.themeId));
+            return SpriteFactory.getFlashSprite(StrongholdFactory.getSpriteName(item.themeId));
         }
     }
 }

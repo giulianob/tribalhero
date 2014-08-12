@@ -14,6 +14,7 @@ class Ranking extends AppModel {
         array('name' => 'RANKING_DEFENSE_CITY', 'field' => 'defense_point', 'order' => 'desc', 'group' => 'city'),
         array('name' => 'RANKING_LOOT_CITY', 'field' => 'loot_stolen', 'order' => 'desc', 'group' => 'city'),
         array('name' => 'RANKING_INFLUENCE_CITY', 'field' => 'value', 'order' => 'desc', 'group' => 'city'),
+        array('name' => 'RANKING_EXPENSIVE_CITY', 'field' => 'expense_value', 'order' => 'desc', 'group' => 'city'),
 
         array('name' => 'RANKING_ATTACK_PLAYER', 'field' => 'attack_point', 'order' => 'desc', 'group' => 'player'),
         array('name' => 'RANKING_DEFENSE_PLAYER', 'field' => 'defense_point', 'order' => 'desc', 'group' => 'player'),

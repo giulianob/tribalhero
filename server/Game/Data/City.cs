@@ -105,6 +105,8 @@ namespace Game.Data
         private byte radius;
 
         private ushort value;
+        
+        private decimal expenseValue;
 
         #region Properties
 
@@ -416,17 +418,31 @@ namespace Game.Data
         {
             get
             {
-                return Owner.IsIdle ? 50 : alignmentPoint;
+                return Owner.IsIdleForAWeek ? 50 : alignmentPoint;
             }
             set
             {
-                if (Owner.IsIdle)
+                if (Owner.IsIdleForAWeek)
                 {
                     value = 50;
                 }
 
                 CheckUpdateMode();
                 alignmentPoint = Math.Min(100m, Math.Max(0m, value));
+                RaisePropertyChanged();
+            }
+        }
+
+        public decimal ExpenseValue
+        {
+            get
+            {
+                return expenseValue;
+            }
+            set
+            {
+                CheckUpdateMode();
+                this.expenseValue = value;
                 RaisePropertyChanged();
             }
         }
@@ -889,6 +905,7 @@ namespace Game.Data
                         new DbColumn("road_theme_id", RoadTheme, DbType.String),
                         new DbColumn("wall_theme_id", WallTheme, DbType.String),
                         new DbColumn("troop_theme_id", TroopTheme, DbType.String),
+                        new DbColumn("expense_value", ExpenseValue, DbType.Decimal),
                 };
             }
         }

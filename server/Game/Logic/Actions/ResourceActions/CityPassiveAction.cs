@@ -34,11 +34,15 @@ namespace Game.Logic.Actions
 
         private readonly IObjectTypeFactory objectTypeFactory;
 
-        private bool everyOther;
-
         private int laborTimeRemains;
 
         private readonly IBattleFormulas battleFormulas;
+
+        private readonly IStructureCsvFactory structureFactory;
+
+        private readonly TechnologyFactory technologyFactory;
+
+        private readonly UnitFactory unitFactory;
 
         public CityPassiveAction(IObjectTypeFactory objectTypeFactory,
                                  ILocker locker,
@@ -46,7 +50,10 @@ namespace Game.Logic.Actions
                                  IActionFactory actionFactory,
                                  Procedure procedure,
                                  IGameObjectLocator locator,
-                                 IBattleFormulas battleFormulas)
+                                 IBattleFormulas battleFormulas, 
+                                 IStructureCsvFactory structureFactory, 
+                                 TechnologyFactory technologyFactory, 
+                                 UnitFactory unitFactory)
         {
             this.objectTypeFactory = objectTypeFactory;
             this.locker = locker;
@@ -55,6 +62,9 @@ namespace Game.Logic.Actions
             this.procedure = procedure;
             this.locator = locator;
             this.battleFormulas = battleFormulas;
+            this.structureFactory = structureFactory;
+            this.technologyFactory = technologyFactory;
+            this.unitFactory = unitFactory;
 
             CreateSubscriptions();
         }
@@ -66,8 +76,11 @@ namespace Game.Logic.Actions
                                  IActionFactory actionFactory,
                                  Procedure procedure,
                                  IGameObjectLocator locator,
-                                 IBattleFormulas battleFormulas)
-            : this(objectTypeFactory, locker, formula, actionFactory, procedure, locator, battleFormulas)
+                                 IBattleFormulas battleFormulas, 
+                                 IStructureCsvFactory structureFactory, 
+                                 TechnologyFactory technologyFactory, 
+                                 UnitFactory unitFactory)
+            : this(objectTypeFactory, locker, formula, actionFactory, procedure, locator, battleFormulas, structureFactory, technologyFactory, unitFactory)
         {
             this.cityId = cityId;
         }
@@ -94,8 +107,7 @@ namespace Game.Logic.Actions
                         XmlSerializer.Serialize(new[]
                         {
                                 new XmlKvPair("city_id", cityId), 
-                                new XmlKvPair("labor_time_remains", laborTimeRemains),
-                                new XmlKvPair("every_other", everyOther)
+                                new XmlKvPair("labor_time_remains", laborTimeRemains)
                         });
             }
         }
@@ -149,6 +161,7 @@ namespace Game.Logic.Actions
             Upkeep();
             FastIncome();
             AlignmentPoint();
+            CityExpenseValue();
         }
 
         public override void Callback(object custom)
@@ -161,20 +174,19 @@ namespace Game.Logic.Actions
                     return;
                 }
 
-                if (Config.actions_skip_city_actions && city.Owner.Session == null)
+                if (Config.actions_skip_city_actions && !city.Owner.IsLoggedIn)
                 {
                     StateChange(ActionState.Completed);
                     return;
                 }
 
+                // Prevent duplicate city actions incase of a bug
                 var cityPassiveCount = city.Worker.PassiveActions.Values.Count(x => x.Type == Type);
                 if (cityPassiveCount > 1)
                 {
                     StateChange(ActionState.Completed);
                     return;
                 }
-
-                everyOther = !everyOther;
 
                 city.BeginUpdate();
 
@@ -206,26 +218,30 @@ namespace Game.Logic.Actions
 
                 city.EndUpdate();
 
-                // Stop city action if player has not login for more than a week
-                if (city.Owner.Session != null && SystemClock.Now.Subtract(city.Owner.LastLogin).TotalDays > 7)
-                {
-                    StateChange(ActionState.Completed);
-                }
-                else
-                {
-                    beginTime = SystemClock.Now;
-                    endTime = SystemClock.Now.AddSeconds(CalculateTime(INTERVAL_IN_SECONDS));
-                    StateChange(ActionState.Fired);
-                }
+                beginTime = SystemClock.Now;
+                endTime = SystemClock.Now.AddSeconds(CalculateTime(INTERVAL_IN_SECONDS));
+                StateChange(ActionState.Fired);
             });
+        }
+
+        private void CityExpenseValue()
+        {
+            PostFirstLoop += city =>
+            {
+                city.ExpenseValue = formula.CalculateTotalCityExpense(city, structureFactory, technologyFactory, unitFactory);
+            };
         }
 
         private void Labor()
         {
             PostFirstLoop += city =>
                 {
-                    if (city.Owner.IsIdle)
+                    if (city.Owner.IsIdleForAWeek)
                     {
+                        return;
+                    }
+
+                    if (city.Owner.IsIdleForThreeDays) {
                         city.Resource.Gold.Rate = formula.GetGoldRate(city);
                         return;
                     }
@@ -259,6 +275,11 @@ namespace Game.Logic.Actions
 
             FirstLoop += (city, structure) =>
                 {
+                    if (city.Owner.IsIdleForAWeek)
+                    {
+                        return;
+                    }
+
                     if (objectTypeFactory.IsStructureType("RepairBuilding", structure))
                     {
                         repairPower += formula.RepairRate(structure);
@@ -280,8 +301,7 @@ namespace Game.Logic.Actions
                     }
 
                     structure.BeginUpdate();
-                    structure.Stats.Hp =
-                            (ushort)Math.Min(structure.Stats.Hp + repairPower, structure.Stats.Base.Battle.MaxHp);
+                    structure.Stats.Hp = (ushort)Math.Min(structure.Stats.Hp + repairPower, structure.Stats.Base.Battle.MaxHp);
                     structure.EndUpdate();
                 };
         }
@@ -290,6 +310,11 @@ namespace Game.Logic.Actions
         {
             PostFirstLoop += city =>
                 {                   
+                    if (city.Owner.IsIdleForAWeek)
+                    {
+                        return;
+                    }
+
                     city.Resource.Crop.Upkeep = procedure.UpkeepForCity(city, battleFormulas);
 
                     if (!Config.troop_starve)
@@ -337,6 +362,11 @@ namespace Game.Logic.Actions
         {
             PostFirstLoop += city =>
                 {
+                    if (city.Owner.IsIdleForAWeek)
+                    {
+                        return;
+                    }
+
                     if (Math.Abs(city.AlignmentPoint - 50m) < (Config.ap_deduction_per_hour / 2))
                     {
                         city.AlignmentPoint = 50m;

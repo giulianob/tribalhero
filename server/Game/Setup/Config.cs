@@ -62,7 +62,7 @@ namespace Game.Setup
 
         #region Database Settings
 
-        public static string database_schema_version = "20140803202024";
+        public static string database_schema_version = "20140812184804";
         public static bool database_verbose;
         public static bool database_empty;
         public static bool database_load_players = true;
@@ -93,7 +93,6 @@ namespace Game.Setup
         #region Idle Settings
 
         public static bool players_remove_idle = true;
-        public static int idle_days = 3;
 
         #endregion
 

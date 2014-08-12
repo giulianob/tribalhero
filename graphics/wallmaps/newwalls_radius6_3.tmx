@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="staggered" width="15" height="29" tilewidth="160" tileheight="80">
+ <tileset firstgid="1" name="Tileset" tilewidth="160" tileheight="80">
+  <image source="../Tilemap.png" width="2048" height="1024"/>
+ </tileset>
+ <tileset firstgid="145" name="Walls" tilewidth="160" tileheight="160">
+  <image source="../themes/pirates/WALL.png" width="2048" height="640"/>
+ </tileset>
+ <layer name="Terrain" width="15" height="29">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3Tuw0AIAhFUd4SjOH+45lYWRAFr5WxeOUJ4Scz08+IA0dt1ftFm/WRo3bnV65qW9JHjtqMJ3VJv3TOZL/0rsg90z8i/yvgZn9qX0wHN14ftswGAAA=
+  </data>
+ </layer>
+ <layer name="Walls" width="15" height="29">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC83P3QqAIAwF4N7/sh8rKnvVEhTGcO5sEnRASuHjbMPwTY4OG94zOl3K5bCR/Fu6A7v3WNRH4R3ZW7Kar81K05pbs5JHnGRbe/LQvdHOWvditClT/q5GN7O7xXstdyU3YE/hXeuWOpFuqVPr1jpb3ajl3dqsLY92Urs7XMmWz9/yAJVcqTjMBgAA
+  </data>
+ </layer>
+</map>

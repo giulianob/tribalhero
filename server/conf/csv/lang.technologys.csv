@@ -1,0 +1,454 @@
+Key,EN
+NO_TECH_SUMMARY,No information is available for this technology.
+,
+OVERTIME_TECHNOLOGY_NAME,Overtime
+OVERTIME_TECHNOLOGY_LVL_1,Decrease laborer assigning time by 10%. (Does not stack)
+OVERTIME_TECHNOLOGY_LVL_2,Decrease laborer assigning time by 20%. (Does not stack)
+OVERTIME_TECHNOLOGY_LVL_3,Decrease laborer assigning time by 30%. (Does not stack)
+OVERTIME_TECHNOLOGY_LVL_4,Decrease laborer assigning time by 40%. (Does not stack)
+OVERTIME_TECHNOLOGY_LVL_5,Decrease laborer assigning time by 50%. (Does not stack)
+,
+A_CALL_TO_ARMS_TECHNOLOGY_NAME,A Call To Arms
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_1,Order idle laborers to provide up to 3% damage bonus with 60 laborers when the town is under attack. (Does not stack)
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_2,Order idle laborers to provide up to 6% damage bonus with 110 laborers when the town is under attack. (Does not stack)
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_3,Order idle laborers to provide up to 9% damage bonus with 150 laborers when the town is under attack. (Does not stack)
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_4,Order idle laborers to provide up to 12% damage bonus with 180 laborers when the town is under attack. (Does not stack)
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_5,Order idle laborers to provide up to 15% damage bonus with 200 laborers when the town is under attack. (Does not stack)
+,
+,
+TUNNEL_EXCAVATION_TECHNOLOGY_NAME,Tunnel Excavation
+TUNNEL_EXCAVATION_TECHNOLOGY_LVL_1,"Reduces distance requirement by 1 for Tower, Cannon Tower and Basement. (Does not stack)"
+TUNNEL_EXCAVATION_TECHNOLOGY_LVL_2,"Reduces distance requirement by 2 for Tower, Cannon Tower and Basement. (Does not stack)"
+TUNNEL_EXCAVATION_TECHNOLOGY_LVL_3,"Reduces distance requirement by 3 for Tower, Cannon Tower and Basement. (Does not stack)"
+,
+SENSE_OF_URGENCY_TECHNOLOGY_NAME,Sense of Urgency
+SENSE_OF_URGENCY_TECHNOLOGY_SUMMARY,"If any structure is destroyed in battle, all other buildings are repaired by {0}% of the destroyed buildings HP after the battle. (Stacks additively up to 100%)"
+SENSE_OF_URGENCY_TECHNOLOGY_LVL_1,"If any structure is destroyed in battle, all other buildings are repaired by 4% of the destroyed buildings HP after the battle. (Stacks additively up to 100%)"
+SENSE_OF_URGENCY_TECHNOLOGY_LVL_2,"If any structure is destroyed in battle, all other buildings are repaired by 8% of the destroyed buildings HP after the battle. (Stacks additively up to 100%)"
+SENSE_OF_URGENCY_TECHNOLOGY_LVL_3,"If any structure is destroyed in battle, all other buildings are repaired by 12% of the destroyed buildings HP after the battle. (Stacks additively up to 100%)"
+SENSE_OF_URGENCY_TECHNOLOGY_LVL_4,"If any structure is destroyed in battle, all other buildings are repaired by 16% of the destroyed buildings HP after the battle. (Stacks additively up to 100%)"
+SENSE_OF_URGENCY_TECHNOLOGY_LVL_5,"If any structure is destroyed in battle, all other buildings are repaired by 20% of the destroyed buildings HP after the battle. (Stacks additively up to 100%)"
+,
+LAST_STAND_TECHNOLOGY_NAME,Last Stand
+LAST_STAND_TECHNOLOGY_LVL_1,Hoplite receives 10% less damage when team is about to die. (Does not stack)
+LAST_STAND_TECHNOLOGY_LVL_2,Hoplite receives 20% less damage when team is about to die. (Does not stack)
+LAST_STAND_TECHNOLOGY_LVL_3,Hoplite receives 30% less damage when team is about to die. (Does not stack)
+LAST_STAND_TECHNOLOGY_LVL_4,Hoplite receives 40% less damage when team is about to die. (Does not stack)
+LAST_STAND_TECHNOLOGY_LVL_5,Hoplite receives 50% less damage when team is about to die. (Does not stack)
+,
+,
+RUSH_ATTACK_TECHNOLOGY_NAME,Rush Attack
+RUSH_ATTACK_TECHNOLOGY_SUMMARY,Increases travel speed of troops by {0}% on an attack mission. (Stacks additively but the travel time decrease has diminishing returns.)
+RUSH_ATTACK_TECHNOLOGY_LVL_1,Increases travel speed of troops by 4% on an attack mission. (Stacks additively but the travel time decrease has diminishing returns.)
+RUSH_ATTACK_TECHNOLOGY_LVL_2,Increases travel speed of troops by 8% on an attack mission. (Stacks additively but the travel time decrease has diminishing returns.)
+RUSH_ATTACK_TECHNOLOGY_LVL_3,Increases travel speed of troops by 12% on an attack mission. (Stacks additively but the travel time decrease has diminishing returns.)
+RUSH_ATTACK_TECHNOLOGY_LVL_4,Increases travel speed of troops by 16% on an attack mission. (Stacks additively but the travel time decrease has diminishing returns.)
+RUSH_ATTACK_TECHNOLOGY_LVL_5,Increases travel speed of troops by 20% on an attack mission. (Stacks additively but the travel time decrease has diminishing returns.)
+,
+RUSH_DEFENSE_TECHNOLOGY_NAME,Rush Defense
+RUSH_DEFENSE_TECHNOLOGY_SUMMARY,Increases troop's travel speed by {0}% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
+RUSH_DEFENSE_TECHNOLOGY_LVL_1,Increases troop's travel speed by 8% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
+RUSH_DEFENSE_TECHNOLOGY_LVL_2,Increases troop's travel speed by 16% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
+RUSH_DEFENSE_TECHNOLOGY_LVL_3,Increases troop's travel speed by 24% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
+RUSH_DEFENSE_TECHNOLOGY_LVL_4,Increases troop's travel speed by 32% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
+RUSH_DEFENSE_TECHNOLOGY_LVL_5,Increases troop's travel speed by 40% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
+,
+DOUBLE_TIME_TECHNOLOGY_NAME,Double Time
+DOUBLE_TIME_TECHNOLOGY_SUMMARY,Increases troop's travel speed by {0}% when distance is greater than 500 tiles. (Stacks additively but the travel time decrease has diminishing returns.)
+DOUBLE_TIME_TECHNOLOGY_LVL_1,Increases troop's travel speed by 30% when distance is greater than 500 tiles. (Stacks additively but the travel time decrease has diminishing returns.)
+DOUBLE_TIME_TECHNOLOGY_LVL_2,Increases troop's travel speed by 60% when distance is greater than 500 tiles. (Stacks additively but the travel time decrease has diminishing returns.)
+DOUBLE_TIME_TECHNOLOGY_LVL_3,Increases troop's travel speed by 90% when distance is greater than 500 tiles. (Stacks additively but the travel time decrease has diminishing returns.)
+DOUBLE_TIME_TECHNOLOGY_LVL_4,Increases troop's travel speed by 120% when distance is greater than 500 tiles. (Stacks additively but the travel time decrease has diminishing returns.)
+DOUBLE_TIME_TECHNOLOGY_LVL_5,Increases troop's travel speed by 150% when distance is greater than 500 tiles. (Stacks additively but the travel time decrease has diminishing returns.)
+,
+ARCHERY_RESEARCH_TECHNOLOGY_NAME,Archery Research
+ARCHERY_RESEARCH_TECHNOLOGY_LVL_1,Enables training bow wielding units.
+,
+BOW_RESEARCH_TECHNOLOGY_NAME,Bowshield Research
+BOW_RESEARCH_TECHNOLOGY_LVL_1,"Increases Bowman, Archer and Helepolis' Max HP by 4%. (Does not stack)"
+BOW_RESEARCH_TECHNOLOGY_LVL_2,"Increases Bowman, Archer and Helepolis' Max HP by 8%. (Does not stack)"
+BOW_RESEARCH_TECHNOLOGY_LVL_3,"Increases Bowman, Archer and Helepolis' Max HP by 12%. (Does not stack)"
+,
+HIPPOSANDAL_TECHNOLOGY_NAME,Hipposandal
+HIPPOSANDAL_TECHNOLOGY_LVL_1,Equips mounts with horseshoes.  Increase base Carry for mount unit by 15. (Does not stack)
+HIPPOSANDAL_TECHNOLOGY_LVL_2,Equips mounts with horseshoes.  Increase base Carry for mount unit by 30. (Does not stack)
+HIPPOSANDAL_TECHNOLOGY_LVL_3,Equips mounts with horseshoes.  Increase base Carry for mount unit by 45. (Does not stack)
+,
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_NAME,Swordsman Defensive Boost
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_SUMMARY,Increases armor against Fighter and Swordsman by {0}%. (Stacks up to 100%).
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases armor against Fighter and Swordsman by 2%. (Stacks up to 100%).  \nRequires 1 point.
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases armor against Fighter and Swordsman by 4%. (Stacks up to 100%).  \nRequires 2 points.
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases armor against Fighter and Swordsman by 6%. (Stacks up to 100%).  \nRequires 3 points.
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases armor against Fighter and Swordsman by 8%. (Stacks up to 100%).  \nRequires 4 points.
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases armor against Fighter and Swordsman by 10%. (Stacks up to 100%).  \nRequires 5 points.
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_6,Increases armor against Fighter and Swordsman by 12%. (Stacks up to 100%).  \nRequires 6 points.
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_7,Increases armor against Fighter and Swordsman by 14%. (Stacks up to 100%).  \nRequires 7 points.
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_8,Increases armor against Fighter and Swordsman by 16%. (Stacks up to 100%).  \nRequires 8 points.
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_9,Increases armor against Fighter and Swordsman by 18%. (Stacks up to 100%).  \nRequires 9 points.
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_10,Increases armor against Fighter and Swordsman by 20%. (Stacks up to 100%).  \nRequires 10 points.
+,
+BOW_ARMOR_RESEARCH_TECHNOLOGY_NAME,Archer Defensive Boost
+BOW_ARMOR_RESEARCH_TECHNOLOGY_SUMMARY,Increases armor against Bowman and Archer by {0}%. (Stacks up to 100%).
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases armor against Bowman and Archer by 2%. (Stacks up to 100%).  \nRequires 1 point.
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases armor against Bowman and Archer by 4%. (Stacks up to 100%).  \nRequires 2 points.
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases armor against Bowman and Archer by 6%. (Stacks up to 100%).  \nRequires 3 points.
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases armor against Bowman and Archer by 8%. (Stacks up to 100%).  \nRequires 4 points.
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases armor against Bowman and Archer by 10%. (Stacks up to 100%).  \nRequires 5 points.
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_6,Increases armor against Bowman and Archer by 12%. (Stacks up to 100%).  \nRequires 6 points.
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_7,Increases armor against Bowman and Archer by 14%. (Stacks up to 100%).  \nRequires 7 points.
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_8,Increases armor against Bowman and Archer by 16%. (Stacks up to 100%).  \nRequires 8 points.
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_9,Increases armor against Bowman and Archer by 18%. (Stacks up to 100%).  \nRequires 9 points.
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_10,Increases armor against Bowman and Archer by 20%. (Stacks up to 100%).  \nRequires 10 points.
+,
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_NAME,Hoplite Defensive Boost
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_SUMMARY,Increases armor against Hoplite by {0}%. (Stacks up to 100%).
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases armor against Hoplite by 2%. (Stacks up to 100%).  \nRequires 1 point.
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases armor against Hoplite by 4%. (Stacks up to 100%).  \nRequires 2 points.
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases armor against Hoplite by 6%. (Stacks up to 100%).  \nRequires 3 points.
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases armor against Hoplite by 8%. (Stacks up to 100%).  \nRequires 4 points.
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases armor against Hoplite by 10%. (Stacks up to 100%).  \nRequires 5 points.
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_6,Increases armor against Hoplite by 12%. (Stacks up to 100%).  \nRequires 6 points.
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_7,Increases armor against Hoplite by 14%. (Stacks up to 100%).  \nRequires 7 points.
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_8,Increases armor against Hoplite by 16%. (Stacks up to 100%).  \nRequires 8 points.
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_9,Increases armor against Hoplite by 18%. (Stacks up to 100%).  \nRequires 9 points.
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_10,Increases armor against Hoplite by 20%. (Stacks up to 100%).  \nRequires 10 points.
+,
+GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_NAME,Gladiator Defensive Boost
+GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_SUMMARY,Increases armor against Gladiator by {0}%. (Stacks up to 100%).
+GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases armor against Gladiator by 2%. (Stacks up to 100%).  \nRequires 1 point.
+GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases armor against Gladiator by 4%. (Stacks up to 100%).  \nRequires 2 points.
+GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases armor against Gladiator by 6%. (Stacks up to 100%).  \nRequires 3 points.
+GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases armor against Gladiator by 8%. (Stacks up to 100%).  \nRequires 4 points.
+GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases armor against Gladiator by 10%. (Stacks up to 100%).  \nRequires 5 points.
+GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_LVL_6,Increases armor against Gladiator by 12%. (Stacks up to 100%).  \nRequires 6 points.
+GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_LVL_7,Increases armor against Gladiator by 14%. (Stacks up to 100%).  \nRequires 7 points.
+GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_LVL_8,Increases armor against Gladiator by 16%. (Stacks up to 100%).  \nRequires 8 points.
+GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_LVL_9,Increases armor against Gladiator by 18%. (Stacks up to 100%).  \nRequires 9 points.
+GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_LVL_10,Increases armor against Gladiator by 20%. (Stacks up to 100%).  \nRequires 10 points.
+,
+CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_NAME,Cavalry Defensive Boost
+CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_SUMMARY,Increases armor against Cavalry by {0}%. (Stacks up to 100%).
+CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases armor against Cavalry by 2%. (Stacks up to 100%).  \nRequires 1 point.
+CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases armor against Cavalry by 4%. (Stacks up to 100%).  \nRequires 2 points.
+CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases armor against Cavalry by 6%. (Stacks up to 100%).  \nRequires 3 points.
+CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases armor against Cavalry by 8%. (Stacks up to 100%).  \nRequires 4 points.
+CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases armor against Cavalry by 10%. (Stacks up to 100%).  \nRequires 5 points.
+CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_LVL_6,Increases armor against Cavalry by 12%. (Stacks up to 100%).  \nRequires 6 points.
+CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_LVL_7,Increases armor against Cavalry by 14%. (Stacks up to 100%).  \nRequires 7 points.
+CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_LVL_8,Increases armor against Cavalry by 16%. (Stacks up to 100%).  \nRequires 8 points.
+CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_LVL_9,Increases armor against Cavalry by 18%. (Stacks up to 100%).  \nRequires 9 points.
+CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_LVL_10,Increases armor against Cavalry by 20%. (Stacks up to 100%).  \nRequires 10 points.
+,
+KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_NAME,Knight Defensive Boost
+KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_SUMMARY,Increases armor against Knight by {0}%. (Stacks up to 100%).
+KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases armor against Knight by 2%. (Stacks up to 100%).  \nRequires 1 point.
+KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases armor against Knight by 4%. (Stacks up to 100%).  \nRequires 2 points.
+KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases armor against Knight by 6%. (Stacks up to 100%).  \nRequires 3 points.
+KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases armor against Knight by 8%. (Stacks up to 100%).  \nRequires 4 points.
+KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases armor against Knight by 10%. (Stacks up to 100%).  \nRequires 5 points.
+KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_LVL_6,Increases armor against Knight by 12%. (Stacks up to 100%).  \nRequires 6 points.
+KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_LVL_7,Increases armor against Knight by 14%. (Stacks up to 100%).  \nRequires 7 points.
+KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_LVL_8,Increases armor against Knight by 16%. (Stacks up to 100%).  \nRequires 8 points.
+KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_LVL_9,Increases armor against Knight by 18%. (Stacks up to 100%).  \nRequires 9 points.
+KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_LVL_10,Increases armor against Knight by 20%. (Stacks up to 100%).  \nRequires 10 points.
+,
+HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_NAME,Helepolis Defensive Boost
+HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_SUMMARY,Increases armor against Helepolis by {0}%. (Stacks up to 100%).
+HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases armor against Helepolis by 2%. (Stacks up to 100%).  \nRequires 1 point.
+HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases armor against Helepolis by 4%. (Stacks up to 100%).  \nRequires 2 points.
+HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases armor against Helepolis by 6%. (Stacks up to 100%).  \nRequires 3 points.
+HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases armor against Helepolis by 8%. (Stacks up to 100%).  \nRequires 4 points.
+HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases armor against Helepolis by 10%. (Stacks up to 100%).  \nRequires 5 points.
+HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_LVL_6,Increases armor against Helepolis by 12%. (Stacks up to 100%).  \nRequires 6 points.
+HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_LVL_7,Increases armor against Helepolis by 14%. (Stacks up to 100%).  \nRequires 7 points.
+HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_LVL_8,Increases armor against Helepolis by 16%. (Stacks up to 100%).  \nRequires 8 points.
+HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_LVL_9,Increases armor against Helepolis by 18%. (Stacks up to 100%).  \nRequires 9 points.
+HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_LVL_10,Increases armor against Helepolis by 20%. (Stacks up to 100%).  \nRequires 10 points.
+,
+CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_NAME,Catapult Defensive Boost
+CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_SUMMARY,Increases armor against Catapult by {0}%. (Stacks up to 100%).
+CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases armor against Catapult by 2%. (Stacks up to 100%).  \nRequires 1 point.
+CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases armor against Catapult by 4%. (Stacks up to 100%).  \nRequires 2 points.
+CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases armor against Catapult by 6%. (Stacks up to 100%).  \nRequires 3 points.
+CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases armor against Catapult by 8%. (Stacks up to 100%).  \nRequires 4 points.
+CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases armor against Catapult by 10%. (Stacks up to 100%).  \nRequires 5 points.
+CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_LVL_6,Increases armor against Catapult by 12%. (Stacks up to 100%).  \nRequires 6 points.
+CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_LVL_7,Increases armor against Catapult by 14%. (Stacks up to 100%).  \nRequires 7 points.
+CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_LVL_8,Increases armor against Catapult by 16%. (Stacks up to 100%).  \nRequires 8 points.
+CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_LVL_9,Increases armor against Catapult by 18%. (Stacks up to 100%).  \nRequires 9 points.
+CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_LVL_10,Increases armor against Catapult by 20%. (Stacks up to 100%).  \nRequires 10 points.
+,
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_NAME,Swordsman Offensive Boost
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_SUMMARY,Increases damage against Fighter and Swordsman by {0}%. (Stacks up to 100%).
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Fighter and Swordsman by 2%. (Stacks up to 100%).  \nRequires 1 point.
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Fighter and Swordsman by 4%. (Stacks up to 100%).  \nRequires 2 points.
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Fighter and Swordsman by 6%. (Stacks up to 100%).  \nRequires 3 points.
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Fighter and Swordsman by 8%. (Stacks up to 100%).  \nRequires 4 points.
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Fighter and Swordsman by 10%. (Stacks up to 100%).  \nRequires 5 points.
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_6,Increases damage against Fighter and Swordsman by 12%. (Stacks up to 100%).  \nRequires 6 points.
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_7,Increases damage against Fighter and Swordsman by 14%. (Stacks up to 100%).  \nRequires 7 points.
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_8,Increases damage against Fighter and Swordsman by 16%. (Stacks up to 100%).  \nRequires 8 points.
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_9,Increases damage against Fighter and Swordsman by 18%. (Stacks up to 100%).  \nRequires 9 points.
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_10,Increases damage against Fighter and Swordsman by 20%. (Stacks up to 100%).  \nRequires 10 points.
+,
+BOW_WEAPON_RESEARCH_TECHNOLOGY_NAME,Archer Offensive Boost
+BOW_WEAPON_RESEARCH_TECHNOLOGY_SUMMARY,Increases damage against Bowman and Archer by {0}%. (Stacks up to 100%).
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Bowman and Archer by 2%. (Stacks up to 100%).  \nRequires 1 point.
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Bowman and Archer by 4%. (Stacks up to 100%).  \nRequires 2 points.
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Bowman and Archer by 6%. (Stacks up to 100%).  \nRequires 3 points.
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Bowman and Archer by 8%. (Stacks up to 100%).  \nRequires 4 points.
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Bowman and Archer by 10%. (Stacks up to 100%).  \nRequires 5 points.
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_6,Increases damage against Bowman and Archer by 12%. (Stacks up to 100%).  \nRequires 6 points.
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_7,Increases damage against Bowman and Archer by 14%. (Stacks up to 100%).  \nRequires 7 points.
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_8,Increases damage against Bowman and Archer by 16%. (Stacks up to 100%).  \nRequires 8 points.
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_9,Increases damage against Bowman and Archer by 18%. (Stacks up to 100%).  \nRequires 9 points.
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_10,Increases damage against Bowman and Archer by 20%. (Stacks up to 100%).  \nRequires 10 points.
+,
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_NAME,Hoplite Offensive Boost
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_SUMMARY,Increases damage against Hoplite by {0}%. (Stacks up to 100%).
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Hoplite by 2%. (Stacks up to 100%).  \nRequires 1 point.
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Hoplite by 4%. (Stacks up to 100%).  \nRequires 2 points.
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Hoplite by 6%. (Stacks up to 100%).  \nRequires 3 points.
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Hoplite by 8%. (Stacks up to 100%).  \nRequires 4 points.
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Hoplite by 10%. (Stacks up to 100%).  \nRequires 5 points.
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_6,Increases damage against Hoplite by 12%. (Stacks up to 100%).  \nRequires 6 points.
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_7,Increases damage against Hoplite by 14%. (Stacks up to 100%).  \nRequires 7 points.
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_8,Increases damage against Hoplite by 16%. (Stacks up to 100%).  \nRequires 8 points.
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_9,Increases damage against Hoplite by 18%. (Stacks up to 100%).  \nRequires 9 points.
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_10,Increases damage against Hoplite by 20%. (Stacks up to 100%).  \nRequires 10 points.
+,
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_NAME,Gladiator Offensive Boost
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_SUMMARY,Increases damage against Gladiator by {0}%. (Stacks up to 100%).
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Gladiator by 2%. (Stacks up to 100%).  \nRequires 1 point.
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Gladiator by 4%. (Stacks up to 100%).  \nRequires 2 points.
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Gladiator by 6%. (Stacks up to 100%).  \nRequires 3 points.
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Gladiator by 8%. (Stacks up to 100%).  \nRequires 4 points.
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Gladiator by 10%. (Stacks up to 100%).  \nRequires 5 points.
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_6,Increases damage against Gladiator by 12%. (Stacks up to 100%).  \nRequires 6 points.
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_7,Increases damage against Gladiator by 14%. (Stacks up to 100%).  \nRequires 7 points.
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_8,Increases damage against Gladiator by 16%. (Stacks up to 100%).  \nRequires 8 points.
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_9,Increases damage against Gladiator by 18%. (Stacks up to 100%).  \nRequires 9 points.
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_10,Increases damage against Gladiator by 20%. (Stacks up to 100%).  \nRequires 10 points.
+,
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_NAME,Cavalry Offensive Boost
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_SUMMARY,Increases damage against Cavalry by {0}%. (Stacks up to 100%).
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Cavalry by 2%. (Stacks up to 100%).  \nRequires 1 point.
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Cavalry by 4%. (Stacks up to 100%).  \nRequires 2 points.
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Cavalry by 6%. (Stacks up to 100%).  \nRequires 3 points.
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Cavalry by 8%. (Stacks up to 100%).  \nRequires 4 points.
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Cavalry by 10%. (Stacks up to 100%).  \nRequires 5 points.
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_6,Increases damage against Cavalry by 12%. (Stacks up to 100%).  \nRequires 6 points.
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_7,Increases damage against Cavalry by 14%. (Stacks up to 100%).  \nRequires 7 points.
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_8,Increases damage against Cavalry by 16%. (Stacks up to 100%).  \nRequires 8 points.
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_9,Increases damage against Cavalry by 18%. (Stacks up to 100%).  \nRequires 9 points.
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_10,Increases damage against Cavalry by 20%. (Stacks up to 100%).  \nRequires 10 points.
+,
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_NAME,Knight Offensive Boost
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_SUMMARY,Increases damage against Knight by {0}%. (Stacks up to 100%).
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Knight by 2%. (Stacks up to 100%).  \nRequires 1 point.
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Knight by 4%. (Stacks up to 100%).  \nRequires 2 points.
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Knight by 6%. (Stacks up to 100%).  \nRequires 3 points.
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Knight by 8%. (Stacks up to 100%).  \nRequires 4 points.
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Knight by 10%. (Stacks up to 100%).  \nRequires 5 points.
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_6,Increases damage against Knight by 12%. (Stacks up to 100%).  \nRequires 6 points.
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_7,Increases damage against Knight by 14%. (Stacks up to 100%).  \nRequires 7 points.
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_8,Increases damage against Knight by 16%. (Stacks up to 100%).  \nRequires 8 points.
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_9,Increases damage against Knight by 18%. (Stacks up to 100%).  \nRequires 9 points.
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_10,Increases damage against Knight by 20%. (Stacks up to 100%).  \nRequires 10 points.
+,
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_NAME,Helepolis Offensive Boost
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_SUMMARY,Increases damage against Helepolis by {0}%. (Stacks up to 100%).
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Helepolis by 2%. (Stacks up to 100%).  \nRequires 1 point.
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Helepolis by 4%. (Stacks up to 100%).  \nRequires 2 points.
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Helepolis by 6%. (Stacks up to 100%).  \nRequires 3 points.
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Helepolis by 8%. (Stacks up to 100%).  \nRequires 4 points.
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Helepolis by 10%. (Stacks up to 100%).  \nRequires 5 points.
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_6,Increases damage against Helepolis by 12%. (Stacks up to 100%).  \nRequires 6 points.
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_7,Increases damage against Helepolis by 14%. (Stacks up to 100%).  \nRequires 7 points.
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_8,Increases damage against Helepolis by 16%. (Stacks up to 100%).  \nRequires 8 points.
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_9,Increases damage against Helepolis by 18%. (Stacks up to 100%).  \nRequires 9 points.
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_10,Increases damage against Helepolis by 20%. (Stacks up to 100%).  \nRequires 10 points.
+,
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_NAME,Catapult Offensive Boost
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_SUMMARY,Increases damage against Catapult by {0}%. (Stacks up to 100%).
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Catapult by 2%. (Stacks up to 100%).  \nRequires 1 point.
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Catapult by 4%. (Stacks up to 100%).  \nRequires 2 points.
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Catapult by 6%. (Stacks up to 100%).  \nRequires 3 points.
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Catapult by 8%. (Stacks up to 100%).  \nRequires 4 points.
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Catapult by 10%. (Stacks up to 100%).  \nRequires 5 points.
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_6,Increases damage against Catapult by 12%. (Stacks up to 100%).  \nRequires 6 points.
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_7,Increases damage against Catapult by 14%. (Stacks up to 100%).  \nRequires 7 points.
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_8,Increases damage against Catapult by 16%. (Stacks up to 100%).  \nRequires 8 points.
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_9,Increases damage against Catapult by 18%. (Stacks up to 100%).  \nRequires 9 points.
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_10,Increases damage against Catapult by 20%. (Stacks up to 100%).  \nRequires 10 points.
+,
+ATTIC_STORAGE_TECHNOLOGY_NAME,Attic Storage
+ATTIC_STORAGE_TECHNOLOGY_LVL_1,Increase capacity of the city resources by 50% of basements' capacity.
+ATTIC_STORAGE_TECHNOLOGY_LVL_2,Increase capacity of the city resources by 100% of basements' capacity.
+ATTIC_STORAGE_TECHNOLOGY_LVL_3,Increase capacity of the city resources by 150% of basements' capacity.
+ATTIC_STORAGE_TECHNOLOGY_LVL_4,Increase capacity of the city resources by 200% of basements' capacity.
+ATTIC_STORAGE_TECHNOLOGY_LVL_5,Increase capacity of the city resources by 250% of basements' capacity.
+ATTIC_STORAGE_TECHNOLOGY_LVL_6,Increase capacity of the city resources by 300% of basements' capacity.
+ATTIC_STORAGE_TECHNOLOGY_LVL_7,Increase capacity of the city resources by 350% of basements' capacity.
+ATTIC_STORAGE_TECHNOLOGY_LVL_8,Increase capacity of the city resources by 400% of basements' capacity.
+,
+FIVE_FOR_FOUR_TECHNOLOGY_NAME,Five For Four
+FIVE_FOR_FOUR_TECHNOLOGY_LVL_1,Receive the 5th unit free for every 4 units that are trained for this structure only.
+FOUR_FOR_THREE_TECHNOLOGY_NAME,Four For Three
+FOUR_FOR_THREE_TECHNOLOGY_LVL_1,Receive the 4th unit free for every 3 units that are trained for this structure only.
+THREE_FOR_TWO_TECHNOLOGY_NAME,Three For Two
+THREE_FOR_TWO_TECHNOLOGY_LVL_1,Receive the 3rd unit free for every 2 units that are trained for this structure only.
+TWO_FOR_ONE_TECHNOLOGY_NAME,Two For One
+TWO_FOR_ONE_TECHNOLOGY_LVL_1,Receive the 2nd unit free for every 1 unit that is trained for this structure only.
+,
+HAPPYHOUR_TECHNOLOGY_NAME,Happy Hour
+HAPPYHOUR_TECHNOLOGY_SUMMARY,Increases the laborer production rate by {0}%. (30% for the first then 8% for every additional)
+HAPPYHOUR_TECHNOLOGY_LVL_1,Increases the laborer production rate by 30%. (8% for every additional)
+,
+SUNDANCE_TECHNOLOGY_NAME,Sun Dance
+SUNDANCE_TECHNOLOGY_SUMMARY,Increase maximum loot bonus by {0}% (Stacks additively)
+SUNDANCE_TECHNOLOGY_LVL_1,Increase maximum loot bonus by 10% (Stacks additively)
+SUNDANCE_TECHNOLOGY_LVL_2,Increase maximum loot bonus by 20% (Stacks additively)
+SUNDANCE_TECHNOLOGY_LVL_3,Increase maximum loot bonus by 30% (Stacks additively)
+SUNDANCE_TECHNOLOGY_LVL_4,Increase maximum loot bonus by 40% (Stacks additively)
+SUNDANCE_TECHNOLOGY_LVL_5,Increase maximum loot bonus by 50% (Stacks additively)
+,
+GREED_IS_GOOD_TECHNOLOGY_NAME,Greed Is Good
+GREED_IS_GOOD_TECHNOLOGY_SUMMARY,Reduce time to load up loot by {0} round(s) (Stacks additively up to 10 rounds)
+GREED_IS_GOOD_TECHNOLOGY_LVL_1,Reduce time to load up loot by 1 round (Stacks additively up to 10 rounds)
+GREED_IS_GOOD_TECHNOLOGY_LVL_2,Reduce time to load up loot by 2 rounds (Stacks additively up to 10 rounds)
+GREED_IS_GOOD_TECHNOLOGY_LVL_3,Reduce time to load up loot by 3 rounds (Stacks additively up to 10 rounds)
+GREED_IS_GOOD_TECHNOLOGY_LVL_4,Reduce time to load up loot by 4 rounds (Stacks additively up to 10 rounds)
+GREED_IS_GOOD_TECHNOLOGY_LVL_5,Reduce time to load up loot by 5 rounds (Stacks additively up to 10 rounds)
+,
+COORDINATED_DEFENSE_TECHNOLOGY_NAME,Coordinated Defense
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_1,Defensive reinforcement troops gain 2% max HP.  (Stacks additively up to 40%)
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_2,Defensive reinforcement troops gains 4% max HP. (Stacks additively up to 40%)
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_3,Defensive reinforcement troops gains 6% max HP. (Stacks additively up to 40%)
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_4,Defensive reinforcement troops gains 8% max HP. (Stacks additively up to 40%)
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_5,Defensive reinforcement troops gains 10% max HP. (Stacks additively up to 40%)
+,
+COORDINATED_ATTACK_TECHNOLOGY_NAME,Coordinated Attack
+COORDINATED_ATTACK_TECHNOLOGY_LVL_1,Offensive troops gains 2% max HP. (Stacks additively up to 40%)
+COORDINATED_ATTACK_TECHNOLOGY_LVL_2,Offensive troops gains 4% max HP. (Stacks additively up to 40%)
+COORDINATED_ATTACK_TECHNOLOGY_LVL_3,Offensive troops gains 6% max HP. (Stacks additively up to 40%)
+COORDINATED_ATTACK_TECHNOLOGY_LVL_4,Offensive troops gains 8% max HP. (Stacks additively up to 40%)
+COORDINATED_ATTACK_TECHNOLOGY_LVL_5,Offensive troops gains 10% max HP. (Stacks additively up to 40%)
+,
+REINVENT_WHEEL_TECHNOLOGY_NAME,Reinvent the Wheel
+REINVENT_WHEEL_TECHNOLOGY_LVL_1,Increase send/trade resource speed by 8% for this structure only.
+REINVENT_WHEEL_TECHNOLOGY_LVL_2,Increase send/trade resource speed by 16% for this structure only.
+REINVENT_WHEEL_TECHNOLOGY_LVL_3,Increase send/trade resource speed by 24% for this structure only.
+REINVENT_WHEEL_TECHNOLOGY_LVL_4,Increase send/trade resource speed by 32% for this structure only.
+REINVENT_WHEEL_TECHNOLOGY_LVL_5,Increase send/trade resource speed by 40% for this structure only.
+,
+WEAPON_EXPORT_TECHNOLOGY_NAME,Weapon Export
+WEAPON_EXPORT_TECHNOLOGY_LVL_1,"Every 3 idle laborers produce 1 gold per hour for up to 60 laborers.  Once gold reserves go over 2000, production is reduced to 1 gold per hour for every 15 idle laborers.  (Does not stack)"
+WEAPON_EXPORT_TECHNOLOGY_LVL_2,"Every 3 idle laborers produce 1 gold per hour for up to 120 laborers.  Once gold reserves go over 4000, production is reduced to 1 gold per hour for every 15 idle laborers.  (Does not stack)"
+WEAPON_EXPORT_TECHNOLOGY_LVL_3,"Every 5 idle laborers produce 2 gold per hour for up to 180 laborers.  Once gold reserves go over 6000, production is reduced to 2 gold per hour for every 25 idle laborers.  (Does not stack)"
+WEAPON_EXPORT_TECHNOLOGY_LVL_4,"Every 5 idle laborers produce 2 gold per hour for up to 240 laborers.  Once gold reserves go over 8000, production is reduced to 2 gold per hour for every 25 idle laborers.  (Does not stack)"
+WEAPON_EXPORT_TECHNOLOGY_LVL_5,"Every 2 idle laborers produce 1 gold per hour for up to 300 laborers.  Once gold reserves go over 10000, production is reduced to 1 gold per hour for every 10 idle laborers.  (Does not stack)"
+,
+SPIKE_BARRICADE_TECHNOLOGY_NAME,Spike Barricade
+SPIKE_BARRICADE_TECHNOLOGY_LVL_1,Increases building's splash damage count by 1 (excludes Tower and Cannon Tower).
+SPIKE_BARRICADE_TECHNOLOGY_LVL_2,Increases building's splash damage count by 2 (excludes Tower and Cannon Tower).
+SPIKE_BARRICADE_TECHNOLOGY_LVL_3,Increases building's splash damage count by 3 (excludes Tower and Cannon Tower).
+SPIKE_BARRICADE_TECHNOLOGY_LVL_4,Increases Tower and Cannon Tower's splash damage count by 1.
+,
+HANZO_SWORD_TECHNOLOGY_NAME,Hanzo Formation
+HANZO_SWORD_TECHNOLOGY_LVL_1,"Reduce splash damage received by 5% for Fighter, Swordsman and gladiator. (Does not stack)"
+HANZO_SWORD_TECHNOLOGY_LVL_2,"Reduce splash damage received by 10% for Fighter, Swordsman and gladiator. (Does not stack)"
+HANZO_SWORD_TECHNOLOGY_LVL_3,"Reduce splash damage received by 15% for Fighter, Swordsman and gladiator. (Does not stack)"
+,
+UPKEEP_REDUCE_FIGHTER_TECHNOLOGY_NAME,Fighter Diet
+UPKEEP_REDUCE_FIGHTER_TECHNOLOGY_SUMMARY,Reduce upkeep by {0}% for Fighter. (Stacks additively up to 30%)
+UPKEEP_REDUCE_FIGHTER_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Fighter. (Stacks additively up to 30%)
+UPKEEP_REDUCE_BOWMAN_TECHNOLOGY_NAME,Bowman Diet
+UPKEEP_REDUCE_BOWMAN_TECHNOLOGY_SUMMARY,Reduce upkeep by {0}% for Bowman. (Stacks additively up to 30%)
+UPKEEP_REDUCE_BOWMAN_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Bowman. (Stacks additively up to 30%)
+UPKEEP_REDUCE_SWORDSMAN_TECHNOLOGY_NAME,Swordy Diet
+UPKEEP_REDUCE_SWORDSMAN_TECHNOLOGY_SUMMARY,Reduce upkeep by {0}% for Swordsman. (Stacks additively up to 30%)
+UPKEEP_REDUCE_SWORDSMAN_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Swordsman. (Stacks additively up to 30%)
+UPKEEP_REDUCE_ARCHER_TECHNOLOGY_NAME,Archy Diet
+UPKEEP_REDUCE_ARCHER_TECHNOLOGY_SUMMARY,Reduce upkeep by {0}% for Archer. (Stacks additively up to 30%)
+UPKEEP_REDUCE_ARCHER_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Archer. (Stacks additively up to 30%)
+UPKEEP_REDUCE_PIKEMAN_TECHNOLOGY_NAME,Piky Diet
+UPKEEP_REDUCE_PIKEMAN_TECHNOLOGY_SUMMARY,Reduce upkeep by {0}% for Hoplite. (Stacks additively up to 30%)
+UPKEEP_REDUCE_PIKEMAN_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Hoplite. (Stacks additively up to 30%)
+UPKEEP_REDUCE_GLADIATOR_TECHNOLOGY_NAME,Glady Diet
+UPKEEP_REDUCE_GLADIATOR_TECHNOLOGY_SUMMARY,Reduce upkeep by {0}% for Gladiator. (Stacks additively up to 30%)
+UPKEEP_REDUCE_GLADIATOR_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Gladiator. (Stacks additively up to 30%)
+UPKEEP_REDUCE_CAVALRY_TECHNOLOGY_NAME,Cavalry Diet
+UPKEEP_REDUCE_CAVALRY_TECHNOLOGY_SUMMARY,Reduce upkeep by {0}% for Cavalry. (Stacks additively up to 30%)
+UPKEEP_REDUCE_CAVALRY_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Cavalry. (Stacks additively up to 30%)
+UPKEEP_REDUCE_KNIGHT_TECHNOLOGY_NAME,Knight Diet
+UPKEEP_REDUCE_KNIGHT_TECHNOLOGY_SUMMARY,Reduce upkeep by {0}% for Knight. (Stacks additively up to 30%)
+UPKEEP_REDUCE_KNIGHT_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Knight. (Stacks additively up to 30%)
+UPKEEP_REDUCE_HELEPOLIS_TECHNOLOGY_NAME,Helepolis Diet
+UPKEEP_REDUCE_HELEPOLIS_TECHNOLOGY_SUMMARY,Reduce upkeep by {0}% for Helepolis. (Stacks additively up to 30%)
+UPKEEP_REDUCE_HELEPOLIS_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Helepolis. (Stacks additively up to 30%)
+UPKEEP_REDUCE_CATAPULT_TECHNOLOGY_NAME,Catapult Diet
+UPKEEP_REDUCE_CATAPULT_TECHNOLOGY_SUMMARY,Reduce upkeep by {0}% for Catapult. (Stacks additively up to 30%)
+UPKEEP_REDUCE_CATAPULT_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Catapult. (Stacks additively up to 30%)
+,
+BASIC_TRAINING_TECHNOLOGY_NAME,Basic Training
+BASIC_TRAINING_TECHNOLOGY_LVL_1,Allows training Fighters.
+,
+INSTANT_TRAINING_GROUND_TECHNOLOGY_NAME,Training Ground Kickstart
+INSTANT_TRAINING_GROUND_TECHNOLOGY_SUMMARY,First {0} of Fighter and Bowman of the city will be trained immediately.  (Stacks additively up to 150)
+INSTANT_TRAINING_GROUND_TECHNOLOGY_LVL_1,First 15 of Fighter and Bowman of the city will be trained immediately.  (Stacks additively up to 150)
+INSTANT_TRAINING_GROUND_TECHNOLOGY_LVL_2,First 15 of Fighter and Bowman of the city will be trained immediately.  (Stacks additively up to 150)
+INSTANT_TRAINING_GROUND_TECHNOLOGY_LVL_3,First 15 of Fighter and Bowman of the city will be trained immediately.  (Stacks additively up to 150)
+INSTANT_TRAINING_GROUND_TECHNOLOGY_LVL_4,First 20 of Fighter and Bowman of the city will be trained immediately.  (Stacks additively up to 150)
+INSTANT_TRAINING_GROUND_TECHNOLOGY_LVL_5,First 25 of Fighter and Bowman of the city will be trained immediately.  (Stacks additively up to 150)
+INSTANT_TRAINING_GROUND_TECHNOLOGY_LVL_6,First 30 of Fighter and Bowman of the city will be trained immediately.  (Stacks additively up to 150)
+INSTANT_TRAINING_GROUND_TECHNOLOGY_LVL_7,First 35 of Fighter and Bowman of the city will be trained immediately.  (Stacks additively up to 150)
+INSTANT_TRAINING_GROUND_TECHNOLOGY_LVL_8,First 40 of Fighter and Bowman of the city will be trained immediately.  (Stacks additively up to 150)
+INSTANT_TRAINING_GROUND_TECHNOLOGY_LVL_9,First 45 of Fighter and Bowman of the city will be trained immediately.  (Stacks additively up to 150)
+INSTANT_TRAINING_GROUND_TECHNOLOGY_LVL_10,First 50 of Fighter and Bowman of the city will be trained immediately.  (Stacks additively up to 150)
+,
+INSTANT_BARRACK_TECHNOLOGY_NAME,Barrack Kickstart
+INSTANT_BARRACK_TECHNOLOGY_SUMMARY,"First {0} of Swordsman, Archer, Hoplite and Gladiator of the city will be trained immediately.  (Stacks additively up to 150)"
+INSTANT_BARRACK_TECHNOLOGY_LVL_1,"First 5 of Swordsman, Archer, Hoplite and Gladiator of the city will be trained immediately.  (Stacks additively up to 150)"
+INSTANT_BARRACK_TECHNOLOGY_LVL_2,"First 10 of Swordsman, Archer, Hoplite and Gladiator of the city will be trained immediately.  (Stacks additively up to 150)"
+INSTANT_BARRACK_TECHNOLOGY_LVL_3,"First 15 of Swordsman, Archer, Hoplite and Gladiator of the city will be trained immediately.  (Stacks additively up to 150)"
+INSTANT_BARRACK_TECHNOLOGY_LVL_4,"First 20 of Swordsman, Archer, Hoplite and Gladiator of the city will be trained immediately.  (Stacks additively up to 150)"
+INSTANT_BARRACK_TECHNOLOGY_LVL_5,"First 25 of Swordsman, Archer, Hoplite and Gladiator of the city will be trained immediately.  (Stacks additively up to 150)"
+INSTANT_BARRACK_TECHNOLOGY_LVL_6,"First 30 of Swordsman, Archer, Hoplite and Gladiator of the city will be trained immediately.  (Stacks additively up to 150)"
+INSTANT_BARRACK_TECHNOLOGY_LVL_7,"First 35 of Swordsman, Archer, Hoplite and Gladiator of the city will be trained immediately.  (Stacks additively up to 150)"
+INSTANT_BARRACK_TECHNOLOGY_LVL_8,"First 40 of Swordsman, Archer, Hoplite and Gladiator of the city will be trained immediately.  (Stacks additively up to 150)"
+INSTANT_BARRACK_TECHNOLOGY_LVL_9,"First 45 of Swordsman, Archer, Hoplite and Gladiator of the city will be trained immediately.  (Stacks additively up to 150)"
+INSTANT_BARRACK_TECHNOLOGY_LVL_10,"First 50 of Swordsman, Archer, Hoplite and Gladiator of the city will be trained immediately.  (Stacks additively up to 150)"
+,
+INSTANT_STABLE_TECHNOLOGY_NAME,Stable Kickstart
+INSTANT_STABLE_TECHNOLOGY_SUMMARY,First {0} of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 60)
+INSTANT_STABLE_TECHNOLOGY_LVL_1,First 2 of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 60)
+INSTANT_STABLE_TECHNOLOGY_LVL_2,First 4 of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 60)
+INSTANT_STABLE_TECHNOLOGY_LVL_3,First 6 of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 60)
+INSTANT_STABLE_TECHNOLOGY_LVL_4,First 8 of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 60)
+INSTANT_STABLE_TECHNOLOGY_LVL_5,First 10 of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 60)
+INSTANT_STABLE_TECHNOLOGY_LVL_6,First 12 of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 60)
+INSTANT_STABLE_TECHNOLOGY_LVL_7,First 14 of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 60)
+INSTANT_STABLE_TECHNOLOGY_LVL_8,First 16 of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 60)
+INSTANT_STABLE_TECHNOLOGY_LVL_9,First 18 of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 60)
+INSTANT_STABLE_TECHNOLOGY_LVL_10,First 20 of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 60)
+,
+INSTANT_WORKSHOP_TECHNOLOGY_NAME,Workshop Kickstart
+INSTANT_WORKSHOP_TECHNOLOGY_SUMMARY,First {0} of Catapults and Helepolises of the city will be trained immediately.  (Stacks additively up to 30)
+INSTANT_WORKSHOP_TECHNOLOGY_LVL_1,First 1 of Catapults and Helepolises of the city will be trained immediately.  (Stacks additively up to 30)
+INSTANT_WORKSHOP_TECHNOLOGY_LVL_2,First 2 of Catapults and Helepolises of the city will be trained immediately.  (Stacks additively up to 30)
+INSTANT_WORKSHOP_TECHNOLOGY_LVL_3,First 3 of Catapults and Helepolises of the city will be trained immediately.  (Stacks additively up to 30)
+INSTANT_WORKSHOP_TECHNOLOGY_LVL_4,First 4 of Catapults and Helepolises of the city will be trained immediately.  (Stacks additively up to 30)
+INSTANT_WORKSHOP_TECHNOLOGY_LVL_5,First 5 of Catapults and Helepolises of the city will be trained immediately.  (Stacks additively up to 30)
+INSTANT_WORKSHOP_TECHNOLOGY_LVL_6,First 6 of Catapults and Helepolises of the city will be trained immediately.  (Stacks additively up to 30)
+INSTANT_WORKSHOP_TECHNOLOGY_LVL_7,First 7 of Catapults and Helepolises of the city will be trained immediately.  (Stacks additively up to 30)
+INSTANT_WORKSHOP_TECHNOLOGY_LVL_8,First 8 of Catapults and Helepolises of the city will be trained immediately.  (Stacks additively up to 30)
+INSTANT_WORKSHOP_TECHNOLOGY_LVL_9,First 9 of Catapults and Helepolises of the city will be trained immediately.  (Stacks additively up to 30)
+INSTANT_WORKSHOP_TECHNOLOGY_LVL_10,First 10 of Catapults and Helepolises of the city will be trained immediately.  (Stacks additively up to 30)
+,
+GATE_DMG_RESEARCH_TECHNOLOGY_NAME,Stronghold Gate Offensive Boost
+GATE_DMG_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Stronghold Gate by 20%.
+GATE_DMG_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Stronghold Gate by 40%.
+GATE_DMG_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Stronghold Gate by 60%.
+GATE_DMG_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Stronghold Gate by 80%.
+GATE_DMG_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Stronghold Gate by 100%.

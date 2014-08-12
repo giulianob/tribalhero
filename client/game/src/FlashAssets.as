@@ -9,38 +9,9 @@
     public class FlashAssets
 	{
 		public function FlashAssets()
-		{					
-			//Icons
-			ICON_UNFRIEND;
-			ICON_COLLAPSE;
-			ICON_EXPAND;
-			ICON_WORLD;
-			ICON_CROP;
-			ICON_BATTLE;
-			ICON_SHIELD;
-			ICON_CLOCK;
-			ICON_IRON;
-			ICON_GOLD;
-			ICON_WOOD;
-			ICON_LABOR;
-			ICON_ALERT;
-			ICON_MESSAGE;
-			ICON_UPGRADE;
-			ICON_BOOK;
-			ICON_SINGLE_SWORD;
-			ICON_QUESTION;
-			ICON_HAMMER;
-            ICON_MINIMAP_ARROW_RED;
-            ICON_MINIMAP_ARROW_BLUE;
-            ICON_TOGGLE_SOUND;
-			
+		{
 			//Minimap Icons
             MINIMAP_HIT_AREA;
-			
-			//Passive Action Icons
-			PASSIVE_ATTACKING;
-			PASSIVE_DEFENDING;
-			PASSIVE_RETREATING;
 			
 			//Tiles
 			DOT_SPRITE;
@@ -48,31 +19,6 @@
 			DOT_SPRITE_BLACK;
 			DOT_SPRITE_WHITE;
 			TILE_MINI;
-
-			//UNITS
-			DEFAULT_UNIT;
-			ARCHER_DARK_UNIT;			
-			BOWMAN_DARK_UNIT;			
-			CAVALRY_DARK_UNIT;			
-			CATAPULT_DARK_UNIT;			
-			FIGHTER_DARK_UNIT;			
-			HEAVY_CAVALRY_DARK_UNIT;			
-			HEAVY_SWORDSMAN_DARK_UNIT;			
-			HELEPOLIS_DARK_UNIT;			
-			PIKEMAN_DARK_UNIT;			
-			SWORDSMAN_DARK_UNIT;			
-			WAGON_DARK_UNIT;			
-			ARCHER_UNIT;
-			BOWMAN_UNIT;
-			CAVALRY_UNIT;
-			CATAPULT_UNIT;
-			FIGHTER_UNIT;
-			HEAVY_CAVALRY_UNIT;
-			HEAVY_SWORDSMAN_UNIT;
-			HELEPOLIS_UNIT;
-			PIKEMAN_UNIT;
-			SWORDSMAN_UNIT;
-			WAGON_UNIT;
 		}
 
         private static var sharedInstanceCache: Dictionary = new Dictionary(false);
@@ -138,6 +84,109 @@
 
         [Embed(source = "../../../graphics/icons/general/DOT_SPRITE.png")]
         public static const DOT_SPRITE: Class;
+
+        // Units
+        [Embed(source = "../../../graphics/units/ARCHER_DARK_UNIT.png")]
+        public static const ARCHER_DARK_UNIT: Class;
+
+        [Embed(source = "../../../graphics/units/BOWMAN_DARK_UNIT.png")]
+        public static const BOWMAN_DARK_UNIT: Class;
+
+        [Embed(source = "../../../graphics/units/CAVALRY_DARK_UNIT.png")]
+        public static const CAVALRY_DARK_UNIT: Class;
+
+        [Embed(source = "../../../graphics/units/CATAPULT_DARK_UNIT.png")]
+        public static const CATAPULT_DARK_UNIT: Class;
+
+        [Embed(source = "../../../graphics/units/FIGHTER_DARK_UNIT.png")]
+        public static const FIGHTER_DARK_UNIT: Class;
+
+        [Embed(source = "../../../graphics/units/HEAVY_CAVALRY_DARK_UNIT.png")]
+        public static const HEAVY_CAVALRY_DARK_UNIT: Class;
+
+        [Embed(source = "../../../graphics/units/HEAVY_SWORDSMAN_DARK_UNIT.png")]
+        public static const HEAVY_SWORDSMAN_DARK_UNIT: Class;
+
+        [Embed(source = "../../../graphics/units/HELEPOLIS_DARK_UNIT.png")]
+        public static const HELEPOLIS_DARK_UNIT: Class;
+
+        [Embed(source = "../../../graphics/units/PIKEMAN_DARK_UNIT.png")]
+        public static const PIKEMAN_DARK_UNIT: Class;
+
+        [Embed(source = "../../../graphics/units/SWORDSMAN_DARK_UNIT.png")]
+        public static const SWORDSMAN_DARK_UNIT: Class;
+
+        [Embed(source = "../../../graphics/units/WAGON_DARK_UNIT.png")]
+        public static const WAGON_DARK_UNIT: Class;
+
+        [Embed(source = "../../../graphics/units/ARCHER_UNIT.png")]
+        public static const ARCHER_UNIT: Class;
+
+        [Embed(source = "../../../graphics/units/BOWMAN_UNIT.png")]
+        public static const BOWMAN_UNIT: Class;
+
+        [Embed(source = "../../../graphics/units/CAVALRY_UNIT.png")]
+        public static const CAVALRY_UNIT: Class;
+
+        [Embed(source = "../../../graphics/units/CATAPULT_UNIT.png")]
+        public static const CATAPULT_UNIT: Class;
+
+        [Embed(source = "../../../graphics/units/FIGHTER_UNIT.png")]
+        public static const FIGHTER_UNIT: Class;
+
+        [Embed(source = "../../../graphics/units/HEAVY_CAVALRY_UNIT.png")]
+        public static const HEAVY_CAVALRY_UNIT: Class;
+
+        [Embed(source = "../../../graphics/units/HEAVY_SWORDSMAN_UNIT.png")]
+        public static const HEAVY_SWORDSMAN_UNIT: Class;
+
+        [Embed(source = "../../../graphics/units/HELEPOLIS_UNIT.png")]
+        public static const HELEPOLIS_UNIT: Class;
+
+        [Embed(source = "../../../graphics/units/PIKEMAN_UNIT.png")]
+        public static const PIKEMAN_UNIT: Class;
+
+        [Embed(source = "../../../graphics/units/SWORDSMAN_UNIT.png")]
+        public static const SWORDSMAN_UNIT: Class;
+
+        [Embed(source = "../../../graphics/units/WAGON_UNIT.png")]
+        public static const WAGON_UNIT: Class;
+
+        // General Icons
+        ICON_WOOD
+        ICON_LABOR
+        ICON_IRON
+        ICON_GOLD
+        ICON_CROP
+
+        ICON_WORLD
+        ICON_UPGRADE
+        ICON_UNFRIEND
+        ICON_TOGGLE_SOUND
+        ICON_SINGLE_SWORD
+        ICON_STAR
+        ICON_SHIELD
+        ICON_REDX
+        ICON_QUESTION
+        ICON_MINIMAP_ARROW_BLUE
+        ICON_MINIMAP_ARROW_RED
+        ICON_HAMMER
+        ICON_HALF_STAR
+        ICON_EXPAND
+        ICON_EMPTY_STAR
+        ICON_COLLAPSE
+        ICON_CHECKMARK
+        ICON_BOOK
+        ICON_BATTLE
+        ICON_ARROW_LEFT
+        ICON_ARROW_RIGHT
+        ICON_MESSAGE
+        ICON_CLOCK
+        ICON_ALERT
+
+
+
+
 
         // Achievement Icons
 		[Embed(source = "../../../graphics/icons/achievements/anvil-gold.png")]		

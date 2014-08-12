@@ -47,7 +47,7 @@
 
 			var size: int = Formula.troopRadius(troop);
 
-			cursor = new GroundCircle(size, new ScreenPosition(), GroundCircle.GREEN);
+			cursor = new GroundCircle(size, new ScreenPosition());
 
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
             addEventListener(TouchEvent.TOUCH, onTouched);

@@ -21,16 +21,16 @@
         public static const BARBARIAN_TRIBE_ATTACK: int = 710;		
 		
 		private static var actionLookup: Array = new Array(
-			{type: CITY_ATTACK, description: "Attacking", notificationDescription: attackNotification, icon: "PASSIVE_ATTACKING", cancellable: false },
-			{type: CITY_DEFENSE, description: "Defending", notificationDescription: defenseNotification, icon: "PASSIVE_DEFENDING", cancellable: false },
-			{type: RETREAT, description: "Retreating", notificationDescription: retreatNotification, icon: "PASSIVE_RETREATING", cancellable: false },
-			{type: FOREST_CAMP_HARVEST, description: "Gathering Wood", notificationDescription: retreatNotification, icon: "PASSIVE_DEFENDING", cancellable: true },
-			{type: STRUCTURE_SELF_DESTROY, description: "Time Left", notificationDescription: selfDestroyNotification, icon: "PASSIVE_DEFENDING", cancellable: false },
-			{type: STRUCTURE_CHANGE, description: "Converting", notificationDescription: noNotification, icon: "PASSIVE_DEFENDING", cancellable: false },
-			{type: CREATE_CITY, description: "Building City", notificationDescription: noNotification, icon: "PASSIVE_DEFENDING", cancellable: false },
-			{type: STRONGHOLD_ATTACK, description: "Attacking", notificationDescription: attackNotification, icon: "PASSIVE_ATTACKING", cancellable: false },
-			{type: STRONGHOLD_DEFENSE, description: "Defending", notificationDescription: defenseNotification, icon: "PASSIVE_DEFENDING", cancellable: false },
-            {type: BARBARIAN_TRIBE_ATTACK, description: "Attacking", notificationDescription: attackNotification, icon: "PASSIVE_ATTACKING", cancellable: false }
+			{type: CITY_ATTACK, description: "Attacking", notificationDescription: attackNotification, cancellable: false },
+			{type: CITY_DEFENSE, description: "Defending", notificationDescription: defenseNotification, cancellable: false },
+			{type: RETREAT, description: "Retreating", notificationDescription: retreatNotification, cancellable: false },
+			{type: FOREST_CAMP_HARVEST, description: "Gathering Wood", notificationDescription: retreatNotification, cancellable: true },
+			{type: STRUCTURE_SELF_DESTROY, description: "Time Left", notificationDescription: selfDestroyNotification, cancellable: false },
+			{type: STRUCTURE_CHANGE, description: "Converting", notificationDescription: noNotification, cancellable: false },
+			{type: CREATE_CITY, description: "Building City", notificationDescription: noNotification, cancellable: false },
+			{type: STRONGHOLD_ATTACK, description: "Attacking", notificationDescription: attackNotification, cancellable: false },
+			{type: STRONGHOLD_DEFENSE, description: "Defending", notificationDescription: defenseNotification, cancellable: false },
+            {type: BARBARIAN_TRIBE_ATTACK, description: "Attacking", notificationDescription: attackNotification, cancellable: false }
 		);		
 		
 		private static var actionsSorted: Boolean = false;
@@ -75,17 +75,7 @@
 			
 			return actionLookup[idx].description;
 		}
-		
-		public static function getIcon(actionType: int): DisplayObject
-		{
-			var idx: int = getActionIndex(actionType);
-			
-			if (idx <= -1)
-				return new Sprite();
-			
-			return ObjectFactory.getIcon(actionLookup[idx].icon);
-		}		
-		
+
 		/* NOTIFICATION DESCRIPTIONS */
 		private static function noNotification(notification: Notification, local: Boolean): String {		
 			return "";

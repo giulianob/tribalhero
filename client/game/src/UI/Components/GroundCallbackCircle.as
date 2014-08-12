@@ -13,13 +13,13 @@
     public class GroundCallbackCircle
 	{
 		private var callback: Function;
-        private var size: int;
+        private var _size: int;
         private var tiles: Array = [];
         protected var mainPosition: ScreenPosition;
         private var skipCenter: Boolean;
 
 		public function GroundCallbackCircle(size: int, mainPosition: ScreenPosition, callback: Function, skipCenter: Boolean = false) {
-			this.size = size;
+			this._size = size;
             this.mainPosition = mainPosition;
             this.callback = callback;
             this.skipCenter = skipCenter;
@@ -33,13 +33,13 @@
 		public function draw() : void {
             clear();
 
-			for each (var position: Position in TileLocator.foreachTile(size, size * 2 + 1, size, !skipCenter)) {
+			for each (var position: Position in TileLocator.foreachTile(_size, _size * 2 + 1, _size, !skipCenter)) {
                 var tile: SimpleObject = new SimpleObject(0, 0, 1);
                 tile.setSprite(SpriteFactory.getStarlingImage("MASK_TILE"), new Point(0, 0));
 
                 var point: ScreenPosition = position.toScreenPosition();
-                var x: Number = mainPosition.x + point.x - size * Constants.tileW;
-                var y: Number = mainPosition.y + point.y - (size * Constants.tileH);
+                var x: Number = mainPosition.x + point.x - _size * Constants.tileW;
+                var y: Number = mainPosition.y + point.y - (_size * Constants.tileH);
                 var colorTransform: * = callback(x, y);
 
                 if (colorTransform === false) {
@@ -71,6 +71,10 @@
 
         public function get visible(): Boolean {
             return tiles.length > 0;
+        }
+
+        public function get size(): int {
+            return _size;
         }
     }
 

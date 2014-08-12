@@ -67,7 +67,16 @@
       <file leaf-file-name="app_controller.php" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/app_controller.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="40" column="0" selection-start="1366" selection-end="1366" vertical-scroll-proportion="0.0" vertical-offset="680" max-vertical-offset="1700">
+            <state line="73" column="27" selection-start="2901" selection-end="2901" vertical-scroll-proportion="0.33282906" vertical-offset="1021" max-vertical-offset="1700">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AppController.php" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/Controller/AppController.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="74" column="27" selection-start="2965" selection-end="2965" vertical-scroll-proportion="-8.461538" vertical-offset="1038" max-vertical-offset="1717">
               <folding />
             </state>
           </provider>
@@ -83,11 +92,11 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/app/app_controller.php" />
         <option value="$PROJECT_DIR$/app/config/sql/migrate/20140713152850_AddTroopTheme.php" />
         <option value="$PROJECT_DIR$/app/config/sql/migrate/20140812184804_AddCityExpenseValue.php" />
         <option value="$PROJECT_DIR$/app/models/ranking.php" />
         <option value="$PROJECT_DIR$/app/controllers/rankings_controller.php" />
+        <option value="$PROJECT_DIR$/app/app_controller.php" />
       </list>
     </option>
   </component>
@@ -325,12 +334,12 @@
       <workItem from="1405265228589" duration="2240000" />
       <workItem from="1407856402152" duration="4568000" />
       <workItem from="1407873219626" duration="633000" />
-      <workItem from="1407873927059" duration="8000" />
+      <workItem from="1407873927059" duration="203000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="8312000" />
+    <option name="totallyTimeSpent" value="8507000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -341,6 +350,7 @@
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21767241" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -354,11 +364,10 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24174654" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24174654" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21814255" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
@@ -416,16 +425,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/app_controller.php">
+    <entry file="file://$PROJECT_DIR$/cake/libs/model/datasources/datasource.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="40" column="0" selection-start="1366" selection-end="1366" vertical-scroll-proportion="0.0" vertical-offset="680" max-vertical-offset="1700">
+        <state line="178" column="17" selection-start="3172" selection-end="3172" vertical-scroll-proportion="0.35948905" vertical-offset="2540" max-vertical-offset="9945" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Controller/AppController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="74" column="27" selection-start="2965" selection-end="2965" vertical-scroll-proportion="-8.461538" vertical-offset="1038" max-vertical-offset="1717">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cake/libs/model/datasources/datasource.php">
+    <entry file="file://$PROJECT_DIR$/app/app_controller.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="178" column="17" selection-start="3172" selection-end="3172" vertical-scroll-proportion="0.35948905" vertical-offset="2540" max-vertical-offset="9945" />
+        <state line="73" column="27" selection-start="2901" selection-end="2901" vertical-scroll-proportion="0.33282906" vertical-offset="1021" max-vertical-offset="1700">
+          <folding />
+        </state>
       </provider>
     </entry>
   </component>

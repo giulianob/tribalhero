@@ -66,7 +66,7 @@ package src.UI.Cursors {
                 validateTile(position);
             }
 
-			rangeCursor = new GroundCircle(structPrototype.radius, new ScreenPosition(), 0xec5800);
+			rangeCursor = new GroundCircle(structPrototype.radius, new ScreenPosition(), GroundCircle.RANGE);
 
 			buildableArea = new GroundCallbackCircle(size, city.primaryPosition.toScreenPosition(), validateTileCallback);
             buildableArea.draw();
@@ -170,8 +170,11 @@ package src.UI.Cursors {
                 cursor.y = cursor.primaryPosition.y = pos.y;
 				
 				if (validateBuilding()) {
-                    rangeCursor.moveTo(pos);
-					Global.map.objContainer.addObject(cursor);
+                    if (rangeCursor.size) {
+                        rangeCursor.moveTo(pos);
+                    }
+
+                    Global.map.objContainer.addObject(cursor);
 				}
 			}
 		}
@@ -230,10 +233,10 @@ package src.UI.Cursors {
             var mapPosition:Position = new ScreenPosition(x, y).toPosition();
 
             if (buildableTiles.get(mapPosition) == null) {
-                return 0xFFD700;
+                return false;
             }
 
-			return 0x00FF00;
+			return GroundCircle.GREEN;
 		}
 
 		public function validateBuilding():Boolean

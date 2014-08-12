@@ -15,7 +15,7 @@ package src.Objects
 		public function RadiusManager(parentObj: SimpleGameObject) 
 		{
 			this.parentObj = parentObj;
-            this.circle = new GroundCircle(radius, new ScreenPosition(), GroundCircle.GREEN, true);
+            this.circle = new GroundCircle(radius, new ScreenPosition(), GroundCircle.RANGE, true);
 		}
 		
 		public function showRadius(radius: int):void {

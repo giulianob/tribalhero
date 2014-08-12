@@ -1,9 +1,6 @@
 ﻿package src.UI.Components {
 
-    import feathers.controls.Screen;
-
     import src.Map.Position;
-
     import src.Map.ScreenPosition;
     import src.Map.TileLocator;
 
@@ -11,12 +8,14 @@
 	{
         public static const GREEN: uint = 0x7D9F43;
         public static const SELECTED_GREEN: uint = 0x1A4C0D;
+        public static const UNBUILDABLE: uint = 0xdda100;
+        public static const RANGE: uint = 0xff6000;
 
         private var color: uint;
         private var tileLocator: TileLocator;
         private var radius: int;
 
-		public function GroundCircle(radius: int, mainPosition: ScreenPosition = null, color: uint = GREEN, skipCenter: Boolean = false) {
+		public function GroundCircle(radius: int, mainPosition: ScreenPosition = null, color: uint = SELECTED_GREEN, skipCenter: Boolean = false) {
 			super(radius, mainPosition ? mainPosition : new ScreenPosition(), callback, skipCenter);
 
             this.radius = radius;

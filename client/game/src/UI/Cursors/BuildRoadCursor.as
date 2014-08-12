@@ -151,7 +151,7 @@ package src.UI.Cursors {
                 return false;
             }
 
-			return 0x7D9F43;
+			return GroundCircle.GREEN;
 		}
 
 		public function validateBuilding():void

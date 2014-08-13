@@ -589,16 +589,6 @@ namespace Game.Database
                     city.Deleted = (City.DeletedState)reader["deleted"];
                     city.ExpenseValue = (decimal)reader["expense_value"];
 
-                    // #DONT COMMIT THIS ITS ONLY FOR THIS RANKING#
-                    if (city.ExpenseValue == 0)
-                    {
-                        var formula = Kernel.Get<Formula>();
-                        var structureFactory = Kernel.Get<IStructureCsvFactory>();
-                        var technologyFactory = Kernel.Get<TechnologyFactory>();
-                        var unitFactory = Kernel.Get<UnitFactory>();
-                        city.ExpenseValue = formula.CalculateTotalCityExpense(city, structureFactory, technologyFactory, unitFactory);
-                    }
-
                     // Add to world
                     World.Cities.DbLoaderAdd(city);
 

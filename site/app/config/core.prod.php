@@ -175,7 +175,8 @@
 	Configure::write('Session', array(
 		'defaults' => 'php'
 	));
-
+	
+	Configure::write('Session.checkAgent', false);
 /**
  * The level of CakePHP security.
  */
@@ -248,7 +249,7 @@ if (Configure::read('debug') >= 1) {
 }
 
 // Prefix each application on the same server with a different string, to avoid Memcache and APC conflicts.
-$prefix = 'tribalheromain_';
+$prefix = 'tribalheroserver_';
 
 /**
  * Configure the cache used for general framework caching.  Path information,

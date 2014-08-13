@@ -153,7 +153,8 @@
 				
 				var pnlCityRanking: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 5, 0, false));
 				for each (var rank: * in profileData.ranks) {
-					if (rank.cityId != city.id) 
+                    // only show top 3 ranking types here ap/dp/loot
+					if (rank.cityId != city.id || rank.type > 3)
 						continue;
 					
 					var lblRanking: JLabel = createRanking(rank);
@@ -188,7 +189,7 @@
 			
 			for each (var rank: * in profileData.ranks) {
 				// Only show ranking for player here
-				if (rank.cityId != 0) 
+				if (rank.cityId != 0)
 					continue;
 					
 				var lblRanking: JLabel = createRanking(rank);

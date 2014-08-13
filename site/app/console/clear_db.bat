@@ -1,1 +1,1 @@
-..\..\cake\console\cake.bat -app ..\ clear_db
+..\..\lib\Cake\Console\cake.bat -app ..\ clear_db

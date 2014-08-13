@@ -8,21 +8,21 @@ class MessageBoardsController extends AppController {
 
     var $helpers = array('Time', 'Text');
     var $uses = array('MessageBoardThread', 'MessageBoardPost');
-    var $allowedFromGame = array('listing', 'view', 'del_thread', 'del_post', 'add_thread', 'add_post', 'sticky_thread');
 
     function listing() {
         $playerId = $this->request->data['playerId'];
         $page = array_key_exists('page', $this->request->data) ? intval($this->request->data['page']) : 0;
 
-        $this->paginate = $this->MessageBoardThread->getListing($playerId, $page);
+        $paginationSettings = $this->MessageBoardThread->getListing($playerId, $page);
 
-        if (empty($this->paginate)) {
+        if (empty($paginationSettings)) {
             $data = array('success' => false);
             $this->set('data', $data);
             $this->render('/elements/to_json');
             return;
         }
 
+        $this->paginate = $paginationSettings;
         $messages = $this->paginate('MessageBoardThread');       
         
         $this->set('messages', $messages);

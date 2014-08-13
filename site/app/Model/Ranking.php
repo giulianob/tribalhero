@@ -313,7 +313,7 @@ class Ranking extends AppModel {
         for ($i = 0; $i < $cityCount; ++$i) {
             $city = $cities[$i];
 
-            $rankings[] = '(' . $city['City']['player_id'] . "," . $city['City']['id'] . "," . ($i + 1) . "," . $type . "," . $city['City'][$field] . ')';
+            $rankings[] = array($city['City']['player_id'], $city['City']['id'], ($i + 1),$type,$city['City'][$field]);
 
             if ((($i + 1) % $itemsPerInsert) == 0 || $i == count($cities) - 1) {
                 $this->getDataSource()->insertMulti($this->table, $fields, $rankings);
@@ -345,7 +345,7 @@ class Ranking extends AppModel {
         for ($i = 0; $i < $cityCount; ++$i) {
             $city = $cities[$i];
 
-            $rankings[] = '(' . $city['City']['player_id'] . ",0," . ($i + 1) . "," . $type . "," . $city[0]['value'] . ')';
+            $rankings[] = array($city['City']['player_id'],0,($i + 1),$type,$city[0]['value']);
 
             if ((($i + 1) % $itemsPerInsert) == 0 || $i == count($cities) - 1) {
                 $this->getDataSource()->insertMulti($this->table, $fields, $rankings);
@@ -391,7 +391,7 @@ class Ranking extends AppModel {
 
         for ($i = 0; $i < $tribeCount; ++$i) {
             $tribe = $tribes[$i];
-            $rankings[] = '(' . $tribe['Tribe']['id'] . ",0,0," . ($i + 1) . "," . $type . "," . $tribe['Tribe'][$field] . ')';
+            $rankings[] = array($tribe['Tribe']['id'],0,0,($i + 1),$type,$tribe['Tribe'][$field]);
 
             if ((($i + 1) % $itemsPerInsert) == 0 || $i == count($tribes) - 1) {
                 $this->getDataSource()->insertMulti($this->table, $fields, $rankings);
@@ -423,9 +423,10 @@ class Ranking extends AppModel {
         for ($i = 0; $i < $strongholdCount; ++$i) {
             $stronghold = $strongholds[$i];
             if($field=="date_occupied") {
-                $rankings[] = "(" . $stronghold['Stronghold']['id'] . "," . $stronghold['Stronghold']['tribe_id'] . ",". ($i + 1) . "," . $type. "," . "UNIX_TIMESTAMP('" .$stronghold['Stronghold'][$field]. "'))";
+                $time = strtotime($stronghold['Stronghold'][$field]);
+                $rankings[] = array($stronghold['Stronghold']['id'], $stronghold['Stronghold']['tribe_id'],($i + 1), $type, $time);
             } else {
-                $rankings[] = '(' . $stronghold['Stronghold']['id'] . "," . $stronghold['Stronghold']['tribe_id'] . ",". ($i + 1) . "," . $type . "," .$stronghold['Stronghold'][$field] . ')';
+                $rankings[] = array($stronghold['Stronghold']['id'], $stronghold['Stronghold']['tribe_id'], ($i + 1), $type, $stronghold['Stronghold'][$field]);
             }
             if ((($i + 1) % $itemsPerInsert) == 0 || $i == count($strongholds) - 1) {
                 $this->getDataSource()->insertMulti($this->table, $fields, $rankings);

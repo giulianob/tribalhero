@@ -13,13 +13,17 @@ class UnreadReportsShell extends Shell {
      * Finds all of the reports that ended in the past minute and sends all those users notifications with new report count
      */
     function main() {
-        App::import('Core', 'Controller');
-        App::import('Controller', 'AppController');
-        App::import('Component', 'Thrift.Thrift');
+        // Finds all battles that ended within the past 65 secs (assuming cron job runs every 60 but give a
 
-        $this->Controller = & new AppController();        
-        $this->Thrift = & new ThriftComponent(null);        
-        $this->Thrift->initialize($this->Controller, $this->Controller->components['Thrift.Thrift']);
+        // We need to use thrift so we're manually initializing a controller here
+        // Ideally the thrift logic wouldnt be in a component that cant be instantiated easily elsewhere
+        App::uses('CakeRequest', 'Network');
+        App::uses('CakeResponse', 'Network');
+        App::uses('Controller', 'Controller');
+        App::uses('AppController', 'Controller');
+        $controller = new AppController(new CakeRequest(), new CakeResponse());
+        $controller->constructClasses();
+        $controller->startupProcess();
 
         // Finds all battles that ended within the past 65 secs (assuming cron job runs every 60 but give a few extra secs if time is a little off)
         $localBattles = $this->Battle->find('all', array(
@@ -72,8 +76,8 @@ class UnreadReportsShell extends Shell {
         $this->out("Reporting for .. " . implode(',', $playerIds));
 
         try {
-            $transport = $this->Thrift->getTransportFor('Notification');
-            $protocol = $this->Thrift->getProtocol($transport);
+            $transport = $controller->Thrift->getTransportFor('Notification');
+            $protocol = $controller->Thrift->getProtocol($transport);
             $notificationRpc = new NotificationClient($protocol);
             $transport->open();
             $notificationRpc->NewBattleReport($unreadCounts);

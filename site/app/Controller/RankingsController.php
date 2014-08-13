@@ -2,8 +2,6 @@
 
 class RankingsController extends AppController {
 
-    var $allowedFromGame = array('listing', 'search');
-
     function ranking() {
         $this->Ranking->batchRanking();
         $this->render(false);
@@ -41,7 +39,6 @@ class RankingsController extends AppController {
         $this->set('data', $data);
         $this->render('listing');
     }
-
 
     function admin_generate($description = null) {
         if (empty($description)) {

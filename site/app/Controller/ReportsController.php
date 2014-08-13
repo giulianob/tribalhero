@@ -9,7 +9,6 @@ class ReportsController extends AppController {
 
     var $uses = array('Report', 'Battle', 'City', 'Player');
     var $helpers = array('TimeAdv', 'Time');
-    var $allowedFromGame = array('index_local', 'view_snapshot', 'view_report', 'view_more_events', 'index_remote', 'mark_all_as_read');
 
     const REPORT_CITY_LOCAL = 1;
     const REPORT_CITY_FOREIGN = 2;

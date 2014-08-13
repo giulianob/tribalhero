@@ -7,8 +7,10 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Game.Data;
 using Game.Data.Events;
+using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Setup;
+using Game.Setup.DependencyInjection;
 using Game.Util;
 using Persistance;
 
@@ -51,6 +53,18 @@ namespace Game.Map
             IEnumerator<ICity> iter = cities.Values.GetEnumerator();
             while (iter.MoveNext())
             {
+                
+                    // #DONT COMMIT THIS ITS ONLY FOR THIS RANKING#
+                    if (iter.Current.ExpenseValue == 0)
+                    {
+                        var formula = Ioc.Kernel.Get<Formula>();
+                        var structureFactory = Ioc.Kernel.Get<IStructureCsvFactory>();
+                        var technologyFactory = Ioc.Kernel.Get<TechnologyFactory>();
+                        var unitFactory = Ioc.Kernel.Get<UnitFactory>();
+                        iter.Current.ExpenseValue = formula.CalculateTotalCityExpense(iter.Current, structureFactory, technologyFactory, unitFactory);
+                    }
+
+
                 // Resave city to update times
                 dbManager.Save(iter.Current);
 
@@ -67,6 +81,8 @@ namespace Game.Map
                     region.Add(iter.Current);
                 }
             }
+
+            throw new Exception("Remove code above");
         }
 
         public void Remove(ICity city)

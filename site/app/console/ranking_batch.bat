@@ -1,1 +1,1 @@
-..\..\cake\console\cake.bat -app ..\ ranking
+..\..\lib\Cake\Console\cake.bat -app ..\ ranking

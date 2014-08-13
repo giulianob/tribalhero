@@ -176,7 +176,9 @@ namespace Game.Logic.Actions
 
                 if (Config.actions_skip_city_actions && !city.Owner.IsLoggedIn)
                 {
-                    StateChange(ActionState.Completed);
+                    beginTime = SystemClock.Now;
+                    endTime = SystemClock.Now.AddSeconds(CalculateTime(INTERVAL_IN_SECONDS));
+                    StateChange(ActionState.Fired);
                     return;
                 }
 

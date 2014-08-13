@@ -1,1 +1,1 @@
-..\..\cake\console\cake.bat -app ..\ unread_reports
+..\..\lib\Cake\Console\cake.bat -app ..\ unread_reports

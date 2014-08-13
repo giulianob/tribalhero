@@ -3,8 +3,6 @@
 class ActionsController extends AppController {
     var $uses = array('Message', 'Player', 'Report', 'MessageBoardThread');
 
-    var $allowedFromGame = array('unread');
-   
     function unread() {
         if (!array_key_exists('playerId', $this->request->data)) return;
 

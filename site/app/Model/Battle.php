@@ -204,7 +204,7 @@ class Battle extends AppModel {
      * @param type $battleId
      */
     function viewGroupOutcome($battle, $groupId) {
-        App::import('Sanitize');
+        App::uses('Sanitize', 'Utility');
 
         $battleId = $battle['Battle']['id'];
 
@@ -255,7 +255,7 @@ class Battle extends AppModel {
      * @return type
      */
     private function getBattleReportObjectJoinOrLeaveInfo($battleId, $groupId, $joinOrLeave, $fields, $conditions = array()) {
-        App::import('Sanitize');
+        App::uses('Sanitize', 'Utility');
 
         if ($groupId) {
             $conditions["BattleReportTroopJoin.group_id"] = $groupId;

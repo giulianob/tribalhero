@@ -9,8 +9,11 @@ class SystemsController extends AppController {
     function beforeFilter() {
         parent::beforeFilter();
 
-        if (array_key_exists('key', $this->request->params['url']) && strcmp($this->request->params['url']['key'], SYSTEM_STATUS_PASS) === 0)
+        $this->layout = 'default';
+
+        if (array_key_exists('key', $this->request->query) && strcmp($this->request->query['key'], SYSTEM_STATUS_PASS) === 0) {
             $this->Auth->allow(array($this->request->action));
+        }
     }
 
     function admin_status() {

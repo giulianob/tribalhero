@@ -23,7 +23,7 @@ class ThriftComponent extends Component {
         $this->host = $settings['host'];
         
         require_once $GLOBALS['THRIFT_ROOT'] . '/Thrift.php';
-        require_once $GLOBALS['THRIFT_ROOT'] . '/autoload.php';
+        //require_once $GLOBALS['THRIFT_ROOT'] . '/autoload.php';
         require_once $GLOBALS['THRIFT_ROOT'] . '/transport/TTransport.php';
         require_once $GLOBALS['THRIFT_ROOT'] . '/transport/TSocket.php';
         require_once $GLOBALS['THRIFT_ROOT'] . '/protocol/TBinaryProtocol.php';

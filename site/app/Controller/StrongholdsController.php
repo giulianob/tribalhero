@@ -2,8 +2,6 @@
 
 class StrongholdsController extends AppController {
 
-    var $allowedFromGame = array('autocomplete');
-
     function autocomplete() {
         $data = array();
 

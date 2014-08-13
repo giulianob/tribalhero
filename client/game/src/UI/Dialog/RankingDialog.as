@@ -17,6 +17,10 @@ package src.UI.Dialog{
     public class RankingDialog extends GameJPanel {
 
 		private var rankings: Array = [
+            // Notice if you change this make sure you also update the following
+            // - In PHP the Ranking model
+            // - In Constants.rankings you might need to add it
+            // - Make sure you also test the player profile since we show rankings there
             {name: "Attack Points", baseOn: "city"},
             {name: "Defense Points", baseOn: "city"},
             {name: "Resources Stolen", baseOn: "city"},
@@ -433,6 +437,7 @@ package src.UI.Dialog{
 			cityExpensiveRanking = new JToggleButton("Expense");
 			var cityButtonGroupHolder: JPanel = new JPanel();
 			cityButtonGroupHolder.appendAll(cityAttackRanking, cityDefenseRanking, cityLootRanking, cityInfluenceRanking, cityExpensiveRanking);
+            new ButtonGroup().appendAll(cityAttackRanking, cityDefenseRanking, cityLootRanking, cityInfluenceRanking, cityExpensiveRanking);
 			cityRanking.append(cityButtonGroupHolder);			
 			cityRanking.append(rankingScroll);
 
@@ -444,6 +449,7 @@ package src.UI.Dialog{
 			playerInfluenceRanking = new JToggleButton("Influence");
 			var playerButtonGroupHolder: JPanel = new JPanel();
 			playerButtonGroupHolder.appendAll(playerAttackRanking, playerDefenseRanking, playerLootRanking, playerInfluenceRanking);
+			new ButtonGroup().appendAll(playerAttackRanking, playerDefenseRanking, playerLootRanking, playerInfluenceRanking);
 			playerRanking.append(playerButtonGroupHolder);
 
 			tribeRanking = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
@@ -455,6 +461,7 @@ package src.UI.Dialog{
 			tribeVictoryRateRanking = new JToggleButton("Victory Point Rate");
 			var tribeButtonGroupHolder: JPanel = new JPanel();
 			tribeButtonGroupHolder.appendAll(tribeLevelRanking, tribeAttackRanking, tribeDefenseRanking,tribeVictoryRanking,tribeVictoryRateRanking);
+			new ButtonGroup().appendAll(tribeLevelRanking, tribeAttackRanking, tribeDefenseRanking,tribeVictoryRanking,tribeVictoryRateRanking);
 			tribeRanking.appendAll(tribeButtonGroupHolder);
 			
 			strongholdRanking = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
@@ -465,6 +472,7 @@ package src.UI.Dialog{
 
 			var strongholdButtonGroupHolder: JPanel = new JPanel();
 			strongholdButtonGroupHolder.appendAll(strongholdLevelRanking,strongholdOccupiedRanking,strongholdVictoryRateRanking);
+			new ButtonGroup().appendAll(strongholdLevelRanking,strongholdOccupiedRanking,strongholdVictoryRateRanking);
 			strongholdRanking.appendAll(strongholdButtonGroupHolder);
 			
 			

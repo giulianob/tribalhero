@@ -3,7 +3,6 @@
 class MessagesController extends AppController {
 
     var $helpers = array('Time', 'Text');
-    var $allowedFromGame = array('listing', 'view', 'del', 'mark_as_read', 'send');
 
     function del() {
         $playerId = $this->request->data['playerId'];

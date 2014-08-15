@@ -18,7 +18,7 @@ class MessageBoardsController extends AppController {
         if (empty($paginationSettings)) {
             $data = array('success' => false);
             $this->set('data', $data);
-            $this->render('/elements/to_json');
+            $this->render('/Elements/to_json');
             return;
         }
 
@@ -38,7 +38,7 @@ class MessageBoardsController extends AppController {
         if (empty($thread)) {
             $data = array('success' => false, 'error' => 'Thread specified does not exist');
             $this->set('data', $data);
-            $this->render('/elements/to_json');
+            $this->render('/Elements/to_json');
             return;
         }
 
@@ -61,7 +61,7 @@ class MessageBoardsController extends AppController {
         
         $data = array('success' => true);
         $this->set('data', $data);
-        $this->render('/elements/to_json');
+        $this->render('/Elements/to_json');
     }
 
     function del_post() {
@@ -76,7 +76,7 @@ class MessageBoardsController extends AppController {
         $this->MessageBoardThread->MessageBoardRead->updateLastRead($playerId, $id);
         
         $this->set('data', $data);
-        $this->render('/elements/to_json');
+        $this->render('/Elements/to_json');
     }
 
     function add_thread() {
@@ -91,7 +91,7 @@ class MessageBoardsController extends AppController {
         $this->_signalServerWithNewTribeForumPost($playerId);
 
         $this->set(compact('data'));
-        $this->render('/elements/to_json');
+        $this->render('/Elements/to_json');
     }
 
     function add_post() {
@@ -111,7 +111,7 @@ class MessageBoardsController extends AppController {
         }
         
         $this->set(compact('data'));
-        $this->render('/elements/to_json');
+        $this->render('/Elements/to_json');
     }
 
     function sticky_thread() {

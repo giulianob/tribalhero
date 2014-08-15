@@ -178,7 +178,7 @@ class ReportsController extends AppController {
         $data = array('success' => true);
 
         $this->set('data', $data);
-        $this->render('/elements/to_json');
+        $this->render('/Elements/to_json');
     }
 
     function view_report() {

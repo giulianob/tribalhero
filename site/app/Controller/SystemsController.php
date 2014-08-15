@@ -286,7 +286,7 @@ class SystemsController extends AppController {
         
         $this->layout = null;
         $this->set(compact('data'));
-        $this->render('/elements/to_json');
+        $this->render('/Elements/to_json');
     }
 
     function admin_clear_cache() {
@@ -294,7 +294,7 @@ class SystemsController extends AppController {
         clearCache();
 
         $this->set('data', array('msg' => 'Cache cleared'));
-        $this->render('/elements/to_json');
+        $this->render('/Elements/to_json');
     }
 
     function admin_battle_stats() {

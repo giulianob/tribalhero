@@ -28,7 +28,7 @@ class RankingsController extends AppController {
 
         if ($options === false) {
             $this->set('data', array('error' => 'Nothing found with the specified criteria'));
-            $this->render('/elements/to_json');
+            $this->render('/Elements/to_json');
             return;
         }
 

@@ -9,7 +9,7 @@ class PlayersController extends AppController {
 
         if (empty($name) || strlen($name) < 3) {
             $this->set(compact('data'));
-            $this->render('/elements/to_json');
+            $this->render('/Elements/to_json');
         }
 
         $data = array_values($this->Player->find('list', array(
@@ -20,7 +20,7 @@ class PlayersController extends AppController {
                 )));
 
         $this->set(compact('data'));
-        $this->render('/elements/to_json');
+        $this->render('/Elements/to_json');
     }
 
 }

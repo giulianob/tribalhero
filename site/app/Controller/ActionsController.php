@@ -20,6 +20,6 @@ class ActionsController extends AppController {
         $data = array('unreadMessages' => $unreadMessages, 'unreadReports' => $unreadReports, 'unreadForum' => $unreadMessageBoard);
 
         $this->set(compact('data'));
-        $this->render('/elements/to_json');
+        $this->render('/Elements/to_json');
     }
 }

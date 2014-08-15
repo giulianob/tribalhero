@@ -17,7 +17,7 @@ class TribeLogsController extends AppController {
         if (empty($paginationSettings)) {
             $data = array('success' => false);
             $this->set('data', $data);
-            $this->render('/elements/to_json');
+            $this->render('/Elements/to_json');
             return;
         }
 

@@ -16,7 +16,7 @@ class MessagesController extends AppController {
         $data = array('success' => true);
 
         $this->set('data', $data);
-        $this->render('/elements/to_json');
+        $this->render('/Elements/to_json');
     }
 
     function mark_as_read() {
@@ -31,7 +31,7 @@ class MessagesController extends AppController {
         $data = array('success' => true);
 
         $this->set('data', $data);
-        $this->render('/elements/to_json');
+        $this->render('/Elements/to_json');
     }
 
     function listing() {
@@ -62,7 +62,7 @@ class MessagesController extends AppController {
         if (empty($message)) {
             $data = array('error' => 'The specified message could not be found');
             $this->set(compact('data'));
-            $this->render('/elements/to_json');
+            $this->render('/Elements/to_json');
             return;
         }
 
@@ -130,7 +130,7 @@ class MessagesController extends AppController {
         }
         
         $this->set(compact('data'));
-        $this->render('/elements/to_json');
+        $this->render('/Elements/to_json');
     }
 
 }

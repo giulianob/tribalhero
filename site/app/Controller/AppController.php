@@ -34,10 +34,6 @@ class AppController extends Controller {
         CakeResponse::disableCache();
 
         $this->layout = 'ajax';
-
-        if (empty($this->request->data['debug'])) {
-            Configure::write('debug', 0);
-        }
     }
 
     function isAuthorized() {

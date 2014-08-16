@@ -15,7 +15,7 @@ class CitiesController extends AppController {
         $data = array_values($this->City->find('list', array(
                     'fields' => array('name'),
                     'conditions' => array('deleted' => 0, 'name LIKE' => $name . '%'),
-                    'order' => 'LENGTH(name) ASC',
+                    'order' => array('LENGTH(name)' => 'ASC'),
                     'limit' => 6
                 )));
 

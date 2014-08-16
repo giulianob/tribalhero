@@ -15,7 +15,7 @@ class PlayersController extends AppController {
         $data = array_values($this->Player->find('list', array(
                     'fields' => array('name'),
                     'conditions' => array('name LIKE' => $name . '%', 'banned' => 0),
-                    'order' => 'LENGTH(name) ASC',
+                    'order' => array('LENGTH(name)' => 'ASC'),
                     'limit' => 6
                 )));
 

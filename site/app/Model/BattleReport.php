@@ -7,7 +7,7 @@
 class BattleReport extends AppModel {
 
     var $name = 'BattleReport';
-    var $order = array('BattleReport.created DESC');
+    var $order = array('BattleReport.created' => 'DESC');
     var $belongsTo = array(
         'Battle'
     );

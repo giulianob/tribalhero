@@ -310,8 +310,8 @@ class SystemsController extends AppController {
                 'SUM(`count`) as count',
             ),
             'group' => array('TroopStubList.type'),
-            'order' => array('TroopStubList.type ASC'),
-                ));
+            'order' => array('TroopStubList.type' => 'ASC'),
+        ));
 
         $this->set('stats', $stats);
 

@@ -110,7 +110,7 @@ class MessageBoardThread extends AppModel {
             ),
             'page' => $page,
             'limit' => $this->limitPerPage,
-            'order' => array('MessageBoardThread.sticky DESC', 'MessageBoardThread.last_post_date DESC'),
+            'order' => array('MessageBoardThread.sticky' => 'DESC', 'MessageBoardThread.last_post_date' => 'DESC'),
             'fields' => array('MessageBoardThread.last_post_date', 'MessageBoardThread.message_board_post_count', 'MessageBoardThread.subject', 'MessageBoardThread.sticky', 'MessageBoardThread.id'),
         );
     }

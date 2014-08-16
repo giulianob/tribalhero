@@ -89,7 +89,7 @@ class Battle extends AppModel {
         // Find the battle reports we need to work with
         $reports = $this->BattleReport->find('all', array(
             'conditions' => array('battle_id' => $battle['Battle']['id']),
-            'order' => array('id ASC'),
+            'order' => array('id' => 'ASC'),
             'offset' => $page * $eventsPerPage,
             'limit' => $eventsPerPage));
 
@@ -410,7 +410,7 @@ class Battle extends AppModel {
                     'fields' => array('Tribe.id', 'Tribe.name')
                 )
             ),
-            'order' => 'Battle.ended DESC'
+            'order' => array('Battle.ended' => 'DESC')
         );
 
         $options['conditions']['Battle.owner_type'] = $ownerType;
@@ -478,8 +478,8 @@ class Battle extends AppModel {
             ),
             'contain' => array(
                 'BattleReportTroop' => array(
-                    'order' => array('BattleReportTroop.group_id ASC'),
-                    'BattleReportObject' => array('order' => array('BattleReportObject.type ASC', 'BattleReportObject.object_id ASC'))
+                    'order' => array('BattleReportTroop.group_id' => 'ASC'),
+                    'BattleReportObject' => array('order' => array('BattleReportObject.type' => 'ASC', 'BattleReportObject.object_id' => 'ASC'))
                 )
             )
         );
@@ -531,7 +531,7 @@ class Battle extends AppModel {
                 'Battle.location_type',
                 'Battle.location_id',
             ),
-            'order' => 'Battle.ended DESC'
+            'order' => array('Battle.ended' => 'DESC')
         );
 
         $options['conditions']['BattleReportView.owner_type'] = $ownerType;

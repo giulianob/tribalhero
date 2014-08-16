@@ -24,7 +24,7 @@ class TribeLog extends AppModel {
             ),
             'page' => $page,
             'limit' => $this->limitPerPage,
-            'order' => array('TribeLog.created DESC'),
+            'order' => array('TribeLog.created' => 'DESC'),
         );
     }
 

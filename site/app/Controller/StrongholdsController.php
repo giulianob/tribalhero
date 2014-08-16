@@ -15,7 +15,7 @@ class StrongholdsController extends AppController {
         $data = array_values($this->Stronghold->find('list', array(
             'fields' => array('name'),
             'conditions' => array('name LIKE' => $name . '%', 'state >' => 0),
-            'order' => 'LENGTH(name) ASC',
+            'order' => array('LENGTH(name)' => 'ASC'),
             'limit' => 6
         )));
 

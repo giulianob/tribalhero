@@ -12,7 +12,7 @@ class Player extends AppModel {
             'className' => 'Message',
             'foreignKey' => 'sender_player_id',
             'conditions' => array('Message.sender_state !=' => '2'),
-            'order' => 'Message.created DESC',
+            'order' => array('Message.created' => 'DESC'),
             'limit' => '30',
             'dependent' => true
         ),
@@ -20,7 +20,7 @@ class Player extends AppModel {
             'className' => 'Message',
             'foreignKey' => 'recipient_player_id',
             'conditions' => array('Message.recipient_state !=' => '2'),
-            'order' => 'Message.created DESC',
+            'order' => array('Message.created' => 'DESC'),
             'limit' => '30',
             'dependent' => true
         )

@@ -67,7 +67,7 @@ class Ranking extends AppModel {
                 'page' => $page,
                 'limit' => $this->rankingsPerPage,
                 'fields' => array('Ranking.rank', 'Ranking.value'),
-                'order' => 'Ranking.rank ASC'
+                'order' => array('Ranking.rank' => 'ASC')
             );
         } else if ($this->rankingTypes[$type]['group']=='player') {
             $options = array(
@@ -76,7 +76,7 @@ class Ranking extends AppModel {
                 'limit' => $this->rankingsPerPage,
                 'page' => $page,
                 'fields' => array('Ranking.rank', 'Ranking.value', 'Player.id', 'Player.name'),
-                'order' => 'Ranking.rank ASC'
+                'order' => array('Ranking.rank' => 'ASC')
             );
         } else if ($this->rankingTypes[$type]['group']=='tribe') {
              $options = array(
@@ -85,7 +85,7 @@ class Ranking extends AppModel {
                 'limit' => $this->rankingsPerPage,
                 'page' => $page,
                 'fields' => array('Ranking.rank', 'Ranking.value', 'Tribe.id', 'Tribe.name'),
-                'order' => 'Ranking.rank ASC'
+                'order' => array('Ranking.rank' => 'ASC')
             );       
         } else if ($this->rankingTypes[$type]['group']=='stronghold') {
              $options = array(
@@ -97,7 +97,7 @@ class Ranking extends AppModel {
                 'limit' => $this->rankingsPerPage,
                 'page' => $page,
                 'fields' => array('Ranking.rank', 'Ranking.value'),
-                'order' => 'Ranking.rank ASC'
+                'order' => array('Ranking.rank' => 'ASC')
             );       
         }
 
@@ -301,7 +301,7 @@ class Ranking extends AppModel {
         $cities = $this->City->find('all', array(
                     'contain' => array(),
                     'conditions' => array('City.deleted' => 0),
-                    'order' => array($field . ' ' . $order, 'City.player_id ASC'),
+                    'order' => array($field => $order, 'City.player_id' => 'ASC'),
                     'fields' => array('player_id', 'id', $field)
                 ));
 
@@ -332,7 +332,7 @@ class Ranking extends AppModel {
         $cities = $this->City->find('all', array(
                     'contain' => array(),
                     'conditions' => array('City.deleted' => 0),
-                    'order' => array('SUM(' . $field . ')  ' . $order, 'player_id ASC'),
+                    'order' => array('SUM(' . $field . ')' => $order, 'player_id' => 'ASC'),
                     'fields' => array('player_id', 'id', 'SUM(' . $field . ') as value'),
                     'group' => 'player_id HAVING COUNT(`id`) > 0'
                 ));
@@ -364,7 +364,7 @@ class Ranking extends AppModel {
             $tribes = $this->Tribe->find('all', array(
                         'contain' => array(),
                         'conditions' => array('Tribe.deleted' => 0),
-                        'order' => array($field . ' ' . $order, 'Tribe.id ASC'),
+                        'order' => array($field => $order, 'Tribe.id' => 'ASC'),
                         'fields' => array('Tribe.id', 'SUM(Stronghold.victory_point_rate) as victory_point_rate_sum'),
                         'link' => array('Stronghold' => array('fields' => array())),
                         'group' => array('Tribe.id')
@@ -378,7 +378,7 @@ class Ranking extends AppModel {
             $tribes = $this->Tribe->find('all', array(
                         'contain' => array(),
                         'conditions' => array('Tribe.deleted' => 0),
-                        'order' => array($field . ' ' . $order, 'id ASC'),
+                        'order' => array($field => $order, 'id' => 'ASC'),
                         'fields' => array('id', $field ),
                     ));
         }
@@ -410,7 +410,7 @@ class Ranking extends AppModel {
         $strongholds = $this->Stronghold->find('all', array(
                     'contain' => array(),
                     'conditions' => array('state >' => 0),
-                    'order' => array($field . ' ' . $order, 'id ASC'),
+                    'order' => array($field => $order, 'id' => 'ASC'),
                     'fields' => array('id', 'tribe_id', $field ),
                 ));
 

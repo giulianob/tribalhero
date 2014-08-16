@@ -45,7 +45,7 @@ class Message extends AppModel {
             ),
             'page' => $page,
             'limit' => $this->limitPerPage,
-            'order' => 'Message.created DESC'
+            'order' => array('Message.created' => 'DESC')
         );
     }
 
@@ -69,7 +69,7 @@ class Message extends AppModel {
             ),
             'page' => $page,
             'limit' => $this->limitPerPage,
-            'order' => 'Message.created DESC'
+            'order' => array('Message.created' => 'DESC')
         );
     }
 
@@ -85,7 +85,7 @@ class Message extends AppModel {
             ),
             'page' => $page,
             'limit' => $this->limitPerPage,
-            'order' => 'Message.created DESC'
+            'order' => array('Message.created' => 'DESC')
         );
     }
 

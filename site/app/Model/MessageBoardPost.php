@@ -33,7 +33,7 @@ class MessageBoardPost extends AppModel {
             ),
             'page' => $page,
             'limit' => $this->limitPerPage,
-            'order' => array('MessageBoardPost.created ASC'),
+            'order' => array('MessageBoardPost.created' => 'ASC'),
         );
     }
 

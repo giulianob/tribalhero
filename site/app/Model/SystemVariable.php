@@ -3,6 +3,6 @@
 class SystemVariable extends AppModel {
 
     var $name = 'SystemVariable';
-    var $order = 'SystemVariable.name ASC';
+    var $order = array('SystemVariable.name' => 'ASC');
 
 }

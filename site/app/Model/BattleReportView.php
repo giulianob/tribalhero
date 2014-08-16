@@ -2,7 +2,7 @@
 
 class BattleReportView extends AppModel {
 
-    var $order = array('BattleReportView.created DESC');
+    var $order = array('BattleReportView.created' => 'DESC');
 
     var $belongsTo = array(
         'Battle',

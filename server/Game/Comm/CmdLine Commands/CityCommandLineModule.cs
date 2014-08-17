@@ -165,9 +165,7 @@ namespace Game.Comm
                     return "Cant remove local troop";
                 }
 
-                procedure.TroopStubDelete(city, stub);
-
-                return "OK!";
+                return procedure.TroopStubDelete(city, stub).ToString();
             });
         }
 

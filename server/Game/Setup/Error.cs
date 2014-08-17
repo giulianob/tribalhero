@@ -176,6 +176,7 @@ namespace Game.Setup
 
         BattleViewableGateAttackingUnits = 614,
 
+        TroopObjectExistsForStub = 615,
 
         #endregion
 
@@ -220,6 +221,8 @@ namespace Game.Setup
         TribeCannotRejoinYet = 729,
 
         TribeCannotCreateYet = 730,
+
+        AssignmentTroopCannotBeRemovedAfterDispatch = 740,
 
         AssignmentDone = 741,
 

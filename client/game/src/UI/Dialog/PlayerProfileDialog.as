@@ -154,7 +154,7 @@
 				var pnlCityRanking: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 5, 0, false));
 				for each (var rank: * in profileData.ranks) {
                     // only show top 3 ranking types here ap/dp/loot
-					if (rank.cityId != city.id || rank.type > 3)
+					if (rank.cityId != city.id || rank.type > 4)
 						continue;
 					
 					var lblRanking: JLabel = createRanking(rank);
@@ -172,7 +172,7 @@
 		}
 		
 		private function createUI():void {
-			setPreferredSize(new IntDimension(825, 375));
+			setPreferredSize(new IntDimension(900, 375));
 			title = "User Profile - " + profileData.username;
 			setLayout(new BorderLayout(5));
 			
@@ -249,10 +249,9 @@
 			
 			// Tab panel
 			var pnlTabs: JTabbedPane = new JTabbedPane();
-			pnlTabs.setPreferredSize(new IntDimension(400, 350));
+			pnlTabs.setPreferredSize(new IntDimension(475, 350));
 			pnlTabs.setConstraints("Center");
-			
-			
+
 			// Append tabs			
 			pnlTabs.appendTab(createCitiesTab(), "Cities (" + profileData.cities.length + ")");			
 			pnlTabs.appendTab(createAchievementsTab(), "Achievements (" + profileData.achievements.length + ")");			

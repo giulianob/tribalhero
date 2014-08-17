@@ -432,6 +432,11 @@ namespace Game.Data.Tribe
                 return Error.AssignmentDone;
             }
 
+            if (stub.State != TroopState.WaitingInDefensiveAssignment && stub.State != TroopState.WaitingInOffensiveAssignment)
+            {
+                return Error.AssignmentTroopCannotBeRemovedAfterDispatch;
+            }
+            
             if (!assignment.RemoveStub(stub))
             {
                 return Error.AssignmentDone;

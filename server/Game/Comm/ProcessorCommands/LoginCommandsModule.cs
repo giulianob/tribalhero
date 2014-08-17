@@ -281,6 +281,13 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 session.Write(reply);
+
+                // Restart any city actions that may have been stopped due to inactivity
+                foreach (var city in player.GetCityList()
+                                           .Where(city => city.Worker.PassiveActions.Values.All(x => x.Type != ActionType.CityPassive)))
+                {
+                    city.Worker.DoPassive(city, actionFactory.CreateCityPassiveAction(city.Id), false);
+                }
             });
         }
 

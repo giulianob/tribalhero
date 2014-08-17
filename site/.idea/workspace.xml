@@ -1,0 +1,901 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="10f96320-9d03-4eda-9e75-bff9b74dbac2" name="Default" comment="" />
+    <ignored path="gamesiteserver.iws" />
+    <ignored path=".idea/workspace.xml" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="CreatePatchCommitExecutor">
+    <option name="PATCH_PATH" value="" />
+  </component>
+  <component name="DaemonCodeAnalyzer">
+    <disable_hints />
+  </component>
+  <component name="DebuggerManager">
+    <breakpoint_any default_suspend_policy="SuspendAll" default_condition_enabled="true">
+      <breakpoint>
+        <option name="NOTIFY_CAUGHT" value="true" />
+        <option name="NOTIFY_UNCAUGHT" value="true" />
+        <option name="ENABLED" value="false" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="REMOVE_AFTER_HIT" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="SUSPEND" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
+      <breakpoint>
+        <option name="NOTIFY_CAUGHT" value="true" />
+        <option name="NOTIFY_UNCAUGHT" value="true" />
+        <option name="ENABLED" value="false" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="REMOVE_AFTER_HIT" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="SUSPEND" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
+    </breakpoint_any>
+    <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
+    <breakpoint_rules />
+    <ui_properties />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="gamesiteserver" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file leaf-file-name="SystemsController.php" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/Controller/SystemsController.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="42" column="58" selection-start="2149" selection-end="2149" vertical-scroll-proportion="-5.8846154" vertical-offset="561" max-vertical-offset="5984">
+              <folding>
+                <marker date="1408211017756" expanded="true" signature="729:2153" placeholder="SELECT playe..players..." />
+                <marker date="1408211017756" expanded="true" signature="2191:3625" placeholder="SELECT playe..players..." />
+                <marker date="1408211017756" expanded="true" signature="3656:4929" placeholder="SELECT playe..players..." />
+                <marker date="1408211017756" expanded="true" signature="4970:6403" placeholder="SELECT playe..players..." />
+                <marker date="1408211017756" expanded="true" signature="6442:7883" placeholder="SELECT playe..players..." />
+                <marker date="1408211017756" expanded="true" signature="7916:8702" placeholder="SELECT playe..." />
+                <marker date="1408211017756" expanded="true" signature="8738:10255" placeholder="SELECT playe..players..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Battle.php" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/Model/Battle.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="414" column="0" selection-start="18882" selection-end="18882" vertical-scroll-proportion="0.41013825" vertical-offset="6860" max-vertical-offset="11152">
+              <folding>
+                <marker date="1408211345164" expanded="true" signature="11967:12935" placeholder="SELECT %s FR..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Ranking.php" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/Model/Ranking.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="412" column="64" selection-start="17172" selection-end="17172" vertical-scroll-proportion="-5.5384617" vertical-offset="6860" max-vertical-offset="7514">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SystemVariable.php" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/Model/SystemVariable.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="5" column="54" selection-start="136" selection-end="136" vertical-scroll-proportion="-3.2692308" vertical-offset="0" max-vertical-offset="221">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TribeLog.php" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/Model/TribeLog.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="26" column="56" selection-start="618" selection-end="618" vertical-scroll-proportion="-17.0" vertical-offset="0" max-vertical-offset="629">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BattleReportView.php" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/Model/BattleReportView.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="4" column="9" selection-start="59" selection-end="59" vertical-scroll-proportion="-2.6153846" vertical-offset="0" max-vertical-offset="289">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Message.php" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/Model/Message.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="87" column="13" selection-start="3079" selection-end="3079" vertical-scroll-proportion="-5.730769" vertical-offset="1330" max-vertical-offset="3145">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MessageBoardPost.php" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/Model/MessageBoardPost.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="35" column="63" selection-start="1161" selection-end="1161" vertical-scroll-proportion="-6.0384617" vertical-offset="438" max-vertical-offset="2244">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MessageBoardThread.php" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/Model/MessageBoardThread.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="112" column="13" selection-start="4084" selection-end="4084" vertical-scroll-proportion="-5.5384617" vertical-offset="1760" max-vertical-offset="2924">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Player.php" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/Model/Player.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="22" column="57" selection-start="731" selection-end="731" vertical-scroll-proportion="-11.269231" vertical-offset="81" max-vertical-offset="714">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindManager">
+    <FindUsagesManager>
+      <setting name="OPEN_NEW_TAB" value="false" />
+    </FindUsagesManager>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="changedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/app/config/sql/migrate/20140713152850_AddTroopTheme.php" />
+        <option value="$PROJECT_DIR$/app/config/sql/migrate/20140812184804_AddCityExpenseValue.php" />
+        <option value="$PROJECT_DIR$/app/models/ranking.php" />
+        <option value="$PROJECT_DIR$/app/controllers/rankings_controller.php" />
+        <option value="$PROJECT_DIR$/app/app_controller.php" />
+        <option value="$PROJECT_DIR$/app/Config/bootstrap.php" />
+        <option value="$PROJECT_DIR$/app/Plugin/Thrift/Controller/Component/ThriftComponent.php" />
+        <option value="$PROJECT_DIR$/app/Controller/MessagesController.php" />
+        <option value="$PROJECT_DIR$/app/Controller/ReportsController.php" />
+        <option value="$PROJECT_DIR$/app/Controller/Component/Auth/SessionIdAuthenticate.php" />
+        <option value="$PROJECT_DIR$/app/Config/core.php" />
+        <option value="$PROJECT_DIR$/app/Controller/MessageBoardsController.php" />
+        <option value="$PROJECT_DIR$/app/Controller/TribeLogsController.php" />
+        <option value="$PROJECT_DIR$/app/Console/clear_db.bat" />
+        <option value="$PROJECT_DIR$/app/Console/push_reports.bat" />
+        <option value="$PROJECT_DIR$/app/Console/ranking_batch.bat" />
+        <option value="$PROJECT_DIR$/app/Console/clear_cache.sh" />
+        <option value="$PROJECT_DIR$/app/Console/clear_db.sh" />
+        <option value="$PROJECT_DIR$/app/Console/push_reports.sh" />
+        <option value="$PROJECT_DIR$/app/Console/ranking_batch.sh" />
+        <option value="$PROJECT_DIR$/app/Console/clear_cache.bat" />
+        <option value="$PROJECT_DIR$/app/Console/Command/UnreadReportsShell.php" />
+        <option value="$PROJECT_DIR$/app/Console/Command/ClearDbShell.php" />
+        <option value="$PROJECT_DIR$/app/Controller/RankingsController.php" />
+        <option value="$PROJECT_DIR$/app/Controller/AppController.php" />
+        <option value="$PROJECT_DIR$/lib/Cake/Model/Datasource/DboSource.php" />
+        <option value="$PROJECT_DIR$/app/Controller/ActionsController.php" />
+        <option value="$PROJECT_DIR$/app/Model/MessageBoardThread.php" />
+        <option value="$PROJECT_DIR$/app/Controller/CitiesController.php" />
+        <option value="$PROJECT_DIR$/app/Controller/PlayersController.php" />
+        <option value="$PROJECT_DIR$/app/Controller/StrongholdsController.php" />
+        <option value="$PROJECT_DIR$/app/Controller/SystemsController.php" />
+        <option value="$PROJECT_DIR$/app/Model/BattleReport.php" />
+        <option value="$PROJECT_DIR$/app/Model/BattleReportView.php" />
+        <option value="$PROJECT_DIR$/app/Model/Message.php" />
+        <option value="$PROJECT_DIR$/app/Model/MessageBoardPost.php" />
+        <option value="$PROJECT_DIR$/app/Model/Player.php" />
+        <option value="$PROJECT_DIR$/app/Model/Ranking.php" />
+        <option value="$PROJECT_DIR$/app/Model/SystemVariable.php" />
+        <option value="$PROJECT_DIR$/app/Model/TribeLog.php" />
+        <option value="$PROJECT_DIR$/app/Model/Battle.php" />
+      </list>
+    </option>
+  </component>
+  <component name="PhpServers">
+    <option name="servers">
+      <server host="localserver.tribalhero.com" name="localserver.tribalhero.com" use_path_mappings="true">
+        <path_mappings>
+          <path_mapping local_path="$PROJECT_DIR$" remote_path="C:\source\tribalhero\site" />
+        </path_mappings>
+      </server>
+    </option>
+  </component>
+  <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1616" />
+    <option name="height" value="876" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
+    <OptionsSetting value="true" id="Add" />
+    <OptionsSetting value="true" id="Remove" />
+    <OptionsSetting value="true" id="Checkout" />
+    <OptionsSetting value="true" id="Update" />
+    <OptionsSetting value="true" id="Status" />
+    <OptionsSetting value="true" id="Edit" />
+    <ConfirmationsSetting value="0" id="Add" />
+    <ConfirmationsSetting value="0" id="Remove" />
+  </component>
+  <component name="ProjectReloadState">
+    <option name="STATE" value="0" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1" splitterProportion="0.5">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+    </navigator>
+    <panes>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="gamesiteserver" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="gamesiteserver" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="site" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="gamesiteserver" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="site" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="gamesiteserver" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="site" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="View" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="gamesiteserver" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="site" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Plugin" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="gamesiteserver" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="site" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Model" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="GoToClass.includeLibraries" value="false" />
+    <property name="GoToClass.toSaveIncludeLibraries" value="false" />
+    <property name="GoToFile.includeJavaFiles" value="false" />
+    <property name="MemberChooser.sorted" value="false" />
+    <property name="MemberChooser.showClasses" value="true" />
+    <property name="MemberChooser.copyJavadoc" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\source\tribalhero\site\app\Console" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin" singleton="true">
+      <module name="" />
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
+      <option name="PROGRAM_PARAMETERS" />
+      <method />
+    </configuration>
+    <configuration default="true" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
+      <TestRunner />
+      <method />
+    </configuration>
+    <configuration default="true" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
+      <method />
+    </configuration>
+    <configuration default="true" type="PhpLocalRunConfigurationType" factoryName="PHP Console">
+      <method />
+    </configuration>
+    <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug" singleton="true">
+      <method />
+    </configuration>
+    <configuration default="true" type="FlexUnitRunConfigurationType" factoryName="FlexUnit" appDescriptorForEmulator="Android" class_name="" emulatorAdlOptions="" method_name="" output_log_level="null" package_name="" scope="Class">
+      <option name="BCName" value="" />
+      <option name="launcherParameters">
+        <LauncherParameters>
+          <option name="browserFamily" value="FIREFOX" />
+          <option name="launcherType" value="OSDefault" />
+          <option name="newPlayerInstance" value="false" />
+          <option name="playerPath" value="FlashPlayerDebugger.exe" />
+        </LauncherParameters>
+      </option>
+      <option name="moduleName" value="" />
+      <option name="trusted" value="true" />
+      <method />
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <method />
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="PhpUnitRemoteRunConfigurationType" factoryName="PHPUnit on Server">
+      <method />
+    </configuration>
+    <configuration default="true" type="FlashRunConfigurationType" factoryName="Flash App">
+      <option name="BCName" value="" />
+      <option name="IOSSimulatorSdkPath" value="" />
+      <option name="adlOptions" value="" />
+      <option name="airProgramParameters" value="" />
+      <option name="appDescriptorForEmulator" value="Android" />
+      <option name="debugTransport" value="USB" />
+      <option name="debuggerSdkRaw" value="BC SDK" />
+      <option name="emulator" value="NexusOne" />
+      <option name="emulatorAdlOptions" value="" />
+      <option name="fastPackaging" value="true" />
+      <option name="fullScreenHeight" value="0" />
+      <option name="fullScreenWidth" value="0" />
+      <option name="launchUrl" value="false" />
+      <option name="launcherParameters">
+        <LauncherParameters>
+          <option name="browserFamily" value="FIREFOX" />
+          <option name="launcherType" value="OSDefault" />
+          <option name="newPlayerInstance" value="false" />
+          <option name="playerPath" value="FlashPlayerDebugger.exe" />
+        </LauncherParameters>
+      </option>
+      <option name="mobileRunTarget" value="Emulator" />
+      <option name="moduleName" value="" />
+      <option name="overriddenMainClass" value="" />
+      <option name="overriddenOutputFileName" value="" />
+      <option name="overrideMainClass" value="false" />
+      <option name="runTrusted" value="true" />
+      <option name="screenDpi" value="0" />
+      <option name="screenHeight" value="0" />
+      <option name="screenWidth" value="0" />
+      <option name="url" value="http://" />
+      <option name="usbDebugPort" value="7936" />
+      <method />
+    </configuration>
+    <list size="0" />
+    <configuration name="&lt;template&gt;" type="JUnit" default="true" selected="false">
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    </configuration>
+    <configuration name="&lt;template&gt;" type="TestNG" default="true" selected="false">
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    </configuration>
+    <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
+      <Host>localhost</Host>
+      <Port>5050</Port>
+    </configuration>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="10f96320-9d03-4eda-9e75-bff9b74dbac2" name="Default" comment="" />
+      <created>1398552709027</created>
+      <updated>1398552709027</updated>
+      <workItem from="1398552709816" duration="29000" />
+      <workItem from="1399595574984" duration="174000" />
+      <workItem from="1400442026558" duration="660000" />
+      <workItem from="1405265228589" duration="2240000" />
+      <workItem from="1407856402152" duration="4568000" />
+      <workItem from="1407873219626" duration="633000" />
+      <workItem from="1407873927059" duration="4336000" />
+      <workItem from="1407878275925" duration="8814000" />
+      <workItem from="1407894381276" duration="12913000" />
+      <workItem from="1408119369768" duration="4449000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="38816000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-8" y="-8" width="1616" height="876" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.30294907" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3099352" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.190629" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="Vcs.Log.UiProperties">
+    <option name="RECENTLY_FILTERED_USER_GROUPS">
+      <collection />
+    </option>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="myTodoPanelSettings">
+      <TodoPanelSettings />
+    </option>
+    <option name="SHOW_VCS_ERROR_NOTIFICATIONS" value="false" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <option name="time" value="29" />
+    </breakpoint-manager>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/lib/Cake/Error/ErrorHandler.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="111" column="0" selection-start="4797" selection-end="4797" vertical-scroll-proportion="-7.230769" vertical-offset="1410" max-vertical-offset="4930" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/Cake/Controller/Component/AuthComponent.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="283" column="0" selection-start="7614" selection-end="7614" vertical-scroll-proportion="-7.230769" vertical-offset="4334" max-vertical-offset="14008" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/Cake/Controller/Controller.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="433" column="0" selection-start="12024" selection-end="12024" vertical-scroll-proportion="-7.5" vertical-offset="6945" max-vertical-offset="21029">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/Cake/basics.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="226" column="0" selection-start="6491" selection-end="6491" vertical-scroll-proportion="-7.5" vertical-offset="3358" max-vertical-offset="14331">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/Cake/Core/App.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="537" column="0" selection-start="16030" selection-end="16030" vertical-scroll-proportion="-7.5" vertical-offset="8679" max-vertical-offset="15725">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/Cake/Controller/ComponentCollection.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="116" column="0" selection-start="3818" selection-end="3818" vertical-scroll-proportion="-7.5" vertical-offset="1505" max-vertical-offset="2210" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/Cake/Controller/Component/PaginatorComponent.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="126" column="3" selection-start="4314" selection-end="4314" vertical-scroll-proportion="-23.192308" vertical-offset="1539" max-vertical-offset="7378">
+          <folding>
+            <element signature="e#6#672#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Controller/MessagesController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="5" column="0" selection-start="99" selection-end="99" vertical-scroll-proportion="0.0" vertical-offset="85" max-vertical-offset="2397">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Controller/PagesController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="24" column="41" selection-start="489" selection-end="489" vertical-scroll-proportion="-11.769231" vertical-offset="102" max-vertical-offset="765" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Controller/TribeLogsController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="23" column="46" selection-start="727" selection-end="727" vertical-scroll-proportion="0.68237346" vertical-offset="0" max-vertical-offset="578">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Config/bootstrap.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="54" column="44" selection-start="1584" selection-end="1584" vertical-scroll-proportion="-7.6538463" vertical-offset="719" max-vertical-offset="1598">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Controller/ReportsController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="251" column="23" selection-start="8880" selection-end="8880" vertical-scroll-proportion="0.3482143" vertical-offset="4072" max-vertical-offset="4896">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Console/clear_db.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="2" column="24" selection-start="62" selection-end="62" vertical-scroll-proportion="-1.36" vertical-offset="0" max-vertical-offset="136" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Console/push_reports.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="2" column="24" selection-start="62" selection-end="62" vertical-scroll-proportion="-1.36" vertical-offset="0" max-vertical-offset="136" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Console/clear_cache.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="2" column="0" selection-start="38" selection-end="62" vertical-scroll-proportion="-1.36" vertical-offset="0" max-vertical-offset="136" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Console/clear_db.bat">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="49" vertical-scroll-proportion="-0.0" vertical-offset="0" max-vertical-offset="102" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Console/clear_cache.bat">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="52" selection-start="52" selection-end="52" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="595" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Console/push_reports.bat">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="31" selection-start="31" selection-end="31" vertical-scroll-proportion="-0.0" vertical-offset="0" max-vertical-offset="102" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/Cake/Controller/Component.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="107" column="20" selection-start="3390" selection-end="3390" vertical-scroll-proportion="-7.923077" vertical-offset="1392" max-vertical-offset="2669">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Vendor/thrift/protocol/TBinaryProtocol.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="28" column="6" selection-start="983" selection-end="983" vertical-scroll-proportion="-5.8846154" vertical-offset="0" max-vertical-offset="7072" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Plugin/Thrift/Controller/Component/ThriftComponent.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="46" column="50" selection-start="1746" selection-end="1746" vertical-scroll-proportion="-30.076923" vertical-offset="0" max-vertical-offset="1088">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Model/Report.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="24" column="71" selection-start="765" selection-end="765" vertical-scroll-proportion="-15.692307" vertical-offset="0" max-vertical-offset="2125" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Vendor/thrift/packages/service/service_types.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="16" column="18" selection-start="313" selection-end="313" vertical-scroll-proportion="-7.923077" vertical-offset="66" max-vertical-offset="1853" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Console/Command/UnreadReportsShell.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="28" column="57" selection-start="1237" selection-end="1237" vertical-scroll-proportion="0.0" vertical-offset="476" max-vertical-offset="1649" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Console/ranking_batch.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="2" column="24" selection-start="62" selection-end="62" vertical-scroll-proportion="0.0" vertical-offset="34" max-vertical-offset="136" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Console/ranking_batch.bat">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="31" selection-start="31" selection-end="31" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="574" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Console/Command/RankingShell.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="10" column="29" selection-start="212" selection-end="213" vertical-scroll-proportion="0.0" vertical-offset="170" max-vertical-offset="323" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/Cake/Model/Model.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="2714" column="9" selection-start="82652" selection-end="82652" vertical-scroll-proportion="0.0" vertical-offset="46138" max-vertical-offset="64090">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Model/AppModel.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="51" column="54" selection-start="1744" selection-end="1764" vertical-scroll-proportion="0.0" vertical-offset="401" max-vertical-offset="1275">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Console/Command/ClearDbShell.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="72" column="33" selection-start="2776" selection-end="2776" vertical-scroll-proportion="0.0" vertical-offset="616" max-vertical-offset="1513">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Controller/RankingsController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="40" column="5" selection-start="1331" selection-end="1331" vertical-scroll-proportion="0.0" vertical-offset="126" max-vertical-offset="799">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Config/core.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="28" column="43" selection-start="873" selection-end="873" vertical-scroll-proportion="0.0" vertical-offset="476" max-vertical-offset="5049">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Controller/AppController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="35" column="31" selection-start="925" selection-end="925" vertical-scroll-proportion="0.0" vertical-offset="426" max-vertical-offset="1224">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$APPLICATION_PLUGINS_DIR$/php-133.326/lib/php.jar!/com/jetbrains/php/lang/psi/stubs/data/PDO.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="926" column="6" selection-start="29061" selection-end="29061" vertical-scroll-proportion="-9.1263" vertical-offset="21884" max-vertical-offset="22899" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/Cake/Model/Datasource/DboSource.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="3121" column="4" selection-start="89853" selection-end="90864" vertical-scroll-proportion="0.0" vertical-offset="53057" max-vertical-offset="60367">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Controller/ActionsController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="1" column="0" selection-start="6" selection-end="6" vertical-scroll-proportion="-0.65384614" vertical-offset="0" max-vertical-offset="527">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Controller/MessageBoardsController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="23" column="0" selection-start="759" selection-end="759" vertical-scroll-proportion="-12.269231" vertical-offset="72" max-vertical-offset="2414">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Controller/PlayersController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="17" column="61" selection-start="566" selection-end="566" vertical-scroll-proportion="-8.384615" vertical-offset="71" max-vertical-offset="544">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Controller/CitiesController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="17" column="20" selection-start="523" selection-end="565" vertical-scroll-proportion="-7.3846154" vertical-offset="97" max-vertical-offset="544">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Controller/StrongholdsController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="17" column="54" selection-start="552" selection-end="552" vertical-scroll-proportion="-8.384615" vertical-offset="71" max-vertical-offset="544">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Model/BattleReport.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="9" column="55" selection-start="213" selection-end="213" vertical-scroll-proportion="-5.8846154" vertical-offset="0" max-vertical-offset="561">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Model/BattleReportView.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="4" column="9" selection-start="59" selection-end="59" vertical-scroll-proportion="-2.6153846" vertical-offset="0" max-vertical-offset="289">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Model/Message.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="87" column="13" selection-start="3079" selection-end="3079" vertical-scroll-proportion="-5.730769" vertical-offset="1330" max-vertical-offset="3145">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Model/MessageBoardPost.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="35" column="63" selection-start="1161" selection-end="1161" vertical-scroll-proportion="-6.0384617" vertical-offset="438" max-vertical-offset="2244">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Model/MessageBoardThread.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="112" column="13" selection-start="4084" selection-end="4084" vertical-scroll-proportion="-5.5384617" vertical-offset="1760" max-vertical-offset="2924">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Model/Player.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="22" column="57" selection-start="731" selection-end="731" vertical-scroll-proportion="-11.269231" vertical-offset="81" max-vertical-offset="714">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Model/Ranking.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="412" column="64" selection-start="17172" selection-end="17172" vertical-scroll-proportion="-5.5384617" vertical-offset="6860" max-vertical-offset="7514">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Model/SystemVariable.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="5" column="54" selection-start="136" selection-end="136" vertical-scroll-proportion="-3.2692308" vertical-offset="0" max-vertical-offset="221">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Model/TribeLog.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="26" column="56" selection-start="618" selection-end="618" vertical-scroll-proportion="-17.0" vertical-offset="0" max-vertical-offset="629">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Controller/SystemsController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="42" column="58" selection-start="2149" selection-end="2149" vertical-scroll-proportion="-5.8846154" vertical-offset="561" max-vertical-offset="5984">
+          <folding>
+            <marker date="1408211017756" expanded="true" signature="729:2153" placeholder="SELECT playe..players..." />
+            <marker date="1408211017756" expanded="true" signature="2191:3625" placeholder="SELECT playe..players..." />
+            <marker date="1408211017756" expanded="true" signature="3656:4929" placeholder="SELECT playe..players..." />
+            <marker date="1408211017756" expanded="true" signature="4970:6403" placeholder="SELECT playe..players..." />
+            <marker date="1408211017756" expanded="true" signature="6442:7883" placeholder="SELECT playe..players..." />
+            <marker date="1408211017756" expanded="true" signature="7916:8702" placeholder="SELECT playe..." />
+            <marker date="1408211017756" expanded="true" signature="8738:10255" placeholder="SELECT playe..players..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Model/Battle.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="414" column="0" selection-start="18882" selection-end="18882" vertical-scroll-proportion="0.41013825" vertical-offset="6860" max-vertical-offset="11152">
+          <folding>
+            <marker date="1408211345164" expanded="true" signature="11967:12935" placeholder="SELECT %s FR..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>
+

@@ -84,7 +84,7 @@
       <file leaf-file-name="Battle.php" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/Model/Battle.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="413" column="10" selection-start="18881" selection-end="18881" vertical-scroll-proportion="0.37096775" vertical-offset="6860" max-vertical-offset="11152">
+            <state line="414" column="0" selection-start="18882" selection-end="18882" vertical-scroll-proportion="0.41013825" vertical-offset="6860" max-vertical-offset="11152">
               <folding>
                 <marker date="1408211345164" expanded="true" signature="11967:12935" placeholder="SELECT %s FR..." />
               </folding>
@@ -505,12 +505,12 @@
       <workItem from="1407873927059" duration="4336000" />
       <workItem from="1407878275925" duration="8814000" />
       <workItem from="1407894381276" duration="12913000" />
-      <workItem from="1408119369768" duration="2007000" />
+      <workItem from="1408119369768" duration="4449000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="36374000" />
+    <option name="totallyTimeSpent" value="38816000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1616" height="876" extended-state="6" />
@@ -889,7 +889,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Model/Battle.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="413" column="10" selection-start="18881" selection-end="18881" vertical-scroll-proportion="0.37096775" vertical-offset="6860" max-vertical-offset="11152">
+        <state line="414" column="0" selection-start="18882" selection-end="18882" vertical-scroll-proportion="0.41013825" vertical-offset="6860" max-vertical-offset="11152">
           <folding>
             <marker date="1408211345164" expanded="true" signature="11967:12935" placeholder="SELECT %s FR..." />
           </folding>

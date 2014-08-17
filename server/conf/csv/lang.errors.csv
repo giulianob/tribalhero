@@ -90,6 +90,7 @@ ERROR_727,You don't currently have any invitations to join a tribe
 ERROR_728,You must be part of a tribe to use this feature.
 ERROR_729,You cannot rejoin the same tribe for 48 hours after being kicked or leaving the tribe.
 ERROR_730,You cannot create a tribe for 24 hours after dismantling a previous tribe.
+ERROR_740,This troop has already been dispatched and can no longer be removed from this assignment.
 ERROR_741,It's too late to join this assignment
 ERROR_742,Assignment not found
 ERROR_743,Invalid assignment dispatch time.

@@ -28,10 +28,10 @@
 
 			title = "Create Assignment";
 			
-			chooserArrivalTime.setMinimum(troopTravelTime + 900);
+			chooserArrivalTime.setMinimum(troopTravelTime + 200);
 			chooserArrivalTime.setMaximum(162000);
 			chooserArrivalTime.setValue(Math.floor(troopTravelTime / 60) * 60);
-			
+
 			var self: AssignmentCreateDialog = this;
 			btnOk.addActionListener(function(e: Event = null): void {
 				if (onAccept != null)

@@ -922,6 +922,9 @@ namespace Persistance.Managers
 
         internal void HandleGeneralException(Exception e, DbCommand command = null)
         {
+            logger.Error("Stack from exception: " + e.StackTrace);
+            logger.Error("Stack from environment: " + Environment.StackTrace);
+
             logger.ErrorException(string.Format("General database error on thread {0} {1}", Thread.CurrentThread.ManagedThreadId, Environment.StackTrace), e);
 
             if (command != null)

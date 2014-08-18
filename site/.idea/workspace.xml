@@ -67,16 +67,8 @@
       <file leaf-file-name="SystemsController.php" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/Controller/SystemsController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="42" column="58" selection-start="2149" selection-end="2149" vertical-scroll-proportion="-5.8846154" vertical-offset="561" max-vertical-offset="5984">
-              <folding>
-                <marker date="1408211017756" expanded="true" signature="729:2153" placeholder="SELECT playe..players..." />
-                <marker date="1408211017756" expanded="true" signature="2191:3625" placeholder="SELECT playe..players..." />
-                <marker date="1408211017756" expanded="true" signature="3656:4929" placeholder="SELECT playe..players..." />
-                <marker date="1408211017756" expanded="true" signature="4970:6403" placeholder="SELECT playe..players..." />
-                <marker date="1408211017756" expanded="true" signature="6442:7883" placeholder="SELECT playe..players..." />
-                <marker date="1408211017756" expanded="true" signature="7916:8702" placeholder="SELECT playe..." />
-                <marker date="1408211017756" expanded="true" signature="8738:10255" placeholder="SELECT playe..players..." />
-              </folding>
+            <state line="42" column="58" selection-start="2149" selection-end="2149" vertical-scroll-proportion="0.0" vertical-offset="561" max-vertical-offset="5984">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -84,9 +76,9 @@
       <file leaf-file-name="Battle.php" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/Model/Battle.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="414" column="0" selection-start="18882" selection-end="18882" vertical-scroll-proportion="0.41013825" vertical-offset="6860" max-vertical-offset="11152">
+            <state line="414" column="0" selection-start="18882" selection-end="18882" vertical-scroll-proportion="0.2688822" vertical-offset="6860" max-vertical-offset="11152">
               <folding>
-                <marker date="1408211345164" expanded="true" signature="11967:12935" placeholder="SELECT %s FR..." />
+                <marker date="1408296948478" expanded="true" signature="11967:12935" placeholder="SELECT %s FR..." />
               </folding>
             </state>
           </provider>
@@ -95,7 +87,7 @@
       <file leaf-file-name="Ranking.php" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/Model/Ranking.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="412" column="64" selection-start="17172" selection-end="17172" vertical-scroll-proportion="-5.5384617" vertical-offset="6860" max-vertical-offset="7514">
+            <state line="412" column="64" selection-start="17172" selection-end="17172" vertical-scroll-proportion="0.0" vertical-offset="7004" max-vertical-offset="7514">
               <folding />
             </state>
           </provider>
@@ -104,7 +96,7 @@
       <file leaf-file-name="SystemVariable.php" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/Model/SystemVariable.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="5" column="54" selection-start="136" selection-end="136" vertical-scroll-proportion="-3.2692308" vertical-offset="0" max-vertical-offset="221">
+            <state line="5" column="54" selection-start="136" selection-end="136" vertical-scroll-proportion="0.0" vertical-offset="85" max-vertical-offset="221">
               <folding />
             </state>
           </provider>
@@ -113,7 +105,7 @@
       <file leaf-file-name="TribeLog.php" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/Model/TribeLog.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="26" column="56" selection-start="618" selection-end="618" vertical-scroll-proportion="-17.0" vertical-offset="0" max-vertical-offset="629">
+            <state line="26" column="56" selection-start="618" selection-end="618" vertical-scroll-proportion="0.0" vertical-offset="442" max-vertical-offset="629">
               <folding />
             </state>
           </provider>
@@ -122,7 +114,7 @@
       <file leaf-file-name="BattleReportView.php" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/Model/BattleReportView.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="4" column="9" selection-start="59" selection-end="59" vertical-scroll-proportion="-2.6153846" vertical-offset="0" max-vertical-offset="289">
+            <state line="4" column="9" selection-start="59" selection-end="59" vertical-scroll-proportion="0.0" vertical-offset="68" max-vertical-offset="289">
               <folding />
             </state>
           </provider>
@@ -131,7 +123,7 @@
       <file leaf-file-name="Message.php" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/Model/Message.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="87" column="13" selection-start="3079" selection-end="3079" vertical-scroll-proportion="-5.730769" vertical-offset="1330" max-vertical-offset="3145">
+            <state line="87" column="13" selection-start="3079" selection-end="3079" vertical-scroll-proportion="0.0" vertical-offset="1479" max-vertical-offset="3145">
               <folding />
             </state>
           </provider>
@@ -140,7 +132,7 @@
       <file leaf-file-name="MessageBoardPost.php" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/Model/MessageBoardPost.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="35" column="63" selection-start="1161" selection-end="1161" vertical-scroll-proportion="-6.0384617" vertical-offset="438" max-vertical-offset="2244">
+            <state line="35" column="63" selection-start="1161" selection-end="1161" vertical-scroll-proportion="0.0" vertical-offset="438" max-vertical-offset="2244">
               <folding />
             </state>
           </provider>
@@ -149,7 +141,7 @@
       <file leaf-file-name="MessageBoardThread.php" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/Model/MessageBoardThread.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="112" column="13" selection-start="4084" selection-end="4084" vertical-scroll-proportion="-5.5384617" vertical-offset="1760" max-vertical-offset="2924">
+            <state line="112" column="13" selection-start="4084" selection-end="4084" vertical-scroll-proportion="0.0" vertical-offset="1760" max-vertical-offset="2924">
               <folding />
             </state>
           </provider>
@@ -158,7 +150,7 @@
       <file leaf-file-name="Player.php" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/Model/Player.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="22" column="57" selection-start="731" selection-end="731" vertical-scroll-proportion="-11.269231" vertical-offset="81" max-vertical-offset="714">
+            <state line="22" column="57" selection-start="731" selection-end="731" vertical-scroll-proportion="0.0" vertical-offset="81" max-vertical-offset="714">
               <folding />
             </state>
           </provider>
@@ -260,8 +252,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -350,6 +340,8 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -506,11 +498,12 @@
       <workItem from="1407878275925" duration="8814000" />
       <workItem from="1407894381276" duration="12913000" />
       <workItem from="1408119369768" duration="4449000" />
+      <workItem from="1408301140476" duration="288000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="38816000" />
+    <option name="totallyTimeSpent" value="39104000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1616" height="876" extended-state="6" />
@@ -521,7 +514,6 @@
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.30294907" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3099352" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -539,6 +531,7 @@
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.30294907" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
@@ -685,9 +678,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Plugin/Thrift/Controller/Component/ThriftComponent.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="46" column="50" selection-start="1746" selection-end="1746" vertical-scroll-proportion="-30.076923" vertical-offset="0" max-vertical-offset="1088">
-          <folding />
-        </state>
+        <state line="46" column="50" selection-start="1746" selection-end="1746" vertical-scroll-proportion="-30.076923" vertical-offset="0" max-vertical-offset="1088" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Model/Report.php">
@@ -736,9 +727,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Console/Command/ClearDbShell.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="72" column="33" selection-start="2776" selection-end="2776" vertical-scroll-proportion="0.0" vertical-offset="616" max-vertical-offset="1513">
-          <folding />
-        </state>
+        <state line="72" column="33" selection-start="2776" selection-end="2776" vertical-scroll-proportion="0.0" vertical-offset="616" max-vertical-offset="1513" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Controller/RankingsController.php">
@@ -750,9 +739,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Config/core.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="43" selection-start="873" selection-end="873" vertical-scroll-proportion="0.0" vertical-offset="476" max-vertical-offset="5049">
-          <folding />
-        </state>
+        <state line="28" column="43" selection-start="873" selection-end="873" vertical-scroll-proportion="0.0" vertical-offset="476" max-vertical-offset="5049" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Controller/AppController.php">
@@ -769,16 +756,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/Cake/Model/Datasource/DboSource.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="3121" column="4" selection-start="89853" selection-end="90864" vertical-scroll-proportion="0.0" vertical-offset="53057" max-vertical-offset="60367">
-          <folding />
-        </state>
+        <state line="3121" column="4" selection-start="89853" selection-end="90864" vertical-scroll-proportion="0.0" vertical-offset="53057" max-vertical-offset="60367" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Controller/ActionsController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="1" column="0" selection-start="6" selection-end="6" vertical-scroll-proportion="-0.65384614" vertical-offset="0" max-vertical-offset="527">
-          <folding />
-        </state>
+        <state line="1" column="0" selection-start="6" selection-end="6" vertical-scroll-proportion="-0.65384614" vertical-offset="0" max-vertical-offset="527" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Controller/MessageBoardsController.php">
@@ -790,23 +773,17 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Controller/PlayersController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="61" selection-start="566" selection-end="566" vertical-scroll-proportion="-8.384615" vertical-offset="71" max-vertical-offset="544">
-          <folding />
-        </state>
+        <state line="17" column="61" selection-start="566" selection-end="566" vertical-scroll-proportion="-8.384615" vertical-offset="71" max-vertical-offset="544" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Controller/CitiesController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="20" selection-start="523" selection-end="565" vertical-scroll-proportion="-7.3846154" vertical-offset="97" max-vertical-offset="544">
-          <folding />
-        </state>
+        <state line="17" column="20" selection-start="523" selection-end="565" vertical-scroll-proportion="-7.3846154" vertical-offset="97" max-vertical-offset="544" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Controller/StrongholdsController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="54" selection-start="552" selection-end="552" vertical-scroll-proportion="-8.384615" vertical-offset="71" max-vertical-offset="544">
-          <folding />
-        </state>
+        <state line="17" column="54" selection-start="552" selection-end="552" vertical-scroll-proportion="-8.384615" vertical-offset="71" max-vertical-offset="544" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Model/BattleReport.php">
@@ -818,80 +795,72 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Model/BattleReportView.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="9" selection-start="59" selection-end="59" vertical-scroll-proportion="-2.6153846" vertical-offset="0" max-vertical-offset="289">
+        <state line="4" column="9" selection-start="59" selection-end="59" vertical-scroll-proportion="0.0" vertical-offset="68" max-vertical-offset="289">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Model/Message.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="87" column="13" selection-start="3079" selection-end="3079" vertical-scroll-proportion="-5.730769" vertical-offset="1330" max-vertical-offset="3145">
+        <state line="87" column="13" selection-start="3079" selection-end="3079" vertical-scroll-proportion="0.0" vertical-offset="1479" max-vertical-offset="3145">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Model/MessageBoardPost.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="35" column="63" selection-start="1161" selection-end="1161" vertical-scroll-proportion="-6.0384617" vertical-offset="438" max-vertical-offset="2244">
+        <state line="35" column="63" selection-start="1161" selection-end="1161" vertical-scroll-proportion="0.0" vertical-offset="438" max-vertical-offset="2244">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Model/MessageBoardThread.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="112" column="13" selection-start="4084" selection-end="4084" vertical-scroll-proportion="-5.5384617" vertical-offset="1760" max-vertical-offset="2924">
+        <state line="112" column="13" selection-start="4084" selection-end="4084" vertical-scroll-proportion="0.0" vertical-offset="1760" max-vertical-offset="2924">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Model/Player.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="57" selection-start="731" selection-end="731" vertical-scroll-proportion="-11.269231" vertical-offset="81" max-vertical-offset="714">
+        <state line="22" column="57" selection-start="731" selection-end="731" vertical-scroll-proportion="0.0" vertical-offset="81" max-vertical-offset="714">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Model/Ranking.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="412" column="64" selection-start="17172" selection-end="17172" vertical-scroll-proportion="-5.5384617" vertical-offset="6860" max-vertical-offset="7514">
+        <state line="412" column="64" selection-start="17172" selection-end="17172" vertical-scroll-proportion="0.0" vertical-offset="7004" max-vertical-offset="7514">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Model/SystemVariable.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="54" selection-start="136" selection-end="136" vertical-scroll-proportion="-3.2692308" vertical-offset="0" max-vertical-offset="221">
+        <state line="5" column="54" selection-start="136" selection-end="136" vertical-scroll-proportion="0.0" vertical-offset="85" max-vertical-offset="221">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Model/TribeLog.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="26" column="56" selection-start="618" selection-end="618" vertical-scroll-proportion="-17.0" vertical-offset="0" max-vertical-offset="629">
+        <state line="26" column="56" selection-start="618" selection-end="618" vertical-scroll-proportion="0.0" vertical-offset="442" max-vertical-offset="629">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Controller/SystemsController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="42" column="58" selection-start="2149" selection-end="2149" vertical-scroll-proportion="-5.8846154" vertical-offset="561" max-vertical-offset="5984">
-          <folding>
-            <marker date="1408211017756" expanded="true" signature="729:2153" placeholder="SELECT playe..players..." />
-            <marker date="1408211017756" expanded="true" signature="2191:3625" placeholder="SELECT playe..players..." />
-            <marker date="1408211017756" expanded="true" signature="3656:4929" placeholder="SELECT playe..players..." />
-            <marker date="1408211017756" expanded="true" signature="4970:6403" placeholder="SELECT playe..players..." />
-            <marker date="1408211017756" expanded="true" signature="6442:7883" placeholder="SELECT playe..players..." />
-            <marker date="1408211017756" expanded="true" signature="7916:8702" placeholder="SELECT playe..." />
-            <marker date="1408211017756" expanded="true" signature="8738:10255" placeholder="SELECT playe..players..." />
-          </folding>
+        <state line="42" column="58" selection-start="2149" selection-end="2149" vertical-scroll-proportion="0.0" vertical-offset="561" max-vertical-offset="5984">
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Model/Battle.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="414" column="0" selection-start="18882" selection-end="18882" vertical-scroll-proportion="0.41013825" vertical-offset="6860" max-vertical-offset="11152">
+        <state line="414" column="0" selection-start="18882" selection-end="18882" vertical-scroll-proportion="0.2688822" vertical-offset="6860" max-vertical-offset="11152">
           <folding>
-            <marker date="1408211345164" expanded="true" signature="11967:12935" placeholder="SELECT %s FR..." />
+            <marker date="1408296948478" expanded="true" signature="11967:12935" placeholder="SELECT %s FR..." />
           </folding>
         </state>
       </provider>

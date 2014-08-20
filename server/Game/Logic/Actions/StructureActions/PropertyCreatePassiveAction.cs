@@ -47,6 +47,14 @@ namespace Game.Logic.Actions
             }
         }
 
+        public override Error SystemCancelable
+        {
+            get
+            {
+                return Error.UncancelablePropertyCreate;
+            }
+        }
+
         public void ScriptInit(IGameObject obj, string[] parms)
         {
             if ((structure = obj as IStructure) == null)

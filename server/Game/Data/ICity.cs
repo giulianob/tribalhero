@@ -6,6 +6,7 @@ using Game.Data.Events;
 using Game.Data.Troop;
 using Game.Logic;
 using Game.Logic.Notifications;
+using Game.Setup;
 using Persistance;
 
 namespace Game.Data
@@ -209,5 +210,7 @@ namespace Game.Data
         ITroopObject CreateTroopObject(ITroopStub stub, uint x, uint y);
 
         IStructure CreateStructure(ushort type, byte level, uint x, uint y);
+
+        Error AllActionsCancelable();
     }
 }

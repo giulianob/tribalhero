@@ -103,6 +103,14 @@ namespace Game.Logic.Actions
             }
         }
 
+        public override Error SystemCancelable
+        {
+            get
+            {
+                return Error.Ok;
+            }
+        }
+
         public override Error Validate(string[] parms)
         {
             return Error.Ok;

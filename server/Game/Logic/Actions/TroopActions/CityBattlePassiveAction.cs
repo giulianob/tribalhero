@@ -121,6 +121,14 @@ namespace Game.Logic.Actions
             }
         }
 
+        public override Error SystemCancelable
+        {
+            get
+            {
+                return Error.UncancelableCityBattle;
+            }
+        }
+
         private void AddAlignmentPoint(ICombatList attackers, ICombatList defenders, uint numberOfRounds)
         {
             ICity city;

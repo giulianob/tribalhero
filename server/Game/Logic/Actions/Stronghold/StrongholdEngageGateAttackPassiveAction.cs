@@ -37,6 +37,8 @@ namespace Game.Logic.Actions
 
         private uint groupId;
 
+        private Error systemCancelable;
+
         public StrongholdEngageGateAttackPassiveAction(IBattleFormulas battleFormula,
                                                        IGameObjectLocator gameObjectLocator,
                                                        StrongholdBattleProcedure strongholdBattleProcedure,
@@ -104,6 +106,14 @@ namespace Game.Logic.Actions
                                 new XmlKvPair("troop_city_id", cityId), new XmlKvPair("troop_object_id", troopObjectId),
                                 new XmlKvPair("group_id", groupId), new XmlKvPair("stamina", StaminaMonitor.Stamina)
                         });
+            }
+        }
+
+        public override Error SystemCancelable
+        {
+            get
+            {
+                return Error.UncancelableStrongholdGateGateAttack;
             }
         }
 

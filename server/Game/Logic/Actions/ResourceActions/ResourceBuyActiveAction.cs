@@ -35,6 +35,8 @@ namespace Game.Logic.Actions
 
         private readonly Formula formula;
 
+        private Error systemCancelable;
+
         public ResourceBuyActiveAction(ILocker locker,
                                        IWorld world,
                                        Formula formula)
@@ -255,6 +257,14 @@ namespace Game.Logic.Actions
                                 new XmlKvPair("resource_type", resourceType.ToString()), new XmlKvPair("price", price),
                                 new XmlKvPair("quantity", quantity)
                         });
+            }
+        }
+
+        public override Error SystemCancelable
+        {
+            get
+            {
+                return systemCancelable;
             }
         }
 

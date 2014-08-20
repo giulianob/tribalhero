@@ -52,6 +52,8 @@ namespace Game.Setup
 
         ActionSelf = 109,
 
+        
+
         #endregion
 
         #region Resource Errors
@@ -281,6 +283,63 @@ namespace Game.Setup
         StoreItemPurchaseProblem = 10003,
 
         PlayerBalanceNotEnough = 10004,
+
+        #endregion
+
+        #region
+        UncancelableBarbarianTribeAttack = 11000,
+
+        UncancelableBarbarianTribeBattle = 11001,
+
+        UncancelableBarbarianTribeEngageAttack = 11002,
+
+        UncancelableCityAttackChain = 11003,
+
+        UncancelableCityBattle = 11004,
+
+        UncancelableCityCreate = 11005,
+
+        UncancelableCityDefenseChain = 11006,
+
+        UncancelableCityEngageAttack = 11007,
+
+        UncancelableCityEngageDefense = 11008,
+
+        UncancelableCityRadiusChange = 11009,
+
+        UncancelableCityRebuild = 11010,
+
+        UncancelableCityResoureCapUpdate = 11011,
+
+        UncancelableDistributedPointsUpdate = 11012,
+
+        UncancelableForestCampLaborUpdate = 11013,
+
+        UncancelableForestCampUpdate = 11014,
+
+        UncancelablePropertyCreate = 11015,
+
+        UncancelableResourceRateUpdate = 11016,
+
+        UncancelableRetreatChain = 11017,
+
+        UncancelableStrongholdAttack = 11018,
+
+        UncancelableStrongholdDefense = 11019,
+
+        UncancelableStarve = 11020,
+
+        UncancelableStrongholdGateGateAttack = 11021,
+
+        UncancelableStrongholdEngageMainAttack = 11022,
+
+        UncancelableStrongholdGateBattle = 11023,
+
+        UncancelableStrongholdMainBattle = 11024,
+
+        UncancelableTroopMove = 11025,
+
+        UncancelableTechnologyCreate = 11026,
 
         #endregion
     }

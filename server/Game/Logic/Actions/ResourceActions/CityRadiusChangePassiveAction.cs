@@ -31,6 +31,14 @@ namespace Game.Logic.Actions
             }
         }
 
+        public override Error SystemCancelable
+        {
+            get
+            {
+                return Error.UncancelableCityRadiusChange;
+            }
+        }
+
         public override void LoadProperties(IDictionary<string, string> properties)
         {
         }

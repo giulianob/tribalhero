@@ -34,7 +34,7 @@ namespace Game.Logic.Actions
         private uint troopObjectId;
 
         private uint targetCityId;
-        
+
         public CityDefenseChainAction(BattleProcedure battleProcedure,
                                       IActionFactory actionFactory,
                                       ILocker locker,
@@ -89,6 +89,14 @@ namespace Game.Logic.Actions
                             new XmlKvPair("target_city_id", targetCityId),
                             new XmlKvPair("troop_object_id", troopObjectId)
                         });
+            }
+        }
+
+        public override Error SystemCancelable
+        {
+            get
+            {
+                return Error.UncancelableCityDefenseChain;
             }
         }
 

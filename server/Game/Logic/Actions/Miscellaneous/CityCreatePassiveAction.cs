@@ -123,6 +123,14 @@ namespace Game.Logic.Actions
             }
         }
 
+        public override Error SystemCancelable
+        {
+            get
+            {
+                return Error.UncancelableCityCreate;
+            }
+        }
+
         public override Error Validate(string[] parms)
         {
             ushort tileType = world.Regions.GetTileType(x, y);

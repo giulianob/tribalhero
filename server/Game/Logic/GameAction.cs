@@ -191,6 +191,8 @@ namespace Game.Logic
 
         public abstract String Properties { get; }
 
+        public abstract Error SystemCancelable { get; }
+
         /// <summary>
         ///     Specified the general purpose of this action (e.g. Attack, defend, etc...)
         /// </summary>

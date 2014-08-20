@@ -39,6 +39,14 @@ namespace Game.Logic.Actions
             }
         }
 
+        public override Error SystemCancelable
+        {
+            get
+            {
+                return Error.UncancelableTechnologyCreate;
+            }
+        }
+
         public TechnologyCreatePassiveAction(TechnologyFactory technologyFactory, CallbackProcedure callbackProcedure)
         {
             this.technologyFactory = technologyFactory;

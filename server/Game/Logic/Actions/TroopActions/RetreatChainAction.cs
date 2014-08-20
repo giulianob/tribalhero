@@ -30,6 +30,8 @@ namespace Game.Logic.Actions
 
         private readonly ILocker locker;
 
+        private Error systemCancelable;
+
         public RetreatChainAction(IActionFactory actionFactory,
                                   IWorld world,
                                   Procedure procedure,
@@ -64,6 +66,14 @@ namespace Game.Logic.Actions
             get
             {
                 return ActionType.RetreatChain;
+            }
+        }
+
+        public override Error SystemCancelable
+        {
+            get
+            {
+                return Error.UncancelableRetreatChain;
             }
         }
 

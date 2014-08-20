@@ -117,6 +117,14 @@ namespace Game.Logic.Actions
             }
         }
 
+        public override Error SystemCancelable
+        {
+            get
+            {
+                return Error.UncancelableStrongholdGateBattle;
+            }
+        }
+
         private void BattleOnActionAttacked(IBattleManager battle,
                                             BattleManager.BattleSide attackingSide,
                                             ICombatGroup attackerGroup,

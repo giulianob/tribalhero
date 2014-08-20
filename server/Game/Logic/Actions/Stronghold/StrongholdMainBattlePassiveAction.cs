@@ -133,6 +133,14 @@ namespace Game.Logic.Actions
             }
         }
 
+        public override Error SystemCancelable
+        {
+            get
+            {
+                return Error.UncancelableStrongholdMainBattle;
+            }
+        }
+
         private void RegisterBattleListeners(IStronghold stronghold)
         {
             stronghold.MainBattle.UnitCountDecreased += MainBattleOnUnitKilled;

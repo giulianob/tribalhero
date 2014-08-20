@@ -6,6 +6,7 @@ using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
 using System.Linq;
+using Game.Util.Locking;
 
 namespace Game.Logic.Procedures
 {
@@ -67,7 +68,8 @@ namespace Game.Logic.Procedures
             if (city.Troops.MyStubs().Count() > 1)
                 return Error.TroopOutstanding;
 
-            return Error.Ok;
+            var error = city.AllActionsCancelable();
+            return error != Error.Ok ? error : Error.Ok;
         }
         /// <summary>
         ///     Creates a city under the specified player with initial troop and main building

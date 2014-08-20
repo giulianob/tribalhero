@@ -43,6 +43,14 @@ namespace Game.Logic.Actions
             }
         }
 
+        public override Error SystemCancelable
+        {
+            get
+            {
+                return Error.UncancelableForestCampLaborUpdate;
+            }
+        }
+
         public void ScriptInit(IGameObject gameObject, string[] parms)
         {
             if ((obj = gameObject as IStructure) == null)

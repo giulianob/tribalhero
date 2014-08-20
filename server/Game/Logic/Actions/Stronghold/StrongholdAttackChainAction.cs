@@ -40,6 +40,8 @@ namespace Game.Logic.Actions
 
         private uint troopObjectId;
 
+        private Error systemCancelable;
+
         public StrongholdAttackChainAction(IActionFactory actionFactory,
                                            Procedure procedure,
                                            ILocker locker,
@@ -99,6 +101,14 @@ namespace Game.Logic.Actions
                                 new XmlKvPair("troop_object_id", troopObjectId),
                                 new XmlKvPair("target_stronghold_id", targetStrongholdId),
                         });
+            }
+        }
+
+        public override Error SystemCancelable
+        {
+            get
+            {
+                return Error.UncancelableStrongholdAttack;
             }
         }
 

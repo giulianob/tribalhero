@@ -97,6 +97,14 @@ namespace Game.Logic.Actions
             }
         }
 
+        public override Error SystemCancelable
+        {
+            get
+            {
+                return Error.UncancelableStrongholdEngageMainAttack;
+            }
+        }
+
         private void RegisterBattleListeners(IStronghold targetStronghold)
         {
             targetStronghold.MainBattle.WithdrawAttacker += BattleWithdrawAttacker;

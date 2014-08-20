@@ -37,7 +37,7 @@ namespace Game.Logic.Actions
         private readonly ILocker locker;
 
         private readonly CallbackProcedure callbackProcedure;
-
+        
         public StructureChangeActiveAction(IStructureCsvFactory structureCsvFactory,
                                            Formula formula,
                                            IWorld world,
@@ -238,6 +238,14 @@ namespace Game.Logic.Actions
                                 new XmlKvPair("crop", cost.Crop), new XmlKvPair("iron", cost.Iron),
                                 new XmlKvPair("gold", cost.Gold), new XmlKvPair("labor", cost.Labor),
                         });
+            }
+        }
+
+        public override Error SystemCancelable
+        {
+            get
+            {
+                return Error.Ok;
             }
         }
 

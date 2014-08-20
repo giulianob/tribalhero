@@ -43,6 +43,14 @@ namespace Game.Logic.Actions
             }
         }
 
+        public override Error SystemCancelable
+        {
+            get
+            {
+                return Error.UncancelableForestCampUpdate;
+            }
+        }
+
         #region IScriptable Members
 
         public void ScriptInit(IGameObject gameObject, string[] parms)

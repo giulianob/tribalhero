@@ -91,35 +91,6 @@ namespace Game.Module.Remover
 
         public bool IsScheduled { get; set; }
 
-        public bool CanBeRemovedImmediately()
-        {
-            ICity city;
-            IStructure mainBuilding;
-
-            if (!world.TryGetObjects(cityId, out city))
-            {
-                throw new Exception("City not found");
-            }
-
-            return locker.Lock(GetForeignTroopLockList, new object[] {city}, city)
-                                      .Do(() =>
-                {
-                    if (city == null)
-                        return false;
-
-                    if (city.Battle != null)
-                        return false;
-
-                    if (city.Troops.StationedHere().Any())
-                        return false;
-
-                    if (city.Troops.MyStubs().Count() > 1)
-                        return false;
-
-                    return true;
-                });
-        }
-
         public void Callback(object custom)
         {
             ICity city;

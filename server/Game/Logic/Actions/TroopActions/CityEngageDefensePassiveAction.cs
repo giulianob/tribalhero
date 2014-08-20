@@ -31,6 +31,8 @@ namespace Game.Logic.Actions
 
         private uint groupId;
 
+        private Error systemCancelable;
+
         public CityEngageDefensePassiveAction(BattleProcedure battleProcedure,
                                               CityBattleProcedure cityBattleProcedure,
                                               IGameObjectLocator gameObjectLocator)
@@ -86,6 +88,14 @@ namespace Game.Logic.Actions
                                 new XmlKvPair("troop_city_id", cityId), new XmlKvPair("troop_object_id", troopObjectId),
                                 new XmlKvPair("group_id", groupId)
                         });
+            }
+        }
+
+        public override Error SystemCancelable
+        {
+            get
+            {
+                return Error.UncancelableCityEngageDefense;
             }
         }
 

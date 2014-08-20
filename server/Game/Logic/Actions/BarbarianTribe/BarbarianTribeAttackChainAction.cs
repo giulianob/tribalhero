@@ -92,6 +92,14 @@ namespace Game.Logic.Actions
             }
         }
 
+        public override Error SystemCancelable
+        {
+            get
+            {
+                return Error.UncancelableBarbarianTribeAttack;
+            }
+        }
+
         public override ActionCategory Category
         {
             get

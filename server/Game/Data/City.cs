@@ -816,6 +816,19 @@ namespace Game.Data
             return structure;
         }
 
+        public Error AllActionsCancelable()
+        {
+            var active = Worker.ActiveActions.Values.FirstOrDefault(x => x.SystemCancelable != Error.Ok);
+            if (active != null)
+                return active.SystemCancelable;
+
+            var passive = Worker.PassiveActions.Values.FirstOrDefault(x => x.SystemCancelable != Error.Ok);
+            if (passive != null)
+                return passive.SystemCancelable;
+
+            return Error.Ok;
+        }
+
         public object Lock
         {
             get

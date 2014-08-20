@@ -127,6 +127,14 @@ namespace Game.Logic.Actions
             }
         }
 
+        public override Error SystemCancelable
+        {
+            get
+            {
+                return Error.UncancelableBarbarianTribeEngageAttack;
+            }
+        }
+
         private void RegisterBattleListeners(IBarbarianTribe barbarianTribe)
         {
             barbarianTribe.Battle.WithdrawAttacker += BattleWithdrawAttacker;

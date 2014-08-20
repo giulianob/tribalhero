@@ -41,6 +41,8 @@ namespace Game.Logic.Actions
         
         private readonly IStructureCsvFactory structureCsvFactory;
 
+        private Error systemCancelable;
+
         public StructureChangePassiveAction(Formula formula,
                                             IWorld world,
                                             ILocker locker,
@@ -102,6 +104,14 @@ namespace Game.Logic.Actions
                                 new XmlKvPair("city_id", cityId), new XmlKvPair("object_id", objectId),
                                 new XmlKvPair("type", type), new XmlKvPair("lvl", lvl)
                         });
+            }
+        }
+
+        public override Error SystemCancelable
+        {
+            get
+            {
+                return systemCancelable;
             }
         }
 

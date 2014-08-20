@@ -141,6 +141,14 @@ namespace Game.Logic.Actions
             }
         }
 
+        public override Error SystemCancelable
+        {
+            get
+            {
+                return Error.UncancelableCityEngageAttack;
+            }
+        }
+
         private void RegisterBattleListeners(ICity targetCity)
         {
             targetCity.Battle.ActionAttacked += BattleActionAttacked;

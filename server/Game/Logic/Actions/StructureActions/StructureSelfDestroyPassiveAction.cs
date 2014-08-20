@@ -61,6 +61,14 @@ namespace Game.Logic.Actions
             }
         }
 
+        public override Error SystemCancelable
+        {
+            get
+            {
+                return Error.Ok;
+            }
+        }
+
         #region IScriptable Members
 
         public void ScriptInit(IGameObject obj, string[] parms)

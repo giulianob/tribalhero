@@ -26,6 +26,14 @@ namespace Game.Logic.Actions
             }
         }
 
+        public override Error SystemCancelable
+        {
+            get
+            {
+                return Error.UncancelableDistributedPointsUpdate;
+            }
+        }
+
         public override void LoadProperties(IDictionary<string, string> properties)
         {
         }

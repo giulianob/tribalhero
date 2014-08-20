@@ -20,6 +20,8 @@ namespace Game.Logic.Actions
 
         private readonly ILocker locker;
 
+        private Error systemCancelable;
+
         public StarvePassiveAction(IGameObjectLocator gameObjectLocator, ILocker locker)
         {
             this.gameObjectLocator = gameObjectLocator;
@@ -109,6 +111,14 @@ namespace Game.Logic.Actions
             get
             {
                 return XmlSerializer.Serialize(new[] {new XmlKvPair("city_id", cityId)});
+            }
+        }
+
+        public override Error SystemCancelable
+        {
+            get
+            {
+                return Error.UncancelableStarve;
             }
         }
 

@@ -142,7 +142,8 @@ namespace Game.Data
         {
             CheckUpdateMode();
 
-            if (!Remove(tech.Type, false))
+            Technology oldTech;
+            if (!Remove(tech.Type, false, out oldTech))
             {
                 return false;
             }
@@ -203,9 +204,27 @@ namespace Game.Data
             }
         }
 
-        private bool Remove(uint techType, bool notify)
+        public bool Remove(uint techType)
         {
-            Technology tech =
+            CheckUpdateMode();
+
+            Technology tech;
+            if (!Remove(techType, false, out tech))
+            {
+                return false;
+            }
+
+            if (TechnologyRemoved != null)
+            {
+                TechnologyRemoved(tech);
+            }
+
+            return true;
+        }
+
+        private bool Remove(uint techType, bool notify, out Technology tech)
+        {
+            tech =
                     technologies.Find(
                                       technology =>
                                       technology.Type == techType && technology.OwnerId == OwnerId &&
@@ -253,37 +272,6 @@ namespace Game.Data
                 }
             }
             return list;
-        }
-
-        public int Max(EffectCode effectCode, EffectInheritance inherit, byte paramOrder)
-        {
-            int max = Int32.MinValue;
-            foreach (var e in GetEffects(effectCode, inherit))
-            {
-                if ((int)e.Value[paramOrder] > max)
-                {
-                    max = (int)e.Value[paramOrder];
-                }
-            }
-            return max;
-        }
-
-        public int Min(EffectCode effectCode, EffectInheritance inherit, byte paramOrder)
-        {
-            int min = Int32.MaxValue;
-            foreach (var e in GetEffects(effectCode, inherit))
-            {
-                if ((int)e.Value[paramOrder] < min)
-                {
-                    min = (int)e.Value[paramOrder];
-                }
-            }
-            return min;
-        }
-
-        public int Avg(int effectId)
-        {
-            return 0;
         }
 
         #endregion

@@ -62,6 +62,9 @@ namespace Game.Logic.Procedures
             if (city.Battle != null)
                 return Error.CityInBattle;
 
+            if (city.Notifications.Count > 0)
+                return Error.CityIncomingAttack;
+
             if (city.Troops.StationedHere().Any())
                 return Error.TroopStationedInCity;
 

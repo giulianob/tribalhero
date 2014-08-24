@@ -14,6 +14,7 @@ import src.Objects.Prototypes.StructurePrototype;
 import src.UI.Components.SimpleTooltip;
 import src.UI.Dialog.CreateCityDialog;
 import src.UI.Tooltips.NewCityTooltip;
+import src.Util.StringHelper;
 
 public class MoveCityButton extends ActionButton
 {
@@ -30,7 +31,7 @@ public class MoveCityButton extends ActionButton
 
         mainBuildingPrototype = StructureFactory.getPrototype(ObjectFactory.getFirstType("MainBuilding"), 1);
 
-        new SimpleTooltip(this,"Tear down current city and move to this spot.","Move city");
+        new SimpleTooltip(this,StringHelper.localize("MOVE_CITY_DESC"),"Move city");
         ///		tooltip = new NewCityTooltip(mainBuildingPrototype);
 
         addEventListener(MouseEvent.CLICK, onMouseClick);

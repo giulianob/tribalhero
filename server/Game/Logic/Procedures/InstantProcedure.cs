@@ -34,6 +34,13 @@ namespace Game.Logic.Procedures
 
             cranny.BeginUpdate();
             cranny["Structure Upgrades"] = --count;
+
+            if (count == 0)
+            {
+                cranny.Technologies.BeginUpdate();
+                cranny.Technologies.Remove(30131);
+                cranny.Technologies.EndUpdate();
+            }
             cranny.EndUpdate();
 
             return true;
@@ -53,6 +60,12 @@ namespace Game.Logic.Procedures
 
             cranny.BeginUpdate();
             cranny["Technology Upgrades"] = --count;
+            if (count == 0)
+            {
+                cranny.Technologies.BeginUpdate();
+                cranny.Technologies.Remove(30132);
+                cranny.Technologies.EndUpdate();
+            }
             cranny.EndUpdate();
 
             return true;

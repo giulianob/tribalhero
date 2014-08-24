@@ -105,8 +105,6 @@ namespace Game.Logic.Actions
             newStructureId = uint.Parse(properties["new_structure_id"]);
         }
 
-        #region Overrides of GameAction
-
         public override ActionType Type
         {
             get
@@ -255,10 +253,6 @@ namespace Game.Logic.Actions
             });
         }
 
-        #endregion
-
-        #region Overrides of ScheduledActiveAction
-
         public override void Callback(object custom)
         {
             ICity newCity;
@@ -287,7 +281,5 @@ namespace Game.Logic.Actions
                 StateChange(ActionState.Completed);
             });
         }
-
-        #endregion
     }
 }

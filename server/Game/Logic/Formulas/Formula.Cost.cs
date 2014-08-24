@@ -206,10 +206,40 @@ namespace Game.Logic.Formulas
 
         public virtual ushort CalculateCityValue(ICity city)
         {
-            return
-                    (ushort)
-                    city.Where(structure => !ObjectTypeFactory.IsStructureType("NoInfluencePoint", structure))
-                        .Sum(x => x.Lvl * x.Size);
+            return (ushort)city.Where(structure => !ObjectTypeFactory.IsStructureType("NoInfluencePoint", structure)).Sum(x => x.Lvl * x.Size);
+        }
+
+        public virtual decimal CalculateTotalCityExpense(ICity city, IStructureCsvFactory structureFactory, TechnologyFactory technologyFactory, UnitFactory unitFactory)
+        {
+            decimal expenses = 0m;
+
+            Func<Resource, decimal> calculateCost = resource => resource.Crop + resource.Wood + resource.Gold * 2 + resource.Iron * 5 + resource.Labor * 100;
+
+            foreach (var structure in city)
+            {
+                for (var lvl = 0; lvl <= structure.Lvl; lvl++)
+                {
+                    expenses += calculateCost(structureFactory.GetCost(structure.Type, lvl));
+                }
+
+                foreach (var technology in structure.Technologies)
+                {
+                    for (var lvl = 0; lvl <= technology.Level; lvl++)
+                    {
+                        expenses += calculateCost(technologyFactory.GetTechnology(technology.Type, (byte)lvl).TechBase.Resources);
+                    }
+                }
+            }
+
+            foreach (var unit in city.Template)
+            {
+                for (var lvl = 1; lvl <= unit.Value.Lvl; lvl++)
+                {
+                    expenses += calculateCost(unitFactory.GetUpgradeCost(unit.Value.Type, lvl));
+                }
+            }
+
+            return expenses;
         }
 
         public virtual bool IsWeaponExportOverLimit(int weaponExport, int currentGold)

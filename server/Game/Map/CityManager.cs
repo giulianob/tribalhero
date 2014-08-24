@@ -7,8 +7,10 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Game.Data;
 using Game.Data.Events;
+using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Setup;
+using Game.Setup.DependencyInjection;
 using Game.Util;
 using Persistance;
 

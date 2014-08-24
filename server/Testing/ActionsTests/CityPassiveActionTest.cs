@@ -68,7 +68,10 @@ namespace Testing.ActionsTests
                                                              Substitute.For<IActionFactory>(),
                                                              Substitute.For<Procedure>(),
                                                              Substitute.For<IGameObjectLocator>(),
-                                                             Substitute.For<IBattleFormulas>())
+                                                             Substitute.For<IBattleFormulas>(),
+                                                             Substitute.For<IStructureCsvFactory>(),
+                                                             Substitute.For<TechnologyFactory>(),
+                                                             Substitute.For<UnitFactory>())
             {
                 WorkerObject = city
             };

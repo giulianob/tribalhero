@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Game.Data;
 using Game.Util;
 using NDesk.Options;
+using Persistance;
 
 namespace Game.Comm
 {
@@ -10,9 +11,12 @@ namespace Game.Comm
     {
         private readonly INetworkServer networkServer;
 
-        public SystemCommandLineModule(INetworkServer networkServer)
+        private readonly IDbManager dbManager;
+
+        public SystemCommandLineModule(INetworkServer networkServer, IDbManager dbManager)
         {
             this.networkServer = networkServer;
+            this.dbManager = dbManager;
         }
 
         public void RegisterCommands(CommandLineProcessor processor)
@@ -21,8 +25,19 @@ namespace Game.Comm
             processor.RegisterCommand("disconnectall", DisconnectAll, PlayerRights.Bureaucrat);
             processor.RegisterCommand("gccollect", GcCollect, PlayerRights.Bureaucrat);
             processor.RegisterCommand("gccreategarbage", GcCreateGarbage, PlayerRights.Bureaucrat);
+            processor.RegisterCommand("throwsqlerror", ThrowSqlError, PlayerRights.Bureaucrat);
         }
 
+        private string ThrowSqlError(Session session, string[] parms)
+        {
+            using (dbManager.GetThreadTransaction())
+            {
+                dbManager.Query("BOOM");
+            }
+
+            return "Boom";
+        }
+            
         private string GcCreateGarbage(Session session, string[] parms)
         {
             bool help = false;

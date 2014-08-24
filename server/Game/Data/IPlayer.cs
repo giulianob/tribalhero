@@ -30,7 +30,7 @@ namespace Game.Data
 
         PlayerChatState ChatState { get; }
 
-        bool IsIdle { get; }
+        bool IsIdleForAWeek { get; }
 
         string Description { get; set; }
 
@@ -69,6 +69,7 @@ namespace Game.Data
         void TribeUpdate();
 
         AchievementList Achievements { get; }
+
         bool SoundMuted { get; set; }
 
         DateTime? HasTwoFactorAuthenticated { get; set; }
@@ -78,6 +79,8 @@ namespace Game.Data
         List<ThemePurchase> ThemePurchases { get; }
 
         string PlayerChannel { get; }
+
+        bool IsIdleForThreeDays { get; }
 
         bool HasPurchasedTheme(string theme);
 

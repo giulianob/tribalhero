@@ -200,6 +200,8 @@ namespace Game.Data
 
         bool IsUpdating { get; }
 
+        decimal ExpenseValue { get; set; }
+
         void BeginUpdate();
 
         void EndUpdate();

@@ -107,11 +107,19 @@ namespace Game.Data
 
         public bool SoundMuted { get; set; }
 
-        public bool IsIdle
+        public bool IsIdleForAWeek
         {
             get
             {
-                return Session == null && SystemClock.Now.Subtract(LastLogin).TotalDays > Config.idle_days;
+                return Session == null && SystemClock.Now.Subtract(LastLogin).TotalDays > 7;
+            }
+        }
+
+        public bool IsIdleForThreeDays
+        {
+            get
+            {
+                return Session == null && SystemClock.Now.Subtract(LastLogin).TotalDays > 3;
             }
         }
 

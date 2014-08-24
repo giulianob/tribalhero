@@ -17,22 +17,27 @@ package src.UI.Dialog{
     public class RankingDialog extends GameJPanel {
 
 		private var rankings: Array = [
-		{name: "Attack Points", baseOn: "city"},
-		{name: "Defense Points", baseOn: "city"},
-		{name: "Resources Stolen", baseOn: "city"},
-		{name: "Influence Points", baseOn: "city"},
-		{name: "Attack Points", baseOn: "player"},
-		{name: "Defense Points", baseOn: "player"},
-		{name: "Resources Stolen", baseOn: "player"},
-		{name: "Influence Points", baseOn: "player"},
-		{name: "Level", baseOn: "tribe"},
-		{name: "Attack Points", baseOn: "tribe"},
-		{name: "Defense Points", baseOn: "tribe"},
-		{name: "Victory Points", baseOn: "tribe" },
-		{name: "Victory Point Rate", baseOn: "tribe" },
-		{name: "Level", baseOn: "stronghold"},
-		{name: "Days Occupied", baseOn: "stronghold" },
-		{name: "Victory Point Rate", baseOn: "stronghold" },
+            // Notice if you change this make sure you also update the following
+            // - In PHP the Ranking model
+            // - In Constants.rankings you might need to add it
+            // - Make sure you also test the player profile since we show rankings there
+            {name: "Attack Points", baseOn: "city"},
+            {name: "Defense Points", baseOn: "city"},
+            {name: "Resources Stolen", baseOn: "city"},
+            {name: "Influence Points", baseOn: "city"},
+            {name: "Expensive", baseOn: "city"},
+            {name: "Attack Points", baseOn: "player"},
+            {name: "Defense Points", baseOn: "player"},
+            {name: "Resources Stolen", baseOn: "player"},
+            {name: "Influence Points", baseOn: "player"},
+            {name: "Level", baseOn: "tribe"},
+            {name: "Attack Points", baseOn: "tribe"},
+            {name: "Defense Points", baseOn: "tribe"},
+            {name: "Victory Points", baseOn: "tribe" },
+            {name: "Victory Point Rate", baseOn: "tribe" },
+            {name: "Level", baseOn: "stronghold"},
+            {name: "Days Occupied", baseOn: "stronghold" },
+            {name: "Victory Point Rate", baseOn: "stronghold" },
 		];
 
 		private var loader: GameURLLoader;		
@@ -50,6 +55,7 @@ package src.UI.Dialog{
 		private var cityDefenseRanking: JToggleButton;
 		private var cityLootRanking: JToggleButton;
 		private var cityInfluenceRanking: JToggleButton;
+		private var cityExpensiveRanking: JToggleButton;
 
 		private var playerRanking: JPanel;
 		private var playerAttackRanking: JToggleButton;
@@ -94,6 +100,7 @@ package src.UI.Dialog{
 			new SimpleTooltip(cityDefenseRanking, "Sort by defense points");
 			new SimpleTooltip(cityLootRanking, "Sort by total loot stolen");
 			new SimpleTooltip(cityInfluenceRanking, "Sort by influence points");
+			new SimpleTooltip(cityExpensiveRanking, "Sort by most expensive");
 			new SimpleTooltip(playerAttackRanking, "Sort by attack points");
 			new SimpleTooltip(playerDefenseRanking, "Sort by defense points");
 			new SimpleTooltip(playerLootRanking, "Sort by total loot stolen");
@@ -109,6 +116,7 @@ package src.UI.Dialog{
 			
 			// Handle different buttons being pressed
 			cityAttackRanking.addActionListener(onChangeRanking);
+			cityExpensiveRanking.addActionListener(onChangeRanking);
 			cityDefenseRanking.addActionListener(onChangeRanking);
 			cityLootRanking.addActionListener(onChangeRanking);
 			cityInfluenceRanking.addActionListener(onChangeRanking);
@@ -169,48 +177,50 @@ package src.UI.Dialog{
 					type = 1;
 				} else if (cityLootRanking.isSelected()) {
 					type = 2;
-				} else {
+				} else if (cityInfluenceRanking.isSelected()) {
 					type = 3;
 				}
+                else {
+                    type = 4
+                }
 			}
 			// Player ranking
 			else if(tabs.getSelectedIndex() == 1) {
 				if (playerAttackRanking.isSelected()) {
-					type = 4;
-				} else if (playerDefenseRanking.isSelected()) {
 					type = 5;
-				} else if (playerLootRanking.isSelected()) {
+				} else if (playerDefenseRanking.isSelected()) {
 					type = 6;
-				} else {
+				} else if (playerLootRanking.isSelected()) {
 					type = 7;
+				} else {
+					type = 8;
 				}
 			}
 			// Tribe ranking
 			else if (tabs.getSelectedIndex() == 2) {
 				if (tribeLevelRanking.isSelected()) {
-					type = 8;
-				} else if (tribeAttackRanking.isSelected()) {
 					type = 9;
-				} else if (tribeDefenseRanking.isSelected()) {
+				} else if (tribeAttackRanking.isSelected()) {
 					type = 10;
-				} else if ( tribeVictoryRanking.isSelected()) {
+				} else if (tribeDefenseRanking.isSelected()) {
 					type = 11;
-				} else if ( tribeVictoryRateRanking.isSelected()) {
+				} else if ( tribeVictoryRanking.isSelected()) {
 					type = 12;
+				} else if ( tribeVictoryRateRanking.isSelected()) {
+					type = 13;
 				}
 			}
 			// Stronghold ranking
 			else if (tabs.getSelectedIndex() == 3) {
 				if (strongholdLevelRanking.isSelected()) {
-					type = 13;
-				} else if (strongholdOccupiedRanking.isSelected()) {
 					type = 14;
-				} else if (strongholdVictoryRateRanking.isSelected()) {
+				} else if (strongholdOccupiedRanking.isSelected()) {
 					type = 15;
+				} else if (strongholdVictoryRateRanking.isSelected()) {
+					type = 16;
 				}
 			}
 			
-
 			pagingBar.refreshPage( -1);
 		}
 
@@ -424,10 +434,10 @@ package src.UI.Dialog{
 			cityDefenseRanking = new JToggleButton("Defense");
 			cityLootRanking = new JToggleButton("Loot");
 			cityInfluenceRanking = new JToggleButton("Influence");
-			var cityButtonGroup: ButtonGroup = new ButtonGroup();
-			cityButtonGroup.appendAll(cityAttackRanking, cityDefenseRanking, cityLootRanking,cityInfluenceRanking);
+			cityExpensiveRanking = new JToggleButton("Expense");
 			var cityButtonGroupHolder: JPanel = new JPanel();
-			cityButtonGroupHolder.appendAll(cityAttackRanking, cityDefenseRanking, cityLootRanking,cityInfluenceRanking);
+			cityButtonGroupHolder.appendAll(cityAttackRanking, cityDefenseRanking, cityLootRanking, cityInfluenceRanking, cityExpensiveRanking);
+            new ButtonGroup().appendAll(cityAttackRanking, cityDefenseRanking, cityLootRanking, cityInfluenceRanking, cityExpensiveRanking);
 			cityRanking.append(cityButtonGroupHolder);			
 			cityRanking.append(rankingScroll);
 
@@ -437,10 +447,9 @@ package src.UI.Dialog{
 			playerDefenseRanking = new JToggleButton("Defense");
 			playerLootRanking = new JToggleButton("Loot");
 			playerInfluenceRanking = new JToggleButton("Influence");
-			var playerButtonGroup: ButtonGroup = new ButtonGroup();
-			playerButtonGroup.appendAll(playerAttackRanking, playerDefenseRanking, playerLootRanking,playerInfluenceRanking);
 			var playerButtonGroupHolder: JPanel = new JPanel();
-			playerButtonGroupHolder.appendAll(playerAttackRanking, playerDefenseRanking, playerLootRanking,playerInfluenceRanking);
+			playerButtonGroupHolder.appendAll(playerAttackRanking, playerDefenseRanking, playerLootRanking, playerInfluenceRanking);
+			new ButtonGroup().appendAll(playerAttackRanking, playerDefenseRanking, playerLootRanking, playerInfluenceRanking);
 			playerRanking.append(playerButtonGroupHolder);
 
 			tribeRanking = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
@@ -450,10 +459,9 @@ package src.UI.Dialog{
 			tribeDefenseRanking = new JToggleButton("Defense");
 			tribeVictoryRanking = new JToggleButton("Victory");
 			tribeVictoryRateRanking = new JToggleButton("Victory Point Rate");
-			var tribeButtonGroup: ButtonGroup = new ButtonGroup();
-			tribeButtonGroup.appendAll(tribeLevelRanking,tribeAttackRanking,tribeDefenseRanking,tribeVictoryRanking,tribeVictoryRateRanking);
 			var tribeButtonGroupHolder: JPanel = new JPanel();
 			tribeButtonGroupHolder.appendAll(tribeLevelRanking, tribeAttackRanking, tribeDefenseRanking,tribeVictoryRanking,tribeVictoryRateRanking);
+			new ButtonGroup().appendAll(tribeLevelRanking, tribeAttackRanking, tribeDefenseRanking,tribeVictoryRanking,tribeVictoryRateRanking);
 			tribeRanking.appendAll(tribeButtonGroupHolder);
 			
 			strongholdRanking = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
@@ -462,10 +470,9 @@ package src.UI.Dialog{
 			strongholdVictoryRateRanking = new JToggleButton("Victory Point Rate");
 			strongholdOccupiedRanking.setSelected(true);
 
-			var strongholdButtonGroup: ButtonGroup = new ButtonGroup();
-			strongholdButtonGroup.appendAll(strongholdLevelRanking,strongholdOccupiedRanking,strongholdVictoryRateRanking);
 			var strongholdButtonGroupHolder: JPanel = new JPanel();
 			strongholdButtonGroupHolder.appendAll(strongholdLevelRanking,strongholdOccupiedRanking,strongholdVictoryRateRanking);
+			new ButtonGroup().appendAll(strongholdLevelRanking,strongholdOccupiedRanking,strongholdVictoryRateRanking);
 			strongholdRanking.appendAll(strongholdButtonGroupHolder);
 			
 			

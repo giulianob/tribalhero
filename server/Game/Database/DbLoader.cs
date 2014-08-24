@@ -587,6 +587,7 @@ namespace Game.Database
                     city.HideNewUnits = (bool)reader["hide_new_units"];
                     city.Value = (ushort)reader["value"];
                     city.Deleted = (City.DeletedState)reader["deleted"];
+                    city.ExpenseValue = (decimal)reader["expense_value"];
 
                     // Add to world
                     World.Cities.DbLoaderAdd(city);

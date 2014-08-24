@@ -12,7 +12,7 @@ using Game.Util.Locking;
 
 namespace Game.Logic.Actions
 {
-    public class CityRebuildPassiveAction : ScheduledPassiveAction
+    public class CityMovePassiveAction : ScheduledPassiveAction
     {
         private uint cityId;
 
@@ -36,7 +36,7 @@ namespace Game.Logic.Actions
 
         private readonly IObjectTypeFactory objectTypeFactory;
 
-        public CityRebuildPassiveAction(IActionFactory actionFactory,
+        public CityMovePassiveAction(IActionFactory actionFactory,
                                         ILocker locker,
                                         CallbackProcedure callbackProcedure,
                                         IStructureCsvFactory structureCsvFactory,
@@ -57,7 +57,7 @@ namespace Game.Logic.Actions
             this.objectTypeFactory = objectTypeFactory;
         }
 
-        public CityRebuildPassiveAction(uint id,
+        public CityMovePassiveAction(uint id,
                                         Resource resource,
                                         int structureUpgrades,
                                         int technologyUpgrades,
@@ -95,7 +95,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.CityRebuildPassive;
+                return ActionType.CityMovePassive;
             }
         }
 
@@ -120,7 +120,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return Error.UncancelableCityRebuild;
+                return Error.UncancelableCityMove;
             }
         }
 

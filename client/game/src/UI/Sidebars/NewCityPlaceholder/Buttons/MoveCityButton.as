@@ -25,7 +25,7 @@ public class MoveCityButton extends ActionButton
 
     public function MoveCityButton(newCityPlaceholder: NewCityPlaceholder)
     {
-        super(null, "Rebuild Current City");
+        super(null, "Move Current City");
 
         this.newCityPlaceholder = newCityPlaceholder;
 

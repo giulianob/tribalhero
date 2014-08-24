@@ -143,9 +143,9 @@ namespace Game.Logic.Actions
             return new CityCreatePassiveAction(cityId, x, y, cityName, kernel.Get<IActionFactory>(), kernel.Get<ICityRemoverFactory>(), kernel.Get<Formula>(), kernel.Get<IWorld>(), kernel.Get<ILocker>(), kernel.Get<IObjectTypeFactory>(), kernel.Get<IStructureCsvFactory>(), kernel.Get<ICityFactory>(), kernel.Get<CityProcedure>(), kernel.Get<IBarbarianTribeManager>(), kernel.Get<CallbackProcedure>());
         }
 
-        public CityRebuildPassiveAction CreateCityRebuildPassiveAction(uint cityId, Resource resource, int structureUpgrades, int technologyUpgrades)
+        public CityMovePassiveAction CreateCityMovePassiveAction(uint cityId, Resource resource, int structureUpgrades, int technologyUpgrades)
         {
-            return new CityRebuildPassiveAction(cityId,
+            return new CityMovePassiveAction(cityId,
                                                 resource,
                                                 structureUpgrades,
                                                 technologyUpgrades,

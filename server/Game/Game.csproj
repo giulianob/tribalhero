@@ -398,7 +398,7 @@
     <Compile Include="Logic\Actions\BarbarianTribe\BarbarianTribeAttackChainAction.cs" />
     <Compile Include="Logic\Actions\BarbarianTribe\BarbarianTribeEngageAttackPassiveAction.cs" />
     <Compile Include="Logic\Actions\BarbarianTribe\BarbarianTribeBattlePassiveAction.cs" />
-    <Compile Include="Logic\Actions\Miscellaneous\CityRebuildPassiveAction.cs" />
+    <Compile Include="Logic\Actions\Miscellaneous\CityMovePassiveAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\CityResourceCapUpdatePassiveAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\ResourceWithdrawActiveAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\ForestCampLaborUpdatePassiveAction.cs" />

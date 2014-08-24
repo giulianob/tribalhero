@@ -309,7 +309,7 @@ namespace Game.Setup
 
         UncancelableCityRadiusChange = 11009,
 
-        UncancelableCityRebuild = 11010,
+        UncancelableCityMove = 11010,
 
         UncancelableCityResoureCapUpdate = 11011,
 

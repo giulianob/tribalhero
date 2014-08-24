@@ -471,7 +471,7 @@ namespace Game.Comm.ProcessorCommands
 
                 world.Regions.UnlockRegions(lockedRegions);
 
-                var cityRebuildAction = actionFactory.CreateCityRebuildPassiveAction(city.Id, expense, structureUpgrades, technlogyUpgrades);
+                var cityRebuildAction = actionFactory.CreateCityMovePassiveAction(city.Id, expense, structureUpgrades, technlogyUpgrades);
                 Error ret = city.Worker.DoPassive(city[1], cityRebuildAction, true);
                 if (ret != 0)
                 {

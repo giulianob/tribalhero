@@ -341,6 +341,8 @@ namespace Game.Setup
 
         UncancelableTechnologyCreate = 11026,
 
+        UncancelableForestCampBuild = 11027,
+
         #endregion
     }
 }

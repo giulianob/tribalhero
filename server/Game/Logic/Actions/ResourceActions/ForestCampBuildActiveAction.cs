@@ -396,7 +396,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return Error.Ok;
+                return Error.UncancelableForestCampBuild;
             }
         }
 

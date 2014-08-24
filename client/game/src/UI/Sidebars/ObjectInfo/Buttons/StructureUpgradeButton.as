@@ -43,10 +43,6 @@ public class StructureUpgradeButton extends ActionButton
 
             upgradeToolTip = new StructureUpgradeTooltip(parentObj as StructureObject, structPrototype, nextStructPrototype, instantBuild);
 
-            if (instantBuild) {
-                this.setText(this.getText() + " *");
-            }
-
 			addEventListener(MouseEvent.CLICK, onMouseClick);
 			addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
 			addEventListener(MouseEvent.MOUSE_MOVE, onMouseOver);

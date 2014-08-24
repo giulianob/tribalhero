@@ -182,6 +182,8 @@ namespace Game.Setup
 
         TroopStationedInCity = 616,
 
+        CityIncomingAttack = 617,
+
         #endregion
 
         #region Tribe Errors

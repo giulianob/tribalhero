@@ -28,12 +28,6 @@ namespace Game.Data
 
         List<Effect> GetEffects(EffectCode effectCode, EffectInheritance inherit = EffectInheritance.All);
 
-        int Max(EffectCode effectCode, EffectInheritance inherit, byte paramOrder);
-
-        int Min(EffectCode effectCode, EffectInheritance inherit, byte paramOrder);
-
-        int Avg(int effectId);
-
         void BeginUpdate();
 
         void EndUpdate();
@@ -53,5 +47,7 @@ namespace Game.Data
         void AddChildCopy(Technology tech);
 
         void RemoveChildCopy(Technology tech, bool notify);
+
+        bool Remove(uint techType);
     }
 }

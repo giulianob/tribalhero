@@ -35,7 +35,7 @@ import flash.events.Event;
 
             var city:City = Global.map.cities.get(parentObj.groupId);
 
-            instantBuild = Enumerable.from(city.techManager.getEffects(EffectPrototype.EFFECT_INSTANT_BUILD, EffectPrototype.INHERIT_ALL)).any();
+            instantBuild = Enumerable.from(city.techManager.getEffects(EffectPrototype.EFFECT_INSTANT_RESEARCH, EffectPrototype.INHERIT_ALL)).any();
 
             techToolTip = new TechnologyTooltip(parentObj, techPrototype, null, instantBuild);
 

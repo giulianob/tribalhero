@@ -3,8 +3,12 @@ set PAUSE_ERRORS=1
 call bat\SetupSDK.bat
 call bat\SetupApplication.bat
 
+:: Do not use captive runtime
+:: SET AIR_ANDROID_SHARED_RUNTIME=true
+
 :target
 ::goto desktop
+::goto android-emulator-debug
 goto android-debug
 ::goto android-test
 ::goto ios-debug
@@ -73,10 +77,11 @@ goto android-package
 set PLATFORM=android
 call bat\Packager.bat
 
-adb devices
 echo.
 echo Installing %OUTPUT% on the device...
 echo.
+adb shell am force-stop air.%APP_ID%
+
 adb -d install -r "%OUTPUT%"
 if errorlevel 1 goto installfail
 
@@ -84,7 +89,28 @@ echo.
 echo Starting application on the device for debugging...
 echo.
 adb shell am start -n air.%APP_ID%/.AppEntry
-exit
+goto end
+
+:android-emulator-debug
+echo.
+echo Packaging and installing application for debugging on Android emulator
+echo.
+set TARGET=-debug
+set OPTIONS=-connect %DEBUG_IP%
+
+set PLATFORM=android
+call bat\Packager.bat
+
+echo.
+echo Installing %OUTPUT% on the device...
+echo.
+adb -e install -r "%OUTPUT%"
+if errorlevel 1 goto installfail
+
+echo.
+echo Starting application on the device for debugging...
+echo.
+adb shell am start -n air.%APP_ID%/.AppEntry
 
 :installfail
 echo.
@@ -92,3 +118,5 @@ echo Installing the app on the device failed
 
 :error
 pause
+
+:end

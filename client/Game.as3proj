@@ -4,13 +4,13 @@
   <output>
     <movie outputType="Application" />
     <movie input="" />
-    <movie path="bin\Game.swf" />
+    <movie path="bin\TribalHero.swf" />
     <movie fps="30" />
     <movie width="976" />
     <movie height="640" />
-    <movie version="11" />
-    <movie minorVersion="9" />
-    <movie platform="Flash Player" />
+    <movie version="14" />
+    <movie minorVersion="0" />
+    <movie platform="AIR Mobile" />
     <movie background="#E8E2BE" />
     <movie preferredSDK="Apache Flex 4.11.0 FP 11.9 AIR 3.9 en_US;4.11.0;" />
   </output>
@@ -28,7 +28,7 @@
     <option es="False" />
     <option inline="False" />
     <option locale="" />
-    <option loadConfig="" />
+    <option loadConfig="GameConfig.xml" />
     <option optimize="True" />
     <option omitTraces="True" />
     <option showActionScriptWarnings="True" />
@@ -44,8 +44,8 @@
     <option linkReport="" />
     <option loadExterns="" />
     <option staticLinkRSL="True" />
-    <option additional="-frame start src.Main&#xA;-keep-as3-metadata+=EmbedPosition" />
-    <option compilerConstants="" />
+    <option additional="" />
+    <option compilerConstants="CONFIG::debug=true" />
     <option minorVersion="" />
   </build>
   <!-- SWC Include Libraries -->
@@ -54,12 +54,7 @@
   </includeLibraries>
   <!-- SWC Libraries -->
   <libraryPaths>
-    <element path="lib\swc\Game\Game.swc" />
-    <element path="lib\swc\as3corelib\as3corelib.swc" />
-    <element path="lib\swc\flash\flash.swc" />
-    <element path="lib\swc\tweenmax\greensock.swc" />
-    <element path="lib\swc\theminer\TheMiner_en.swc" />
-    <element path="lib\swc\actionlinq\Linq_Flash.swc" />
+    <!-- example: <element path="..." /> -->
   </libraryPaths>
   <!-- External Libraries -->
   <externalLibraryPaths>
@@ -98,9 +93,11 @@
   <!-- Other project options -->
   <options>
     <option showHiddenPaths="False" />
-    <option testMovie="Default" />
+    <option testMovie="Unknown" />
     <option testMovieCommand="" />
   </options>
   <!-- Plugin storage -->
-  <storage />
+  <storage>
+    <entry key="air-descriptor"><![CDATA[mobile\application.xml]]></entry>
+  </storage>
 </project>

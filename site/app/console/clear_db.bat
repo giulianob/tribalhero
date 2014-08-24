@@ -1,1 +1,0 @@
-..\..\cake\console\cake.bat -app ..\ clear_db

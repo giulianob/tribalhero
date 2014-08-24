@@ -160,7 +160,7 @@ namespace Game
                 var aggregateException = ex as AggregateException;
                 if (aggregateException != null)
                 {                    
-                    Logger.ErrorException("Unhandled exception", aggregateException.Flatten());
+                    Logger.ErrorException("Unhandled exception aggregate", aggregateException);
                     foreach (var innerException in aggregateException.Flatten().InnerExceptions)
                     {
                         Logger.ErrorException("Aggregate inner exception", innerException);

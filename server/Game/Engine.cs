@@ -148,16 +148,27 @@ namespace Game
                 {
                     var stackTrace = Environment.StackTrace;
                     Logger.Error("Unhandled exception but did not have exception object. Stack trace:", stackTrace);
-                }
-                else if (!(ex is Exception))
-                {
-                    Logger.Error("Unhandled exception. Object was not exception. {0}", ex);
-                }
-                else
-                {
-                    Logger.ErrorException("Unhandled exception", (Exception)ex);
+                    return;
                 }
 
+                if (!(ex is Exception))
+                {
+                    Logger.Error("Unhandled exception. Object was not exception. {0}", ex);
+                    return;
+                }
+
+                var aggregateException = ex as AggregateException;
+                if (aggregateException != null)
+                {                    
+                    Logger.ErrorException("Unhandled exception", aggregateException.Flatten());
+                    foreach (var innerException in aggregateException.Flatten().InnerExceptions)
+                    {
+                        Logger.ErrorException("Aggregate inner exception", innerException);
+                    }
+                    return;
+                }
+
+                Logger.ErrorException("Unhandled exception", (Exception)ex);
             }
             finally
             {

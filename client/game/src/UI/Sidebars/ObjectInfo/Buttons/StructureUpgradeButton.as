@@ -14,6 +14,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
     import src.Objects.Actions.StructureUpgradeAction;
     import src.Objects.Effects.Formula;
     import src.Objects.Factories.ObjectFactory;
+    import src.Objects.Factories.SpriteFactory;
     import src.Objects.Factories.StructureFactory;
     import src.Objects.Prototypes.EffectReqPrototype;
     import src.Objects.Prototypes.StructurePrototype;
@@ -31,7 +32,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		public function StructureUpgradeButton(parentObj: SimpleGameObject, structPrototype: StructurePrototype)
 		{
-			super(parentObj, structPrototype.getName(), new AssetIcon(new ICON_UPGRADE()));
+			super(parentObj, structPrototype.getName(), new AssetIcon(SpriteFactory.getFlashSprite("ICON_UPGRADE")));
 
 			if (!structPrototype)
 				return;

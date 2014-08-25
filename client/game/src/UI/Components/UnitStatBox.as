@@ -120,7 +120,7 @@
 			lblRange = valueLabelMaker();
 			lblSplash = valueLabelMaker();
 			lblSpeed = valueLabelMaker();
-			lblUpkeep = valueLabelMaker(new AssetIcon(new ICON_CROP()));
+			lblUpkeep = valueLabelMaker(new AssetIcon(SpriteFactory.getFlashSprite("ICON_CROP")));
 
 			appendAll(lblHpTitle, lblHp, lblSplashTitle, lblSplash);
 			appendAll(lblAttackTitle, lblAttack, lblCarryTitle, lblCarry);

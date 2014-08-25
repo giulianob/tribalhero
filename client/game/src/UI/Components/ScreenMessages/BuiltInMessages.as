@@ -13,6 +13,7 @@ package src.UI.Components.ScreenMessages
     import src.Map.City;
     import src.Objects.Actions.Notification;
     import src.Objects.Actions.PassiveAction;
+    import src.Objects.Factories.SpriteFactory;
     import src.Util.DateUtil;
     import src.Util.StringHelper;
 
@@ -49,12 +50,12 @@ package src.UI.Components.ScreenMessages
 		public static function showApStatus(city: City) : void {
 			Global.gameContainer.screenMessage.removeMessage("/CITY/"+city.id+"/AP_STATUS/RESOURCE_CAP/");
 			if (city.ap >= 75) {
-				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/CITY/"+city.id+"/AP_STATUS/RESOURCE_CAP/", StringHelper.localize("MSG_AP_RESOURCE_BONUS", city.name), new AssetIcon(new ICON_STAR)));
+				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/CITY/"+city.id+"/AP_STATUS/RESOURCE_CAP/", StringHelper.localize("MSG_AP_RESOURCE_BONUS", city.name), new AssetIcon(SpriteFactory.getFlashSprite("ICON_STAR"))));
 			}
 			
 			Global.gameContainer.screenMessage.removeMessage("/CITY/"+city.id+"/AP_STATUS/STRUCTURE_DEFENSE");
 			if (city.ap >= 90) {
-				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/CITY/"+city.id+"/AP_STATUS/STRUCTURE_DEFENSE", StringHelper.localize("MSG_AP_STRUCTURE_DEFENSE_BONUS", city.name), new AssetIcon(new ICON_STAR)));
+				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/CITY/"+city.id+"/AP_STATUS/STRUCTURE_DEFENSE", StringHelper.localize("MSG_AP_STRUCTURE_DEFENSE_BONUS", city.name), new AssetIcon(SpriteFactory.getFlashSprite("ICON_STAR"))));
             }
 		}		
 		
@@ -62,7 +63,7 @@ package src.UI.Components.ScreenMessages
 			if (Constants.session.signupTime.time / 1000 + Constants.session.newbieProtectionSeconds > Global.map.getServerTime()) {
 				var timediff :Number = Constants.session.newbieProtectionSeconds + Constants.session.signupTime.time / 1000 - Global.map.getServerTime();
 				Global.gameContainer.screenMessage.removeMessage("/NEWBIE_PROTECTION/");
-				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/NEWBIE_PROTECTION/", StringHelper.localize("MSG_NEWBIE_PROTECTION", DateUtil.niceTime(timediff)), new AssetIcon(new ICON_STAR)));
+				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/NEWBIE_PROTECTION/", StringHelper.localize("MSG_NEWBIE_PROTECTION", DateUtil.niceTime(timediff)), new AssetIcon(SpriteFactory.getFlashSprite("ICON_STAR"))));
 			}
 			else {
 				Global.gameContainer.screenMessage.removeMessage("/NEWBIE_PROTECTION/");
@@ -71,7 +72,7 @@ package src.UI.Components.ScreenMessages
 		
 		public static function showInBattle(city: City) : void {
 			if (city.inBattle) {
-				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/BATTLE/" + city.id, StringHelper.localize("MSG_UNDER_ATTACK", city.name), new AssetIcon(new ICON_BATTLE)));
+				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/BATTLE/" + city.id, StringHelper.localize("MSG_UNDER_ATTACK", city.name), new AssetIcon(SpriteFactory.getFlashSprite("ICON_BATTLE"))));
 			}
 			else {
 				Global.gameContainer.screenMessage.removeMessage("/BATTLE/" + city.id);
@@ -80,7 +81,7 @@ package src.UI.Components.ScreenMessages
 
 		public static function showTroopsStarving(city: City): void {
 			if (city.resources.crop.getRate() < city.resources.crop.getUpkeep()) {
-				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/CITY/" + city.id + "/STARVE", StringHelper.localize("MSG_TROOPS_STARVING", city.name), new AssetIcon(new ICON_CROP)));
+				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/CITY/" + city.id + "/STARVE", StringHelper.localize("MSG_TROOPS_STARVING", city.name), new AssetIcon(SpriteFactory.getFlashSprite("ICON_CROP"))));
 			}
 			else {
 				Global.gameContainer.screenMessage.removeMessage("/CITY/" + city.id + "/STARVE");
@@ -94,7 +95,7 @@ package src.UI.Components.ScreenMessages
             
             if (attacks > 0) {
                 Global.gameContainer.screenMessage.removeMessage("/CITY/" + city.id + "/INATK");
-                Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/CITY/" + city.id + "/INATK", StringHelper.localize("MSG_INCOMING_ATTACK", city.name, attacks), new AssetIcon(new ICON_BATTLE)));
+                Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/CITY/" + city.id + "/INATK", StringHelper.localize("MSG_INCOMING_ATTACK", city.name, attacks), new AssetIcon(SpriteFactory.getFlashSprite("ICON_BATTLE"))));
             }
             else {
                 Global.gameContainer.screenMessage.removeMessage("/CITY/" + city.id + "/INATK");
@@ -106,7 +107,7 @@ package src.UI.Components.ScreenMessages
             
             if (defenses > 0) {
                 Global.gameContainer.screenMessage.removeMessage("/CITY/" + city.id + "/INDEF");
-                Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/CITY/" + city.id + "/INDEF", StringHelper.localize("MSG_INCOMING_DEFENSE", city.name, defenses), new AssetIcon(new ICON_SHIELD)));
+                Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/CITY/" + city.id + "/INDEF", StringHelper.localize("MSG_INCOMING_DEFENSE", city.name, defenses), new AssetIcon(SpriteFactory.getFlashSprite("ICON_SHIELD"))));
             }
             else {
                 Global.gameContainer.screenMessage.removeMessage("/CITY/" + city.id + "/INDEF");
@@ -116,10 +117,10 @@ package src.UI.Components.ScreenMessages
 		public static function showTribeAssignmentIncoming(assignment:int, incoming:int, firstTime:Boolean = false):void {
 			if (incoming > 0 || assignment > 0) {
 				Global.gameContainer.screenMessage.removeMessage("TRIBE");
-				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("TRIBE", StringHelper.localize("MSG_TRIBE_ALERTS", incoming, assignment), new AssetIcon(new ICON_ALERT)));
+				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("TRIBE", StringHelper.localize("MSG_TRIBE_ALERTS", incoming, assignment), new AssetIcon(SpriteFactory.getFlashSprite("ICON_ALERT"))));
 			} else if(!firstTime) {
 				Global.gameContainer.screenMessage.removeMessage("TRIBE");
-				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("TRIBE", StringHelper.localize("MSG_TRIBE_NO_ALERTS"), new AssetIcon(new ICON_ALERT), 60000));
+				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("TRIBE", StringHelper.localize("MSG_TRIBE_NO_ALERTS"), new AssetIcon(SpriteFactory.getFlashSprite("ICON_ALERT")), 60000));
 			}
 		}
 		

@@ -106,22 +106,19 @@ package src
 			return (screenH / 2) - (height / 2) + 30;
 		};
 
-		/* GAME DATA */
-		public static const queryData: Boolean = true;
-
 		public static const stealthRangeNames: Array = ["", "1st row", "2nd row", "3rd row", "4th row"];
 
 		/* Ranking Types */
 		public static const rankings: Array = [
-			{desc: "City ranking by attack points", icon: ICON_BATTLE },
-			{desc: "City ranking by defense points", icon: ICON_SHIELD },
-			{desc: "City ranking by total loot stolen", icon: ICON_CROP },
-			{desc: "City ranking by influence points", icon: ICON_UPGRADE },
-			{desc: "City ranking by most expensive", icon: ICON_GOLD },
-			{desc: "Player ranking by attack points", icon: ICON_BATTLE },
-			{desc: "Player ranking by defense points", icon: ICON_SHIELD },
-			{desc: "Player ranking by total loot stolen", icon: ICON_CROP },
-			{desc: "Player ranking by influence points", icon: ICON_UPGRADE }
+			{desc: "City ranking by attack points", icon: "ICON_BATTLE" },
+			{desc: "City ranking by defense points", icon: "ICON_SHIELD" },
+			{desc: "City ranking by total loot stolen", icon: "ICON_CROP" },
+			{desc: "City ranking by influence points", icon: "ICON_UPGRADE" },
+			{desc: "City ranking by most expensive", icon: "ICON_GOLD" },
+			{desc: "Player ranking by attack points", icon: "ICON_BATTLE" },
+			{desc: "Player ranking by defense points", icon: "ICON_SHIELD" },
+			{desc: "Player ranking by total loot stolen", icon: "ICON_CROP" },
+			{desc: "Player ranking by influence points", icon: "ICON_UPGRADE" }
 		];
 		
 		/* Buffer for game XML data */

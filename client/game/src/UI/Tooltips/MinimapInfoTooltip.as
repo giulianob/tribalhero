@@ -13,6 +13,7 @@
     import src.Map.TileLocator;
     import src.Map.Username;
     import src.Objects.Factories.ObjectFactory;
+    import src.Objects.Factories.SpriteFactory;
     import src.UI.LookAndFeel.GameLookAndFeel;
     import src.Util.DateUtil;
 
@@ -81,7 +82,7 @@
 
             if(obj.extraProps.depleteTime > 0 && obj.extraProps.camps > 0) {
                 var timeLeft: int = obj.extraProps.depleteTime - Global.map.getServerTime();
-                var lblTime: JLabel = new JLabel("Time left: "+ DateUtil.formatTime(timeLeft), new AssetIcon(new ICON_CLOCK()));
+                var lblTime: JLabel = new JLabel("Time left: "+ DateUtil.formatTime(timeLeft), new AssetIcon(SpriteFactory.getFlashSprite("ICON_CLOCK")));
                 GameLookAndFeel.changeClass(lblTime, "Tooltip.text");
                 ui.append(lblTime);
             }

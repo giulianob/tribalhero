@@ -24,6 +24,7 @@
     import src.Comm.GameURLLoader;
     import src.Objects.*;
     import src.Objects.Effects.*;
+    import src.Objects.Factories.SpriteFactory;
     import src.Objects.Process.*;
     import src.Objects.Stronghold.*;
     import src.UI.*;
@@ -178,14 +179,14 @@
             pnlNameStatus.append(lblName);
 
             var grid: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 10, 0, false));
-            grid.append(simpleLabelMaker(StringHelper.localize("STR_LEVEL_VALUE", stronghold.lvl), StringHelper.localize("STR_LEVEL"), new AssetIcon(new ICON_UPGRADE())));
+            grid.append(simpleLabelMaker(StringHelper.localize("STR_LEVEL_VALUE", stronghold.lvl), StringHelper.localize("STR_LEVEL"), new AssetIcon(SpriteFactory.getFlashSprite("ICON_UPGRADE"))));
 
             if (stronghold.tribeId == 0) {
-                grid.append(simpleLabelMaker(StringHelper.localize("STR_NEUTRAL"), StringHelper.localize("STR_NEUTRAL"), new AssetIcon(new ICON_SHIELD())));
+                grid.append(simpleLabelMaker(StringHelper.localize("STR_NEUTRAL"), StringHelper.localize("STR_NEUTRAL"), new AssetIcon(SpriteFactory.getFlashSprite("ICON_SHIELD"))));
             }
             else {
                 var tribeLabel:TribeLabel = new TribeLabel(stronghold.tribeId, stronghold.tribeName);
-                tribeLabel.setIcon(new AssetIcon(new ICON_SHIELD()));
+                tribeLabel.setIcon(new AssetIcon(SpriteFactory.getFlashSprite("ICON_SHIELD")));
                 grid.append(tribeLabel);
             }
 
@@ -215,10 +216,10 @@
             pnlNameStatus.append(Stronghold.getBattleStateString(stronghold, 2, 30));
 
             var grid: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 10, 0, false));
-            grid.append(simpleLabelMaker(StringHelper.localize("STR_LEVEL_VALUE", stronghold.lvl), StringHelper.localize("STR_LEVEL"), new AssetIcon(new ICON_UPGRADE())));
-            grid.append(simpleLabelMaker(StringHelper.localize("STR_PER_HOUR_RATE", Util.roundNumber(stronghold.victoryPointRate)), StringHelper.localize("STR_VP_RATE"), new AssetIcon(new ICON_STAR())));
+            grid.append(simpleLabelMaker(StringHelper.localize("STR_LEVEL_VALUE", stronghold.lvl), StringHelper.localize("STR_LEVEL"), new AssetIcon(SpriteFactory.getFlashSprite("ICON_UPGRADE"))));
+            grid.append(simpleLabelMaker(StringHelper.localize("STR_PER_HOUR_RATE", Util.roundNumber(stronghold.victoryPointRate)), StringHelper.localize("STR_VP_RATE"), new AssetIcon(SpriteFactory.getFlashSprite("ICON_STAR"))));
             var timediff :int = Global.map.getServerTime() - stronghold.dateOccupied;
-            grid.append(simpleLabelMaker(DateUtil.niceDays(timediff), StringHelper.localize("STR_DAYS_OCCUPIED"), new AssetIcon(new ICON_SHIELD())));
+            grid.append(simpleLabelMaker(DateUtil.niceDays(timediff), StringHelper.localize("STR_DAYS_OCCUPIED"), new AssetIcon(SpriteFactory.getFlashSprite("ICON_SHIELD"))));
 
             var lblTroop: JLabel = new JLabel(StringHelper.localize("STR_UPKEEP_COUNT", stronghold.upkeep));
             lblTroop.setHorizontalAlignment(AsWingConstants.RIGHT);
@@ -375,7 +376,7 @@
             var pnlName: RichLabel = new RichLabel(StringUtil.substitute(Locale.loadString(assignment.isAttack?"ASSIGNMENT_ATK":"ASSIGNMENT_DEF"),RichLabel.getHtmlForLocation(assignment.target)));
             var pnlStats: JPanel = new JPanel(new SoftBoxLayout(AsWingConstants.RIGHT, 5, AsWingConstants.RIGHT));
             pnlStats.appendAll(
-                    new JLabel(assignment.troopCount, new AssetIcon(assignment.isAttack?new ICON_SINGLE_SWORD:new ICON_SHIELD), AsWingConstants.RIGHT),
+                    new JLabel(assignment.troopCount, new AssetIcon(assignment.isAttack ? SpriteFactory.getFlashSprite("ICON_SINGLE_SWORD") : SpriteFactory.getFlashSprite("ICON_SHIELD")), AsWingConstants.RIGHT),
                     new CountDownLabel(assignment.endTime, "Troops Dispatched")
             );
             pnlStats.setConstraints("East");
@@ -507,16 +508,16 @@
 
                 var icon:AssetIcon;
                 switch((int)(log.type)) {
-                    case 1: icon = new AssetIcon(new ICON_UPGRADE()); break;
-                    case 2: icon = new AssetIcon(new ICON_GOLD()); break;
-                    case 3: icon = new AssetIcon(new ICON_LABOR()); break;
-                    case 4: icon = new AssetIcon(new ICON_STAR()); break;
-                    case 5: icon = new AssetIcon(new ICON_UNFRIEND()); break;
-                    case 6: icon = new AssetIcon(new ICON_UNFRIEND()); break;
-                    case 7: icon = new AssetIcon(new ICON_SINGLE_SWORD()); break;
-                    case 8: icon = new AssetIcon(new ICON_SHIELD()); break;
-                    case 9: icon = new AssetIcon(new ICON_SINGLE_SWORD()); break;
-                    default: icon = new AssetIcon(new ICON_STAR()); break;
+                    case 1: icon = new AssetIcon(SpriteFactory.getFlashSprite("ICON_UPGRADE")); break;
+                    case 2: icon = new AssetIcon(SpriteFactory.getFlashSprite("ICON_GOLD")); break;
+                    case 3: icon = new AssetIcon(SpriteFactory.getFlashSprite("ICON_LABOR")); break;
+                    case 4: icon = new AssetIcon(SpriteFactory.getFlashSprite("ICON_STAR")); break;
+                    case 5: icon = new AssetIcon(SpriteFactory.getFlashSprite("ICON_UNFRIEND")); break;
+                    case 6: icon = new AssetIcon(SpriteFactory.getFlashSprite("ICON_UNFRIEND")); break;
+                    case 7: icon = new AssetIcon(SpriteFactory.getFlashSprite("ICON_SINGLE_SWORD")); break;
+                    case 8: icon = new AssetIcon(SpriteFactory.getFlashSprite("ICON_SHIELD")); break;
+                    case 9: icon = new AssetIcon(SpriteFactory.getFlashSprite("ICON_SINGLE_SWORD")); break;
+                    default: icon = new AssetIcon(SpriteFactory.getFlashSprite("ICON_STAR")); break;
                 }
                 var iconLabel: JLabel = new JLabel("",icon);
                 iconLabel.setVerticalAlignment(AsWingConstants.TOP);
@@ -584,23 +585,23 @@
             var lblTarget: RichLabel = new RichLabel(RichLabel.getHtmlForLocation(grouping.first().target), 1);
             lblTarget.setConstraints("Center");
 
-            var lblAttackers: JLabel = new JLabel(grouping.count().toString(), new AssetIcon(new ICON_SINGLE_SWORD()));
+            var lblAttackers: JLabel = new JLabel(grouping.count().toString(), new AssetIcon(SpriteFactory.getFlashSprite("ICON_SINGLE_SWORD")));
 
             var lblCountdown: CountDownLabel = new CountDownLabel(grouping.first().endTime, StringHelper.localize("STR_BATTLE_IN_PROGRESS"));
             lblCountdown.setConstraints("East");
 
-            var btnExpand: JLabel = new JLabel("", new AssetIcon(new ICON_EXPAND), AsWingConstants.LEFT);
+            var btnExpand: JLabel = new JLabel("", new AssetIcon(SpriteFactory.getFlashSprite("ICON_EXPAND")), AsWingConstants.LEFT);
             btnExpand.useHandCursor = true;
             btnExpand.buttonMode = true;
             btnExpand.addEventListener(MouseEvent.CLICK, function (e: Event): void {
                 if (pnlGroup.isVisible()) {
                     pnlGroup.setVisible(false);
-                    btnExpand.setIcon(new AssetIcon(new ICON_EXPAND));
+                    btnExpand.setIcon(new AssetIcon(SpriteFactory.getFlashSprite("ICON_EXPAND")));
                     pnlCounter.setVisible(true);
                 }
                 else {
                     pnlGroup.setVisible(true);
-                    btnExpand.setIcon(new AssetIcon(new ICON_COLLAPSE));
+                    btnExpand.setIcon(new AssetIcon(SpriteFactory.getFlashSprite("ICON_COLLAPSE")));
                     pnlCounter.setVisible(false);
                 }
             });
@@ -825,7 +826,7 @@
             pnlHeaderTitle.appendAll(lblTribeName, lblEstablished);
 
             var pnlResources: JPanel = new JPanel(new FlowLayout(AsWingConstants.RIGHT, 10, 0, false));
-            var lblVictoryPoint: JLabel = new JLabel(profileData.victoryPoint.toFixed(1),  new AssetIcon(new ICON_STAR()));
+            var lblVictoryPoint: JLabel = new JLabel(profileData.victoryPoint.toFixed(1),  new AssetIcon(SpriteFactory.getFlashSprite("ICON_STAR")));
             new SimpleTooltip(lblVictoryPoint, StringHelper.localize("STR_VICTORY_POINT"));
             lblVictoryPoint.setIconTextGap(0);
 

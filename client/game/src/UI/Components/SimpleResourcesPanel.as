@@ -5,6 +5,7 @@
     import org.aswing.*;
 
     import src.Objects.*;
+    import src.Objects.Factories.SpriteFactory;
     import src.UI.LookAndFeel.GameLookAndFeel;
 
     public class SimpleResourcesPanel extends JPanel
@@ -30,12 +31,12 @@
 			removeAll();
 			
 			if (showLabor)
-				append(resourceLabelMaker(resources.labor, "Labor", new AssetIcon(new ICON_LABOR())));
+				append(resourceLabelMaker(resources.labor, "Labor", new AssetIcon(SpriteFactory.getFlashSprite("ICON_LABOR"))));
 				
-			append(resourceLabelMaker(resources.gold, "Gold", new AssetIcon(new ICON_GOLD())));
-			append(resourceLabelMaker(resources.wood, "Wood", new AssetIcon(new ICON_WOOD())));
-			append(resourceLabelMaker(resources.crop, "Crop", new AssetIcon(new ICON_CROP())));
-			append(resourceLabelMaker(resources.iron, "Iron", new AssetIcon(new ICON_IRON())));			
+			append(resourceLabelMaker(resources.gold, "Gold", new AssetIcon(SpriteFactory.getFlashSprite("ICON_GOLD"))));
+			append(resourceLabelMaker(resources.wood, "Wood", new AssetIcon(SpriteFactory.getFlashSprite("ICON_WOOD"))));
+			append(resourceLabelMaker(resources.crop, "Crop", new AssetIcon(SpriteFactory.getFlashSprite("ICON_CROP"))));
+			append(resourceLabelMaker(resources.iron, "Iron", new AssetIcon(SpriteFactory.getFlashSprite("ICON_IRON"))));
 		}
 		
 		private function resourceLabelMaker(value: int, tooltip: String, icon: Icon = null) : JLabel {

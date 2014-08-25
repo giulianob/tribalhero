@@ -11,6 +11,7 @@
     import src.Map.Position;
     import src.Objects.*;
     import src.Objects.Effects.Formula;
+    import src.Objects.Factories.SpriteFactory;
     import src.UI.Components.SimpleTooltip;
     import src.UI.GameJSidebar;
     import src.UI.Sidebars.ForestInfo.Buttons.ForestCampBuildButton;
@@ -55,7 +56,7 @@
 			addStatRow("Capacity", forestObj.wood.getValue().toString());
 			addStatRow("Depletion", "-" + Math.round(forestObj.wood.getUpkeep() / Constants.secondsPerUnit) + "/hr");
 			var timeLeft: int = forestObj.depleteTime > 0 && forestObj.wood.getUpkeep() > 0 ? forestObj.depleteTime - Global.map.getServerTime() : 0;
-			addStatRow("Time left", DateUtil.formatTime(timeLeft), new AssetIcon(new ICON_CLOCK()));
+			addStatRow("Time left", DateUtil.formatTime(timeLeft), new AssetIcon(SpriteFactory.getFlashSprite("ICON_CLOCK")));
 		}
 
 		private function addStatRow(title: String, value: String, icon: AssetIcon = null) : JLabel {

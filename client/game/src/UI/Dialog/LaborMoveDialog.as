@@ -11,6 +11,7 @@ package src.UI.Dialog{
     import src.Map.City;
     import src.Objects.Effects.Formula;
     import src.Objects.Factories.ObjectFactory;
+    import src.Objects.Factories.SpriteFactory;
     import src.Objects.Factories.StructureFactory;
     import src.Objects.LazyResources;
     import src.Objects.LazyValue;
@@ -163,10 +164,10 @@ package src.UI.Dialog{
 			lblRate.setConstraints("East");
 			switch (resourceType) {
 				case Resources.TYPE_CROP:
-					lblRate.setIcon(new AssetIcon(new ICON_CROP()));
+					lblRate.setIcon(new AssetIcon(SpriteFactory.getFlashSprite("ICON_CROP")));
 				break;
 				case Resources.TYPE_WOOD:
-					lblRate.setIcon(new AssetIcon(new ICON_WOOD()));
+					lblRate.setIcon(new AssetIcon(SpriteFactory.getFlashSprite("ICON_WOOD")));
 				break;
 			}
 
@@ -190,7 +191,7 @@ package src.UI.Dialog{
 			
 			panelTime = new JPanel(new SoftBoxLayout(SoftBoxLayout.X_AXIS, 0, AsWingConstants.RIGHT));
 			
-			lblTime = new JLabel("00:00:00", new AssetIcon(new ICON_CLOCK()), AsWingConstants.RIGHT);
+			lblTime = new JLabel("00:00:00", new AssetIcon(SpriteFactory.getFlashSprite("ICON_CLOCK")), AsWingConstants.RIGHT);
 
 			//component layoution
 			topPanel.append(label81);

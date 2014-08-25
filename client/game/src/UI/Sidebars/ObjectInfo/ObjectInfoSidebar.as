@@ -151,9 +151,9 @@ package src.UI.Sidebars.ObjectInfo {
                 addStatRow("OBJECT_INFO_SIDEBAR_THEME_LABEL", themeLink);
 
 				if (structPrototype.maxlabor > 0) {
-					addStatRow("OBJECT_INFO_SIDEBAR_LABORERS_LABEL", gameObject.labor + "/" + structPrototype.maxlabor, new AssetIcon(new ICON_LABOR()));
+					addStatRow("OBJECT_INFO_SIDEBAR_LABORERS_LABEL", gameObject.labor + "/" + structPrototype.maxlabor, new AssetIcon(SpriteFactory.getFlashSprite("ICON_LABOR")));
 				} else if (gameObject.labor > 0) {
-					addStatRow("OBJECT_INFO_SIDEBAR_LABORERS_LABEL", gameObject.labor.toString(), new AssetIcon(new ICON_LABOR()));
+					addStatRow("OBJECT_INFO_SIDEBAR_LABORERS_LABEL", gameObject.labor.toString(), new AssetIcon(SpriteFactory.getFlashSprite("ICON_LABOR")));
 				}
 
 				var propPrototype: Array = PropertyFactory.getAllProperties(gameObject.type);
@@ -350,7 +350,7 @@ package src.UI.Sidebars.ObjectInfo {
 
 				var lblTime: JLabel = new JLabel(DateUtil.formatTime(timeLeft));
 				lblTime.setHorizontalAlignment(AsWingConstants.RIGHT);
-				lblTime.setIcon(new AssetIcon(new ICON_CLOCK()));
+				lblTime.setIcon(new AssetIcon(SpriteFactory.getFlashSprite("ICON_CLOCK")));
 				lblTime.setConstraints("South");
 
 				//component layoution

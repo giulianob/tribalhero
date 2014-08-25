@@ -1,8 +1,7 @@
 ﻿package src {
 
-    import starling.display.Sprite;
+    import feathers.core.PopUpManager;
 
-    import flash.display.Sprite;
     import flash.display.*;
     import flash.events.*;
     import flash.net.*;
@@ -15,7 +14,6 @@
     import org.aswing.geom.*;
 
     import src.Events.NavigateEvent;
-
     import src.Map.*;
     import src.Map.MiniMap.MiniMap;
     import src.UI.*;
@@ -25,6 +23,8 @@
     import src.UI.Flows.StoreFlow;
     import src.UI.Tutorial.GameTutorial;
     import src.Util.*;
+
+    import starling.display.Sprite;
 
     public class GameContainer extends GameContainer_base {
 
@@ -181,6 +181,10 @@
             miniMapHolder = new starling.display.Sprite();
             Global.starlingStage.addChild(mapHolder);
             Global.starlingStage.addChild(miniMapHolder);
+
+            var popupRoot: starling.display.Sprite = new starling.display.Sprite();
+            PopUpManager.root = popupRoot;
+            Global.starlingStage.addChild(popupRoot);
 
 			// Bar bg			
 			var barBgClass: Class = UIManager.getDefaults().get("GameMenu.bar");

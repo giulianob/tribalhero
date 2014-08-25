@@ -48,7 +48,6 @@ package src.UI.Components
 		}
 
 		public function onResize(e: Event = null) : void {
-
 			resizeDelay.stop();
 
 			Constants.screenW = stage.stageWidth;

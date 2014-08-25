@@ -14,6 +14,7 @@
     import src.Map.TileLocator;
     import src.Objects.Achievement;
     import src.Objects.Effects.Formula;
+    import src.Objects.Factories.SpriteFactory;
     import src.Objects.Tribe;
     import src.UI.*;
     import src.UI.Components.*;
@@ -95,8 +96,8 @@
 		}		
 		
 		private function createRanking(rank: * ): JLabel {
-			var iconClass: Class = Constants.rankings[rank.type].icon;
-			var icon: AssetIcon = new AssetIcon(new iconClass());
+			var iconClass: String = Constants.rankings[rank.type].icon;
+			var icon: AssetIcon = new AssetIcon(SpriteFactory.getFlashSprite(iconClass));
 			
 			var lblRanking: JLabel = new JLabel("#" + rank.rank, icon, AsWingConstants.LEFT);
 			lblRanking.setPreferredWidth(60);

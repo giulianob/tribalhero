@@ -11,6 +11,7 @@
     import src.Map.*;
     import src.Objects.*;
     import src.Objects.Effects.*;
+    import src.Objects.Factories.SpriteFactory;
     import src.UI.*;
     import src.Util.StringHelper;
 
@@ -186,22 +187,22 @@
 		public function setIcons():void
 		{
 			lblCropAmount.setIconTextGap(0);
-			lblCropAmount.setIcon(new AssetIcon(new ICON_CROP()));
+			lblCropAmount.setIcon(new AssetIcon(SpriteFactory.getFlashSprite("ICON_CROP")));
 			lblCropPrice.setIconTextGap(0);
-			lblCropPrice.setIcon(new AssetIcon(new ICON_GOLD()));
+			lblCropPrice.setIcon(new AssetIcon(SpriteFactory.getFlashSprite("ICON_GOLD")));
 			
 			lblWoodAmount.setIconTextGap(0);
-			lblWoodAmount.setIcon(new AssetIcon(new ICON_WOOD()));
+			lblWoodAmount.setIcon(new AssetIcon(SpriteFactory.getFlashSprite("ICON_WOOD")));
 			lblWoodPrice.setIconTextGap(0);
-			lblWoodPrice.setIcon(new AssetIcon(new ICON_GOLD()));
+			lblWoodPrice.setIcon(new AssetIcon(SpriteFactory.getFlashSprite("ICON_GOLD")));
 			
 			lblIronAmount.setIconTextGap(0);
-			lblIronAmount.setIcon(new AssetIcon(new ICON_IRON()));
+			lblIronAmount.setIcon(new AssetIcon(SpriteFactory.getFlashSprite("ICON_IRON")));
 			lblIronPrice.setIconTextGap(0);
-			lblIronPrice.setIcon(new AssetIcon(new ICON_GOLD()));
+			lblIronPrice.setIcon(new AssetIcon(SpriteFactory.getFlashSprite("ICON_GOLD")));
 			
 			lblTradePrice.setIconTextGap(0);
-			lblTradePrice.setIcon(new AssetIcon(new ICON_GOLD()));
+			lblTradePrice.setIcon(new AssetIcon(SpriteFactory.getFlashSprite("ICON_GOLD")));
 		}
 		
 		public function createUI():void

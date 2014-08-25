@@ -11,6 +11,7 @@ package src.UI.Dialog
     import src.*;
     import src.Map.*;
     import src.Objects.Effects.*;
+    import src.Objects.Factories.SpriteFactory;
     import src.Objects.Stronghold.Stronghold;
     import src.Objects.Troop.*;
     import src.UI.*;
@@ -111,7 +112,7 @@ package src.UI.Dialog
             append(pnlPartialRetreat);
 
 			lblTime = new JLabel();
-            lblTime.setIcon(new AssetIcon(new ICON_CLOCK()));
+            lblTime.setIcon(new AssetIcon(SpriteFactory.getFlashSprite("ICON_CLOCK")));
 			lblTime.setHorizontalAlignment(AsWingConstants.RIGHT);
 			append(lblTime);
 			

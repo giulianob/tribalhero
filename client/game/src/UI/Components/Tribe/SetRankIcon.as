@@ -1,20 +1,24 @@
 ﻿package src.UI.Components.Tribe
 {
     import flash.display.MovieClip;
+    import flash.display.Sprite;
     import flash.events.MouseEvent;
 
     import org.aswing.AssetIcon;
 
     import src.Global;
+    import src.Objects.Factories.SpriteFactory;
     import src.UI.Components.SimpleTooltip;
     import src.UI.Dialog.TribeSetRankDialog;
 
     public class SetRankIcon extends AssetIcon
 	{
-		private var icon: MovieClip = new ICON_SINGLE_SWORD();
+		private var icon: Sprite;
 
 		public function SetRankIcon(playerId: int, currentRank: int)
 		{
+            icon = SpriteFactory.getFlashSprite("ICON_SINGLE_SWORD");
+
 			super(icon);
 
 			icon.buttonMode = true;

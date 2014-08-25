@@ -9,6 +9,7 @@
     import src.Global;
     import src.Map.City;
     import src.Objects.Effects.Formula;
+    import src.Objects.Factories.SpriteFactory;
     import src.Objects.GameError;
     import src.Objects.Resources;
     import src.Objects.StructureObject;
@@ -78,7 +79,7 @@
 			var tradeTime: int = packet.readInt();
 			
 			var infoPanel: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
-			infoPanel.append(new JLabel(DateUtil.formatTime(tradeTime), new AssetIcon(new ICON_CLOCK()), AsWingConstants.RIGHT));
+			infoPanel.append(new JLabel(DateUtil.formatTime(tradeTime), new AssetIcon(SpriteFactory.getFlashSprite("ICON_CLOCK")), AsWingConstants.RIGHT));
 			infoPanel.append(new JLabel("You have chosen to send " + amount().toNiceString() + " to " + playerName + " " + txtCityName.getText() + "\n\nAre you sure?"));			
 			
 			InfoDialog.showMessageDialog("Confirm", infoPanel, onUserConfirms, null, true, false, JOptionPane.YES | JOptionPane.NO);

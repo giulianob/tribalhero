@@ -276,7 +276,7 @@
 
 				var lblTime: JLabel = new JLabel(DateUtil.formatTime(timeLeft));
 				lblTime.setHorizontalAlignment(AsWingConstants.RIGHT);
-				lblTime.setIcon(new AssetIcon(new ICON_CLOCK()));
+				lblTime.setIcon(new AssetIcon(SpriteFactory.getFlashSprite("ICON_CLOCK")));
 				lblTime.setConstraints("South");
 
 				//component layoution

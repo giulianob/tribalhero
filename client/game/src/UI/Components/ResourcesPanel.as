@@ -6,6 +6,7 @@
 
     import src.Map.City;
     import src.Objects.*;
+    import src.Objects.Factories.SpriteFactory;
     import src.UI.LookAndFeel.GameLookAndFeel;
 
     public class ResourcesPanel extends JPanel
@@ -61,13 +62,13 @@
 			}
 
 			if (showLabor) {
-				append(resourceLabelMaker(resources.labor, affordable.labor, new AssetIcon(new ICON_LABOR())));
+				append(resourceLabelMaker(resources.labor, affordable.labor, new AssetIcon(SpriteFactory.getFlashSprite("ICON_LABOR"))));
 			}
 			
-			append(resourceLabelMaker(resources.gold, affordable.gold, new AssetIcon(new ICON_GOLD())));
-			append(resourceLabelMaker(resources.wood, affordable.wood, new AssetIcon(new ICON_WOOD())));
-			append(resourceLabelMaker(resources.crop, affordable.crop, new AssetIcon(new ICON_CROP())));
-			append(resourceLabelMaker(resources.iron, affordable.iron, new AssetIcon(new ICON_IRON())));
+			append(resourceLabelMaker(resources.gold, affordable.gold, new AssetIcon(SpriteFactory.getFlashSprite("ICON_GOLD"))));
+			append(resourceLabelMaker(resources.wood, affordable.wood, new AssetIcon(SpriteFactory.getFlashSprite("ICON_WOOD"))));
+			append(resourceLabelMaker(resources.crop, affordable.crop, new AssetIcon(SpriteFactory.getFlashSprite("ICON_CROP"))));
+			append(resourceLabelMaker(resources.iron, affordable.iron, new AssetIcon(SpriteFactory.getFlashSprite("ICON_IRON"))));
 		}
 
 		private function resourceLabelMaker(value: int, afford: int, icon: Icon = null) : JLabel {

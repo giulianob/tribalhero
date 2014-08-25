@@ -8,6 +8,7 @@
     import src.Global;
     import src.Map.City;
     import src.Objects.*;
+    import src.Objects.Factories.SpriteFactory;
     import src.Util.StringHelper;
 
     public class TradeResourcesPanel extends JPanel
@@ -126,22 +127,22 @@
 			pnlResources.appendAll(pnlGold, pnlWood, pnlCrop, pnlIron);
             appendAll(pnlTitle, pnlResources);		
 			
-			var icon:AssetPane = new AssetPane(new ICON_GOLD());
+			var icon:AssetPane = new AssetPane(SpriteFactory.getFlashSprite("ICON_GOLD"));
 			new SimpleTooltip(icon, "Gold");
 			pnlGold.append(icon);
 			pnlGold.append(lblGoldAmount);
 			
-			icon = new AssetPane(new ICON_CROP());
+			icon = new AssetPane(SpriteFactory.getFlashSprite("ICON_CROP"));
 			new SimpleTooltip(icon, "Crop");
 			pnlCrop.append(icon);
 			pnlCrop.append(lblCropAmount);
 			
-			icon = new AssetPane(new ICON_IRON());
+			icon = new AssetPane(SpriteFactory.getFlashSprite("ICON_IRON"));
 			new SimpleTooltip(icon, "Iron");
 			pnlIron.append(icon);
 			pnlIron.append(lblIronAmount);
 			
-			icon = new AssetPane(new ICON_WOOD());
+			icon = new AssetPane(SpriteFactory.getFlashSprite("ICON_WOOD"));
 			new SimpleTooltip(icon, "Wood");
 			pnlWood.append(icon);
 			pnlWood.append(lblWoodAmount);

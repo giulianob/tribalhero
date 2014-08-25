@@ -2,7 +2,7 @@
 <module type="Flex" version="4">
   <component name="FlexBuildConfigurationManager" active="TribalHero">
     <configurations>
-      <configuration name="TribalHero" pure-as="true" main-class="src.Preloader" output-file="Game.swf" output-folder="$MODULE_DIR$/bin">
+      <configuration name="TribalHero" pure-as="true" main-class="src.Preloader" output-file="TribalHero.swf" output-folder="$MODULE_DIR$/bin">
         <dependencies target-player="11.9">
           <entries>
             <entry library-name="TheMiner_en" library-level="project">
@@ -46,7 +46,7 @@
         <packaging-android />
         <packaging-ios />
       </configuration>
-      <configuration name="TribalHero Android" target-platform="Mobile" pure-as="true" main-class="src.Preloader" output-file="TribalHero_Android.swf" output-folder="$MODULE_DIR$/bin">
+      <configuration name="TribalHero Android" target-platform="Mobile" pure-as="true" main-class="src.Preloader" output-file="TribalHero_Air.swf" output-folder="$MODULE_DIR$/bin">
         <dependencies>
           <entries>
             <entry library-name="TheMiner_en" library-level="project">
@@ -91,6 +91,7 @@
           <files-to-package>
             <FilePathAndPathInPackage file-path="$MODULE_DIR$/mobile/icons" path-in-package="icons" />
           </files-to-package>
+          <AirSigningOptions keystore-path="$MODULE_DIR$/mobile/cert/TribalHero.p12" use-temp-certificate="false" />
         </packaging-android>
         <packaging-ios package-file-name="TribalHero_Android" />
       </configuration>

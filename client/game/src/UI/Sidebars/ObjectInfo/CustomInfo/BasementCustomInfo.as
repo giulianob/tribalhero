@@ -13,7 +13,8 @@ import org.aswing.ext.Form;
 
 import src.Map.City;
 import src.Objects.Effects.Formula;
-import src.Objects.Resources;
+    import src.Objects.Factories.SpriteFactory;
+    import src.Objects.Resources;
 import src.Objects.StructureObject;
     import src.UI.Components.SimpleTooltip;
     import src.Util.StringHelper;
@@ -38,7 +39,7 @@ import src.Objects.StructureObject;
         value = new JLabel(resources.crop.toString());
         value.setHorizontalAlignment(AsWingConstants.LEFT);
         value.setHorizontalTextPosition(AsWingConstants.RIGHT);
-        value.setIcon(new AssetIcon(new ICON_CROP()));
+        value.setIcon(new AssetIcon(SpriteFactory.getFlashSprite("ICON_CROP")));
         new SimpleTooltip(value, StringHelper.localize("TMP_BASEMENT_SIDEBAR_TOOLTIP"));
         form.addRow(key,value);
 
@@ -47,7 +48,7 @@ import src.Objects.StructureObject;
         value = new JLabel(resources.wood.toString());
         value.setHorizontalAlignment(AsWingConstants.LEFT);
         value.setHorizontalTextPosition(AsWingConstants.RIGHT);
-        value.setIcon(new AssetIcon(new ICON_WOOD()));
+        value.setIcon(new AssetIcon(SpriteFactory.getFlashSprite("ICON_WOOD")));
         new SimpleTooltip(value, StringHelper.localize("TMP_BASEMENT_SIDEBAR_TOOLTIP"));
         form.addRow(key,value);
 
@@ -57,7 +58,7 @@ import src.Objects.StructureObject;
         value = new JLabel(resources.gold.toString());
         value.setHorizontalAlignment(AsWingConstants.LEFT);
         value.setHorizontalTextPosition(AsWingConstants.RIGHT);
-        value.setIcon(new AssetIcon(new ICON_GOLD()));
+        value.setIcon(new AssetIcon(SpriteFactory.getFlashSprite("ICON_GOLD")));
         new SimpleTooltip(value, StringHelper.localize("TMP_BASEMENT_SIDEBAR_TOOLTIP"));
         form.addRow(key,value);
 
@@ -66,7 +67,7 @@ import src.Objects.StructureObject;
         value = new JLabel(resources.iron.toString());
         value.setHorizontalAlignment(AsWingConstants.LEFT);
         value.setHorizontalTextPosition(AsWingConstants.RIGHT);
-        value.setIcon(new AssetIcon(new ICON_IRON()))
+        value.setIcon(new AssetIcon(SpriteFactory.getFlashSprite("ICON_IRON")))
         new SimpleTooltip(value, StringHelper.localize("TMP_BASEMENT_SIDEBAR_TOOLTIP"));
         form.addRow(key,value);
 

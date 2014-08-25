@@ -14,7 +14,5 @@
 		public static var main: Main;
 		public static var mapComm: MapComm;
 		public static var musicPlayer: MusicPlayer;
-
 	}
-	
 }

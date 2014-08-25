@@ -8,8 +8,8 @@ call bat\SetupApplication.bat
 
 :target
 ::goto desktop
-::goto android-emulator-debug
-goto android-debug
+goto android-emulator-debug
+::goto android-debug
 ::goto android-test
 ::goto ios-debug
 ::goto ios-test

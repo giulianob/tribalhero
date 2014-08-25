@@ -10,14 +10,18 @@
     <movie height="640" />
     <movie version="14" />
     <movie minorVersion="0" />
-    <movie platform="AIR Mobile" />
+    <movie platform="AIR" />
     <movie background="#E8E2BE" />
     <movie preferredSDK="Apache Flex 4.11.0 FP 11.9 AIR 3.9 en_US;4.11.0;" />
   </output>
   <!-- Other classes to be compiled into your SWF -->
   <classpaths>
-    <class path="lib\src" />
     <class path="game" />
+    <class path="lib\src\aswing" />
+    <class path="lib\src\starling-graphics" />
+    <class path="lib\src\starling-pixelmask" />
+    <class path="lib\src\starling-pixelperfecttouch" />
+    <class path="lib\src\promise" />
   </classpaths>
   <!-- Build options -->
   <build>
@@ -45,7 +49,7 @@
     <option loadExterns="" />
     <option staticLinkRSL="True" />
     <option additional="" />
-    <option compilerConstants="CONFIG::debug=true" />
+    <option compilerConstants="CONFIG:debug=true" />
     <option minorVersion="" />
   </build>
   <!-- SWC Include Libraries -->
@@ -85,6 +89,7 @@
     <hidden path="map" />
     <hidden path=".hg" />
     <hidden path="obj" />
+    <hidden path=".idea" />
   </hiddenPaths>
   <!-- Executed before build -->
   <preBuildCommand />

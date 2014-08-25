@@ -8,6 +8,7 @@
     import src.Map.*;
     import src.Objects.*;
     import src.Objects.Effects.*;
+    import src.Objects.Factories.SpriteFactory;
     import src.Objects.Prototypes.*;
     import src.UI.Components.*;
     import src.UI.LookAndFeel.*;
@@ -105,14 +106,14 @@
 			GameLookAndFeel.changeClass(lblLevel, "Tooltip.text");
 
 			lblTime = new JLabel();
-			lblTime.setIcon(new AssetIcon(new ICON_CLOCK()));
+			lblTime.setIcon(new AssetIcon(SpriteFactory.getFlashSprite("ICON_CLOCK")));
 			lblTime.setIconTextGap(0);
 			lblTime.setHorizontalAlignment(AsWingConstants.LEFT);
 			lblTime.setConstraints("East");
 			GameLookAndFeel.changeClass(lblTime, "Tooltip.text");
 
 			lblTime = new JLabel();
-			lblTime.setIcon(new AssetIcon(new ICON_CLOCK()));
+			lblTime.setIcon(new AssetIcon(SpriteFactory.getFlashSprite("ICON_CLOCK")));
 			lblTime.setIconTextGap(0);
 			lblTime.setHorizontalAlignment(AsWingConstants.RIGHT);
 			lblTime.setConstraints("East");

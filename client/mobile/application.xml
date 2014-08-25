@@ -31,7 +31,7 @@
   </iPhone>
   <initialWindow>
     <title>GameAirMobile</title>
-    <content>TribalHero.swf</content>
+    <content>TribalHero_Air.swf</content>
     <visible>true</visible>
     <fullScreen>true</fullScreen>
     <!--<autoOrients>false</autoOrients>-->

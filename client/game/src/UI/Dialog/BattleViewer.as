@@ -13,6 +13,7 @@
 
     import src.*;
     import src.Objects.Battle.*;
+    import src.Objects.Factories.SpriteFactory;
     import src.UI.*;
     import src.UI.Components.CombatObjectGridList.*;
     import src.UI.Components.StickyScroll;
@@ -210,7 +211,7 @@
 
 			var pnl: JPanel = new JPanel(new FlowLayout(AsWingConstants.CENTER, 0, 0, false));
 			pnl.append(getCombatObjectPanel(e.combatGroup, e.combatObject));
-			var lbl: JLabel = new JLabel(StringHelper.localize("BATTLE_CANT_REACH"), new AssetIcon(groupUi.isAttacker ? new ICON_SINGLE_SWORD : new ICON_SHIELD));
+			var lbl: JLabel = new JLabel(StringHelper.localize("BATTLE_CANT_REACH"), new AssetIcon(groupUi.isAttacker ? SpriteFactory.getFlashSprite("ICON_SINGLE_SWORD") : SpriteFactory.getFlashSprite("ICON_SHIELD")));
 			lbl.setHorizontalTextPosition(AsWingConstants.LEFT);
 			pnl.append(lbl);
 
@@ -237,11 +238,11 @@
 			}
 
 			var arrowPnl: JPanel = new JPanel(new FlowLayout(AsWingConstants.CENTER));
-			arrowPnl.append(new AssetPane(e.attackerSide == BattleManager.SIDE_DEFENSE ? new ICON_ARROW_RIGHT : new ICON_ARROW_LEFT));
+			arrowPnl.append(new AssetPane(e.attackerSide == BattleManager.SIDE_DEFENSE ? SpriteFactory.getFlashSprite("ICON_ARROW_RIGHT") : SpriteFactory.getFlashSprite("ICON_ARROW_LEFT")));
 			
 			var dmgPnl: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 0, AsWingConstants.CENTER));
 			dmgPnl.appendAll(
-				new JLabel(StringHelper.localize("BATTLE_DAMAGE", e.dmg.toString()), new AssetIcon(e.attackerSide == BattleManager.SIDE_DEFENSE ? new ICON_SHIELD : new ICON_SINGLE_SWORD)),
+				new JLabel(StringHelper.localize("BATTLE_DAMAGE", e.dmg.toString()), new AssetIcon(e.attackerSide == BattleManager.SIDE_DEFENSE ? SpriteFactory.getFlashSprite("ICON_SHIELD") : SpriteFactory.getFlashSprite("ICON_SINGLE_SWORD"))),
 				arrowPnl
 			);
 
@@ -263,7 +264,7 @@
 			if (defenseObj.data.hp <= 0) {
 				pnl = new JPanel(new FlowLayout(AsWingConstants.CENTER, 0, 0, false));
 				pnl.append(getCombatObjectPanel(e.targetCombatGroup, e.targetCombatObj));
-				var defeatLbl: JLabel = new JLabel(StringHelper.localize("BATTLE_DEFEATED"), new AssetIcon(e.attackerSide == BattleManager.SIDE_ATTACK ? new ICON_SHIELD : new ICON_SINGLE_SWORD));
+				var defeatLbl: JLabel = new JLabel(StringHelper.localize("BATTLE_DEFEATED"), new AssetIcon(e.attackerSide == BattleManager.SIDE_ATTACK ? SpriteFactory.getFlashSprite("ICON_SHIELD") : SpriteFactory.getFlashSprite("ICON_SINGLE_SWORD")));
 				defeatLbl.setHorizontalTextPosition(AsWingConstants.LEFT);
 				pnl.append(defeatLbl);
 				log(pnl);

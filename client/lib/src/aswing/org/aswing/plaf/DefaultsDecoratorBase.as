@@ -6,8 +6,7 @@ public class DefaultsDecoratorBase implements DefaultsDecorator{
 	
 	protected var defaultsOwner:ComponentUI;
 	
-	public function DefaultsDecoratorBase(){
-		
+	public function DefaultsDecoratorBase(){		
 	}
 	
 	public function setDefaultsOwner(owner:ComponentUI):void{

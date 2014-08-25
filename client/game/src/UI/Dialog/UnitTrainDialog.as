@@ -15,7 +15,8 @@ import src.Map.*;
 import src.Objects.*;
 import src.Objects.Effects.*;
 import src.Objects.Factories.ObjectFactory;
-import src.Objects.Prototypes.*;
+    import src.Objects.Factories.SpriteFactory;
+    import src.Objects.Prototypes.*;
 import src.Objects.Troop.Formation;
 import src.Objects.Troop.TroopStub;
 import src.Objects.Troop.Unit;
@@ -199,14 +200,14 @@ public class UnitTrainDialog extends GameJPanel {
 			pnlResources = new JPanel();
 			pnlResources.setConstraints("North");
 
- 			lblTime = new JLabel("", new AssetIcon(new ICON_CLOCK()));
+ 			lblTime = new JLabel("", new AssetIcon(SpriteFactory.getFlashSprite("ICON_CLOCK")));
 			lblTime.setConstraints("West");
 			new SimpleTooltip(lblTime, "Time to train units");
             lblTime.setHorizontalAlignment(AsWingConstants.LEFT);
 
             pnlTime = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
 
-			lblUpkeep = new JLabel("", new AssetIcon(new ICON_CROP()));
+			lblUpkeep = new JLabel("", new AssetIcon(SpriteFactory.getFlashSprite("ICON_CROP")));
 			lblUpkeep.setConstraints("East");
 			new SimpleTooltip(lblUpkeep, "Upkeep");
 
@@ -216,7 +217,7 @@ public class UnitTrainDialog extends GameJPanel {
 			pnlUpkeepMsg.setVisible(false);
 
 			//component layoution
-			pnlUpkeepMsg.append(new AssetPane(new ICON_ALERT()));
+			pnlUpkeepMsg.append(new AssetPane(SpriteFactory.getFlashSprite("ICON_ALERT")));
 			pnlUpkeepMsg.append(lblUpkeepMsg);
 
 			panel4.append(sldAmount);

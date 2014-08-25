@@ -1,150 +1,69 @@
 package src.UI.Dialog{
 
-    import org.aswing.*;
-    import org.aswing.ext.*;
-    import org.aswing.geom.*;
+    import feathers.controls.Button;
+    import feathers.controls.Label;
+    import feathers.controls.Panel;
+    import feathers.controls.TextInput;
+    import feathers.layout.VerticalLayout;
+	import src.Constants;
 
-    import src.Constants;
-    import src.Global;
-    import src.UI.GameJPanel;
+    import src.UI.ViewModels.LoginVM;
 
-    /**
-	 * ConnectionDialog
-	 */
-	public class LoginDialog extends GameJPanel {
+    import starling.events.Event;
 
-		//members define
-		private var form42:Form;
-		private var rowAddress:FormRow;
-		private var lblAddress:JLabel;
-		private var txtAddress:JTextField;
-		private var separator14:JSeparator;
-		private var formrow8:FormRow;
-		private var lblUsername:JLabel;
-		private var txtUsername:JTextField;
-		private var formrow10:FormRow;
-		private var lblPassword:JLabel;
-		private var txtPassword:JTextField;
-		private var panel16:JPanel;
-		private var btnLogin:JButton;
+    public class LoginDialog extends Panel {
 
-		/**
-		 * ConnectionDialog Constructor
-		 */
-		public function LoginDialog(onAccept: Function) {
-			createUI();
+        private var vm: LoginVM;
+        private var btnLogin: Button;
+        private var txtAddress: TextInput;
+        private var txtUsername: TextInput;
+        private var txtPassword: TextInput;
 
-			var self: LoginDialog = this;
-			btnLogin.addActionListener(function():void{
-				if (onAccept != null) onAccept(self);
+		public function LoginDialog(vm: LoginVM) {
+            this.vm = vm;
+            createUI();
+
+			btnLogin.addEventListener(Event.TRIGGERED, function(e: Event): void {
+				vm.login(txtUsername.text, txtPassword.text, txtAddress.text);
 			});
 		}
 
-		//_________getters_________
-		public function getTxtAddress():JTextField{
-			return txtAddress;
-		}
-
-		public function getTxtUsername():JTextField{
-			return txtUsername;
-		}
-
-		public function getTxtPassword():JTextField{
-			return txtPassword;
-		}
-
-        public function show(owner:* = null, modal:Boolean = true, onClose: Function = null) :JFrame
-		{
-			super.showSelf(owner, modal, onClose);
-			frame.setClosable(false);
-			Global.gameContainer.showFrame(frame);
-
-			return frame;
-		}
-
 		private function createUI():void {
-			title = "Login";
-			//component creation
-			//setSize(new IntDimension(250, 137));
-			setConstraints("Center");
+			this.headerProperties.title = "Login";
 
-			form42 = new Form();
-			//form42.setSize(new IntDimension(208, 117));
-			form42.setVGap(5);
+            txtAddress = new TextInput();
+			txtAddress.text = Constants.session.hostname;
+            
+			txtUsername = new TextInput();
+			txtUsername.text = Constants.session.username;
+            
+			txtPassword = new TextInput();
+            txtPassword.displayAsPassword = true;
 
-			rowAddress = new FormRow();
-			rowAddress.setSize(new IntDimension(256, 25));
-			rowAddress.setColumnChildrenIndecis("-1,0,1,2");
+            btnLogin = new Button();
+            btnLogin.label = "Login";
 
-			lblAddress = new JLabel();
-			lblAddress.setPreferredSize(new IntDimension(65, 25));
-			lblAddress.setText("Address");
-			lblAddress.setHorizontalAlignment(AsWingConstants.RIGHT);
+            var lblAddress: Label = new Label();
+            lblAddress.text = "Address";
 
-			txtAddress = new JTextField();
-			txtAddress.setSize(new IntDimension(150, 25));
-			txtAddress.setPreferredSize(new IntDimension(150, 25));
-			txtAddress.setText(Constants.session.hostname);
+            var lblUsername: Label = new Label();
+            lblUsername.text = "Username";
 
-			separator14 = new JSeparator();
-			separator14.setSize(new IntDimension(220, 2));
+            var lblPassword: Label = new Label();
+            lblPassword.text = "Password";
 
-			formrow8 = new FormRow();
-			formrow8.setSize(new IntDimension(256, 25));
-			formrow8.setColumnChildrenIndecis("-1,0,1,2");
+            layout = new VerticalLayout();
 
-			lblUsername = new JLabel();
-			lblUsername.setPreferredSize(new IntDimension(65, 25));
-			lblUsername.setText("Username");
-			lblUsername.setHorizontalAlignment(AsWingConstants.RIGHT);
+            addChild(lblAddress);
+            addChild(txtAddress);
 
-			txtUsername = new JTextField();
-			txtUsername.setSize(new IntDimension(150, 25));
-			txtUsername.setPreferredSize(new IntDimension(150, 25));
-			txtUsername.setText(Constants.session.username);
+            addChild(lblUsername);
+            addChild(txtUsername);
 
-			formrow10 = new FormRow();
-			formrow10.setSize(new IntDimension(194, 0));
-			formrow10.setColumnChildrenIndecis("-1,0,1,2");
+            addChild(lblPassword);
+            addChild(txtPassword);
 
-			lblPassword = new JLabel();
-			lblPassword.setPreferredSize(new IntDimension(65, 25));
-			lblPassword.setText("Password");
-			lblPassword.setHorizontalAlignment(AsWingConstants.RIGHT);
-
-			txtPassword = new JTextField();
-			txtPassword.setSize(new IntDimension(150, 25));
-			txtPassword.setDisplayAsPassword(true);
-
-			panel16 = new JPanel();
-			panel16.setSize(new IntDimension(10, 10));
-			var layout1:FlowLayout = new FlowLayout();
-			layout1.setAlignment(AsWingConstants.CENTER);
-			panel16.setLayout(layout1);
-
-			btnLogin = new JButton();
-			btnLogin.setSize(new IntDimension(34, 22));
-			btnLogin.setText("Login");
-
-			//component layoution
-			append(form42);
-
-			form42.append(rowAddress);
-			form42.append(separator14);
-			form42.append(formrow8);
-			form42.append(formrow10);
-			form42.append(panel16);
-
-			rowAddress.append(lblAddress);
-			rowAddress.append(txtAddress);
-
-			formrow8.append(lblUsername);
-			formrow8.append(txtUsername);
-
-			formrow10.append(lblPassword);
-			formrow10.append(txtPassword);
-
-			panel16.append(btnLogin);
+            addChild(btnLogin);
 		}
 	}
 }

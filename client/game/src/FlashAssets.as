@@ -153,40 +153,67 @@
         public static const WAGON_UNIT: Class;
 
         // General Icons
-        ICON_WOOD
-        ICON_LABOR
-        ICON_IRON
-        ICON_GOLD
-        ICON_CROP
 
-        ICON_WORLD
-        ICON_UPGRADE
-        ICON_UNFRIEND
-        ICON_TOGGLE_SOUND
-        ICON_SINGLE_SWORD
-        ICON_STAR
-        ICON_SHIELD
-        ICON_REDX
-        ICON_QUESTION
-        ICON_MINIMAP_ARROW_BLUE
-        ICON_MINIMAP_ARROW_RED
-        ICON_HAMMER
-        ICON_HALF_STAR
-        ICON_EXPAND
-        ICON_EMPTY_STAR
-        ICON_COLLAPSE
-        ICON_CHECKMARK
-        ICON_BOOK
-        ICON_BATTLE
-        ICON_ARROW_LEFT
-        ICON_ARROW_RIGHT
-        ICON_MESSAGE
-        ICON_CLOCK
-        ICON_ALERT
+        [Embed(source = "../../../graphics/icons/general/ICON_WOOD.png")]
+        public static const ICON_WOOD: Class;
+        [Embed(source = "../../../graphics/icons/general/ICON_LABOR.png")]
+        public static const ICON_LABOR: Class;
+        [Embed(source = "../../../graphics/icons/general/ICON_IRON.png")]
+        public static const ICON_IRON: Class;
+        [Embed(source = "../../../graphics/icons/general/ICON_GOLD.png")]
+        public static const ICON_GOLD: Class;
+        [Embed(source = "../../../graphics/icons/general/ICON_CROP.png")]
+        public static const ICON_CROP: Class;
 
+        [Embed(source = "../../../graphics/icons/general/ICON_GLOBE.png")]
+        public static const ICON_WORLD: Class;
 
-
-
+        [Embed(source = "../../../graphics/icons/general/ICON_UPGRADE.png")]
+        public static const ICON_UPGRADE: Class;
+        [Embed(source = "../../../graphics/icons/general/ICON_UNFRIEND.png")]
+        public static const ICON_UNFRIEND: Class;
+        [Embed(source = "../../../graphics/icons/general/ICON_BELL.png")]
+        public static const ICON_TOGGLE_SOUND: Class;
+        [Embed(source = "../../../graphics/icons/general/ICON_SINGLE_SWORD.png")]
+        public static const ICON_SINGLE_SWORD: Class;
+        [Embed(source = "../../../graphics/icons/general/ICON_STAR.png")]
+        public static const ICON_STAR: Class;
+        [Embed(source = "../../../graphics/icons/general/ICON_SHIELD.png")]
+        public static const ICON_SHIELD: Class;
+        [Embed(source = "../../../graphics/icons/general/ICON_RED_X.png")]
+        public static const ICON_REDX: Class;
+        [Embed(source = "../../../graphics/icons/general/ICON_QUESTION.png")]
+        public static const ICON_QUESTION: Class;
+        [Embed(source = "../../../graphics/icons/general/ICON_MINIMAP_ARROW_BLUE.png")]
+        public static const ICON_MINIMAP_ARROW_BLUE: Class;
+        [Embed(source = "../../../graphics/icons/general/ICON_MINIMAP_ARROW_RED.png")]
+        public static const ICON_MINIMAP_ARROW_RED: Class;
+        [Embed(source = "../../../graphics/icons/general/ICON_HAMMER.png")]
+        public static const ICON_HAMMER: Class;
+        [Embed(source = "../../../graphics/icons/general/ICON_STAR_HALF.png")]
+        public static const ICON_HALF_STAR: Class;
+        [Embed(source = "../../../graphics/icons/general/ICON_PLUS.png")]
+        public static const ICON_EXPAND: Class;
+        [Embed(source = "../../../graphics/icons/general/ICON_STAR_EMPTY.png")]
+        public static const ICON_EMPTY_STAR: Class;
+        [Embed(source = "../../../graphics/icons/general/ICON_MINUS.png")]
+        public static const ICON_COLLAPSE: Class;
+        [Embed(source = "../../../graphics/icons/general/ICON_CHECKMARK.png")]
+        public static const ICON_CHECKMARK: Class;
+        [Embed(source = "../../../graphics/icons/general/ICON_BOOK_SMALL.png")]
+        public static const ICON_BOOK: Class;
+        [Embed(source = "../../../graphics/icons/general/ICON_SWORD.png")]
+        public static const ICON_BATTLE: Class;
+        [Embed(source = "../../../graphics/icons/general/ICON_ARROW_LEFT.png")]
+        public static const ICON_ARROW_LEFT: Class;
+        [Embed(source = "../../../graphics/icons/general/ICON_ARROW_RIGHT.png")]
+        public static const ICON_ARROW_RIGHT: Class;
+        [Embed(source = "../../../graphics/icons/general/ICON_MESSAGING.png")]
+        public static const ICON_MESSAGE: Class;
+        [Embed(source = "../../../graphics/icons/general/ICON_CLOCK.png")]
+        public static const ICON_CLOCK: Class;
+        [Embed(source = "../../../graphics/icons/general/ICON_ALERT.png")]
+        public static const ICON_ALERT: Class;
 
         // Achievement Icons
 		[Embed(source = "../../../graphics/icons/achievements/anvil-gold.png")]		

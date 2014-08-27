@@ -166,7 +166,7 @@ public class FormRow extends JPanel implements LayoutManager{
 	public function setColumnChild(column:int, child:Component):Component{
 		if(column < 0 || column > getColumnCount()){
 			throw new RangeError("Out of column bounds!");
-			return;
+			return null;
 		}
 		var old:Component = null;
 		if(column < getColumnCount()){

@@ -26,7 +26,7 @@
 					var effect: EffectPrototype = new EffectPrototype();
 					effect.effectCode = effectNode.@effect;
 					effect.location = effectNode.@location;
-					effect.isPrivate = effectNode.@private.toLowerCase() == 'true';
+					effect.isPrivate = effectNode.attribute("private").toLowerCase() == 'true';
 					effect.param1 = effectNode.@param1;
 					effect.param2 = effectNode.@param2;
 					effect.param3 = effectNode.@param3;

@@ -105,10 +105,11 @@
 			}
 		}
 
-        [Deprecated(message = "Use proper objects to get sprites")]
+        //[Deprecated(message = "Use proper objects to get sprites")]
 		public static function getSpriteEx(theme: String, type:int, level:int, forDarkBackground:Boolean = false): DisplayObjectContainer
 		{
             var typeName: String;
+			
 			if (type >= 1000) {
 				typeName = StructureFactory.getSpriteName(theme, type, level);
             }

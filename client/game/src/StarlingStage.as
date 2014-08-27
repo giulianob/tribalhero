@@ -70,7 +70,8 @@ package src {
             }
 
             if (DeviceCapabilities.isPhone(Starling.current.nativeStage)) {
-                Util.log("Running as phone");
+                Util.log("Running in phone mode");
+
                 // Get the scale based on the biggest percentage between the new width and the base width or the new height and the base height
                 var scale:Number = Math.max(( $width / _baseWidth ), ( $height / _baseHeight ));
 

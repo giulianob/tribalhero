@@ -4,24 +4,19 @@
   <output>
     <movie outputType="Application" />
     <movie input="" />
-    <movie path="bin\TribalHero.swf" />
+    <movie path="bin\Game.swf" />
     <movie fps="30" />
     <movie width="976" />
     <movie height="640" />
     <movie version="14" />
     <movie minorVersion="0" />
-    <movie platform="AIR" />
-    <movie background="#E8E2BE" />
-    <movie preferredSDK="Apache Flex 4.11.0 FP 11.9 AIR 3.9 en_US;4.11.0;" />
+    <movie platform="Flash Player" />
+    <movie background="#00FF00" />
+    <movie preferredSDK="AIR 14.0.0;14.0.0;" />
   </output>
   <!-- Other classes to be compiled into your SWF -->
   <classpaths>
-    <class path="game" />
-    <class path="lib\src\aswing" />
-    <class path="lib\src\starling-graphics" />
-    <class path="lib\src\starling-pixelmask" />
-    <class path="lib\src\starling-pixelperfecttouch" />
-    <class path="lib\src\promise" />
+    <!-- example: <class path="..." /> -->
   </classpaths>
   <!-- Build options -->
   <build>
@@ -33,7 +28,7 @@
     <option inline="False" />
     <option locale="" />
     <option loadConfig="GameConfig.xml" />
-    <option optimize="True" />
+    <option optimize="False" />
     <option omitTraces="True" />
     <option showActionScriptWarnings="True" />
     <option showBindingWarnings="True" />

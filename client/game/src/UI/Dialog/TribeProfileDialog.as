@@ -100,7 +100,7 @@
                 if (assignmentInfoDialog != null && assignmentInfoDialog.getFrame()) {
                     assignmentInfoDialog.getFrame().dispose();
 
-                    var hasAssignment: Option = Enumerable.from(profileData.assignments).firstOrNone(function(assignment: *) {
+                    var hasAssignment: Option = Enumerable.from(profileData.assignments).firstOrNone(function(assignment: *): Boolean {
                         return assignmentInfoDialog.assignment.id == assignment.id;
                     });
 

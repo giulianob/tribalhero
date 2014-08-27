@@ -3,7 +3,7 @@
   <component name="FlexBuildConfigurationManager" active="TribalHero">
     <configurations>
       <configuration name="TribalHero" pure-as="true" main-class="src.Preloader" output-file="TribalHero.swf" output-folder="$MODULE_DIR$/bin">
-        <dependencies target-player="11.9">
+        <dependencies target-player="14.0">
           <entries>
             <entry library-name="TheMiner_en" library-level="project">
               <dependency linkage="Merged" />
@@ -33,7 +33,7 @@
               <dependency linkage="Merged" />
             </entry>
           </entries>
-          <sdk name="flexsdk" />
+          <sdk name="airsdk" />
         </dependencies>
         <compiler-options>
           <map>
@@ -108,7 +108,7 @@
       <sourceFolder url="file://$MODULE_DIR$/lib/src/starling-pixelmask" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/lib/src/starling-pixelperfecttouch" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="flexsdk" jdkType="Flex SDK Type (new)" />
+    <orderEntry type="jdk" jdkName="airsdk&#9;flexsdk" jdkType="__CompositeFlexSdk__" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="TheMiner_en" level="project" />
     <orderEntry type="library" exported="" name="Linq_Flash" level="project" />

@@ -42,7 +42,7 @@ public class CheckBoxIcon implements Icon, UIResource{
 		var drawDot:Boolean = model.isSelected();
 		
 		box.graphics.clear();
-		var g:Graphics2D = new Graphics2D(box.graphics);
+		g = new Graphics2D(box.graphics);
 		
 		var w:int = getIconWidth(c)-5;
 		var h:int = getIconHeight(c)-5;

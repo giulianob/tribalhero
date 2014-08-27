@@ -30,7 +30,7 @@
     import src.UI.TweenPlugins.TransformAroundPointPlugin;
     import src.UI.TweenPlugins.TransformAroundPointStarlingPlugin;
     import src.Util.*;
-
+	
     CONFIG::debug {
         import com.sociodox.theminer.TheMiner;
     }

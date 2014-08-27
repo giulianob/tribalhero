@@ -5,8 +5,8 @@ package src
 
     public class Constants
 	{
-		public static var version: int;
-		public static var revision: int;
+		public static var version: int = CONFIG::version;
+		public static var revision: int = CONFIG::revision;
         
         // Comes from server
         public static var motd:String = "";

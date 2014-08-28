@@ -3,7 +3,7 @@ package src.UI.ViewModels {
 
     import src.Global;
     import src.Objects.Store.StoreItem;
-    import src.UI.ViewModel;
+    import src.FeathersUI.ViewModel;
 
     public class StoreConfirmBuyVM extends ViewModel {
         public static const EVENT_CONFIRM_BUY_ITEM_SUCCESS: String = "EVENT_CONFIRM_BUY_ITEM_SUCCESS";

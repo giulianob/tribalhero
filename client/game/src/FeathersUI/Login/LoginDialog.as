@@ -1,4 +1,4 @@
-package src.UI.Dialog{
+package src.FeathersUI.Login{
 
     import feathers.controls.Button;
     import feathers.controls.Label;
@@ -7,7 +7,7 @@ package src.UI.Dialog{
     import feathers.layout.VerticalLayout;
 	import src.Constants;
 
-    import src.UI.ViewModels.LoginVM;
+    import src.FeathersUI.Login.LoginVM;
 
     import starling.events.Event;
 

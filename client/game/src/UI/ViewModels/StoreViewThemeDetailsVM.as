@@ -18,7 +18,7 @@ package src.UI.ViewModels {
     import src.Objects.Store.StructureStoreAsset;
     import src.Objects.Store.TroopStoreAsset;
     import src.Objects.Store.WallStoreAsset;
-    import src.UI.ViewModel;
+    import src.FeathersUI.ViewModel;
 
     public class StoreViewThemeDetailsVM extends ViewModel {
         public static const EVENT_CONFIRM_PURCHASE_ITEM: String = "EVENT_CONFIRM_PURCHASE_ITEM";

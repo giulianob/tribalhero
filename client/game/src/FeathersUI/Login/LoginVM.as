@@ -1,5 +1,5 @@
-package src.UI.ViewModels {
-    import src.UI.ViewModel;
+package src.FeathersUI.Login {
+    import src.FeathersUI.ViewModel;
 
     public class LoginVM extends ViewModel {
         public static const LOGIN: String = "LOGIN";

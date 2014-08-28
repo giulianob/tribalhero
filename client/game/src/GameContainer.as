@@ -88,6 +88,7 @@
 		
 		// Game tutorial handler
 		private var tutorial: GameTutorial;
+
         private var lblCoords: JLabel;
 
         internal var mapHolder: starling.display.Sprite;

@@ -1,4 +1,4 @@
-package src.UI {
+package src.FeathersUI {
     import flash.events.Event;
 
     public class FlowEvent extends Event {

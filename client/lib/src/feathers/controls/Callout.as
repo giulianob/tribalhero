@@ -167,6 +167,11 @@ package feathers.controls
 		DIRECTION_TO_FUNCTION[DIRECTION_HORIZONTAL] = positionToLeftOrRightOfOrigin;
 
 		/**
+		 * @private
+		 */
+		protected static const FUZZY_CONTENT_DIMENSIONS_PADDING:Number = 0.000001;
+
+		/**
 		 * The padding between a callout and the top edge of the stage when the
 		 * callout is positioned automatically. May be ignored if the callout
 		 * is too big for the stage.
@@ -1578,7 +1583,13 @@ package feathers.controls
 			var sizeInvalid:Boolean = this.isInvalid(INVALIDATION_FLAG_SIZE);
 			const stateInvalid:Boolean = this.isInvalid(INVALIDATION_FLAG_STATE);
 			const stylesInvalid:Boolean = this.isInvalid(INVALIDATION_FLAG_STYLES);
-			const originInvalid:Boolean = this.isInvalid(INVALIDATION_FLAG_ORIGIN);
+			var originInvalid:Boolean = this.isInvalid(INVALIDATION_FLAG_ORIGIN);
+
+			if(sizeInvalid)
+			{
+				this._lastGlobalBoundsOfOrigin = null;
+				originInvalid = true;
+			}
 
 			if(originInvalid)
 			{
@@ -1806,12 +1817,18 @@ package feathers.controls
 				const oldIgnoreContentResize:Boolean = this._ignoreContentResize;
 				this._ignoreContentResize = true;
 				const contentWidth:Number = backgroundWidth - this._paddingLeft - this._paddingRight;
-				if(this._content.width != contentWidth)
+				var difference:Number = Math.abs(this._content.width - contentWidth);
+				//instead of !=, we do some fuzzy math to account for possible
+				//floating point errors.
+				if(difference > FUZZY_CONTENT_DIMENSIONS_PADDING)
 				{
 					this._content.width = contentWidth;
 				}
 				const contentHeight:Number = backgroundHeight - this._paddingTop - this._paddingBottom;
-				if(this._content.height != contentHeight)
+				difference = Math.abs(this._content.height - contentHeight);
+				//instead of !=, we do some fuzzy math to account for possible
+				//floating point errors.
+				if(difference > FUZZY_CONTENT_DIMENSIONS_PADDING)
 				{
 					this._content.height = contentHeight;
 				}

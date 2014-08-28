@@ -2,7 +2,6 @@ package src.Map.MiniMap {
     import feathers.controls.Label;
 
     import src.Objects.Factories.SpriteFactory;
-    import src.UI.LookAndFeel.TribalHeroUITheme;
 
     import starling.display.*;
 
@@ -25,7 +24,7 @@ package src.Map.MiniMap {
                 levelLabel.text = level.toString();
                 levelLabel.x = dot.width - 3;
                 levelLabel.y = dot.height - 3;
-                levelLabel.nameList.add(TribalHeroUITheme.LABEL_STYLE_MUTED);
+                levelLabel.isEnabled = false;
 
                 addChild(levelLabel);
             }

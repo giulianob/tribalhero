@@ -2,7 +2,6 @@ package src.UI.Components {
     import feathers.controls.Label;
 
     import src.Objects.Factories.SpriteFactory;
-    import src.UI.LookAndFeel.TribalHeroUITheme;
 
     import starling.display.*;
 
@@ -33,8 +32,7 @@ package src.UI.Components {
 
             visible = count > 1;
 
-            lblCount.nameList.add(TribalHeroUITheme.LABEL_STYLE_TOOLTIP);
-            lblCount.nameList.add(TribalHeroUITheme.LABEL_STYLE_HEADING);
+            lblCount.nameList.add(Label.ALTERNATE_NAME_HEADING);
             lblCount.text = count > 9 ? "!" : count.toString();
             lblCount.validate();
 

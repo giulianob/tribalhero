@@ -31,10 +31,6 @@
     import src.UI.TweenPlugins.TransformAroundPointStarlingPlugin;
     import src.Util.*;
 	
-    CONFIG::debug {
-        import com.sociodox.theminer.TheMiner;
-    }
-
     public class Main extends MovieClip
 	{
 		private var map:Map;
@@ -61,16 +57,10 @@
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 
             StarlingStage.init(stage).then(function(value: *): void {
-                new TribalHeroUITheme();
-
                 stage.showDefaultContextMenu = false;
 
                 Global.stage = stage;
                 Global.musicPlayer = new MusicPlayer();
-
-                CONFIG::debug {
-                    stage.addChild(new TheMiner());
-                }
 
                 //Init actionLinq
                 EnumerationExtender.Initialize();
@@ -91,6 +81,7 @@
                 Global.main = self;
 
                 //Init right context menu for debugging
+                /*
                 CONFIG::debug {
                     var fm_menu:ContextMenu = new ContextMenu();
                     var dump:ContextMenuItem = new ContextMenuItem("Dump stage");
@@ -104,6 +95,7 @@
                     fm_menu.customItems.push(dumpRegionQueryInfo);
                     contextMenu = fm_menu;
                 }
+                */
 
                 //Flash params
                 parms = loaderInfo.parameters;
@@ -129,9 +121,12 @@
                     Constants.session.hostname = parms.hostname;
                 }
 
-                var loginFlow: LoginFlow = new LoginFlow(parms, Global.gameContainer);
-                loginFlow.on(LoginFlow.LOGIN_COMPLETE, completeLogin);
-                loginFlow.showLogin();
+                // Need to give feathers time to init for some reason
+                Util.callLater(function(): void {
+                    var loginFlow: LoginFlow = new LoginFlow(parms, Global.gameContainer);
+                    loginFlow.on(LoginFlow.LOGIN_COMPLETE, completeLogin);
+                    loginFlow.showLogin();
+                });
             }).done();
 		}
 

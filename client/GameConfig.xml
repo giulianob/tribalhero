@@ -40,7 +40,8 @@
       <path-element>lib/swc/Game/Game.swc</path-element>
       <path-element>lib/swc/starling/starling.swc</path-element>
       <path-element>lib/swc/feathers/feathers.swc</path-element>
-      <path-element>lib/swc/feathers/AeonDesktopTheme.swc</path-element>      
+      <path-element>lib/swc/feathers/MetalWorksMobileTheme.swc</path-element>      
+      <path-element>lib/swc/feathers/MetalWorksDesktopTheme.swc</path-element>      
       <path-element>lib/swc/as3corelib/as3corelib.swc</path-element>
       <path-element>lib/swc/flash/flash.swc</path-element>
       <path-element>lib/swc/tweenmax/greensock.swc</path-element>

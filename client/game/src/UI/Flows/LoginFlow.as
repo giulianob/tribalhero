@@ -19,9 +19,9 @@ package src.UI.Flows {
     import src.Map.MapComm;
     import src.UI.Dialog.InfoDialog;
     import src.UI.Dialog.InitialCityDialog;
-    import src.UI.Dialog.LoginDialog;
-    import src.UI.Flow;
-    import src.UI.ViewModels.LoginVM;
+    import src.FeathersUI.Login.LoginDialog;
+    import src.FeathersUI.Flow;
+    import src.FeathersUI.Login.LoginVM;
     import src.Util.Util;
 
     public class LoginFlow extends Flow {

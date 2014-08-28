@@ -1,24 +1,25 @@
-package src.UI {
+package src.FeathersUI {
+    import src.UI.*;
     import flash.events.EventDispatcher;
 
-    public class Flow {
+    public class ViewModel {
         private var _eventDispatcher: EventDispatcher;
 
-        public function Flow() {
+        public function ViewModel() {
             _eventDispatcher = new EventDispatcher();
         }
-
+		
         public function on(event: String, listener: Function, ... params): void {
             var localListener: Function = listener;
             var localParams: Array = params;
 
-            _eventDispatcher.addEventListener(event, function(e: FlowEvent): void {
+            _eventDispatcher.addEventListener(event, function(e: ViewModelEvent): void {
                 localListener.apply(null, localParams.concat(e.params));
             }, false, 0, false);
         }
 
         public function dispatch(eventType: String, ... params): void {
-            _eventDispatcher.dispatchEvent(new FlowEvent(eventType, params));
+            _eventDispatcher.dispatchEvent(new ViewModelEvent(eventType, params));
         }
     }
 }

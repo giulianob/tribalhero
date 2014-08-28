@@ -5,7 +5,7 @@ package src.UI.ViewModels {
 
     import src.Constants;
     import src.SessionVariables;
-    import src.UI.ViewModel;
+    import src.FeathersUI.ViewModel;
     import src.Util.Util;
 
     public class StoreBuyCoinsVM extends ViewModel {

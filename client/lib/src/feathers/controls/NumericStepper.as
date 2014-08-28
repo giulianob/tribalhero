@@ -257,7 +257,7 @@ package feathers.controls
 		{
 			if(this._step != 0 && newValue != this._maximum && newValue != this._minimum)
 			{
-				newValue = roundToNearest(newValue, this._step);
+				newValue = roundToNearest(newValue - this._minimum, this._step) + this._minimum;
 			}
 			newValue = clamp(newValue, this._minimum, this._maximum);
 			if(this._value == newValue)
@@ -1241,6 +1241,11 @@ package feathers.controls
 		protected function decrement():void
 		{
 			this.value -= this._step;
+			if(this.textInput.isEditable)
+			{
+				this.validate();
+				this.textInput.selectRange(0, this.textInput.text.length);
+			}
 		}
 
 		/**
@@ -1249,6 +1254,37 @@ package feathers.controls
 		protected function increment():void
 		{
 			this.value += this._step;
+			if(this.textInput.isEditable)
+			{
+				this.validate();
+				this.textInput.selectRange(0, this.textInput.text.length);
+			}
+		}
+
+		/**
+		 * @private
+		 */
+		protected function toMinimum():void
+		{
+			this.value = this._minimum;
+			if(this.textInput.isEditable)
+			{
+				this.validate();
+				this.textInput.selectRange(0, this.textInput.text.length);
+			}
+		}
+
+		/**
+		 * @private
+		 */
+		protected function toMaximum():void
+		{
+			this.value = this._maximum;
+			if(this.textInput.isEditable)
+			{
+				this.validate();
+				this.textInput.selectRange(0, this.textInput.text.length);
+			}
 		}
 
 		/**
@@ -1330,7 +1366,7 @@ package feathers.controls
 			this.textInput.nameList.add(textInputName);
 			this.textInput.addEventListener(FeathersEventType.ENTER, textInput_enterHandler);
 			this.textInput.addEventListener(FeathersEventType.FOCUS_OUT, textInput_focusOutHandler);
-			this.textInput.isFocusEnabled = false;
+			this.textInput.isFocusEnabled = this._focusManager == null;
 			this.addChild(this.textInput);
 		}
 
@@ -1484,6 +1520,26 @@ package feathers.controls
 		/**
 		 * @private
 		 */
+		protected function parseTextInputValue():void
+		{
+			var newValue:Number = parseFloat(this.textInput.text);
+			if(newValue == newValue) //!isNaN
+			{
+				this.value = newValue;
+				if(this.value != newValue && !this.isInvalid(INVALIDATION_FLAG_DATA))
+				{
+					//if the value setter modified the new value from the text
+					//input, and it returned because the modified value is equal
+					//to the current value, then we need to force invalidation
+					//so that the text input's text is accurate
+					this.invalidate(INVALIDATION_FLAG_DATA);
+				}
+			}
+		}
+
+		/**
+		 * @private
+		 */
 		protected function childProperties_onChange(proxy:PropertyProxy, name:Object):void
 		{
 			this.invalidate(INVALIDATION_FLAG_STYLES);
@@ -1526,11 +1582,7 @@ package feathers.controls
 		 */
 		protected function textInput_enterHandler(event:Event):void
 		{
-			const newValue:Number = parseFloat(this.textInput.text);
-			if(!isNaN(newValue))
-			{
-				this.value = newValue;
-			}
+			this.parseTextInputValue();
 		}
 
 		/**
@@ -1538,11 +1590,7 @@ package feathers.controls
 		 */
 		protected function textInput_focusOutHandler(event:Event):void
 		{
-			const newValue:Number = parseFloat(this.textInput.text);
-			if(!isNaN(newValue))
-			{
-				this.value = newValue;
-			}
+			this.parseTextInputValue();
 		}
 
 		/**
@@ -1624,19 +1672,19 @@ package feathers.controls
 		{
 			if(event.keyCode == Keyboard.HOME)
 			{
-				this.value = this._minimum;
+				this.toMinimum();
 			}
 			else if(event.keyCode == Keyboard.END)
 			{
-				this.value = this._maximum;
+				this.toMaximum();
 			}
 			else if(event.keyCode == Keyboard.UP)
 			{
-				this.value += this._step;
+				this.increment();
 			}
 			else if(event.keyCode == Keyboard.DOWN)
 			{
-				this.value -= this._step;
+				this.decrement();
 			}
 		}
 

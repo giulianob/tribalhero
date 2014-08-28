@@ -52,7 +52,7 @@ package src.UI.Dialog{
             var lblPassword: Label = new Label();
             lblPassword.text = "Password";
 
-            layout = new VerticalLayout();
+            this.layout = new VerticalLayout();
 
             addChild(lblAddress);
             addChild(txtAddress);

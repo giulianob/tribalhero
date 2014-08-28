@@ -8,9 +8,11 @@ package src.Util {
     import flash.display.DisplayObject;
     import flash.display.DisplayObjectContainer;
     import flash.display.Stage;
+    import flash.events.TimerEvent;
     import flash.external.ExternalInterface;
     import flash.geom.Point;
     import flash.geom.Rectangle;
+    import flash.utils.Timer;
     import flash.utils.getQualifiedClassName;
 
     import mx.utils.StringUtil;
@@ -32,6 +34,14 @@ package src.Util {
     import src.UI.GameJImagePanelBackground;
 
     public class Util {
+
+        public static function callLater(func:Function, time:int=40):void{
+            var timer:Timer = new Timer(time, 1);
+            timer.addEventListener(TimerEvent.TIMER, function(e:TimerEvent):void{
+                func();
+            });
+            timer.start();
+        }
 
         public static function calculateSize(width: Number, height: Number, targetW: Number, targetH: Number): IntDimension
         {

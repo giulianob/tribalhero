@@ -32,6 +32,12 @@
             <entry library-id="e13609b7-569f-4f39-b85c-d16a2a038337">
               <dependency linkage="Merged" />
             </entry>
+            <entry library-id="a58ffc4f-353f-499f-abcc-e30cda2beb22">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-id="9f04bd87-65f4-4cb3-9337-47828b8d461f">
+              <dependency linkage="Merged" />
+            </entry>
           </entries>
           <sdk name="airsdk" />
         </dependencies>
@@ -76,15 +82,22 @@
             <entry library-id="4496d7fa-8d0c-4d8d-b995-20d81f054bf4">
               <dependency linkage="Merged" />
             </entry>
+            <entry library-id="0688fe5e-5143-45f6-9865-931bfff30c62">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-id="e8ee70f7-b896-4d6f-bb23-db110275f7df">
+              <dependency linkage="Merged" />
+            </entry>
           </entries>
           <sdk name="flexsdk" />
         </dependencies>
         <compiler-options>
           <map>
             <entry key="compiler.debug.swf" value="true" />
-            <entry key="compiler.define" value="CONFIG::debug&#9;true" />
+            <entry key="compiler.define" value="" />
           </map>
           <option name="additionalConfigFilePath" value="$MODULE_DIR$/GameConfig.xml" />
+          <option name="additionalOptions" value="-define+=CONFIG::debug,true" />
         </compiler-options>
         <packaging-air-desktop />
         <packaging-android enabled="true" use-generated-descriptor="false" custom-descriptor-path="$MODULE_DIR$/mobile/application.xml" package-file-name="TribalHero_Android">
@@ -171,6 +184,46 @@
         <properties id="4496d7fa-8d0c-4d8d-b995-20d81f054bf4" />
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/swc/feathers/AeonDesktopTheme.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="0688fe5e-5143-45f6-9865-931bfff30c62" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/swc/feathers/MetalWorksMobileTheme.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="a58ffc4f-353f-499f-abcc-e30cda2beb22" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/swc/feathers/MetalWorksDesktopTheme.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="e8ee70f7-b896-4d6f-bb23-db110275f7df" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/swc/feathers/MetalWorksDesktopTheme.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="9f04bd87-65f4-4cb3-9337-47828b8d461f" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/swc/feathers/MetalWorksMobileTheme.swc!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

@@ -3,12 +3,12 @@ package src {
     import com.codecatalyst.promise.Promise;
 
     import feathers.system.DeviceCapabilities;
+    import feathers.themes.MetalWorksDesktopTheme;
+    import feathers.themes.MetalWorksMobileTheme;
 
     import flash.display.Stage;
-    import flash.geom.Point;
     import flash.geom.Rectangle;
 
-    import src.Global;
     import src.Util.Util;
 
     import starling.core.Starling;
@@ -23,51 +23,57 @@ package src {
 
         public static var assets: AssetManager = new AssetManager();
 
+        private static var stageInitDeferred: Deferred;
+
         public function StarlingStage() {
+            super();
+
+            this.addEventListener(Event.ADDED_TO_STAGE, addedToStage);
+        }
+
+        private function addedToStage(event: Event): void {
+            trace("Starling init complete. Mode is " + Starling.current.context.driverInfo);
+
+            Global.starlingStage = this;
+
+            updateViewport(Starling.current.nativeStage.stageWidth, Starling.current.nativeStage.stageHeight);
+
+            if (DeviceCapabilities.isPhone(Starling.current.nativeStage) || DeviceCapabilities.isPhone(Starling.current.nativeStage)) {
+                new MetalWorksMobileTheme();
+            }
+            else {
+                new MetalWorksDesktopTheme();
+            }
+
+            stage.addEventListener(Event.RESIZE, onResizeStage);
+
+            assets.enqueue(StarlingAssets);
+            assets.loadQueue(function(ratio:Number):void
+            {
+                if (ratio == 1.0) {
+                    stageInitDeferred.resolve(null);
+                }
+            });
         }
 
         public static function init(stage: Stage): Promise {
             Starling.handleLostContext = true;
             Starling.multitouchEnabled = true;
 
-            var stageInitDeferred: Deferred = new Deferred();
-            var queueInitDeferred: Deferred = new Deferred();
+            stageInitDeferred = new Deferred();
 
             var starling: Starling = new Starling(StarlingStage, stage);
+            starling.simulateMultitouch = CONFIG::debug;
+
             starling.start();
-            starling.addEventListener(Event.ROOT_CREATED, function(e: Event): void {
-                trace("Starling init complete. Mode is " + Starling.current.context.driverInfo);
 
-                Global.starlingStage = StarlingStage(e.data);
-
-                updateViewport(Starling.current.nativeStage.stageWidth, Starling.current.nativeStage.stageHeight);
-
-                stage.addEventListener(Event.RESIZE, onResizeStage);
-
-                stageInitDeferred.resolve(null);
-            });
-
-            stageInitDeferred.promise.then(function(): void {
-                assets.enqueue(StarlingAssets);
-                assets.loadQueue(function(ratio:Number):void
-                {
-                    if (ratio == 1.0) {
-                        queueInitDeferred.resolve(null);
-                    }
-                });
-            });
-
-            return queueInitDeferred.promise;
+            return stageInitDeferred.promise;
         }
 
         private static function updateViewport($width:Number, $height:Number):void
         {
             // Resize the Starling viewport with the new width and height
             Starling.current.viewPort = new Rectangle(0, 0, $width, $height);
-
-            if (!Starling.current && !Starling.current.stage) {
-                return;
-            }
 
             if (DeviceCapabilities.isPhone(Starling.current.nativeStage)) {
                 Util.log("Running in phone mode");
@@ -84,6 +90,10 @@ package src {
                 Starling.current.stage.stageWidth = $width;
                 Starling.current.stage.stageHeight = $height;
             }
+
+            trace("DPI: " + DeviceCapabilities.dpi);
+            trace("Screen Inches: " + DeviceCapabilities.screenInchesX(Starling.current.nativeStage) + "x" + DeviceCapabilities.screenInchesY(Starling.current.nativeStage));
+            trace("Screen Pixels: " + DeviceCapabilities.screenPixelWidth + DeviceCapabilities.screenPixelHeight);
         }
 
         private static function onResizeStage(e: *):void
@@ -91,7 +101,7 @@ package src {
             updateViewport(Starling.current.nativeStage.stageWidth, Starling.current.nativeStage.stageHeight);
 
             CONFIG::debug {
-                Starling.current.showStatsAt("right", "bottom");
+                //Starling.current.showStatsAt("right", "bottom");
             }
         }
     }

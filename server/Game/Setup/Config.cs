@@ -174,7 +174,7 @@ namespace Game.Setup
         
         public static bool actions_instant_time;
         public static bool actions_skip_city_actions;
-        public static int actions_free_cancel_interval_in_sec = 60;
+        public static int actions_free_cancel_interval_in_sec = 70; // it's really 60 seconds but give an extra 10 seconds to account for latency
         public static bool actions_ignore_requirements;
 
         #endregion

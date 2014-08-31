@@ -478,6 +478,12 @@ namespace Game.Data.Tribe
                   {
                       lock (assignmentLock)
                       {
+                          // Possible for reschedule to be called before we grab the assignmentLock
+                          if (IsScheduled)
+                          {
+                              scheduler.Remove(this);
+                          }
+
                           var troopToDispatch = assignmentTroops.FirstOrDefault(x => !x.Dispatched && x.DepartureTime <= now);
 
                           if (troopToDispatch != null)
@@ -509,7 +515,7 @@ namespace Game.Data.Tribe
 
                           // If there are stubs that have not been dispatched or we haven't reached the time that the assignment should be over then we just reschedule it.
                           if (assignmentTroops.Any(x => !x.Dispatched) || TargetTime.CompareTo(SystemClock.Now) > 0)
-                          {                              
+                          {
                               scheduler.Put(this);
                               dbManager.Save(this);
                           }

@@ -53,24 +53,6 @@ package src.Map {
             return (int)(position.x % Constants.regionTileW + (position.y % Constants.regionTileH) * Constants.regionTileW);
         }
 
-		public static function getRegionId(screenPosition: ScreenPosition): int
-		{
-			var rX: int = screenPosition.x + Constants.tileW / 2;
-			var rY: int = screenPosition.y + Constants.tileH / 2;
-
-			var xId: int = int(rX / Constants.regionW);
-			var yId: int = int(rY / int(Constants.regionH / 2));
-
-			if (xId < 0 || xId >= Constants.mapRegionW)
-			return -1;
-			if (yId < 0 || yId >= Constants.mapRegionH)
-			return -1;
-
-			var id: int = int(xId + yId * Constants.mapRegionW);
-
-			return id;
-		}
-
         public static function getMapCoord(screenPos: ScreenPosition): Position // from screen coord to map coord
 		{
 			var xcoord: int = int(Math.max(screenPos.x + int(Constants.tileW / 2), 0) / Constants.tileW);

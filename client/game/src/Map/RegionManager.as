@@ -18,7 +18,7 @@
 
         private function removeFromPrimaryRegionAndTiles(obj: SimpleGameObject, dispose: Boolean): Boolean
         {
-            var regionId: int = TileLocator.getRegionId(obj.primaryPosition);
+            var regionId: int = TileLocator.getRegionIdFromMapCoord(obj.primaryPosition.toPosition());
             var primaryRegion: Region = get(regionId);
 
             if (primaryRegion == null)
@@ -30,7 +30,7 @@
 
             for each (var position: Position in TileLocator.foreachMultitileObject(obj))
             {
-                regionId = TileLocator.getRegionId(obj.primaryPosition);
+                regionId = TileLocator.getRegionIdFromMapCoord(position);
                 var region: Region = get(regionId);
 
                 if (region == null) {
@@ -69,8 +69,8 @@
                 if (region == null)
                 {
                     continue;
-                }
 
+                }
                 region.addObjectToTile(obj, position);
             }
 

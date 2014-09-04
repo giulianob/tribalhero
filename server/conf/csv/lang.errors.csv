@@ -73,6 +73,7 @@ ERROR_614,The gate is still under attack and has {0} hp remaining. There appear 
 ERROR_615,There are outstanding troops.
 ERROR_616,There are foreign troops stationed in the city.
 ERROR_617,There are incoming attacks.
+ERROR_618,You can only move one city every two weeks.
 ERROR_701,Tribe is currently full. If someone was recently removed from the tribe  a slot will be open for new members after 8 hours.
 ERROR_702,You are not allowed to do this action because you aren't currently a member in a tribe
 ERROR_703,Tribe name already taken

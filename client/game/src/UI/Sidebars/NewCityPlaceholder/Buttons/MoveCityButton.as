@@ -1,5 +1,6 @@
 
 package src.UI.Sidebars.NewCityPlaceholder.Buttons {
+
 import flash.events.Event;
 import flash.events.MouseEvent;
 
@@ -7,13 +8,13 @@ import src.Constants;
 import src.Global;
 import src.Map.Position;
 import src.Objects.Actions.ActionButton;
-import src.Objects.Effects.Formula;
 import src.Objects.Factories.*;
 import src.Objects.NewCityPlaceholder;
 import src.Objects.Prototypes.StructurePrototype;
 import src.UI.Components.SimpleTooltip;
 import src.UI.Dialog.CreateCityDialog;
 import src.UI.Tooltips.NewCityTooltip;
+import src.Util.DateUtil;
 import src.Util.StringHelper;
 
 public class MoveCityButton extends ActionButton
@@ -31,7 +32,13 @@ public class MoveCityButton extends ActionButton
 
         mainBuildingPrototype = StructureFactory.getPrototype(ObjectFactory.getFirstType("MainBuilding"), 1);
 
-        new SimpleTooltip(this,StringHelper.localize("MOVE_CITY_DESC"),"Move city");
+        var delta: int = Global.map.getServerTime() - Constants.session.lastMoved.time/1000;
+
+        if(delta>14*86400) {
+            new SimpleTooltip(this,StringHelper.localize("MOVE_CITY_DESC"),"Move city");
+        } else {
+            new SimpleTooltip(this,StringHelper.localize("MOVE_CITY2_DESC",DateUtil.niceTime(delta)),"Move city");
+        }
         ///		tooltip = new NewCityTooltip(mainBuildingPrototype);
 
         addEventListener(MouseEvent.CLICK, onMouseClick);

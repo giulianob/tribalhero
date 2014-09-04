@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Game.Battle;
 using Game.Data;
-using Game.Data.Troop;
 using Game.Logic.Procedures;
 using Game.Map;
-using Game.Module.Remover;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
+using Persistance;
 
 namespace Game.Logic.Actions
 {
@@ -36,6 +36,8 @@ namespace Game.Logic.Actions
 
         private readonly IObjectTypeFactory objectTypeFactory;
 
+        private readonly IDbManager dbManager;
+
         public CityMovePassiveAction(IActionFactory actionFactory,
                                         ILocker locker,
                                         CallbackProcedure callbackProcedure,
@@ -44,7 +46,8 @@ namespace Game.Logic.Actions
                                         IWorld world,
                                         TechnologyFactory technologyFactory,
                                         ITileLocator tileLocator,
-                                        IObjectTypeFactory objectTypeFactory)
+                                        IObjectTypeFactory objectTypeFactory,
+                                        IDbManager dbManager)
         {
             this.actionFactory = actionFactory;
             this.locker = locker;
@@ -55,6 +58,7 @@ namespace Game.Logic.Actions
             this.technologyFactory = technologyFactory;
             this.tileLocator = tileLocator;
             this.objectTypeFactory = objectTypeFactory;
+            this.dbManager = dbManager;
         }
 
         public CityMovePassiveAction(uint id,
@@ -69,8 +73,9 @@ namespace Game.Logic.Actions
                                         IWorld world,
                                         TechnologyFactory technologyFactory,
                                         ITileLocator tileLocator,
-                                        IObjectTypeFactory objectTypeFactory)
-            : this(actionFactory, locker, callbackProcedure, structureCsvFactory, cityProcedure, world, technologyFactory, tileLocator, objectTypeFactory)
+                                        IObjectTypeFactory objectTypeFactory,
+                                        IDbManager dbManager)
+            : this(actionFactory, locker, callbackProcedure, structureCsvFactory, cityProcedure, world, technologyFactory, tileLocator, objectTypeFactory, dbManager)
         {
             this.cityId = id;
             this.resource = resource;
@@ -131,6 +136,13 @@ namespace Game.Logic.Actions
 
         public override Error Execute()
         {
+            ICity city;
+            if (!world.TryGetObjects(cityId, out city))
+                return Error.CityNotFound;
+            
+            city.Owner.LastMoved = SystemClock.Now;
+            dbManager.Save(city.Owner);
+            
             beginTime = SystemClock.Now;
             endTime = SystemClock.Now.AddSeconds(10);
             return Error.Ok;

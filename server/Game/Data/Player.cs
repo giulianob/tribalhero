@@ -101,6 +101,8 @@ namespace Game.Data
 
         public DateTime LastLogin { get; set; }
 
+        public DateTime LastMoved { get; set; }
+
         public string SessionId { get; set; }
 
         public PlayerRights Rights { get; set; }
@@ -354,6 +356,7 @@ namespace Game.Data
                     new DbColumn("last_deleted_tribe", LastDeletedTribe, DbType.DateTime),
                     new DbColumn("sound_muted", SoundMuted, DbType.Boolean),
                     new DbColumn("never_attacked", NeverAttacked, DbType.Boolean),
+                    new DbColumn("last_moved", LastMoved, DbType.DateTime),
                 };
             }
         }

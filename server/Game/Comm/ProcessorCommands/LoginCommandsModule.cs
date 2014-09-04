@@ -272,6 +272,7 @@ namespace Game.Comm.ProcessorCommands
                                        ? 0
                                        : tribeManager.GetIncomingList(player.Tribesman.Tribe).Count());
                 reply.AddInt16((short)(player.Tribesman == null ? 0 : player.Tribesman.Tribe.AssignmentCount));
+                reply.AddUInt32(UnixDateTime.DateTimeToUnix(player.LastMoved.ToUniversalTime()));
 
                 //Server time
                 reply.AddUInt32(UnixDateTime.DateTimeToUnix(DateTime.UtcNow.ToUniversalTime()));
@@ -475,7 +476,7 @@ namespace Game.Comm.ProcessorCommands
                 Error ret = city.Worker.DoPassive(city[1], cityRebuildAction, true);
                 if (ret != 0)
                 {
-                    ReplyError(session, packet, ret);
+                    throw new Exception("CityMove should not fail!  we cant rollback at this point!!");
                 }
                 else
                 {

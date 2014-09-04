@@ -184,6 +184,8 @@ namespace Game.Setup
 
         CityIncomingAttack = 617,
 
+        CityMovedWithinTwoWeeks = 618,
+
         #endregion
 
         #region Tribe Errors

@@ -28,6 +28,7 @@ package src {
         public var tribeIncoming: int;
         public var soundMuted: Boolean;
         public var themesPurchased: Array = [];
+        public var lastMoved: Date;
 
         private var _coins: int = 0;
 

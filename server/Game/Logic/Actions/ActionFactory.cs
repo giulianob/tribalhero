@@ -157,7 +157,8 @@ namespace Game.Logic.Actions
                                                 kernel.Get<IWorld>(),
                                                 kernel.Get<TechnologyFactory>(),
                                                 kernel.Get<ITileLocator>(),
-                                                kernel.Get<IObjectTypeFactory>());
+                                                kernel.Get<IObjectTypeFactory>(),
+                                                kernel.Get<IDbManager>());
         }
 
         public StructureSelfDestroyActiveAction CreateStructureSelfDestroyActiveAction(uint cityId, uint objectId)

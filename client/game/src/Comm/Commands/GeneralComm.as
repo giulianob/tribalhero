@@ -132,6 +132,7 @@
 			Constants.session.signupTime = new Date(packet.readUInt() * 1000);
 			Constants.session.tribeIncoming = packet.readInt();
 			Constants.session.tribeAssignment = packet.readShort();
+            Constants.session.lastMoved = new Date(packet.readUInt() * 1000);
 
 			var serverTime: int = packet.readUInt();
 

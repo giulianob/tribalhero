@@ -480,6 +480,7 @@ namespace Game.Database
                     player.LastDeletedTribe = DateTime.SpecifyKind((DateTime)reader["last_deleted_tribe"], DateTimeKind.Utc);
                     player.Banned = (bool)reader["banned"];
                     player.NeverAttacked = (bool)reader["never_attacked"];
+                    player.LastMoved = DateTime.SpecifyKind((DateTime)reader["last_moved"], DateTimeKind.Utc);
 
                     if (!World.Players.TryAdd(player.PlayerId, player))
                     {

@@ -6,6 +6,7 @@ using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
 using System.Linq;
+using Game.Util;
 using Game.Util.Locking;
 
 namespace Game.Logic.Procedures
@@ -58,6 +59,9 @@ namespace Game.Logic.Procedures
         {
             if (city == null)
                 return Error.CityNotFound;
+
+            if (SystemClock.Now.Subtract(city.Owner.LastMoved).TotalDays < 14)
+                return Error.CityMovedWithinTwoWeeks;
 
             if (city.Battle != null)
                 return Error.CityInBattle;

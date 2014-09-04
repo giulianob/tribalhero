@@ -56,6 +56,8 @@ namespace Game.Data
 
         bool NeverAttacked { get; set; }
 
+        DateTime LastMoved { get; set; }
+
         void Add(ICity city);
 
         int GetCityCount(bool includeDeleted = false);

@@ -23,11 +23,11 @@ namespace Game.Logic.Formulas
 
             if (hoursSinceScalingStarted > 0)
             {
-                return (decimal)(Math.Round(Math.Pow(GateScaling, hoursSinceScalingStarted) * StrongholdMainBattleMeterBase(level)) * 10);
+                return (decimal)(Math.Round(Math.Pow(GateScaling, hoursSinceScalingStarted) * StrongholdBaseValue(level)) * 10);
 
             }
 
-            return StrongholdMainBattleMeterBase(level) * 10;
+            return StrongholdBaseValue(level) * 10;
         }
 
         private int GetHoursSinceServerStarted()
@@ -51,7 +51,7 @@ namespace Game.Logic.Formulas
             return new Resource(0, (int)(damagedGateHp / 8), (int)(damagedGateHp / 16), (int)(damagedGateHp / 4));
         }
 
-        private int StrongholdMainBattleMeterBase(byte level)
+        private int StrongholdBaseValue(byte level)
         {
             int[] meters = { 0, 500, 600, 700, 800, 950, 1100, 1250, 1450, 1650, 1850, 2100, 2350, 2600, 2900, 3200, 3500, 3850, 4200, 4600, 5000 };
             return meters[level];
@@ -68,18 +68,18 @@ namespace Game.Logic.Formulas
 
             if (hoursSinceScalingStarted > 0)
             {
-                return (int)Math.Round(Math.Pow(MeterScaling, hoursSinceScalingStarted) * StrongholdMainBattleMeterBase(level));
+                return (int)Math.Round(Math.Pow(MeterScaling, hoursSinceScalingStarted) * StrongholdBaseValue(level))/2;
 
             }
 
-            return StrongholdMainBattleMeterBase(level);
+            return StrongholdBaseValue(level)/2;
         }
 
         public virtual void StrongholdUpkeep(byte level, out int upkeep, out byte unitLevel)
         {
             int[] unitLevels = {1, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10};
 
-            upkeep = Config.stronghold_fixed_upkeep == 0 ? (int)(StrongholdMainBattleMeter(level) * .8) : Config.stronghold_fixed_upkeep;
+            upkeep = Config.stronghold_fixed_upkeep == 0 ? (int)(StrongholdMainBattleMeter(level) * 2 * .8) : Config.stronghold_fixed_upkeep;
             unitLevel = (byte)unitLevels[level-1];
         }
 

@@ -6,6 +6,7 @@ package src.FeathersUI.Login{
     import feathers.controls.TextInput;
     import feathers.layout.VerticalLayout;
 	import src.Constants;
+    import src.FeathersUI.Controls.Form;
 
     import src.FeathersUI.Login.LoginVM;
 
@@ -43,27 +44,16 @@ package src.FeathersUI.Login{
             btnLogin = new Button();
             btnLogin.label = "Login";
 
-            var lblAddress: Label = new Label();
-            lblAddress.text = "Address";
-
-            var lblUsername: Label = new Label();
-            lblUsername.text = "Username";
-
-            var lblPassword: Label = new Label();
-            lblPassword.text = "Password";
-
             this.layout = new VerticalLayout();
 
-            addChild(lblAddress);
-            addChild(txtAddress);
+            var form: Form = new Form();
+            form.addControl("Address", txtAddress);
+            form.addControl("Username", txtUsername);
+            form.addControl("Password", txtPassword);
 
-            addChild(lblUsername);
-            addChild(txtUsername);
+            form.addButton(btnLogin);
 
-            addChild(lblPassword);
-            addChild(txtPassword);
-
-            addChild(btnLogin);
+            this.addChild(form);
 		}
 	}
 }

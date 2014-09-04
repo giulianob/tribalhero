@@ -3,25 +3,25 @@
     import System.Linq.EnumerationExtender;
 
     import com.greensock.OverwriteManager;
-
     import com.greensock.plugins.TransformMatrixPlugin;
     import com.greensock.plugins.TweenPlugin;
 
-    import fl.lang.*;
+    import feathers.core.PopUpManager;
+    import starling.display.Sprite;
 
+    import flash.display.Sprite;
     import flash.display.*;
     import flash.events.*;
-    import flash.net.*;
     import flash.system.Security;
-    import flash.ui.*;
 
     import org.aswing.*;
 
     import src.Comm.*;
+    import src.FeathersUI.GameScreen.GameScreenDesktopFlow;
+    import src.FeathersUI.GameScreen.IGameScreenFlow;
     import src.Map.*;
     import src.Map.MiniMap.MiniMap;
     import src.Objects.Factories.*;
-    import src.UI.Dialog.*;
     import src.UI.Flows.LoginFlow;
     import src.UI.LookAndFeel.*;
     import src.UI.TweenPlugins.DynamicPropsPlugin;
@@ -30,8 +30,8 @@
     import src.UI.TweenPlugins.TransformAroundPointPlugin;
     import src.UI.TweenPlugins.TransformAroundPointStarlingPlugin;
     import src.Util.*;
-	
-    public class Main extends MovieClip
+
+    public class Main extends flash.display.Sprite
 	{
 		private var map:Map;
 
@@ -58,6 +58,10 @@
 
             StarlingStage.init(stage).then(function(value: *): void {
                 stage.showDefaultContextMenu = false;
+
+                var popupRoot: starling.display.Sprite = new starling.display.Sprite();
+                PopUpManager.root = popupRoot;
+                Global.starlingStage.addChild(popupRoot);
 
                 Global.stage = stage;
                 Global.musicPlayer = new MusicPlayer();
@@ -102,7 +106,11 @@
 
                 //GameContainer
                 Global.gameContainer = new GameContainer();
-                addChild(Global.gameContainer);
+
+                var tmp: flash.display.Sprite = new flash.display.Sprite();
+                tmp.visible = false;
+                tmp.addChild(Global.gameContainer);
+                addChild(tmp);
 
                 //Packet Counter
                 if (Constants.debug > 0) {
@@ -132,8 +140,9 @@
 
         private function completeLogin(packet: Packet):void
 		{
-			Global.map = map = new Map();
-			miniMap = new MiniMap(Constants.miniMapScreenW, Constants.miniMapScreenH);
+            var camera: Camera = new Camera(0, 0);
+			Global.map = map = new Map(camera);
+			miniMap = new MiniMap(camera, Constants.miniMapScreenW, Constants.miniMapScreenH);
 			
 			map.usernames.players.add(new Username(Constants.session.playerId, Constants.session.playerName));
 			map.setTimeDelta(Constants.session.timeDelta);
@@ -151,6 +160,11 @@
             Global.gameContainer.show();
 			Global.mapComm.General.readLoginInfo(packet);
             Global.gameContainer.setMap(map, miniMap);
+
+            var gameScreen: IGameScreenFlow = new GameScreenDesktopFlow(map, miniMap);
+            gameScreen.show();
+
+            camera.scrollToCenter(map.cities[0].MainBuilding.primaryPosition.toScreenPosition());
 		}
     }
 }

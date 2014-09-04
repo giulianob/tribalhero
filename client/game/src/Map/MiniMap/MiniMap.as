@@ -2,6 +2,10 @@
 {
     import System.Linq.Enumerable;
 
+    import feathers.controls.LayoutGroup;
+
+    import flash.events.Event;
+
     import flash.geom.Point;
     import flash.geom.Rectangle;
 
@@ -18,7 +22,7 @@
     import starling.display.graphics.RoundedRectangle;
     import starling.events.*;
 
-    public class MiniMap extends Sprite
+    public class MiniMap extends LayoutGroup
 	{
 		public static const NAVIGATE_TO_POINT: String = "NAVIGATE_TO_POINT";
 
@@ -43,9 +47,11 @@
 
 		private var lastClick: Number;
 		private var lastClickPoint: Point = new Point();
+        private var _camera: Camera;
 
-		public function MiniMap(width: int, height: int)
+		public function MiniMap(camera: Camera, width: int, height: int)
 		{
+            _camera = camera;
             addEventListener(TouchEvent.TOUCH, onNavigate);
 
 			regions = new MiniMapRegionList();
@@ -71,15 +77,23 @@
             mapFilter.addOnChangeListener(onFilterChange);
             mapFilter.applyLegend(legend);
 
-			addEventListener(Event.REMOVED_FROM_STAGE, function(e: Event): void {
+			addEventListener(starling.events.Event.REMOVED_FROM_STAGE, function(e: starling.events.Event): void {
 				legend.hide();
 			});
+
+            camera.addEventListener(Camera.ON_MOVE, onCameraMove);
 		}
+
+        private function onCameraMove(event: flash.events.Event): void {
+            updatePointers(_camera.miniMapCenter);
+            parseRegions();
+            objContainer.moveWithCamera(_camera.miniMapX, _camera.miniMapY);
+        }
 
 		public function redraw() : void {
 			// Redraw screen rectangle
-			var tilesW: Number = (Constants.screenW * Global.gameContainer.camera.getZoomFactorOverOne()) / Constants.tileW + 0.5;
-			var tilesH: Number = (Constants.screenH * Global.gameContainer.camera.getZoomFactorOverOne()) / Constants.tileH + 0.5;
+			var tilesW: Number = (Constants.screenW * _camera.getZoomFactorOverOne()) / Constants.tileW + 0.5;
+			var tilesH: Number = (Constants.screenH * _camera.getZoomFactorOverOne()) / Constants.tileH + 0.5;
 
 			if (tilesW * Constants.miniMapTileW < this.miniMapWidth && tilesH * Constants.miniMapTileH < this.miniMapHeight) {
 				screenRect.graphics.clear();
@@ -136,8 +150,8 @@
 
                 lastClick = new Date().time;
                 //Calculate where the user clicked in real map position
-                var camX: int = Global.gameContainer.camera.miniMapX - mapHolder.x;
-                var camY: int = Global.gameContainer.camera.miniMapY - mapHolder.y;
+                var camX: int = _camera.miniMapX - mapHolder.x;
+                var camY: int = _camera.miniMapY - mapHolder.y;
 
                 var local: Point = touch.getLocation(this);
                 var centeredOffsetX: int = local.x;
@@ -177,7 +191,7 @@
 			}
 
 			regions.add(newRegion);
-			newRegion.moveWithCamera(Global.gameContainer.camera);
+			newRegion.moveWithCamera(_camera);
 			regionSpace.addChild(newRegion);
 
 			return newRegion;
@@ -186,7 +200,7 @@
 		public function parseRegions(forceParse: Boolean = false):void
 		{
 			if (Constants.debug >= 4) {
-				Util.log("on move: " + Global.gameContainer.camera.miniMapX + "," + Global.gameContainer.camera.miniMapY);
+				Util.log("on move: " + _camera.miniMapX + "," + _camera.miniMapY);
 			}
 
             if (Constants.debug >= 3) {
@@ -206,8 +220,8 @@
 			//calculate which regions we need to render
 			var requiredRegions: Array = [];
 
-			var camX: int = Global.gameContainer.camera.miniMapX - mapHolder.x;
-			var camY: int = Global.gameContainer.camera.miniMapY - mapHolder.y;
+			var camX: int = _camera.miniMapX - mapHolder.x;
+			var camY: int = _camera.miniMapY - mapHolder.y;
 
 			var regionsW: int = Math.ceil(miniMapWidth / Constants.miniMapRegionW);
 			var regionsH: int = Math.ceil(miniMapHeight / (Constants.miniMapRegionH / 2));
@@ -238,7 +252,7 @@
 				if (found >= 0)
 				{
 					//adjust the position of this region
-					region.moveWithCamera(Global.gameContainer.camera);
+					region.moveWithCamera(_camera);
 
 					if (Constants.debug >= 4)
 					Util.log("Moved: " + region.id + " " + region.x + "," + region.y);

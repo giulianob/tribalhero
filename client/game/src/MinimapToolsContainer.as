@@ -87,7 +87,7 @@ package src {
 
             TweenMax.to(gameContainer.camera, duration, {
                 zoomFactor: newValue,
-                onUpdateParams: [gameContainer.camera.GetCenter()],
+                onUpdateParams: [gameContainer.camera.mapCenter()],
                 onUpdate: onZoomUpdate
             });
         }
@@ -103,16 +103,14 @@ package src {
 
             TweenMax.to(gameContainer.camera, duration, {
                 zoomFactor: newValue,
-                onUpdateParams: [gameContainer.camera.GetCenter()],
+                onUpdateParams: [gameContainer.camera.mapCenter()],
                 onUpdate: onZoomUpdate
             });
         }
 
         private function onZoomUpdate(center: ScreenPosition): void {
-            gameContainer.map.scrollRate = gameContainer.camera.getZoomFactorOverOne();
-            gameContainer.miniMap.redraw();
-            gameContainer.mapHolder.scaleX = gameContainer.mapHolder.scaleY = gameContainer.camera.getZoomFactorPercentage();
-            gameContainer.camera.ScrollToCenter(center);
+            gameContainer.camera.scrollRate = gameContainer.camera.getZoomFactorOverOne();
+            gameContainer.camera.scrollToCenter(center);
         }
 
         public function onZoomIntoMinimap(e: Event):void {
@@ -140,7 +138,7 @@ package src {
                 minimapZoomTooltip.setText("Minimize map");
                 gameContainer.miniMap.setScreenRectHidden(true);
                 gameContainer.map.disableMapQueries(true);
-                gameContainer.map.scrollRate = 25;
+                gameContainer.camera.scrollRate = 25;
                 btnZoomIn.visible = false;
                 btnZoomOut.visible = false;
                 gameContainer.message.showMessage("Double click to go anywhere\nPress Escape to close this map");
@@ -155,7 +153,7 @@ package src {
                 minimapZoomTooltip.setText("World view");
                 gameContainer.miniMap.setScreenRectHidden(false);
                 gameContainer.map.disableMapQueries(false);
-                gameContainer.map.scrollRate = gameContainer.camera.getZoomFactorOverOne();
+                gameContainer.camera.scrollRate = gameContainer.camera.getZoomFactorOverOne();
                 btnZoomIn.visible = true;
                 btnZoomOut.visible = true;
                 gameContainer.message.hide();
@@ -165,7 +163,7 @@ package src {
 
             minimapZoomed = zoom;
             if (query) {
-                gameContainer.map.move(true);
+                gameContainer.map.move();
             }
 
             alignMinimapTools();

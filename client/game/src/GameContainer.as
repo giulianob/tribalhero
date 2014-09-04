@@ -1,7 +1,5 @@
 ﻿package src {
 
-    import feathers.core.PopUpManager;
-
     import flash.display.*;
     import flash.events.*;
     import flash.net.*;
@@ -179,13 +177,12 @@
 			addChild(sidebarHolder);
 
             mapHolder = new starling.display.Sprite();
+            mapHolder.visible = false;
             miniMapHolder = new starling.display.Sprite();
+            miniMapHolder.visible = false;
+
             Global.starlingStage.addChild(mapHolder);
             Global.starlingStage.addChild(miniMapHolder);
-
-            var popupRoot: starling.display.Sprite = new starling.display.Sprite();
-            PopUpManager.root = popupRoot;
-            Global.starlingStage.addChild(popupRoot);
 
 			// Bar bg			
 			var barBgClass: Class = UIManager.getDefaults().get("GameMenu.bar");
@@ -340,7 +337,7 @@
 			if (selectedCity == null) return;
 
 			var pt: ScreenPosition = TileLocator.getScreenCoord(selectedCity.primaryPosition);
-			Global.gameContainer.map.camera.ScrollToCenter(pt);
+			Global.gameContainer.map.camera.scrollToCenter(pt);
 		}
 
 				public function eventKeyUp(event: KeyboardEvent):void
@@ -393,10 +390,10 @@
 				// Moving around with arrow keys
 				map.camera.beginMove();
 				var keyScrollRate: int = minimapTools.minimapZoomed ? 1150 : 500 * map.camera.getZoomFactorOverOne();
-				if (e.keyCode == Keyboard.LEFT) map.camera.MoveLeft(keyScrollRate);
-				if (e.keyCode == Keyboard.RIGHT) map.camera.MoveRight(keyScrollRate);
-				if (e.keyCode == Keyboard.UP) map.camera.MoveUp(keyScrollRate);
-				if (e.keyCode == Keyboard.DOWN) map.camera.MoveDown(keyScrollRate);
+				if (e.keyCode == Keyboard.LEFT) map.camera.moveLeft(keyScrollRate);
+				if (e.keyCode == Keyboard.RIGHT) map.camera.moveRight(keyScrollRate);
+				if (e.keyCode == Keyboard.UP) map.camera.moveUp(keyScrollRate);
+				if (e.keyCode == Keyboard.DOWN) map.camera.moveDown(keyScrollRate);
 				map.camera.endMove();
 				
 				// Zoom into minimap with +/- keys
@@ -420,7 +417,7 @@
 			(lstCities.getModel() as VectorListModel).clear();
 
 			// Add map
-            mapHolder.addChild(map);
+            // mapHolder.addChild(map);
             miniMapHolder.addChild(miniMap);
 
             // Set initial map zoom
@@ -451,15 +448,15 @@
 			// Add objects to resize manager
 			resizeManager = new ResizeManager(stage);
 
-			resizeManager.addObject(sidebarHolder, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_TOP);
-			resizeManager.addObject(barBg, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_LEFT);
-			resizeManager.addObject(resourcesContainer, ResizeManager.ANCHOR_TOP | ResizeManager.ANCHOR_RIGHT);
-			resizeManager.addObject(miniMap, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_BOTTOM);
-			resizeManager.addObject(minimapTools, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_BOTTOM);
-			resizeManager.addObject(chains, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_TOP);
-			if (cmdLine) resizeManager.addObject(cmdLine, ResizeManager.ANCHOR_BOTTOM | ResizeManager.ANCHOR_LEFT);
+			// resizeManager.addObject(sidebarHolder, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_TOP);
+			// resizeManager.addObject(barBg, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_LEFT);
+			// resizeManager.addObject(resourcesContainer, ResizeManager.ANCHOR_TOP | ResizeManager.ANCHOR_RIGHT);
+			// resizeManager.addObject(miniMap, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_BOTTOM);
+			// resizeManager.addObject(minimapTools, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_BOTTOM);
+			// resizeManager.addObject(chains, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_TOP);
+			// if (cmdLine) resizeManager.addObject(cmdLine, ResizeManager.ANCHOR_BOTTOM | ResizeManager.ANCHOR_LEFT);
 
-			resizeManager.addEventListener(Event.RESIZE, map.onResize);
+			//resizeManager.addEventListener(Event.RESIZE, map.onResize);
 			resizeManager.addEventListener(Event.RESIZE, message.onResize);
 
 			resizeManager.forceMove();
@@ -467,7 +464,7 @@
 			// Scroll to city center
 			if (selectedCity) {
 				var pt: ScreenPosition = TileLocator.getScreenCoord(selectedCity.primaryPosition);
-				Global.gameContainer.camera.ScrollToCenter(pt);
+				Global.gameContainer.camera.scrollToCenter(pt);
 				miniMap.setCityPointer(selectedCity.name);
 			}
 
@@ -479,8 +476,9 @@
 			Global.mapComm.Messaging.refreshUnreadCounts();		
 
 			// Begin game tutorial
-			tutorial = new GameTutorial();
-			tutorial.start(Constants.session.tutorialStep, map, Global.mapComm.General);
+            // TODO: convert
+			// tutorial = new GameTutorial();
+			// tutorial.start(Constants.session.tutorialStep, map, Global.mapComm.General);
 		}
 
 		public function show() : void {
@@ -576,11 +574,11 @@
 			clearAllSelections();
 
 			if (map) {
-				resizeManager.removeEventListener(Event.RESIZE, map.onResize);
+				//resizeManager.removeEventListener(Event.RESIZE, map.onResize);
 				resizeManager.removeEventListener(Event.RESIZE, message.onResize);
 				miniMap.removeEventListener(MiniMap.NAVIGATE_TO_POINT, onMinimapNavigateToPoint);
 
-				mapHolder.removeChild(map);
+//				mapHolder.removeChild(map);
                 miniMapHolder.removeChild(miniMap);
 
                 map.dispose();
@@ -720,7 +718,8 @@
 
 			Global.gameContainer.selectedCity.dispatchEvent(new Event(City.RESOURCES_UPDATE));
 
-			resourcesContainer.displayResources();
+			// TODO: convert
+			// resourcesContainer.displayResources();
 		}
 
 		public function setOverlaySprite(object: starling.display.Sprite):void
@@ -775,7 +774,7 @@
                 minimapTools.zoomIntoMinimap(false);
 			}
 
-			Global.map.camera.ScrollToCenter(new ScreenPosition(e.x, e.y));
+			Global.map.camera.scrollToCenter(new ScreenPosition(e.x, e.y));
 		}
 		
 		public function setUnreadMessageCount(unreadMessages: int): void

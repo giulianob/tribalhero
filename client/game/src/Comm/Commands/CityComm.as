@@ -612,7 +612,7 @@
 		public function onReceiveNotificationLocation(packet:Packet, custom:*):void
 		{
 			var pt:ScreenPosition = TileLocator.getScreenCoord(new Position(packet.readUInt(), packet.readUInt()));
-			Global.map.camera.ScrollToCenter(pt);
+			Global.map.camera.scrollToCenter(pt);
 		}
 			
 		public function gotoCityLocationByName(cityName:String):void
@@ -639,7 +639,7 @@
 				return;
 			}
 			var pt:ScreenPosition = TileLocator.getScreenCoord(new Position(packet.readUInt(), packet.readUInt()));
-			Global.map.camera.ScrollToCenter(pt);
+			Global.map.camera.scrollToCenter(pt);
 			Global.gameContainer.closeAllFrames(true);
 		}
 		

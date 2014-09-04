@@ -2,6 +2,8 @@ package src {
     import com.codecatalyst.promise.Deferred;
     import com.codecatalyst.promise.Promise;
 
+    import feathers.controls.ScreenNavigator;
+
     import feathers.system.DeviceCapabilities;
     import feathers.themes.MetalWorksDesktopTheme;
     import feathers.themes.MetalWorksMobileTheme;
@@ -17,16 +19,17 @@ package src {
     import starling.utils.AssetManager;
 
     public class StarlingStage extends Sprite {
-
         public static var _baseWidth:Number = 960;
         public static var _baseHeight:Number = 640;
-
         public static var assets: AssetManager = new AssetManager();
-
         private static var stageInitDeferred: Deferred;
+
+        public var navigator: ScreenNavigator = new ScreenNavigator();
 
         public function StarlingStage() {
             super();
+
+            addChild(navigator);
 
             this.addEventListener(Event.ADDED_TO_STAGE, addedToStage);
         }

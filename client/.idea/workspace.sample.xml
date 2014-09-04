@@ -74,184 +74,35 @@
     <favorites_list name="TribalHero" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.60205394">
-      <split-first>
-        <leaf>
-          <file leaf-file-name="MiniMap.as" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/game/src/Map/MiniMap/MiniMap.as">
-              <provider selected="true" editor-type-id="text-editor">
-                <state line="18" column="29" selection-start="508" selection-end="508" vertical-scroll-proportion="0.0" vertical-offset="204" max-vertical-offset="5967">
-                  <folding>
-                    <element signature="e#30#60#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="LoginDialog.as" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/game/src/UI/Dialog/LoginDialog.as">
-              <provider selected="true" editor-type-id="text-editor">
-                <state line="13" column="0" selection-start="336" selection-end="336" vertical-scroll-proportion="0.0" vertical-offset="357" max-vertical-offset="1207">
-                  <folding>
-                    <element signature="e#28#60#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="Main.as" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/game/src/Main.as">
-              <provider selected="true" editor-type-id="text-editor">
-                <state line="136" column="0" selection-start="4777" selection-end="4777" vertical-scroll-proportion="0.0" vertical-offset="1667" max-vertical-offset="2346">
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="GeneralComm.as" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/game/src/Comm/Commands/GeneralComm.as">
-              <provider selected="true" editor-type-id="text-editor">
-                <state line="149" column="24" selection-start="4968" selection-end="4968" vertical-scroll-proportion="0.0" vertical-offset="2239" max-vertical-offset="7344">
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="StarlingStage.as" pinned="false" current="true" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/game/src/StarlingStage.as">
-              <provider selected="true" editor-type-id="text-editor">
-                <state line="42" column="0" selection-start="1351" selection-end="1351" vertical-scroll-proportion="0.54956895" vertical-offset="204" max-vertical-offset="1496">
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="ViewModel.as" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/game/src/UI/ViewModel.as">
-              <provider selected="true" editor-type-id="text-editor">
-                <state line="2" column="0" selection-start="58" selection-end="58" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="510">
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="GameContainer.as" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/game/src/GameContainer.as">
-              <provider selected="true" editor-type-id="text-editor">
-                <state line="183" column="0" selection-start="5884" selection-end="5884" vertical-scroll-proportion="0.0" vertical-offset="2975" max-vertical-offset="13974">
-                  <folding>
-                    <element signature="e#19#53#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="ResizeManager.as" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/game/src/UI/Components/ResizeManager.as">
-              <provider selected="true" editor-type-id="text-editor">
-                <state line="48" column="0" selection-start="1341" selection-end="1341" vertical-scroll-proportion="0.0" vertical-offset="357" max-vertical-offset="2244">
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-first>
-      <split-second>
-        <leaf>
-          <file leaf-file-name="MiniMap.as" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/game/src/Map/MiniMap/MiniMap.as">
-              <provider selected="true" editor-type-id="text-editor">
-                <state line="22" column="38" selection-start="553" selection-end="624" vertical-scroll-proportion="0.0" vertical-offset="51" max-vertical-offset="5967">
-                  <folding>
-                    <element signature="e#30#60#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="LoginFlow.as" pinned="false" current="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/game/src/UI/Flows/LoginFlow.as">
-              <provider selected="true" editor-type-id="text-editor">
-                <state line="107" column="0" selection-start="3545" selection-end="3545" vertical-scroll-proportion="0.41379312" vertical-offset="1627" max-vertical-offset="4182">
-                  <folding>
-                    <element signature="e#27#61#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="StoreViewThemeDetailsVM.as" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/game/src/UI/ViewModels/StoreViewThemeDetailsVM.as">
-              <provider selected="true" editor-type-id="text-editor">
-                <state line="22" column="17" selection-start="836" selection-end="836" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1921">
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="LoginVM.as" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/game/src/UI/ViewModels/LoginVM.as">
-              <provider selected="true" editor-type-id="text-editor">
-                <state line="4" column="52" selection-start="155" selection-end="155" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="289">
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="StoreDialog.as" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/game/src/UI/Dialog/StoreDialog.as">
-              <provider selected="true" editor-type-id="text-editor">
-                <state line="39" column="17" selection-start="1240" selection-end="1240" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2414">
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="InfoDialog.as" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/game/src/UI/Dialog/InfoDialog.as">
-              <provider selected="true" editor-type-id="text-editor">
-                <state line="97" column="27" selection-start="2556" selection-end="2556" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3468">
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="Global.as" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/game/src/Global.as">
-              <provider selected="true" editor-type-id="text-editor">
-                <state line="6" column="0" selection-start="100" selection-end="100" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="391">
-                  <folding>
-                    <element signature="e#19#46#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="ViewModelEvent.as" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/game/src/UI/ViewModelEvent.as">
-              <provider selected="true" editor-type-id="text-editor">
-                <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="374">
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="FlowEvent.as" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/game/src/UI/FlowEvent.as">
-              <provider selected="true" editor-type-id="text-editor">
-                <state line="8" column="32" selection-start="258" selection-end="258" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="374">
-                  <folding>
-                    <marker date="1408924183416" expanded="true" signature="15:361" placeholder="{...}" />
-                    <marker date="1408924183416" expanded="true" signature="90:359" placeholder="{...}" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-second>
-    </splitter>
+    <leaf>
+      <file leaf-file-name="Main.as" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/game/src/Main.as">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="33" column="0" selection-start="837" selection-end="837" vertical-scroll-proportion="0.13385826" vertical-offset="0" max-vertical-offset="5151">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GameContainer.as" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/game/src/GameContainer.as">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="88" column="0" selection-start="2406" selection-end="2406" vertical-scroll-proportion="0.0" vertical-offset="1241" max-vertical-offset="14076">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GameGraphicLookAndFeel.as" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/game/src/UI/LookAndFeel/GameGraphicLookAndFeel.as">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="17" column="9" selection-start="441" selection-end="441" vertical-scroll-proportion="0.0" vertical-offset="289" max-vertical-offset="30192">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FindManager">
     <FindUsagesManager>
@@ -261,13 +112,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/game/src/UI/Components/Tribe/KickIcon.as" />
-        <option value="$PROJECT_DIR$/game/src/UI/Dialog/NumberInputDialog.as" />
-        <option value="$PROJECT_DIR$/game/src/UI/Components/Tribe/SetRankIcon.as" />
-        <option value="$PROJECT_DIR$/game/src/UI/Components/ResourcesPanel.as" />
-        <option value="$PROJECT_DIR$/game/src/UI/Components/ResourcesContainer.as" />
-        <option value="$PROJECT_DIR$/game/src/UI/Components/ScreenMessages/BuiltInMessages.as" />
-        <option value="$PROJECT_DIR$/game/src/UI/Components/UnitStatBox.as" />
         <option value="$PROJECT_DIR$/game/src/UI/Tooltips/ResourcesTooltip.as" />
         <option value="$PROJECT_DIR$/game/src/UI/Sidebars/ObjectInfo/ObjectInfoSidebar.as" />
         <option value="$PROJECT_DIR$/game/src/UI/Sidebars/TroopInfo/TroopInfoSidebar.as" />
@@ -304,14 +148,21 @@
         <option value="$PROJECT_DIR$/game/src/UI/Flows/StartupFlow.as" />
         <option value="$PROJECT_DIR$/game/src/UI/Flow.as" />
         <option value="$PROJECT_DIR$/game/src/UI/FlowEvent.as" />
-        <option value="$PROJECT_DIR$/game/src/GameContainer.as" />
         <option value="$PROJECT_DIR$/game/src/Global.as" />
-        <option value="$PROJECT_DIR$/game/src/Main.as" />
         <option value="$PROJECT_DIR$/game/src/Constants.as" />
         <option value="$PROJECT_DIR$/game/src/UI/ViewModels/LoginVM.as" />
-        <option value="$PROJECT_DIR$/game/src/UI/Dialog/LoginDialog.as" />
         <option value="$PROJECT_DIR$/game/src/UI/Flows/LoginFlow.as" />
+        <option value="$PROJECT_DIR$/game/src/Util/Util.as" />
+        <option value="$PROJECT_DIR$/game/src/UI/LookAndFeel/TribalHeroUITheme.as" />
         <option value="$PROJECT_DIR$/game/src/StarlingStage.as" />
+        <option value="$PROJECT_DIR$/game/src/UI/Dialog/LoginDialog.as" />
+        <option value="$PROJECT_DIR$/game/src/UI/Components/CountBubble.as" />
+        <option value="$PROJECT_DIR$/game/src/Map/MiniMap/MinimapDotIcon.as" />
+        <option value="$PROJECT_DIR$/game/src/AswingUI/Dialog/LoginDialog.as" />
+        <option value="$PROJECT_DIR$/game/src/FeathersUI/Login/LoginVM.as" />
+        <option value="$PROJECT_DIR$/game/src/GameContainer.as" />
+        <option value="$PROJECT_DIR$/game/src/FeathersUI/Login/LoginDialog.as" />
+        <option value="$PROJECT_DIR$/game/src/Main.as" />
       </list>
     </option>
   </component>
@@ -319,8 +170,8 @@
   <component name="ProjectFrameBounds">
     <option name="x" value="-8" />
     <option name="y" value="-8" />
-    <option name="width" value="1616" />
-    <option name="height" value="876" />
+    <option name="width" value="1936" />
+    <option name="height" value="1056" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -413,6 +264,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -441,7 +293,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="game" />
+              <option name="myItemId" value="lib" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -455,7 +307,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="game" />
+              <option name="myItemId" value="lib" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -476,14 +328,6 @@
               <option name="myItemId" value="game" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="UI" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -500,46 +344,11 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="UI" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ViewModels" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="TribalHero" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="client" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="game" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="UI" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Flows" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
       <pane id="Scope" />
     </panes>
   </component>
@@ -553,7 +362,7 @@
     <property name="recentsLimit" value="5" />
     <property name="FileHistory.org.zmlx.hg4idea.provider.HgHistoryProvider_treeWidth1" value="140" />
     <property name="FileHistory.org.zmlx.hg4idea.provider.HgHistoryProvider_treeWidth2" value="144" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/mobile/cert/TribalHero.p12" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/mobile/application.xml" />
     <property name="GenerateAntBuildDialog.inclineRuntiemClasspath" value="false" />
     <property name="FileHistory.org.zmlx.hg4idea.provider.HgHistoryProvider_treeWidth0" value="147" />
     <property name="GoToClass.includeJavaFiles" value="false" />
@@ -593,13 +402,6 @@
     <property name="TODO_SCOPE" value="Project Files" />
   </component>
   <component name="RecentsManager">
-    <key name="CreateActionScriptClassDialog.DESTINATION_PACKAGE_RECENT_KEY">
-      <recent name="src.UI.ViewModels" />
-      <recent name="src.UI.Flows" />
-      <recent name="src.UI.LookAndFeel" />
-      <recent name="src.UI.Components" />
-      <recent name="src.Map" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\source\tribalhero\client\game\src\UI" />
       <recent name="C:\source\tribalhero\client\game\src\Objects\Store" />
@@ -607,7 +409,16 @@
       <recent name="C:\source\tribalhero\client\game\src\UI\ViewModels" />
       <recent name="C:\source\gameclient\game\src\Objects\Technologies" />
     </key>
+    <key name="CreateActionScriptClassDialog.DESTINATION_PACKAGE_RECENT_KEY">
+      <recent name="src.UI.ViewModels" />
+      <recent name="src.UI.Flows" />
+      <recent name="src.UI.LookAndFeel" />
+      <recent name="src.UI.Components" />
+      <recent name="src.Map" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\source\tribalhero\client\game\src\FeathersUI\Login" />
+      <recent name="C:\source\tribalhero\client\game\src\FeathersUI" />
       <recent name="C:\source\tribalhero\client\game\src\Events" />
       <recent name="C:\source\tribalhero\client\game" />
       <recent name="C:\source\gameclient\game\src\Map\MiniMap" />
@@ -616,7 +427,7 @@
       <recent name="" />
     </key>
   </component>
-  <component name="RunManager" selected="Flash App.Desktop">
+  <component name="RunManager" selected="Flash App.Tribal Hero">
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin" singleton="true">
       <module name="" />
       <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m" />
@@ -858,8 +669,84 @@
       <option name="screenWidth" value="0" />
       <option name="url" value="http://" />
       <option name="usbDebugPort" value="7936" />
+      <RunnerSettings RunnerId="FlexDebugRunner" />
       <RunnerSettings RunnerId="FlexRunner" />
+      <ConfigurationWrapper RunnerId="FlexDebugRunner" />
       <ConfigurationWrapper RunnerId="FlexRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="Air Emulator" type="FlashRunConfigurationType" factoryName="Flash App">
+      <option name="BCName" value="TribalHero Android" />
+      <option name="IOSSimulatorSdkPath" value="" />
+      <option name="adlOptions" value="" />
+      <option name="airProgramParameters" value="" />
+      <option name="appDescriptorForEmulator" value="Android" />
+      <option name="debugTransport" value="USB" />
+      <option name="debuggerSdkRaw" value="BC SDK" />
+      <option name="emulator" value="iPhone" />
+      <option name="emulatorAdlOptions" value="" />
+      <option name="fastPackaging" value="true" />
+      <option name="fullScreenHeight" value="1080" />
+      <option name="fullScreenWidth" value="1920" />
+      <option name="launchUrl" value="false" />
+      <option name="launcherParameters">
+        <LauncherParameters>
+          <option name="browserFamily" value="FIREFOX" />
+          <option name="launcherType" value="OSDefault" />
+          <option name="newPlayerInstance" value="false" />
+          <option name="playerPath" value="FlashPlayerDebugger.exe" />
+        </LauncherParameters>
+      </option>
+      <option name="mobileRunTarget" value="Emulator" />
+      <option name="moduleName" value="TribalHero" />
+      <option name="overriddenMainClass" value="" />
+      <option name="overriddenOutputFileName" value="" />
+      <option name="overrideMainClass" value="false" />
+      <option name="runTrusted" value="true" />
+      <option name="screenDpi" value="424" />
+      <option name="screenHeight" value="1080" />
+      <option name="screenWidth" value="1920" />
+      <option name="url" value="http://" />
+      <option name="usbDebugPort" value="7936" />
+      <RunnerSettings RunnerId="FlexDebugRunner" />
+      <RunnerSettings RunnerId="FlexRunner" />
+      <ConfigurationWrapper RunnerId="FlexDebugRunner" />
+      <ConfigurationWrapper RunnerId="FlexRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="Tribal Hero" type="FlashRunConfigurationType" factoryName="Flash App">
+      <option name="BCName" value="TribalHero" />
+      <option name="IOSSimulatorSdkPath" value="" />
+      <option name="adlOptions" value="" />
+      <option name="airProgramParameters" value="" />
+      <option name="appDescriptorForEmulator" value="Android" />
+      <option name="debugTransport" value="USB" />
+      <option name="debuggerSdkRaw" value="BC SDK" />
+      <option name="emulator" value="NexusOne" />
+      <option name="emulatorAdlOptions" value="" />
+      <option name="fastPackaging" value="true" />
+      <option name="fullScreenHeight" value="0" />
+      <option name="fullScreenWidth" value="0" />
+      <option name="launchUrl" value="false" />
+      <option name="launcherParameters">
+        <LauncherParameters>
+          <option name="browserFamily" value="FIREFOX" />
+          <option name="launcherType" value="OSDefault" />
+          <option name="newPlayerInstance" value="false" />
+          <option name="playerPath" value="FlashPlayerDebugger.exe" />
+        </LauncherParameters>
+      </option>
+      <option name="mobileRunTarget" value="Emulator" />
+      <option name="moduleName" value="TribalHero" />
+      <option name="overriddenMainClass" value="" />
+      <option name="overriddenOutputFileName" value="" />
+      <option name="overrideMainClass" value="false" />
+      <option name="runTrusted" value="true" />
+      <option name="screenDpi" value="0" />
+      <option name="screenHeight" value="0" />
+      <option name="screenWidth" value="0" />
+      <option name="url" value="http://" />
+      <option name="usbDebugPort" value="7936" />
       <method />
     </configuration>
     <configuration default="false" name="Tribal Hero Remote Debug" type="RemoteFlashRunConfigurationType" factoryName="Flash Remote Debug">
@@ -870,11 +757,13 @@
       <option name="usbDebugPort" value="7936" />
       <method />
     </configuration>
-    <list size="4">
+    <list size="6">
       <item index="0" class="java.lang.String" itemvalue="Flash App.Desktop" />
       <item index="1" class="java.lang.String" itemvalue="Flash App.Android Device" />
       <item index="2" class="java.lang.String" itemvalue="Flash App.Genymotion" />
-      <item index="3" class="java.lang.String" itemvalue="Flash Remote Debug.Tribal Hero Remote Debug" />
+      <item index="3" class="java.lang.String" itemvalue="Flash App.Air Emulator" />
+      <item index="4" class="java.lang.String" itemvalue="Flash App.Tribal Hero" />
+      <item index="5" class="java.lang.String" itemvalue="Flash Remote Debug.Tribal Hero Remote Debug" />
     </list>
     <configuration name="&lt;template&gt;" type="JUnit" default="true" selected="false">
       <option name="MAIN_CLASS_NAME" />
@@ -953,11 +842,15 @@
       <workItem from="1408902349513" duration="5478000" />
       <workItem from="1408908333513" duration="3503000" />
       <workItem from="1408912056816" duration="9906000" />
+      <workItem from="1409011509831" duration="12337000" />
+      <workItem from="1409190193837" duration="8052000" />
+      <workItem from="1409504327210" duration="618000" />
+      <workItem from="1409507123574" duration="135000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="451911000" />
+    <option name="totallyTimeSpent" value="473053000" />
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
@@ -980,62 +873,62 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1616" height="876" extended-state="6" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32937366" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3275862" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1461126" sideWeight="0.62387675" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32707775" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30038512" sideWeight="0.67688024" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.27178153" sideWeight="0.605905" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.27882037" sideWeight="0.605905" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.29758713" sideWeight="0.48074454" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.27882037" sideWeight="0.394095" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24903475" sideWeight="0.325" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32991013" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25917926" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.29758713" sideWeight="0.51925546" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32707775" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24839538" sideWeight="0.675" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.26957637" sideWeight="0.7116992" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32937366" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24839538" sideWeight="0.67548746" order="5" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.26677316" sideWeight="0.7116992" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.26457882" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.27882037" sideWeight="0.62387675" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.386059" sideWeight="0.51925546" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24839538" sideWeight="0.67548746" order="5" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.5139276" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32937366" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30038512" sideWeight="0.67688024" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.27882037" sideWeight="0.394095" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2680965" sideWeight="0.3754814" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32991013" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25917926" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3275401" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32707775" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.6732991" sideWeight="0.7116992" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24856816" sideWeight="0.67548746" order="5" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31578946" sideWeight="0.7116992" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32937366" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24839538" sideWeight="0.67548746" order="5" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32841823" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32707775" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2680965" sideWeight="0.62451863" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3016086" sideWeight="0.5815148" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.27882037" sideWeight="0.62387675" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.27882037" sideWeight="0.605905" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24903475" sideWeight="0.325" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2533512" sideWeight="0.5224647" order="13" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24903475" sideWeight="0.675" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.386059" sideWeight="0.51925546" order="13" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24839538" sideWeight="0.675" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.5139276" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout-to-restore>
   </component>
@@ -1057,7 +950,7 @@
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="489" />
+      <option name="time" value="494" />
     </breakpoint-manager>
   </component>
   <component name="antWorkspaceConfiguration">
@@ -1065,149 +958,23 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/game/src/Objects/Actions/Action.as">
+    <entry file="file://$PROJECT_DIR$/game/src/Main.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="8" selection-start="1135" selection-end="1135" vertical-scroll-proportion="0.0" vertical-offset="1320" max-vertical-offset="1972" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Components/TroopsDialogTable/TroopNotificationStatusCell.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="39" column="166" selection-start="1330" selection-end="1330" vertical-scroll-proportion="0.0" vertical-offset="151" max-vertical-offset="816" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Components/NewCityResourcesPanel.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="124" selection-start="857" selection-end="857" vertical-scroll-proportion="0.0" vertical-offset="153" max-vertical-offset="833" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Tooltips/MinimapInfoTooltip.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="82" column="76" selection-start="2779" selection-end="2779" vertical-scroll-proportion="0.0" vertical-offset="663" max-vertical-offset="3400" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Components/TroopsDialogTable/TroopStatusCell.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="61" column="210" selection-start="2124" selection-end="2124" vertical-scroll-proportion="0.0" vertical-offset="408" max-vertical-offset="1207" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Dialog/TroopsDialog.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="298" column="117" selection-start="14641" selection-end="14641" vertical-scroll-proportion="0.0" vertical-offset="4509" max-vertical-offset="5984">
+        <state line="94" column="25" selection-start="2633" selection-end="2633" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="5151">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Dialog/CityEventDialog.as">
+    <entry file="file://$PROJECT_DIR$/game/src/GameContainer.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="257" column="152" selection-start="9448" selection-end="9448" vertical-scroll-proportion="0.0" vertical-offset="3710" max-vertical-offset="5474" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Dialog/TribeProfileDialog.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="515" column="53" selection-start="23086" selection-end="23086" vertical-scroll-proportion="0.0" vertical-offset="8538" max-vertical-offset="14722">
-          <folding>
-            <element signature="e#28#71#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Dialog/TroopTransferDialog.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="114" column="84" selection-start="3914" selection-end="3914" vertical-scroll-proportion="0.0" vertical-offset="1445" max-vertical-offset="2278" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Sidebars/ForestInfo/ForestInfoSidebar.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="58" column="76" selection-start="1632" selection-end="1632" vertical-scroll-proportion="0.0" vertical-offset="493" max-vertical-offset="1904" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Tooltips/ComplexUnitTooltip.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="67" column="84" selection-start="2432" selection-end="2432" vertical-scroll-proportion="0.0" vertical-offset="697" max-vertical-offset="1598" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Sidebars/ObjectInfo/Buttons/StructureUpgradeButton.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="34" column="113" selection-start="1303" selection-end="1303" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1581" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Tooltips/TechnologyTooltip.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="117" column="90" selection-start="3856" selection-end="3856" vertical-scroll-proportion="0.0" vertical-offset="1564" max-vertical-offset="2924" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Dialog/SendResourceDialog.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="81" column="127" selection-start="2527" selection-end="2527" vertical-scroll-proportion="0.0" vertical-offset="884" max-vertical-offset="2244" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Tooltips/StructureUpgradeTooltip.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="120" column="90" selection-start="4066" selection-end="4066" vertical-scroll-proportion="0.0" vertical-offset="1530" max-vertical-offset="3077" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Dialog/MarketBuyDialog.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="207" column="88" selection-start="5710" selection-end="5710" vertical-scroll-proportion="0.0" vertical-offset="2856" max-vertical-offset="5814" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Dialog/MarketSellDialog.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="204" column="88" selection-start="5737" selection-end="5737" vertical-scroll-proportion="0.0" vertical-offset="2856" max-vertical-offset="5763" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Dialog/UnitTrainDialog.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="209" column="48" selection-start="7607" selection-end="7607" vertical-scroll-proportion="0.0" vertical-offset="2958" max-vertical-offset="3808" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Tooltips/TrainTooltip.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="108" column="37" selection-start="3394" selection-end="3394" vertical-scroll-proportion="0.0" vertical-offset="1411" max-vertical-offset="2720" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Tooltips/StructureChangeTooltip.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="115" column="83" selection-start="3886" selection-end="3886" vertical-scroll-proportion="0.0" vertical-offset="1462" max-vertical-offset="2618" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Tooltips/UnitUpgradeTooltip.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="111" column="90" selection-start="3687" selection-end="3687" vertical-scroll-proportion="0.0" vertical-offset="1428" max-vertical-offset="2958" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Tooltips/StructureBuildTooltip.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="113" column="83" selection-start="3775" selection-end="3775" vertical-scroll-proportion="0.0" vertical-offset="1411" max-vertical-offset="2737" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Components/TradeResourcesPanel.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="144" column="73" selection-start="4869" selection-end="4869" vertical-scroll-proportion="0.0" vertical-offset="1819" max-vertical-offset="2533" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Sidebars/ObjectInfo/CustomInfo/BasementCustomInfo.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="69" column="76" selection-start="3000" selection-end="3000" vertical-scroll-proportion="0.0" vertical-offset="340" max-vertical-offset="1105" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Dialog/BattleViewer.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="266" column="0" selection-start="9251" selection-end="9251" vertical-scroll-proportion="0.0" vertical-offset="3859" max-vertical-offset="6205">
+        <state line="88" column="0" selection-start="2406" selection-end="2406" vertical-scroll-proportion="0.0" vertical-offset="1241" max-vertical-offset="14076">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Tooltips/NewCityTooltip.as">
+    <entry file="file://$PROJECT_DIR$/game/src/UI/LookAndFeel/GameGraphicLookAndFeel.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="83" column="83" selection-start="2583" selection-end="2583" vertical-scroll-proportion="0.0" vertical-offset="986" max-vertical-offset="1938">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Dialog/LaborMoveDialog.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="202" column="12" selection-start="6310" selection-end="6310" vertical-scroll-proportion="0.0" vertical-offset="1564" max-vertical-offset="3485">
+        <state line="17" column="9" selection-start="441" selection-end="441" vertical-scroll-proportion="0.0" vertical-offset="289" max-vertical-offset="30192">
           <folding />
         </state>
       </provider>
@@ -1221,63 +988,12 @@
     </entry>
     <entry file="jar://C:/flexsdk/frameworks/libs/player/11.9/playerglobal.swc!/library.swf">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="2562" column="29" selection-start="112419" selection-end="112419" vertical-scroll-proportion="0.0" vertical-offset="43286" max-vertical-offset="186762">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/Objects/Factories/SpriteFactory.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="24" column="0" selection-start="693" selection-end="693" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="731">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/ViewModel.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="0" selection-start="58" selection-end="58" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="510">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/LookAndFeel/TribalHeroUITheme.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="17" selection-start="202" selection-end="202" vertical-scroll-proportion="0.08838821" vertical-offset="0" max-vertical-offset="1156">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Flow.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="20" column="56" selection-start="750" selection-end="750" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="510">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/ViewModelEvent.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="598">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/FlowEvent.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="32" selection-start="258" selection-end="258" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="374">
-          <folding>
-            <marker date="1408924183416" expanded="true" signature="15:361" placeholder="{...}" />
-            <marker date="1408924183416" expanded="true" signature="90:359" placeholder="{...}" />
-          </folding>
-        </state>
+        <state line="2562" column="29" selection-start="112419" selection-end="112419" vertical-scroll-proportion="0.0" vertical-offset="43286" max-vertical-offset="186762" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/game/src/Map/MiniMap/MiniMap.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="29" selection-start="508" selection-end="508" vertical-scroll-proportion="0.0" vertical-offset="204" max-vertical-offset="5967">
-          <folding>
-            <element signature="e#30#60#0" expanded="true" />
-          </folding>
-        </state>
+        <state line="21" column="5" selection-start="553" selection-end="624" vertical-scroll-proportion="0.0" vertical-offset="357" max-vertical-offset="5967" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/game/src/Comm/Commands/GeneralComm.as">
@@ -1287,57 +1003,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/GameContainer.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="183" column="0" selection-start="5884" selection-end="5884" vertical-scroll-proportion="0.0" vertical-offset="2975" max-vertical-offset="13974">
-          <folding>
-            <element signature="e#19#53#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Dialog/InfoDialog.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="97" column="27" selection-start="2556" selection-end="2556" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3468">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Dialog/StoreDialog.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="39" column="17" selection-start="1240" selection-end="1240" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2414">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/Main.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="136" column="0" selection-start="4777" selection-end="4777" vertical-scroll-proportion="0.0" vertical-offset="1667" max-vertical-offset="2346">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Flows/StoreFlow.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="20" column="21" selection-start="852" selection-end="852" vertical-scroll-proportion="0.17677642" vertical-offset="238" max-vertical-offset="1785">
-          <folding>
-            <element signature="e#27#62#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/game/src/Global.as">
       <provider selected="true" editor-type-id="text-editor">
         <state line="6" column="0" selection-start="100" selection-end="100" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="391">
-          <folding>
-            <element signature="e#19#46#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/ViewModels/StoreViewThemeDetailsVM.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="17" selection-start="836" selection-end="836" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1921">
           <folding />
         </state>
       </provider>
@@ -1349,48 +1017,42 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Components/ResizeManager.as">
+    <entry file="file://$PROJECT_DIR$/game/src/Objects/WallManager.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="48" column="0" selection-start="1341" selection-end="1341" vertical-scroll-proportion="0.0" vertical-offset="357" max-vertical-offset="2244">
+        <state line="553" column="0" selection-start="43544" selection-end="43544" vertical-scroll-proportion="0.0" vertical-offset="9180" max-vertical-offset="9860" />
+      </provider>
+    </entry>
+    <entry file="jar://C:/airsdk/frameworks/libs/player/14.0/playerglobal.swc!/library.swf">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7116" column="547" selection-start="306230" selection-end="306752" vertical-scroll-proportion="0.0" vertical-offset="120767" max-vertical-offset="189992">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/swc/feathers/feathers.swc!/library.swf">
+    <entry file="file://$PROJECT_DIR$/game/src/Util/Util.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="5854" column="0" selection-start="300999" selection-end="300999" vertical-scroll-proportion="0.33275563" vertical-offset="99326" max-vertical-offset="133569">
+        <state line="43" column="0" selection-start="1236" selection-end="1236" vertical-scroll-proportion="0.0" vertical-offset="731" max-vertical-offset="4437">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/ViewModels/LoginVM.as">
+    <entry file="file://$PROJECT_DIR$/game/src/GameContainer.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="52" selection-start="155" selection-end="155" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="289">
+        <state line="88" column="0" selection-start="2406" selection-end="2406" vertical-scroll-proportion="0.0" vertical-offset="1241" max-vertical-offset="14076">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Flows/LoginFlow.as">
+    <entry file="file://$PROJECT_DIR$/game/src/UI/LookAndFeel/GameGraphicLookAndFeel.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="107" column="0" selection-start="3545" selection-end="3545" vertical-scroll-proportion="0.41379312" vertical-offset="1627" max-vertical-offset="4182">
-          <folding>
-            <element signature="e#27#61#0" expanded="true" />
-          </folding>
+        <state line="17" column="9" selection-start="441" selection-end="441" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="30107">
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Dialog/LoginDialog.as">
+    <entry file="file://$PROJECT_DIR$/game/src/Main.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="0" selection-start="336" selection-end="336" vertical-scroll-proportion="0.0" vertical-offset="357" max-vertical-offset="1207">
-          <folding>
-            <element signature="e#28#60#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/StarlingStage.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="42" column="0" selection-start="1351" selection-end="1351" vertical-scroll-proportion="0.54956895" vertical-offset="204" max-vertical-offset="1496">
+        <state line="33" column="0" selection-start="837" selection-end="837" vertical-scroll-proportion="0.13385826" vertical-offset="0" max-vertical-offset="5151">
           <folding />
         </state>
       </provider>
@@ -1435,7 +1097,7 @@
       </state>
       <state key="JdkListConfigurable.UI">
         <settings>
-          <last-edited>flexsdk</last-edited>
+          <last-edited>airsdk</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
@@ -1459,7 +1121,7 @@
       </state>
       <state key="ProjectLibrariesConfigurable.UI">
         <settings>
-          <last-edited>Game</last-edited>
+          <last-edited>flash</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>

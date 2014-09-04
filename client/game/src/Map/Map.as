@@ -49,10 +49,8 @@
 
 		private var timeDelta: int = 0;
 
-		public var scrollRate: Number = 1;
-		
-		public function Map() {
-            camera = Global.gameContainer.camera;
+		public function Map(camera: Camera) {
+            this.camera = camera;
             camera.addEventListener(Camera.ON_MOVE, onMove);
 
             selectedObject = null;
@@ -138,8 +136,9 @@
 		//###################################################################
 		public function addRegion(id:int, data: Array) : Region
 		{
-			if (Constants.debug >= 2)
-			Util.log("Adding region: " + id);
+			if (Constants.debug >= 2) {
+			    Util.log("Adding region: " + id);
+            }
 
 			var newRegion: Region = new Region(id, data, this);
 
@@ -158,12 +157,8 @@
 			return newRegion;
 		}
 
-		public function parseRegions(force: Boolean = false):void {
+        public function parseRegions(): void {
             if (Constants.debug >= 3) Util.log("On move: " + camera.currentPosition.x + "," + camera.currentPosition.y);
-
-            // Don't parse every single pixel we move
-            var lastParseRegionLoc: Point = new Point();
-            if (!force && !Math.abs(lastParseRegionLoc.x - camera.currentPosition.x) > 10 && !Math.abs(lastParseRegionLoc.y - camera.currentPosition.y) > 10) return;
 
             //calculate which regions we need to render
             var requiredRegions: Array = [];
@@ -419,14 +414,14 @@
 				return;
 			}
 
-			var dx: Number = (mouseLoc.x - event.stageX) * scrollRate;
-			var dy: Number = (mouseLoc.y - event.stageY) * scrollRate;
+			var dx: Number = (mouseLoc.x - event.stageX) * camera.scrollRate;
+			var dy: Number = (mouseLoc.y - event.stageY) * camera.scrollRate;
 
 			if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
 
 			mouseLoc = new Point(event.stageX, event.stageY);
 
-			camera.Move(dx, dy);
+			camera.move(dx, dy);
 		}
 
 		public function eventAddedToStage(event: Event):void
@@ -439,26 +434,24 @@
 			disableMouse(true);
 		}
 
-		public function move(forceParse: Boolean = false) : void {
-			var pt: Position = new ScreenPosition(
-                    camera.currentPosition.x + (Constants.screenW * camera.getZoomFactorOverOne()) / 2,
-                    camera.currentPosition.y + (Constants.screenH * camera.getZoomFactorOverOne()) / 2).toPosition();
+        public function move(): void {
+            scaleX = scaleY = camera.getZoomFactorPercentage();
+
+			var pt: Position = camera.mapCenter().toPosition();
 
 			Global.gameContainer.setLabelCoords(pt);
 
 			if (!disabledMapQueries) {
-				parseRegions(forceParse);
+                trace("Map Moved to " + camera.currentPosition.x + "," + camera.currentPosition.y);
+
+                parseRegions();
 				objContainer.moveWithCamera(camera.currentPosition.x, camera.currentPosition.y);
 			}
-
-			Global.gameContainer.miniMap.updatePointers(camera.miniMapCenter);
-			Global.gameContainer.miniMap.parseRegions(forceParse);
-			Global.gameContainer.miniMap.objContainer.moveWithCamera(camera.miniMapX, camera.miniMapY);
 		}
 
 		public function onResize(event: flash.events.Event): void {
 			Global.gameContainer.miniMap.redraw();
-			move(true);
+			move();
 		}
 
 		public function onMove(event: flash.events.Event) : void

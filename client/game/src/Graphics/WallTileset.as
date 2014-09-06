@@ -8,6 +8,7 @@ package src.Graphics {
 
     import src.Constants;
     import src.FlashAssets;
+    import src.Global;
     import src.Objects.Theme;
     import src.StarlingStage;
 
@@ -24,9 +25,9 @@ package src.Graphics {
             if (wallTile == null) {
                 var tilesetsrcX:int = int(tileId % Constants.tileSetTileW) * Constants.tileW;
                 var tilesetsrcY:int = int(tileId / Constants.tileSetTileW) * Constants.tileH * 2;
-                var texture: Texture = StarlingStage.assets.getTexture(getSpriteName(theme));
+                var texture: Texture = Global.starlingStage.assets.getTexture(getSpriteName(theme));
                 if (texture == null) {
-                    texture = StarlingStage.assets.getTexture(getSpriteName(Theme.DEFAULT_THEME_ID));
+                    texture = Global.starlingStage.assets.getTexture(getSpriteName(Theme.DEFAULT_THEME_ID));
                 }
 
                 wallTile = Texture.fromTexture(texture, new Rectangle(

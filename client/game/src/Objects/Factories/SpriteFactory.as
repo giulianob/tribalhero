@@ -5,6 +5,7 @@ package src.Objects.Factories {
     import flash.geom.Point;
 
     import src.FlashAssets;
+    import src.Global;
     import src.StarlingStage;
 
     import starling.display.Image;
@@ -25,7 +26,7 @@ package src.Objects.Factories {
 
         public static function getStarlingImage(typeName: String): Image
         {
-            var mainImage: Texture = StarlingStage.assets.getTexture(typeName);
+            var mainImage: Texture = Global.starlingStage.assets.getTexture(typeName);
             if (mainImage === null) {
                 throw new Error("Could not find texture named " + typeName);
             }
@@ -34,7 +35,7 @@ package src.Objects.Factories {
 
         public static function getMapPosition(name: String):Point {
             if (mapPositions === null) {
-                mapPositions = StarlingStage.assets.getObject("MAP_POSITIONS");
+                mapPositions = Global.starlingStage.assets.getObject("MAP_POSITIONS");
             }
 
             var position: Object = mapPositions[name];

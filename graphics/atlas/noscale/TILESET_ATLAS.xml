@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
+<!-- $TexturePacker:SmartUpdate:a4862621f42dca208ce818c9bb8c3044:644fd1a1baca8817b381fd9af075a146:d70102103e11df2c54d6fdc795a79136$ -->
+<TextureAtlas imagePath="TILESET_ATLAS.png">
+    <SubTexture name="TILESET" x="2" y="2" rotated="true" width="880" height="1920" frameX="0" frameY="0" frameWidth="2048" frameHeight="1024"/>
+</TextureAtlas>

@@ -25,7 +25,7 @@
 		
 		//Zooming factor
 		private var _zoomFactor: int = 75;
-		private var zoomFactorOverOne: Number = (1.0 / (75 / 100.0));
+		private var zoomFactorOverOne: Number = (1.0 / (_zoomFactor / 100.0));
 
         public var scrollRate: Number = 1;
 

@@ -8,7 +8,6 @@
     [SWF]
 	public dynamic class Preloader extends MovieClip
 	{
-
 		private var _clip:MovieClip;
 		private var loadText: TextField;
 		private var loadPercentage: TextField;
@@ -60,9 +59,12 @@
 			removeChild(_clip);
             
             uncaughtExceptionHandler = new UncaughtExceptionHandler(loaderInfo);
-        
+
 			var mainClass:Class = getDefinitionByName("src.Main") as Class;
-			stage.addChild(new mainClass() as DisplayObject);
+            var desktopBootstrapper: Class = getDefinitionByName("src.DesktopBootstrapper") as Class;
+
+            var main: DisplayObject = new mainClass(new desktopBootstrapper());
+			stage.addChild(main);
 		}
 	}
 }

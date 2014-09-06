@@ -243,8 +243,6 @@
 
         public function moveWithCamera(camera: Camera):void
         {
-            trace("Adjusted region to " + camera.currentPosition.x + "," + camera.currentPosition.y);
-
             x = globalX - camera.currentPosition.x - int(Constants.tileW / 2);
             y = globalY - camera.currentPosition.y - int(Constants.tileH / 2);
         }

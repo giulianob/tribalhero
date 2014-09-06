@@ -11,7 +11,7 @@ package src {
     import starling.utils.formatString;
 
     public class MobileBootstrapper implements IBootstrapper {
-        private static const assetSizes: Array = [1, 1.5, 2];
+        private static const assetSizes: Array = [0.5, 0.75, 1];
 
         public function MobileBootstrapper() {
             var iOS:Boolean = Capabilities.manufacturer.indexOf("iOS") != -1;
@@ -49,7 +49,7 @@ package src {
              starling.stage.stageHeight = screenRect.height / viewportBaseRatioHeight;
             */
 
-            const baseDpi: int = 163;
+            const baseDpi: int = 326;
             var dpiRatio: Number = DeviceCapabilities.dpi / baseDpi;
             starling.stage.stageWidth = Math.floor(screenWidth / dpiRatio);
             starling.stage.stageHeight = Math.floor(screenHeight / dpiRatio);
@@ -64,20 +64,13 @@ package src {
             new MetalWorksMobileTheme();
 
             var appDir:File = File.applicationDirectory;
-
-            var assets: AssetManager = new AssetManager();
-            assets.verbose = CONFIG::debug;
-
-            // Gfx that are used to render the map (structures/tiles/walls/etc..) dont get HD variants
-            // since we allow zooming in stead
-            assets.scaleFactor = 1;
-            assets.enqueue(
-                    appDir.resolvePath("atlas/noscale")
-            );
-
-            // Gfx like icons and UI will scale
             var assetScaleFactor: Number = findScaleFactor(starling);
-            assets.scaleFactor = assetScaleFactor;
+            Constants.updateContentScale(assetScaleFactor);
+
+            trace(formatString("Loading assets at {0}x scale", assetScaleFactor));
+
+            var assets: AssetManager = new AssetManager(assetScaleFactor);
+            assets.verbose = CONFIG::debug;
             assets.enqueue(
                     appDir.resolvePath(formatString("atlas/{0}x", assetScaleFactor))
             );

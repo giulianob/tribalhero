@@ -442,8 +442,6 @@
 			Global.gameContainer.setLabelCoords(pt);
 
 			if (!disabledMapQueries) {
-                trace("Map Moved to " + camera.currentPosition.x + "," + camera.currentPosition.y);
-
                 parseRegions();
 				objContainer.moveWithCamera(camera.currentPosition.x, camera.currentPosition.y);
 			}

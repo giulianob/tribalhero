@@ -1,11 +1,9 @@
 package src.FeathersUI.GameScreen {
+    import feathers.controls.LayoutGroup;
     import feathers.controls.Screen;
     import feathers.layout.AnchorLayout;
     import feathers.layout.AnchorLayoutData;
-
-    import flash.utils.setInterval;
-
-    import flash.utils.setTimeout;
+    import feathers.layout.HorizontalLayout;
 
     import src.Map.Map;
     import src.Map.MiniMap.MiniMap;
@@ -32,21 +30,22 @@ package src.FeathersUI.GameScreen {
             minimapAnchorLayoutData.right = 20;
             this.minimap.layoutData = minimapAnchorLayoutData;
 
+            var minimapTools: LayoutGroup = new LayoutGroup();
+            var minimapToolsLayout: HorizontalLayout = new HorizontalLayout();
+            minimapToolsLayout.gap = 10;
+            minimapTools.layout = minimapToolsLayout;
+
+
+
+            //minimapTools.addChild()
+
             addChild(map);
-            addChild(this.minimap);
-
-
-            trace("Init desktop view " + width + "x" + height);
-
-            setInterval(function() {
-                trace("Map Pos:" + map.x + "," + map.y);
-                trace("Map Size:" + map.width + "x" + map.height);
-            }, 5000);
+            addChild(minimap);
+            addChild(minimapTools);
         }
+
         override public function validate(): void {
             super.validate();
-
-            trace("Validate desktop view " + width + "x" + height);
         }
     }
 }

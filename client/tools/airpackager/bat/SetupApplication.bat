@@ -28,7 +28,7 @@ set IOS_DIST_SIGNING_OPTIONS=-storetype pkcs12 -keystore "%IOS_DIST_CERT_FILE%" 
 set APP_XML=application.xml
 
 :: Files to package
-set APP_DIR=../bin
+set APP_DIR=../../bin
 set FILE_OR_DIR=-C %APP_DIR% .
 
 :: Your application ID (must match <id> of Application descriptor)

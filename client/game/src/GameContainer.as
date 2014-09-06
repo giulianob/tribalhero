@@ -57,7 +57,7 @@
 		public var frames: Array = [];
 
 		public var selectedCity: City;
-		public var camera: Camera = new Camera(0, 0);
+		public var camera: Camera;
 
 		//Resources timer that fires every second
 		public var resourcesTimer: Timer = new Timer(1000);
@@ -405,7 +405,9 @@
 		}
 
 		public function setMap(map: Map, miniMap: MiniMap):void
-		{				             
+		{
+            camera = map.camera;
+
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, eventKeyDown);
 			stage.addEventListener(MouseEvent.MOUSE_WHEEL, eventScroll);
 			stage.addEventListener(KeyboardEvent.KEY_UP, eventKeyUp);
@@ -490,9 +492,6 @@
 			menu.addMenuItem("Wiki").addActionListener(onWikiClick);
 			menu.addMenuItem("Help").addActionListener(onHelpClick);			
 			menu.addMenuItem("Logout").addActionListener(onLogoutClick);
-
-			// Reset camera pos
-			camera.reset();
 
 			// Close any previous open frames (Shouldnt really have any but just to be safe)
 			closeAllFrames();

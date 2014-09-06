@@ -2,7 +2,7 @@
 <module type="Flex" version="4">
   <component name="FlexBuildConfigurationManager" active="TribalHero">
     <configurations>
-      <configuration name="TribalHero" pure-as="true" main-class="src.Preloader" output-file="TribalHero.swf" output-folder="$MODULE_DIR$/bin">
+      <configuration name="TribalHero" pure-as="true" output-file="TribalHero.swf" output-folder="$MODULE_DIR$/bin">
         <dependencies target-player="14.0">
           <entries>
             <entry library-name="TheMiner_en" library-level="project">
@@ -49,13 +49,13 @@
             <entry key="compiler.debug.swf" value="true" />
             <entry key="compiler.define" value="CONFIG::debug&#9;true" />
           </map>
-          <option name="additionalConfigFilePath" value="$MODULE_DIR$/GameConfig.xml" />
+          <option name="additionalConfigFilePath" value="$MODULE_DIR$/GameConfig.Desktop.xml" />
         </compiler-options>
         <packaging-air-desktop />
         <packaging-android />
         <packaging-ios />
       </configuration>
-      <configuration name="TribalHero Android" target-platform="Mobile" pure-as="true" main-class="src.Preloader" output-file="TribalHero_Air.swf" output-folder="$MODULE_DIR$/bin">
+      <configuration name="TribalHero Mobile" target-platform="Mobile" pure-as="true" output-file="TribalHero_Air.swf" output-folder="$MODULE_DIR$/bin">
         <dependencies>
           <entries>
             <entry library-name="TheMiner_en" library-level="project">
@@ -99,15 +99,16 @@
             <entry key="compiler.debug.swf" value="true" />
             <entry key="compiler.define" value="" />
           </map>
-          <option name="additionalConfigFilePath" value="$MODULE_DIR$/GameConfig.xml" />
+          <option name="additionalConfigFilePath" value="$MODULE_DIR$/GameConfig.Mobile.xml" />
           <option name="additionalOptions" value="-define+=CONFIG::debug,true" />
         </compiler-options>
         <packaging-air-desktop />
-        <packaging-android enabled="true" use-generated-descriptor="false" custom-descriptor-path="$MODULE_DIR$/mobile/application.xml" package-file-name="TribalHero_Android">
+        <packaging-android enabled="true" use-generated-descriptor="false" custom-descriptor-path="$MODULE_DIR$/air.application.xml" package-file-name="TribalHero_Android">
           <files-to-package>
-            <FilePathAndPathInPackage file-path="$MODULE_DIR$/mobile/icons" path-in-package="icons" />
+            <FilePathAndPathInPackage file-path="$MODULE_DIR$/../graphics/atlas" path-in-package="atlas" />
+            <FilePathAndPathInPackage file-path="$MODULE_DIR$/../graphics/appicons" path-in-package="appicons" />
           </files-to-package>
-          <AirSigningOptions keystore-path="$MODULE_DIR$/mobile/cert/TribalHero.p12" use-temp-certificate="false" />
+          <AirSigningOptions keystore-path="$MODULE_DIR$/tools/airpackager/cert/TribalHero.p12" use-temp-certificate="false" />
         </packaging-android>
         <packaging-ios package-file-name="TribalHero_Android" />
       </configuration>

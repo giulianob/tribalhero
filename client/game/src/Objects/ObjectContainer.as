@@ -522,15 +522,14 @@ package src.Objects {
 
 		public function moveWithCamera(x: int, y: int):void
 		{
-			var camera: Camera = new Camera(x, y);
-			moveLayerWithCamera(camera, bottomSpace);
-			moveLayerWithCamera(camera, objSpace);
+			moveLayerWithCamera(x, y, bottomSpace);
+			moveLayerWithCamera(x, y, objSpace);
 		}
 
-		private function moveLayerWithCamera(camera: Camera, layer: Sprite):void
+		private function moveLayerWithCamera(x: int, y: int, layer: Sprite):void
 		{
-			layer.x = -camera.currentPosition.x;
-			layer.y = -camera.currentPosition.y;
+			layer.x = -x;
+			layer.y = -y;
 		}
 
 		private function calculateDepth(y: Number, mapPriority: int, layer: Sprite): int

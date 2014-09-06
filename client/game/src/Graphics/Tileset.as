@@ -2,6 +2,7 @@ package src.Graphics {
     import flash.geom.Rectangle;
 
     import src.Constants;
+    import src.Global;
     import src.StarlingStage;
 
     import starling.display.Image;
@@ -14,7 +15,7 @@ package src.Graphics {
             if (tiles === null) {
                 tiles = new Array(Constants.tileSetTileW * Constants.tileSetTileH);
 
-                var tileset: Texture = StarlingStage.assets.getTexture("TILESET");
+                var tileset: Texture = Global.starlingStage.assets.getTexture("TILESET");
 
                 for (var row: int = 0; row < Constants.tileSetTileH; row++) {
                     for (var column: int = 0; column < Constants.tileSetTileW; column++) {

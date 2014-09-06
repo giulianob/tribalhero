@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
-<!-- $TexturePacker:SmartUpdate:f9c2f0efca3ec9a2351375339c6a4cc8:919fae485eb51f698e5164d472e50f5f:1f6bb7365c10907fb27d57e59bbac0a2$ -->
+<!-- $TexturePacker:SmartUpdate:0ac4e4c5263a3f50c9bfcf7f588366f5:919fae485eb51f698e5164d472e50f5f:1f6bb7365c10907fb27d57e59bbac0a2$ -->
 <TextureAtlas imagePath="FEUDALJAPAN_THEME_ATLAS.png">
     <SubTexture name="FEUDALJAPAN_ARMORY_STRUCTURE" x="288" y="424" width="119" height="71"/>
     <SubTexture name="FEUDALJAPAN_BARRACK_STRUCTURE" x="570" y="171" width="261" height="152" frameX="-10" frameY="0" frameWidth="271" frameHeight="152"/>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
-<!-- $TexturePacker:SmartUpdate:ab1bd8b105901d560b42ef6743e456cd:da82da1269ac05aeaca1ce69506980bf:5b1367083d8bf503f01b1d6b13d5c924$ -->
+<!-- $TexturePacker:SmartUpdate:b8370f873b310c5b6115ac990b841e29:da82da1269ac05aeaca1ce69506980bf:5b1367083d8bf503f01b1d6b13d5c924$ -->
 <TextureAtlas imagePath="DEFAULT_THEME_ATLAS.png">
     <SubTexture name="DEFAULT_ARMORY_STRUCTURE" x="398" y="580" width="112" height="77"/>
     <SubTexture name="DEFAULT_BARBARIAN_TRIBE_STRUCTURE" x="236" y="289" width="211" height="119"/>

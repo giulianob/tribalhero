@@ -7,9 +7,7 @@
     import com.greensock.plugins.TweenPlugin;
 
     import feathers.core.PopUpManager;
-    import starling.display.Sprite;
 
-    import flash.display.Sprite;
     import flash.display.*;
     import flash.events.*;
     import flash.system.Security;
@@ -31,6 +29,8 @@
     import src.UI.TweenPlugins.TransformAroundPointStarlingPlugin;
     import src.Util.*;
 
+    import starling.display.Sprite;
+
     public class Main extends flash.display.Sprite
 	{
 		private var map:Map;
@@ -41,8 +41,14 @@
 
 		private var parms: Object;
 
-		public function Main()
+        private var assetInitializer: Function;
+        private var bootstrapper: IBootstrapper;
+
+		public function Main(bootstrapper: IBootstrapper)
 		{
+            this.bootstrapper = bootstrapper;
+            this.assetInitializer = assetInitializer;
+
             Security.loadPolicyFile(Constants.mainWebsite + "crossdomain.xml?m=" + Constants.version + "." + Constants.revision);
 
 			name = "Main";
@@ -56,7 +62,7 @@
 
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 
-            StarlingStage.init(stage).then(function(value: *): void {
+                StarlingStage.init(stage, bootstrapper).then(function(value: *): void {
                 stage.showDefaultContextMenu = false;
 
                 var popupRoot: starling.display.Sprite = new starling.display.Sprite();
@@ -163,8 +169,6 @@
 
             var gameScreen: IGameScreenFlow = new GameScreenDesktopFlow(map, miniMap);
             gameScreen.show();
-
-            camera.scrollToCenter(map.cities[0].MainBuilding.primaryPosition.toScreenPosition());
 		}
     }
 }

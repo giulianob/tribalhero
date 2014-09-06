@@ -43,9 +43,9 @@
     <renderMode>direct</renderMode>
   </initialWindow>
   <icon>
-    <image72x72>../graphics/appicons/android/icon_72.png</image72x72>
-    <image114x114>../graphics/appicons/android/icon_114.png</image114x114>
-    <image512x512>../graphics/appicons/android/icon_512.png</image512x512>
+    <image72x72>appicons/android/icon_72.png</image72x72>
+    <image114x114>appicons/android/icon_114.png</image114x114>
+    <image512x512>appicons/android/icon_512.png</image512x512>
   </icon>
   <!-- 
 	AIR options:

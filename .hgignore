@@ -51,7 +51,6 @@ glob:client/stacktracer/stacktracer.suo
 glob:client/*.apk
 
 syntax: glob
-client/.idea/workspace.xml
 client/mobile/dist/
 app/tmp/cache/persistent/tribalheroserver_*
 app/tmp/cache/models/tribalheroserver_*

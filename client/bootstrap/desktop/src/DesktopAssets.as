@@ -1,5 +1,5 @@
 package src {
-    public class StarlingAssets {
+    public class DesktopAssets {
         // Any asset that is not in the map (e.g. UI elements, icons) should be loaded at 0.5x
         // Map items should be full and loaded at 1x since the map supports zoom
 

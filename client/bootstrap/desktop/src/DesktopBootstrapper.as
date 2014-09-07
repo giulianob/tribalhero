@@ -32,7 +32,7 @@ package src {
             new MetalWorksDesktopTheme();
 
             var assets: AssetManager = new AssetManager();
-            assets.enqueue(StarlingAssets);
+            assets.enqueue(DesktopAssets);
 
             return assets;
         }

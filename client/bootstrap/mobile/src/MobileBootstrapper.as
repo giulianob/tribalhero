@@ -55,6 +55,8 @@ package src {
             starling.stage.stageHeight = Math.floor(screenHeight / dpiRatio);
 
             trace("DpiRatio: "  + dpiRatio);
+            trace("Screen size: " + screenWidth + "x" + screenHeight);
+            trace("Stage size: " + starling.stage.stageWidth + "x" + starling.stage.stageHeight);
             trace("Starling ScaleFactor: "  + starling.contentScaleFactor);
             trace("DPI: " + DeviceCapabilities.dpi);
             trace("Screen Inches: " + DeviceCapabilities.screenInchesX(starling.nativeStage) + "x" + DeviceCapabilities.screenInchesY(starling.nativeStage));
@@ -65,7 +67,7 @@ package src {
 
             var appDir:File = File.applicationDirectory;
             var assetScaleFactor: Number = findScaleFactor(starling);
-            Constants.updateContentScale(assetScaleFactor);
+            //Constants.updateContentScale(assetScaleFactor);
 
             trace(formatString("Loading assets at {0}x scale", assetScaleFactor));
 

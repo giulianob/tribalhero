@@ -3,6 +3,9 @@ set "PATH=C:/Program Files/CodeAndWeb/TexturePacker/bin;%PATH%"
 set "DEFAULT_SETTINGS=--format sparrow --enable-rotation --multipack --variant 0.5:0.5x --variant 0.75:0.75x --variant 1:1x"
 set "DEFAULT_THEME_SETTINGS=%DEFAULT_SETTINGS% --ignore-files *_BANNER.png --ignore-files *_WALL.png"
 
+:: Until we have icons that are actually HD
+set "TMP_ICON_SETTINGS=--format sparrow --enable-rotation --multipack --variant 1:0.5x --variant 1.5:0.75x --variant 2:1x"
+
 :: Tilemap
 TexturePacker.exe %DEFAULT_SETTINGS%^
   --data atlas\{v}\TILESET_ATLAS.xml^
@@ -43,7 +46,7 @@ TexturePacker.exe %DEFAULT_THEME_SETTINGS%^
   themes\feudaljapan
 
 :: Icons
-TexturePacker.exe %DEFAULT_SETTINGS%^
+TexturePacker.exe %TMP_ICON_SETTINGS%^
   --data atlas\{v}\ICONS_ATLAS.xml^
   --sheet atlas\{v}\ICONS_ATLAS.png^
   icons\general

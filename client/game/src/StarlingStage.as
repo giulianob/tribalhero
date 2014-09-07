@@ -47,7 +47,7 @@ package src {
 
             _bootstrapper.init(Starling.current);
 
-            _bootstrapper.updateViewport(Starling.current, Starling.current.nativeStage.stageWidth, Starling.current.nativeStage.stageHeight);
+            onResizeStage(null);
 
             stage.addEventListener(Event.RESIZE, onResizeStage);
 
@@ -66,6 +66,8 @@ package src {
         private function onResizeStage(e: *):void
         {
             _bootstrapper.updateViewport(Starling.current, Starling.current.nativeStage.stageWidth, Starling.current.nativeStage.stageHeight);
+            Constants.screenW = Starling.current.stage.stageWidth;
+            Constants.screenH = Starling.current.stage.stageHeight;
         }
     }
 }

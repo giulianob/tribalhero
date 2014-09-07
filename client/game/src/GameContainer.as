@@ -448,7 +448,7 @@
 			cmdLine.show(cmdLineHolder);
 
 			// Add objects to resize manager
-			resizeManager = new ResizeManager(stage);
+			// resizeManager = new ResizeManager(stage);
 
 			// resizeManager.addObject(sidebarHolder, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_TOP);
 			// resizeManager.addObject(barBg, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_LEFT);
@@ -459,9 +459,9 @@
 			// if (cmdLine) resizeManager.addObject(cmdLine, ResizeManager.ANCHOR_BOTTOM | ResizeManager.ANCHOR_LEFT);
 
 			//resizeManager.addEventListener(Event.RESIZE, map.onResize);
-			resizeManager.addEventListener(Event.RESIZE, message.onResize);
+			// resizeManager.addEventListener(Event.RESIZE, message.onResize);
 
-			resizeManager.forceMove();
+			// resizeManager.forceMove();
 
 			// Scroll to city center
 			if (selectedCity) {
@@ -574,7 +574,7 @@
 
 			if (map) {
 				//resizeManager.removeEventListener(Event.RESIZE, map.onResize);
-				resizeManager.removeEventListener(Event.RESIZE, message.onResize);
+				//resizeManager.removeEventListener(Event.RESIZE, message.onResize);
 				miniMap.removeEventListener(MiniMap.NAVIGATE_TO_POINT, onMinimapNavigateToPoint);
 
 //				mapHolder.removeChild(map);

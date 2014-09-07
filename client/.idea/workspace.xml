@@ -78,7 +78,7 @@
       <file leaf-file-name="StarlingStage.as" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/game/src/StarlingStage.as">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="153" max-vertical-offset="1071">
+            <state line="69" column="29" selection-start="2144" selection-end="2144" vertical-scroll-proportion="0.0" vertical-offset="578" max-vertical-offset="1105">
               <folding />
             </state>
           </provider>
@@ -87,7 +87,7 @@
       <file leaf-file-name="MobileBootstrapper.as" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bootstrap/mobile/src/MobileBootstrapper.as">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="17" column="38" selection-start="609" selection-end="626" vertical-scroll-proportion="0.6197917" vertical-offset="51" max-vertical-offset="1734">
+            <state line="49" column="14" selection-start="2207" selection-end="2207" vertical-scroll-proportion="0.3766578" vertical-offset="691" max-vertical-offset="1768">
               <folding>
                 <element signature="e#18#60#0" expanded="true" />
               </folding>
@@ -95,22 +95,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ObjectContainer.as" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/game/src/Objects/ObjectContainer.as">
+      <file leaf-file-name="FlashAssets.as" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/game/src/FlashAssets.as">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="236" column="98" selection-start="6680" selection-end="6680" vertical-scroll-proportion="0.0" vertical-offset="3605" max-vertical-offset="9639">
+            <state line="108" column="0" selection-start="3589" selection-end="3589" vertical-scroll-proportion="0.0" vertical-offset="1020" max-vertical-offset="11305">
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Region.as" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/game/src/Map/Region.as">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="98" column="52" selection-start="3279" selection-end="3279" vertical-scroll-proportion="-9.884615" vertical-offset="1307" max-vertical-offset="4590">
-              <folding>
-                <marker date="1409913476605" expanded="true" signature="796:1646" placeholder="{...}" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -118,7 +107,25 @@
       <file leaf-file-name="Tileset.as" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/game/src/Graphics/Tileset.as">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="16" column="0" selection-start="466" selection-end="466" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="544">
+            <state line="18" column="47" selection-start="604" selection-end="604" vertical-scroll-proportion="0.0" vertical-offset="5" max-vertical-offset="595">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ResizeManager.as" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/game/src/UI/Components/ResizeManager.as">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="52" column="22" selection-start="1432" selection-end="1432" vertical-scroll-proportion="0.0" vertical-offset="288" max-vertical-offset="2244">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GameContainer.as" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/game/src/GameContainer.as">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="448" column="0" selection-start="13500" selection-end="13500" vertical-scroll-proportion="0.0" vertical-offset="7122" max-vertical-offset="13583">
               <folding />
             </state>
           </provider>
@@ -127,7 +134,7 @@
       <file leaf-file-name="Constants.as" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/game/src/Constants.as">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="148" column="49" selection-start="5255" selection-end="5273" vertical-scroll-proportion="0.0" vertical-offset="2420" max-vertical-offset="3009">
+            <state line="147" column="0" selection-start="5223" selection-end="5223" vertical-scroll-proportion="0.0" vertical-offset="2425" max-vertical-offset="3009">
               <folding>
                 <element signature="e#18#55#0" expanded="true" />
               </folding>
@@ -138,7 +145,7 @@
       <file leaf-file-name="DesktopBootstrapper.as" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bootstrap/desktop/src/DesktopBootstrapper.as">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="34" column="40" selection-start="1261" selection-end="1274" vertical-scroll-proportion="0.0" vertical-offset="398" max-vertical-offset="782">
+            <state line="33" column="58" selection-start="1233" selection-end="1233" vertical-scroll-proportion="0.0" vertical-offset="398" max-vertical-offset="782">
               <folding>
                 <element signature="e#18#60#0" expanded="true" />
               </folding>
@@ -146,28 +153,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="library.swf" pinned="false" current="false" current-in-tab="false">
-        <entry file="jar://$PROJECT_DIR$/lib/swc/starling/starling.swc!/library.swf">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="1302" column="25" selection-start="66687" selection-end="66687" vertical-scroll-proportion="0.0" vertical-offset="21970" max-vertical-offset="40426">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SpriteFactory.as" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/game/src/Objects/Factories/SpriteFactory.as">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="30" column="0" selection-start="925" selection-end="925" vertical-scroll-proportion="0.0" vertical-offset="200" max-vertical-offset="731">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="DesktopAssets.as" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bootstrap/desktop/src/DesktopAssets.as">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="10" column="71" selection-start="580" selection-end="580" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1020">
+            <state line="9" column="0" selection-start="508" selection-end="508" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1020">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DisplayObjectContainer.as" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/src/starling/starling/display/DisplayObjectContainer.as">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="101" column="8" selection-start="4212" selection-end="4212" vertical-scroll-proportion="0.0" vertical-offset="1160" max-vertical-offset="7769">
               <folding />
             </state>
           </provider>
@@ -194,7 +192,6 @@
         <option value="$PROJECT_DIR$/game/src/Map/MiniMap/MiniMap.as" />
         <option value="$PROJECT_DIR$/game/src/MinimapToolsContainer.as" />
         <option value="$PROJECT_DIR$/game/src/Map/RegionManager.as" />
-        <option value="$PROJECT_DIR$/game/src/GameContainer.as" />
         <option value="$PROJECT_DIR$/game/src/Map/Camera.as" />
         <option value="$PROJECT_DIR$/game/src/FeathersUI/GameScreen/GameScreenDesktopFlow.as" />
         <option value="$PROJECT_DIR$/game/src/Map/Map.as" />
@@ -227,13 +224,14 @@
         <option value="$PROJECT_DIR$/game/src/Main.as" />
         <option value="$PROJECT_DIR$/game/src/Assets.as" />
         <option value="$PROJECT_DIR$/game/src/Map/Region.as" />
-        <option value="$PROJECT_DIR$/game/src/Graphics/Tileset.as" />
-        <option value="$PROJECT_DIR$/game/src/StarlingStage.as" />
-        <option value="$PROJECT_DIR$/game/src/Constants.as" />
         <option value="$PROJECT_DIR$/bootstrap/desktop/src/StarlingAssets.as" />
-        <option value="$PROJECT_DIR$/bootstrap/mobile/src/MobileBootstrapper.as" />
         <option value="$PROJECT_DIR$/bootstrap/desktop/src/DesktopAssets.as" />
         <option value="$PROJECT_DIR$/bootstrap/desktop/src/DesktopBootstrapper.as" />
+        <option value="$PROJECT_DIR$/game/src/Constants.as" />
+        <option value="$PROJECT_DIR$/bootstrap/mobile/src/MobileBootstrapper.as" />
+        <option value="$PROJECT_DIR$/game/src/Graphics/Tileset.as" />
+        <option value="$PROJECT_DIR$/game/src/GameContainer.as" />
+        <option value="$PROJECT_DIR$/game/src/StarlingStage.as" />
       </list>
     </option>
   </component>
@@ -510,7 +508,7 @@
       <recent name="" />
     </key>
   </component>
-  <component name="RunManager" selected="Flash App.Web">
+  <component name="RunManager" selected="Flash App.Air Emulator (iPad)">
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin" singleton="true">
       <module name="" />
       <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m" />
@@ -794,6 +792,8 @@
       <option name="screenWidth" value="1920" />
       <option name="url" value="http://" />
       <option name="usbDebugPort" value="7936" />
+      <RunnerSettings RunnerId="FlexDebugRunner" />
+      <ConfigurationWrapper RunnerId="FlexDebugRunner" />
       <method>
         <option name="ToolBeforeRunTask" enabled="true" actionId="Tool_Commands_Copy assets to output" />
         <option name="Make" enabled="true" />
@@ -808,6 +808,86 @@
       <option name="debugTransport" value="USB" />
       <option name="debuggerSdkRaw" value="BC SDK" />
       <option name="emulator" value="OtherAndroidDevice" />
+      <option name="emulatorAdlOptions" value="" />
+      <option name="fastPackaging" value="true" />
+      <option name="fullScreenHeight" value="1080" />
+      <option name="fullScreenWidth" value="1920" />
+      <option name="launchUrl" value="false" />
+      <option name="launcherParameters">
+        <LauncherParameters>
+          <option name="browserFamily" value="FIREFOX" />
+          <option name="launcherType" value="OSDefault" />
+          <option name="newPlayerInstance" value="false" />
+          <option name="playerPath" value="FlashPlayerDebugger.exe" />
+        </LauncherParameters>
+      </option>
+      <option name="mobileRunTarget" value="Emulator" />
+      <option name="moduleName" value="TribalHero" />
+      <option name="overriddenMainClass" value="" />
+      <option name="overriddenOutputFileName" value="" />
+      <option name="overrideMainClass" value="false" />
+      <option name="runTrusted" value="true" />
+      <option name="screenDpi" value="424" />
+      <option name="screenHeight" value="900" />
+      <option name="screenWidth" value="1920" />
+      <option name="url" value="http://" />
+      <option name="usbDebugPort" value="7936" />
+      <RunnerSettings RunnerId="FlexDebugRunner" />
+      <ConfigurationWrapper RunnerId="FlexDebugRunner" />
+      <method>
+        <option name="ToolBeforeRunTask" enabled="true" actionId="Tool_Commands_Copy assets to output" />
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="false" name="Air Emulator (iPad Retina)" type="FlashRunConfigurationType" factoryName="Flash App">
+      <option name="BCName" value="TribalHero Mobile" />
+      <option name="IOSSimulatorSdkPath" value="" />
+      <option name="adlOptions" value="" />
+      <option name="airProgramParameters" value="" />
+      <option name="appDescriptorForEmulator" value="Android" />
+      <option name="debugTransport" value="USB" />
+      <option name="debuggerSdkRaw" value="BC SDK" />
+      <option name="emulator" value="iPadRetina" />
+      <option name="emulatorAdlOptions" value="" />
+      <option name="fastPackaging" value="true" />
+      <option name="fullScreenHeight" value="1080" />
+      <option name="fullScreenWidth" value="1920" />
+      <option name="launchUrl" value="false" />
+      <option name="launcherParameters">
+        <LauncherParameters>
+          <option name="browserFamily" value="FIREFOX" />
+          <option name="launcherType" value="OSDefault" />
+          <option name="newPlayerInstance" value="false" />
+          <option name="playerPath" value="FlashPlayerDebugger.exe" />
+        </LauncherParameters>
+      </option>
+      <option name="mobileRunTarget" value="Emulator" />
+      <option name="moduleName" value="TribalHero" />
+      <option name="overriddenMainClass" value="" />
+      <option name="overriddenOutputFileName" value="" />
+      <option name="overrideMainClass" value="false" />
+      <option name="runTrusted" value="true" />
+      <option name="screenDpi" value="424" />
+      <option name="screenHeight" value="900" />
+      <option name="screenWidth" value="1920" />
+      <option name="url" value="http://" />
+      <option name="usbDebugPort" value="7936" />
+      <RunnerSettings RunnerId="FlexDebugRunner" />
+      <ConfigurationWrapper RunnerId="FlexDebugRunner" />
+      <method>
+        <option name="ToolBeforeRunTask" enabled="true" actionId="Tool_Commands_Copy assets to output" />
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="false" name="Air Emulator (iPad)" type="FlashRunConfigurationType" factoryName="Flash App">
+      <option name="BCName" value="TribalHero Mobile" />
+      <option name="IOSSimulatorSdkPath" value="" />
+      <option name="adlOptions" value="" />
+      <option name="airProgramParameters" value="" />
+      <option name="appDescriptorForEmulator" value="Android" />
+      <option name="debugTransport" value="USB" />
+      <option name="debuggerSdkRaw" value="BC SDK" />
+      <option name="emulator" value="iPad" />
       <option name="emulatorAdlOptions" value="" />
       <option name="fastPackaging" value="true" />
       <option name="fullScreenHeight" value="1080" />
@@ -886,14 +966,16 @@
       <option name="usbDebugPort" value="7936" />
       <method />
     </configuration>
-    <list size="7">
+    <list size="9">
       <item index="0" class="java.lang.String" itemvalue="Flash App.Web" />
       <item index="1" class="java.lang.String" itemvalue="Flash App.Android Device" />
       <item index="2" class="java.lang.String" itemvalue="Flash App.Air Emulator (iPhone Retina)" />
       <item index="3" class="java.lang.String" itemvalue="Flash App.Air Emulator (iPhone)" />
       <item index="4" class="java.lang.String" itemvalue="Flash App.Air Emulator (G2)" />
-      <item index="5" class="java.lang.String" itemvalue="Flash App.Genymotion" />
-      <item index="6" class="java.lang.String" itemvalue="Flash Remote Debug.Tribal Hero Remote Debug" />
+      <item index="5" class="java.lang.String" itemvalue="Flash App.Air Emulator (iPad Retina)" />
+      <item index="6" class="java.lang.String" itemvalue="Flash App.Air Emulator (iPad)" />
+      <item index="7" class="java.lang.String" itemvalue="Flash App.Genymotion" />
+      <item index="8" class="java.lang.String" itemvalue="Flash Remote Debug.Tribal Hero Remote Debug" />
     </list>
     <configuration name="&lt;template&gt;" type="JUnit" default="true" selected="false">
       <option name="MAIN_CLASS_NAME" />
@@ -983,12 +1065,12 @@
       <workItem from="1410032731366" duration="516000" />
       <workItem from="1410033265294" duration="419000" />
       <workItem from="1410033714955" duration="1403000" />
-      <workItem from="1410035207767" duration="12343000" />
+      <workItem from="1410035207767" duration="20117000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="536842000" />
+    <option name="totallyTimeSpent" value="544616000" />
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
@@ -1019,12 +1101,12 @@
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32707775" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1300268" sideWeight="0.6232349" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.36729223" sideWeight="0.6232349" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30038512" sideWeight="0.67688024" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.40482575" sideWeight="0.6046213" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.41420913" sideWeight="0.6046213" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.40482575" sideWeight="0.39537868" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.41420913" sideWeight="0.39537868" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24903475" sideWeight="0.325" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32991013" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25917926" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
@@ -1036,7 +1118,7 @@
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.28883183" sideWeight="0.7116992" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24775353" sideWeight="0.67548746" order="5" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.26407507" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.5254692" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.5139276" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -1067,7 +1149,7 @@
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="515" />
+      <option name="time" value="516" />
     </breakpoint-manager>
   </component>
   <component name="antWorkspaceConfiguration">
@@ -1075,11 +1157,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Components/ResourcesContainer.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="59" column="24" selection-start="1567" selection-end="1567" vertical-scroll-proportion="0.0" vertical-offset="1282" max-vertical-offset="1972" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/game/src/UI/Components/ScreenMessages/ScreenMessagePanel.as">
       <provider selected="true" editor-type-id="text-editor">
         <state line="38" column="0" selection-start="1087" selection-end="1087" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2414" />
@@ -1088,11 +1165,6 @@
     <entry file="file://$PROJECT_DIR$/game/src/FeathersUI/Login/LoginVM.as">
       <provider selected="true" editor-type-id="text-editor">
         <state line="3" column="17" selection-start="86" selection-end="86" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="289" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/UI/Components/ResizeManager.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="39" column="63" selection-start="1099" selection-end="1099" vertical-scroll-proportion="0.0" vertical-offset="255" max-vertical-offset="2244" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/game/src/Map/MiniMap/MiniMap.as">
@@ -1192,11 +1264,6 @@
         <state line="32" column="33" selection-start="907" selection-end="923" vertical-scroll-proportion="0.0" vertical-offset="204" max-vertical-offset="952" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/GameContainer.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="465" column="36" selection-start="14481" selection-end="14481" vertical-scroll-proportion="0.0" vertical-offset="7641" max-vertical-offset="13957" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/game/src/FeathersUI/GameScreen/GameScreenDesktopFlow.as">
       <provider selected="true" editor-type-id="text-editor">
         <state line="24" column="71" selection-start="1001" selection-end="1001" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="493" />
@@ -1219,7 +1286,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/game/src/FeathersUI/GameScreen/GameScreenDesktopView.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="39" column="14" selection-start="1287" selection-end="1287" vertical-scroll-proportion="0.0" vertical-offset="306" max-vertical-offset="969" />
+        <state line="39" column="14" selection-start="1287" selection-end="1287" vertical-scroll-proportion="0.0" vertical-offset="306" max-vertical-offset="969">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/game/src/IBootstrapper.as">
@@ -1245,7 +1314,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/src/starling/starling/core/Starling.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="1069" column="0" selection-start="49536" selection-end="49536" vertical-scroll-proportion="0.0" vertical-offset="17153" max-vertical-offset="17595" />
+        <state line="1069" column="0" selection-start="49536" selection-end="49536" vertical-scroll-proportion="0.0" vertical-offset="17153" max-vertical-offset="17595">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/game/t.as">
@@ -1262,15 +1333,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bootstrap/mobile/src/Loader.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="9" selection-start="501" selection-end="501" vertical-scroll-proportion="0.0" vertical-offset="176" max-vertical-offset="561">
-          <folding>
-            <element signature="e#18#46#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://C:/airsdk/frameworks/libs/air/airglobal.swc!/library.swf">
       <provider selected="true" editor-type-id="text-editor">
         <state line="4428" column="13" selection-start="195020" selection-end="195020" vertical-scroll-proportion="0.0" vertical-offset="75151" max-vertical-offset="247418">
@@ -1278,23 +1340,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bootstrap/desktop/src/Preloader.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="65" column="78" selection-start="2090" selection-end="2090" vertical-scroll-proportion="0.0" vertical-offset="714" max-vertical-offset="1258">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/game/src/Main.as">
       <provider selected="true" editor-type-id="text-editor">
         <state line="45" column="0" selection-start="1320" selection-end="1320" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2567">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/FlashAssets.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-6.5552697" vertical-offset="2550" max-vertical-offset="11305">
           <folding />
         </state>
       </provider>
@@ -1324,15 +1372,8 @@
       <provider selected="true" editor-type-id="text-editor">
         <state line="98" column="52" selection-start="3279" selection-end="3279" vertical-scroll-proportion="-9.884615" vertical-offset="1307" max-vertical-offset="4590">
           <folding>
-            <marker date="1409913476605" expanded="true" signature="796:1646" placeholder="{...}" />
+            <marker date="1409913476605" expanded="true" signature="-1:-1" placeholder="{...}" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/Graphics/Tileset.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="0" selection-start="466" selection-end="466" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="544">
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1343,41 +1384,90 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/Constants.as">
+    <entry file="file://$PROJECT_DIR$/bootstrap/mobile/src/Loader.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="148" column="49" selection-start="5255" selection-end="5273" vertical-scroll-proportion="0.0" vertical-offset="2420" max-vertical-offset="3009">
-          <folding>
-            <element signature="e#18#55#0" expanded="true" />
-          </folding>
+        <state line="18" column="9" selection-start="501" selection-end="501" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="544">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bootstrap/desktop/src/Preloader.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="65" column="78" selection-start="2090" selection-end="2090" vertical-scroll-proportion="0.0" vertical-offset="714" max-vertical-offset="1258">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/FlashAssets.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="108" column="0" selection-start="3589" selection-end="3589" vertical-scroll-proportion="0.0" vertical-offset="1020" max-vertical-offset="11305">
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/bootstrap/desktop/src/DesktopBootstrapper.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="34" column="40" selection-start="1261" selection-end="1274" vertical-scroll-proportion="0.0" vertical-offset="398" max-vertical-offset="782">
+        <state line="33" column="58" selection-start="1233" selection-end="1233" vertical-scroll-proportion="0.0" vertical-offset="398" max-vertical-offset="782">
           <folding>
             <element signature="e#18#60#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/StarlingStage.as">
+    <entry file="file://$PROJECT_DIR$/lib/src/starling/starling/display/DisplayObjectContainer.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1071">
+        <state line="101" column="8" selection-start="4212" selection-end="4212" vertical-scroll-proportion="0.0" vertical-offset="1160" max-vertical-offset="7769">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/bootstrap/desktop/src/DesktopAssets.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="71" selection-start="580" selection-end="580" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1020">
+        <state line="9" column="0" selection-start="508" selection-end="508" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1020">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/Constants.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="147" column="0" selection-start="5223" selection-end="5223" vertical-scroll-proportion="0.0" vertical-offset="2405" max-vertical-offset="3009">
+          <folding>
+            <element signature="e#18#55#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/Graphics/Tileset.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="18" column="47" selection-start="604" selection-end="604" vertical-scroll-proportion="0.0" vertical-offset="5" max-vertical-offset="595">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/UI/Components/ResizeManager.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="52" column="22" selection-start="1432" selection-end="1432" vertical-scroll-proportion="0.0" vertical-offset="288" max-vertical-offset="2244">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/GameContainer.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="448" column="0" selection-start="13500" selection-end="13500" vertical-scroll-proportion="0.0" vertical-offset="7122" max-vertical-offset="13583">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/StarlingStage.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="69" column="29" selection-start="2144" selection-end="2144" vertical-scroll-proportion="0.0" vertical-offset="578" max-vertical-offset="1105">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/bootstrap/mobile/src/MobileBootstrapper.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="38" selection-start="609" selection-end="626" vertical-scroll-proportion="0.6197917" vertical-offset="51" max-vertical-offset="1734">
+        <state line="49" column="14" selection-start="2207" selection-end="2207" vertical-scroll-proportion="0.3766578" vertical-offset="691" max-vertical-offset="1768">
           <folding>
             <element signature="e#18#60#0" expanded="true" />
           </folding>

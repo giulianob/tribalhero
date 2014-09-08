@@ -11,6 +11,7 @@ package src {
     import starling.utils.formatString;
 
     public class MobileBootstrapper implements IBootstrapper {
+        private static const dpiRatiosAllowed: Array = [0.5, 0.75, 1, 1.5, 2];
         private static const assetSizes: Array = [0.5, 0.75, 1];
 
         public function MobileBootstrapper() {
@@ -49,8 +50,16 @@ package src {
              starling.stage.stageHeight = screenRect.height / viewportBaseRatioHeight;
             */
 
+            /*
             const baseDpi: int = 326;
             var dpiRatio: Number = DeviceCapabilities.dpi / baseDpi;
+            starling.stage.stageWidth = Math.floor(screenWidth / dpiRatio);
+            starling.stage.stageHeight = Math.floor(screenHeight / dpiRatio);
+            */
+
+            var dpiRatio: Number = DeviceCapabilities.dpi / 326.0;
+            dpiRatio = findScaleFactor(dpiRatio, dpiRatiosAllowed);
+
             starling.stage.stageWidth = Math.floor(screenWidth / dpiRatio);
             starling.stage.stageHeight = Math.floor(screenHeight / dpiRatio);
 
@@ -66,7 +75,7 @@ package src {
             new MetalWorksMobileTheme();
 
             var appDir:File = File.applicationDirectory;
-            var assetScaleFactor: Number = findScaleFactor(starling);
+            var assetScaleFactor: Number = findScaleFactor(starling.contentScaleFactor, assetSizes);
             //Constants.updateContentScale(assetScaleFactor);
 
             trace(formatString("Loading assets at {0}x scale", assetScaleFactor));
@@ -80,13 +89,13 @@ package src {
             return assets;
         }
 
-        protected function findScaleFactor(starling: Starling):Number
+        protected function findScaleFactor(scaleFactor: Number, allowedFactors: Array):Number
         {
-            var scaleF:Number = Math.floor(starling.contentScaleFactor * 1000) / 1000;
+            var scaleF:Number = Math.floor(scaleFactor * 1000) / 1000;
             var closest:Number = 0;
             var f:Number;
 
-            for each (f in assetSizes) {
+            for each (f in allowedFactors) {
                 if (closest === 0 || Math.abs(f - scaleF) < Math.abs(closest - scaleF)) {
                     closest = f;
                 }

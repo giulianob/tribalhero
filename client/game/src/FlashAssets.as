@@ -69,6 +69,9 @@
         }
 
         // Tileset
+        [Embed(source = "../../../graphics/TILESET.png")]
+        public static const TILESET: Class;
+
         [Embed(source = "../../../graphics/objects/MASK_TILE.png")]
         public static const MASK_TILE: Class;
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
-<!-- $TexturePacker:SmartUpdate:e6a2e18e0251907815fe3c03ad2561cb:8542df0d40908ef9338d59ba53274c8b:c26248d96afa52c798d9ab36ad9408ac$ -->
+<!-- $TexturePacker:SmartUpdate:31542431ac17a75d05d5d1f875d1fabf:8542df0d40908ef9338d59ba53274c8b:c26248d96afa52c798d9ab36ad9408ac$ -->
 <TextureAtlas imagePath="FEUDALJAPAN_THEME_WALL_ATLAS.png">
-    <SubTexture name="FEUDALJAPAN_WALL" x="2" y="2" rotated="true" width="476" height="1440" frameX="0" frameY="0" frameWidth="1536" frameHeight="480"/>
+    <SubTexture name="FEUDALJAPAN_WALL" x="2" y="2" width="1440" height="476" frameX="0" frameY="0" frameWidth="1536" frameHeight="480"/>
 </TextureAtlas>

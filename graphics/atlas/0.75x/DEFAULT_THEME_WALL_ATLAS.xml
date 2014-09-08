@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
-<!-- $TexturePacker:SmartUpdate:3b53d2a177ef4553a80370caf0db823d:5abbd9b26d2ac007faa3ab4953b133b6:4077522b1c868136e3c74e34e603841c$ -->
+<!-- $TexturePacker:SmartUpdate:f39fe2e7ef8815d7f571805b32045b1a:5abbd9b26d2ac007faa3ab4953b133b6:4077522b1c868136e3c74e34e603841c$ -->
 <TextureAtlas imagePath="DEFAULT_THEME_WALL_ATLAS.png">
-    <SubTexture name="DEFAULT_WALL" x="2" y="2" rotated="true" width="300" height="1440" frameX="0" frameY="-60" frameWidth="1536" frameHeight="480"/>
+    <SubTexture name="DEFAULT_WALL" x="2" y="2" width="1440" height="300" frameX="0" frameY="-60" frameWidth="1536" frameHeight="480"/>
 </TextureAtlas>

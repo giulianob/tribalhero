@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
-<!-- $TexturePacker:SmartUpdate:ac3252373487259bdafca8006b45189f:e3cf54ffaadcc08830ec12629cc724a2:7a933e5c16be70ebe97d9bf397cbc8e2$ -->
+<!-- $TexturePacker:SmartUpdate:a5ba241a09076231c2b2331471480f19:e3cf54ffaadcc08830ec12629cc724a2:7a933e5c16be70ebe97d9bf397cbc8e2$ -->
 <TextureAtlas imagePath="OBJECTS_ATLAS.png">
     <SubTexture name="COBBLESTONE_BANNER" x="2" y="2" width="338" height="131"/>
-    <SubTexture name="COBBLESTONE_THUMBNAIL" x="64" y="461" width="98" height="48"/>
-    <SubTexture name="FOREST_LVL_1" x="164" y="454" width="93" height="54"/>
-    <SubTexture name="FOREST_LVL_2" x="191" y="135" rotated="true" width="59" height="87"/>
-    <SubTexture name="FOREST_LVL_3" x="134" y="342" rotated="true" width="55" height="110"/>
-    <SubTexture name="FOREST_LVL_4" x="64" y="342" rotated="true" width="68" height="117" frameX="0" frameY="-2" frameWidth="117" frameHeight="70"/>
-    <SubTexture name="MASK_TILE" x="2" y="342" rotated="true" width="60" height="120"/>
-    <SubTexture name="WARELEPHANT_BANNER" x="342" y="2" rotated="true" width="131" height="338"/>
-    <SubTexture name="WARELEPHANT_TROOP" x="259" y="135" width="75" height="86"/>
+    <SubTexture name="COBBLESTONE_THUMBNAIL" x="342" y="191" width="98" height="48"/>
+    <SubTexture name="FOREST_LVL_1" x="342" y="241" width="93" height="54"/>
+    <SubTexture name="FOREST_LVL_2" x="2" y="385" width="87" height="59"/>
+    <SubTexture name="FOREST_LVL_3" x="342" y="134" width="110" height="55"/>
+    <SubTexture name="FOREST_LVL_4" x="342" y="64" width="117" height="68" frameX="0" frameY="-2" frameWidth="117" frameHeight="70"/>
+    <SubTexture name="MASK_TILE" x="342" y="2" width="120" height="60"/>
+    <SubTexture name="WARELEPHANT_BANNER" x="2" y="135" width="338" height="131"/>
+    <SubTexture name="WARELEPHANT_TROOP" x="2" y="297" width="75" height="86"/>
 </TextureAtlas>

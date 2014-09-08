@@ -8,11 +8,6 @@ package src {
         [Embed(source="../../../../graphics/atlas/0.5x/ICONS_ATLAS.xml", mimeType="application/octet-stream")]
         public static const ICONS_ATLAS_XML:Class;
 
-        [Embed(source="../../../../graphics/atlas/1x/TILESET_ATLAS.png")]
-        public static const TILESET_ATLAS: Class;
-        [Embed(source="../../../../graphics/atlas/1x/TILESET_ATLAS.xml", mimeType="application/octet-stream")]
-        public static const TILESET_ATLAS_XML:Class;
-
         [Embed(source="../../../../graphics/atlas/1x/OBJECTS_ATLAS.png")]
         public static const OBJECTS_ATLAS: Class;
         [Embed(source="../../../../graphics/atlas/1x/OBJECTS_ATLAS.xml", mimeType="application/octet-stream")]

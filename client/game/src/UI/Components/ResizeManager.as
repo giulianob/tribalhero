@@ -50,8 +50,8 @@ package src.UI.Components
 		public function onResize(e: Event = null) : void {
 			resizeDelay.stop();
 
-			Constants.screenW = stage.stageWidth;
-			Constants.screenH = stage.stageHeight;
+			//Constants.screenW = stage.stageWidth;
+			//Constants.screenH = stage.stageHeight;
 
 			var delta: IntDimension = new IntDimension(stage.stageWidth - lastSize.width, stage.stageHeight - lastSize.height);
 

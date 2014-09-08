@@ -66,6 +66,7 @@ package src {
         private function onResizeStage(e: *):void
         {
             _bootstrapper.updateViewport(Starling.current, Starling.current.nativeStage.stageWidth, Starling.current.nativeStage.stageHeight);
+
             Constants.screenW = Starling.current.stage.stageWidth;
             Constants.screenH = Starling.current.stage.stageHeight;
         }

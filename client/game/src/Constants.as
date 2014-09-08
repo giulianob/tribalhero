@@ -145,27 +145,6 @@ package src
             new CoinPrice("REFILL15", 15, 700, 18),
             new CoinPrice("REFILL20", 20, 1000, 23)
         ];
-
-        public static function updateContentScale(scale: Number): void {
-            tileW *= scale;
-            tileH *= scale;
-            mapW *= scale;
-            mapH *= scale;
-
-            mapRegionW *= scale;
-            mapRegionH *= scale;            
-            regionW *= scale;
-            regionH *= scale;
-            regionW *= scale;
-            regionH *= scale;
-
-            miniMapTileW *= scale;
-            miniMapTileH *= scale;
-            miniMapRegionW *= scale;
-            miniMapRegionH *= scale;
-            miniMapRegionRatioW *= scale;
-            miniMapRegionRatioH *= scale;            
-        }
 	}
 }
 

@@ -51,6 +51,7 @@
 
 		public function MiniMap(camera: Camera, width: int, height: int)
 		{
+            name = "MiniMap";
             _camera = camera;
             addEventListener(TouchEvent.TOUCH, onNavigate);
 

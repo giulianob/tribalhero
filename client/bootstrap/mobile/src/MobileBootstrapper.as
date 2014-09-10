@@ -6,6 +6,11 @@ package src {
     import flash.geom.Rectangle;
     import flash.system.Capabilities;
 
+    import src.FeathersUI.Factories.IFlowFactory;
+    import src.FeathersUI.Factories.MobileFlowFactory;
+    import src.Map.Map;
+    import src.Map.MiniMap.MiniMap;
+
     import starling.core.Starling;
     import starling.utils.AssetManager;
     import starling.utils.formatString;
@@ -28,37 +33,10 @@ package src {
             // Viewport is always the full screen size
             starling.viewPort = new Rectangle(0, 0, screenWidth, screenHeight);
 
-            /*
-            // Get the scale based on the biggest percentage between the new width and the base width or the new height and the base height
-            var scale:Number = Math.max(( width / baseWidth ), ( height / baseHeight ));
-
-            // Resize the starling stage based on the new width and height divided by the scale
-             starling.stage.stageWidth = width / scale;
-             starling.stage.stageHeight = height / scale;
-            */
-
-            /*
-            Citrus Engine based scaling
-            var baseRect:Rectangle = new Rectangle(0, 0, _baseWidth, _baseHeight);
-            var screenRect:Rectangle = new Rectangle(0, 0, screenWidth, screenHeight);
-
-            var viewport: Rectangle = RectangleUtil.fit(baseRect, screenRect, ScaleMode.SHOW_ALL);
-            var viewportBaseRatioWidth: Number = viewport.width / baseRect.width;
-            var viewportBaseRatioHeight: Number = viewport.height / baseRect.height;
-
-             starling.stage.stageWidth = screenRect.width / viewportBaseRatioWidth;
-             starling.stage.stageHeight = screenRect.height / viewportBaseRatioHeight;
-            */
-
-            /*
-            const baseDpi: int = 326;
-            var dpiRatio: Number = DeviceCapabilities.dpi / baseDpi;
-            starling.stage.stageWidth = Math.floor(screenWidth / dpiRatio);
-            starling.stage.stageHeight = Math.floor(screenHeight / dpiRatio);
-            */
-
             var dpiRatio: Number = DeviceCapabilities.dpi / 326.0;
-            dpiRatio = findScaleFactor(dpiRatio, dpiRatiosAllowed);
+
+            // might not need it
+            // dpiRatio = findScaleFactor(dpiRatio, dpiRatiosAllowed);
 
             starling.stage.stageWidth = Math.floor(screenWidth / dpiRatio);
             starling.stage.stageHeight = Math.floor(screenHeight / dpiRatio);
@@ -102,6 +80,10 @@ package src {
             }
 
             return closest;
+        }
+
+        public function getFlowFactory(map: Map, miniMap: MiniMap): IFlowFactory {
+            return new MobileFlowFactory(map, miniMap);
         }
     }
 }

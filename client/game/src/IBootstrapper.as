@@ -1,4 +1,8 @@
 package src {
+    import src.FeathersUI.Factories.IFlowFactory;
+    import src.Map.Map;
+    import src.Map.MiniMap.MiniMap;
+
     import starling.core.Starling;
     import starling.utils.AssetManager;
 
@@ -8,5 +12,7 @@ package src {
         function loadAssets(starling: Starling): AssetManager;
 
         function init(starling: Starling): void;
+
+        function getFlowFactory(map: Map, miniMap: MiniMap): IFlowFactory;
     }
 }

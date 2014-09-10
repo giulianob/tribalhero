@@ -4,6 +4,13 @@ package src {
 
     import flash.geom.Rectangle;
 
+    import src.FeathersUI.Factories.DesktopFlowFactory;
+
+    import src.FeathersUI.Factories.IFlowFactory;
+
+    import src.Map.Map;
+    import src.Map.MiniMap.MiniMap;
+
     import starling.core.Starling;
     import starling.utils.AssetManager;
 
@@ -35,6 +42,10 @@ package src {
             assets.enqueue(DesktopAssets);
 
             return assets;
+        }
+
+        public function getFlowFactory(map: Map, miniMap: MiniMap): IFlowFactory {
+            return new DesktopFlowFactory(map, miniMap);
         }
     }
 }

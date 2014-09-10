@@ -11,6 +11,8 @@
     import flash.display.*;
     import flash.events.*;
     import flash.system.Security;
+    import flash.ui.ContextMenu;
+    import flash.ui.ContextMenuItem;
 
     import org.aswing.*;
 
@@ -91,21 +93,20 @@
                 Global.main = self;
 
                 //Init right context menu for debugging
-                /*
+
                 CONFIG::debug {
+                    /*
                     var fm_menu:ContextMenu = new ContextMenu();
                     var dump:ContextMenuItem = new ContextMenuItem("Dump stage");
-                    dump.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, function(e:Event):void { Util.dumpDisplayObject(stage); } );
-                    var dumpRegionQueryInfo:ContextMenuItem = new ContextMenuItem("Dump region query info");
-                    dumpRegionQueryInfo.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, function(e:Event):void {
-                        if (!Global.map) return;
-                        Util.log("Pending regions:" + Util.implode(',', Global.map.pendingRegions));
+                    dump.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, function(e:Event):void {
+                        Util.dumpDisplayObject(stage);
+                        Util.dumpStarlingStage();
                     } );
+                    fm_menu.customItems = fm_menu.customItems !== null ? fm_menu.customItems : [];
                     fm_menu.customItems.push(dump);
-                    fm_menu.customItems.push(dumpRegionQueryInfo);
-                    contextMenu = fm_menu;
+                    self.contextMenu = fm_menu;
+                    */
                 }
-                */
 
                 //Flash params
                 parms = loaderInfo.parameters;
@@ -167,7 +168,7 @@
 			Global.mapComm.General.readLoginInfo(packet);
             Global.gameContainer.setMap(map, miniMap);
 
-            var gameScreen: IGameScreenFlow = new GameScreenDesktopFlow(map, miniMap);
+            var gameScreen: IGameScreenFlow = bootstrapper.getFlowFactory(map, miniMap).createGameScreenFlow();;
             gameScreen.show();
 		}
     }

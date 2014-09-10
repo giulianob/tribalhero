@@ -50,6 +50,7 @@
 		private var timeDelta: int = 0;
 
 		public function Map(camera: Camera) {
+            this.name = "Map";
             this.camera = camera;
             camera.addEventListener(Camera.ON_MOVE, onMove);
 

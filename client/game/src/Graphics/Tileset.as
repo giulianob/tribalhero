@@ -15,7 +15,7 @@ package src.Graphics {
             if (tiles === null) {
                 tiles = new Array(Constants.tileSetTileW * Constants.tileSetTileH);
 
-                var bmp: Bitmap = FlashAssets.getInstance("TILESET");
+                var bmp: Bitmap = FlashAssets.getSharedInstance("TILESET");
 
                 var tileset: Texture = Texture.fromBitmap(bmp, false, false, 1);
 
@@ -27,8 +27,6 @@ package src.Graphics {
                         tiles[initTileId] = new Image(tileTexture);
                     }
                 }
-
-                bmp.bitmapData.dispose();
             }
 
             return tiles[tileId];

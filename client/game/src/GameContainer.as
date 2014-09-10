@@ -89,8 +89,8 @@
 
         private var lblCoords: JLabel;
 
-        internal var mapHolder: starling.display.Sprite;
-        private var miniMapHolder: starling.display.Sprite;
+//        internal var mapHolder: starling.display.Sprite;
+//        private var miniMapHolder: starling.display.Sprite;
         private var mapOverlayTarget: starling.display.DisplayObject;
 
 		public function GameContainer()
@@ -176,13 +176,13 @@
 			addChild(minimapTools);
 			addChild(sidebarHolder);
 
-            mapHolder = new starling.display.Sprite();
-            mapHolder.visible = false;
-            miniMapHolder = new starling.display.Sprite();
-            miniMapHolder.visible = false;
-
-            Global.starlingStage.addChild(mapHolder);
-            Global.starlingStage.addChild(miniMapHolder);
+//            mapHolder = new starling.display.Sprite();
+//            mapHolder.visible = false;
+//            miniMapHolder = new starling.display.Sprite();
+//            miniMapHolder.visible = false;
+//
+//            Global.starlingStage.addChild(mapHolder);
+//            Global.starlingStage.addChild(miniMapHolder);
 
 			// Bar bg			
 			var barBgClass: Class = UIManager.getDefaults().get("GameMenu.bar");
@@ -420,10 +420,10 @@
 
 			// Add map
             // mapHolder.addChild(map);
-            miniMapHolder.addChild(miniMap);
+            // miniMapHolder.addChild(miniMap);
 
             // Set initial map zoom
-            mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactorPercentage();
+//            mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactorPercentage();
 
 			// Populate city list
 			for each (var city: City in map.cities) {
@@ -448,7 +448,7 @@
 			cmdLine.show(cmdLineHolder);
 
 			// Add objects to resize manager
-			// resizeManager = new ResizeManager(stage);
+			resizeManager = new ResizeManager(stage);
 
 			// resizeManager.addObject(sidebarHolder, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_TOP);
 			// resizeManager.addObject(barBg, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_LEFT);
@@ -578,7 +578,7 @@
 				miniMap.removeEventListener(MiniMap.NAVIGATE_TO_POINT, onMinimapNavigateToPoint);
 
 //				mapHolder.removeChild(map);
-                miniMapHolder.removeChild(miniMap);
+//                miniMapHolder.removeChild(miniMap);
 
                 map.dispose();
                 miniMap.dispose();
@@ -723,18 +723,21 @@
 
 		public function setOverlaySprite(object: starling.display.Sprite):void
 		{
-			if (this.mapOverlayTarget != null)
-			{
-				mapHolder.removeChild(this.mapOverlayTarget);
-                this.mapOverlayTarget.dispose();
-			}
-
-			this.mapOverlayTarget = object;
-
-			if (this.mapOverlayTarget != null)
-			{
-				mapHolder.addChild(this.mapOverlayTarget);
-			}
+            return;
+//  we had a temporary starling container
+// where we were adding the overlay
+//			if (this.mapOverlayTarget != null)
+//			{
+//				mapHolder.removeChild(this.mapOverlayTarget);
+//                this.mapOverlayTarget.dispose();
+//			}
+//
+//			this.mapOverlayTarget = object;
+//
+//			if (this.mapOverlayTarget != null)
+//			{
+//				mapHolder.addChild(this.mapOverlayTarget);
+//			}
 		}
 
 		public function selectCity(cityId: int) : void {

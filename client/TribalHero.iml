@@ -50,6 +50,7 @@
             <entry key="compiler.define" value="CONFIG::debug&#9;true" />
           </map>
           <option name="additionalConfigFilePath" value="$MODULE_DIR$/GameConfig.Desktop.xml" />
+          <option name="additionalOptions" value="-define+=CONFIG::debug,true" />
         </compiler-options>
         <packaging-air-desktop />
         <packaging-android />

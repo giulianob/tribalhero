@@ -11,17 +11,18 @@
     import flash.display.*;
     import flash.events.*;
     import flash.system.Security;
-    import flash.ui.ContextMenu;
-    import flash.ui.ContextMenuItem;
 
     import org.aswing.*;
 
     import src.Comm.*;
-    import src.FeathersUI.GameScreen.GameScreenDesktopFlow;
+    import src.Comm.Commands.ObjectComm;
     import src.FeathersUI.GameScreen.IGameScreenFlow;
+    import src.FeathersUI.Map.MapVM;
+    import src.FeathersUI.Map.MapView;
     import src.Map.*;
     import src.Map.MiniMap.MiniMap;
     import src.Objects.Factories.*;
+    import src.Objects.ObjectContainer;
     import src.UI.Flows.LoginFlow;
     import src.UI.LookAndFeel.*;
     import src.UI.TweenPlugins.DynamicPropsPlugin;
@@ -35,10 +36,6 @@
 
     public class Main extends flash.display.Sprite
 	{
-		private var map:Map;
-
-        private var miniMap: MiniMap;
-
         public var packetCounter:GeneralCounter;
 
 		private var parms: Object;
@@ -148,19 +145,23 @@
         private function completeLogin(packet: Packet):void
 		{
             var camera: Camera = new Camera(0, 0);
-			Global.map = map = new Map(camera);
-			miniMap = new MiniMap(camera, Constants.miniMapScreenW, Constants.miniMapScreenH);
+
+            var objContainer: ObjectContainer = new ObjectContainer();
+            var map: MapVM = new MapVM(objContainer, camera);
+
+            Global.map = map;
+			var miniMap: MiniMap = new MiniMap(camera, Constants.miniMapScreenW, Constants.miniMapScreenH);
 			
 			map.usernames.players.add(new Username(Constants.session.playerId, Constants.session.playerName));
 			map.setTimeDelta(Constants.session.timeDelta);
 			
-			EffectReqFactory.init(map, Constants.objData);
-			PropertyFactory.init(map, Constants.objData);
+			EffectReqFactory.init(Constants.objData);
+			PropertyFactory.init(Constants.objData);
 			StructureFactory.init(map, Constants.objData);
-			TechnologyFactory.init(map, Constants.objData);
-			UnitFactory.init(map, Constants.objData);
-			WorkerFactory.init(map, Constants.objData);
-			ObjectFactory.init(map, Constants.objData);
+			TechnologyFactory.init(Constants.objData);
+			UnitFactory.init(Constants.objData);
+			WorkerFactory.init(Constants.objData);
+			ObjectFactory.init(Constants.objData);
 			
 			Constants.objData = <Data></Data>;
 

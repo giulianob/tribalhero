@@ -18,18 +18,17 @@
         private var primaryObjects: RegionObjectList = new RegionObjectList();
         private var tileObjects: RegionObjectList = new RegionObjectList();
         private var placeHolders: BinaryList = new BinaryList(SimpleObject.sortOnXandY, SimpleObject.compareXAndY);
-        private var map: Map;
-
         private var regionPosition: Position;
+        private var objContainer: ObjectContainer;
 
-        public function Region(id: int, data: Array, map: Map)
+        public function Region(id: int, data: Array, objContainer: ObjectContainer)
         {
+            this.objContainer = objContainer;
             name = formatString("Region {0}", id);
 
             touchable = false;
 
             this.id = id;
-            this.map = map;
             this.tiles = data;
 
             regionPosition = new Position(
@@ -60,14 +59,13 @@
             clearAllPlaceholders();
 
             for each(var gameObj: SimpleGameObject in primaryObjects.allObjects()) {
-                map.objContainer.removeObject(gameObj);
+                objContainer.removeObject(gameObj);
             }
 
             primaryObjects.clear();
             tileObjects.clear();
 
             primaryObjects = null;
-            map = null;
             tiles = null;
         }
 
@@ -141,7 +139,7 @@
             var objs: Array = placeHolders.getRange([position.x, position.y]);
 
             for each (var obj: SimpleObject in objs) {
-                map.objContainer.removeObject(obj);
+                objContainer.removeObject(obj);
             }
 
             placeHolders.removeRange([position.x, position.y]);
@@ -150,7 +148,7 @@
         private function clearAllPlaceholders() : void
         {
             for each (var obj: SimpleObject in placeHolders) {
-                map.objContainer.removeObject(obj);
+                objContainer.removeObject(obj);
             }
 
             placeHolders.clear();
@@ -167,7 +165,7 @@
 
                 var obj: NewCityPlaceholder = ObjectFactory.getNewCityPlaceholderInstance(screenPosition.x, screenPosition.y);
                 obj.setOnSelect(Global.map.selectObject);
-                map.objContainer.addObject(obj);
+                objContainer.addObject(obj);
                 placeHolders.add(obj);
             }
         }

@@ -7,8 +7,8 @@ package src {
     import src.FeathersUI.Factories.DesktopFlowFactory;
 
     import src.FeathersUI.Factories.IFlowFactory;
+    import src.FeathersUI.Map.MapVM;
 
-    import src.Map.Map;
     import src.Map.MiniMap.MiniMap;
 
     import starling.core.Starling;
@@ -45,7 +45,7 @@ package src {
             return assets;
         }
 
-        public function getFlowFactory(map: Map, miniMap: MiniMap): IFlowFactory {
+        public function getFlowFactory(map: MapVM, miniMap: MiniMap): IFlowFactory {
             return new DesktopFlowFactory(map, miniMap);
         }
     }

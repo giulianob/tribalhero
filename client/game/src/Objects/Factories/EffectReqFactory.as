@@ -1,22 +1,13 @@
 ﻿package src.Objects.Factories {
-    import src.Map.Map;
     import src.Objects.Effects.EffectReqManager;
     import src.Objects.Prototypes.EffectReqPrototype;
     import src.Util.BinaryList.*;
 
-    /**
-	* ...
-	* @author Default
-	*/
 	public class EffectReqFactory {
 		
-		private static var map: Map;
 		private static var effectManagers: BinaryList;
-		
-		public static function init(_map: Map, data: XML):void
-		{
-			map = _map;
-		
+
+        public static function init(data: XML): void {
 			effectManagers = new BinaryList(EffectReqManager.sortOnId, EffectReqManager.compareId);
 			
 			var effectManager: EffectReqManager;

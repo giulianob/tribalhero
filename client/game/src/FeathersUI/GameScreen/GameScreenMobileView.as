@@ -6,9 +6,8 @@ package src.FeathersUI.GameScreen {
     import feathers.layout.AnchorLayoutData;
     import feathers.layout.TiledRowsLayout;
 
-    import src.FeathersUI.Controls.ClippedContentDrawer;
     import src.FeathersUI.Controls.ClippedLayoutGroup;
-    import src.Map.Map;
+    import src.FeathersUI.Map.MapView;
     import src.Map.MiniMap.MiniMap;
     import src.Objects.Factories.SpriteFactory;
 
@@ -16,16 +15,15 @@ package src.FeathersUI.GameScreen {
 
     public class GameScreenMobileView extends Screen {
         private var vm: GameScreenVM;
-        private var map: Map;
-        private var minimap: MiniMap;
-
-        public function GameScreenMobileView(vm: GameScreenVM) {
-            this.vm = vm;
-            this.map = vm.map;
-            this.minimap = vm.minimap;
-        }
-
+        private var map: MapView;
+        private var miniMap: MiniMap;
         private var drawers: Drawers;
+
+        public function GameScreenMobileView(vm: GameScreenVM, mapView: MapView, miniMap: MiniMap) {
+            this.vm = vm;
+            this.map = mapView;
+            this.miniMap = miniMap;
+        }
 
         override protected function initialize():void
         {
@@ -35,7 +33,6 @@ package src.FeathersUI.GameScreen {
             {
                 menu.name = "Game Screen Menu";
                 menu.layout = new TiledRowsLayout();
-                menu.maxWidth = 300;
 
                 menu.addChild(createMenuButton("Battle Reports", "ICON_PAPER_SCROLL"));
                 menu.addChild(createMenuButton("Ranking", "ICON_PAPER_SCROLL"));
@@ -46,6 +43,8 @@ package src.FeathersUI.GameScreen {
                 menu.addChild(createMenuButton("Profile", "ICON_PAPER_SCROLL"));
                 menu.addChild(createMenuButton("Settings", "ICON_PAPER_SCROLL"));
                 menu.addChild(createMenuButton("Help", "ICON_PAPER_SCROLL"));
+
+                menu.width = 300;
             }
 
             var mapContainer: ClippedLayoutGroup = new ClippedLayoutGroup();
@@ -53,6 +52,7 @@ package src.FeathersUI.GameScreen {
                 mapContainer.name = "Game Screen Drawer Container";
                 var menuButton:Button = new Button();
                 {
+                    menuButton.styleNameList.add(Button.ALTERNATE_NAME_QUIET_BUTTON);
                     menuButton.defaultIcon = SpriteFactory.getStarlingImage("ICON_PAPER_SCROLL");
                     menuButton.addEventListener(Event.TRIGGERED, menuButton_triggeredHandler);
 
@@ -65,14 +65,11 @@ package src.FeathersUI.GameScreen {
 
             drawers = new Drawers(mapContainer);
             drawers.leftDrawer = menu;
-
-            var rightDrawerContent: Button = new Button();
-            rightDrawerContent.label = "THIS IS A TEST";
-
-            drawers.rightDrawer = rightDrawerContent;
-            //drawers.openGesture = Drawers.OPEN_GESTURE_NONE;
+            drawers.openGesture = Drawers.OPEN_GESTURE_NONE;
 
             addChild(drawers);
+
+            map.move();
         }
 
         private function createMenuButton(text: String, icon: String): Button {

@@ -4,7 +4,7 @@ package src.UI.Tutorial
 
     import org.aswing.geom.IntPoint;
 
-    import src.Map.Map;
+    import src.FeathersUI.Map.MapVM;
     import src.UI.Tooltips.TextTooltip;
     import src.UI.Tooltips.Tooltip;
     import src.UI.Tooltips.WizardTooltip;
@@ -13,14 +13,13 @@ package src.UI.Tutorial
     public class TutorialStep
 	{
 		public var resume: Function;
-		public var map: Map;
+		public var map: MapVM;
 		
 		private var messageTooltip: Tooltip = new Tooltip();
 		private var messageId: String;
 		
 		public function execute(): void {
-			
-		}				
+		}
 		
 		protected function showMessageAtObject(target: DisplayObject, messageId: String): void {
 			if (messageId == this.messageId) {

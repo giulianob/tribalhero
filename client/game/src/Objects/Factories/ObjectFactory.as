@@ -2,14 +2,8 @@
     import flash.display.DisplayObject;
     import flash.display.DisplayObjectContainer;
     import flash.display.Sprite;
-    import flash.filters.BlurFilter;
-    import flash.geom.ColorTransform;
-    import flash.geom.Matrix;
     import flash.utils.getDefinitionByName;
 
-    import src.FlashAssets;
-
-    import src.Map.Map;
     import src.Objects.BarbarianTribe;
     import src.Objects.Forest;
     import src.Objects.NewCityPlaceholder;
@@ -19,7 +13,6 @@
     import src.Objects.StructureObject;
     import src.Objects.Troop.*;
     import src.Util.BinaryList.*;
-    import src.Util.Util;
 
     public class ObjectFactory {
 
@@ -34,8 +27,7 @@
 
 		private static var objectTypes: BinaryList;
 
-		public static function init(_map: Map, data: XML):void
-		{
+        public static function init(data: XML): void {
 			objectTypes = new BinaryList(ObjectTypePrototype.sortOnNameAndType, ObjectTypePrototype.compareNameAndType);
 
 			for each (var objTypeNode: XML in data.ObjectTypes.*)

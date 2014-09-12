@@ -1,5 +1,4 @@
 ﻿package src.Objects.Factories {
-    import src.Map.Map;
     import src.Objects.Prototypes.EffectPrototype;
     import src.Objects.Prototypes.TechnologyPrototype;
     import src.Objects.Resources;
@@ -7,13 +6,9 @@
 
     public class TechnologyFactory {
 
-		private static var map: Map;
 		private static var technologies: BinaryList;
 
-		public static function init(_map: Map, data: XML):void
-		{
-			map = _map;
-
+        public static function init(data: XML): void {
 			technologies = new BinaryList(TechnologyPrototype.sortOnTypeAndLevel, TechnologyPrototype.compareTypeAndLevel);
 
 			for each (var techNode: XML in data.Technologies.*)

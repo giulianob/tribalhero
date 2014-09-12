@@ -12,6 +12,7 @@
     import org.aswing.geom.*;
 
     import src.Events.NavigateEvent;
+    import src.FeathersUI.Map.MapVM;
     import src.Map.*;
     import src.Map.MiniMap.MiniMap;
     import src.UI.*;
@@ -42,7 +43,7 @@
 		//Container for cmd line
 		private var cmdLineHolder: flash.display.Sprite;
 
-		public var map: Map;
+		public var map: MapVM;
 
 		public var miniMap: MiniMap;
 		private var minimapRefreshTimer: Timer = new Timer(500000, 0);
@@ -337,7 +338,7 @@
 			if (selectedCity == null) return;
 
 			var pt: ScreenPosition = TileLocator.getScreenCoord(selectedCity.primaryPosition);
-			Global.gameContainer.map.camera.scrollToCenter(pt);
+			camera.scrollToCenter(pt);
 		}
 
 				public function eventKeyUp(event: KeyboardEvent):void
@@ -404,7 +405,7 @@
 			}
 		}
 
-		public function setMap(map: Map, miniMap: MiniMap):void
+		public function setMap(map: MapVM, miniMap: MiniMap):void
 		{
             camera = map.camera;
 
@@ -436,7 +437,7 @@
 				selectedCity = lstCities.getSelectedItem().city;
 			}
 			else {
-				map.move();
+				// map.move();
 			}
 
 			//Show resources box
@@ -465,14 +466,14 @@
 
 			// Scroll to city center
 			if (selectedCity) {
-				var pt: ScreenPosition = TileLocator.getScreenCoord(selectedCity.primaryPosition);
-				Global.gameContainer.camera.scrollToCenter(pt);
+				//var pt: ScreenPosition = TileLocator.getScreenCoord(selectedCity.primaryPosition);
+				//camera.scrollToCenter(pt);
 				miniMap.setCityPointer(selectedCity.name);
 			}
 
 			//Set minimap position and initial state
-			miniMap.addEventListener(MiniMap.NAVIGATE_TO_POINT, onMinimapNavigateToPoint);
-            minimapTools.zoomIntoMinimap(false, false);
+			//miniMap.addEventListener(MiniMap.NAVIGATE_TO_POINT, onMinimapNavigateToPoint);
+            //minimapTools.zoomIntoMinimap(false, false);
 			
 			// Refresh unread messages
 			Global.mapComm.Messaging.refreshUnreadCounts();		
@@ -580,8 +581,8 @@
 //				mapHolder.removeChild(map);
 //                miniMapHolder.removeChild(miniMap);
 
-                map.dispose();
-                miniMap.dispose();
+                // map.dispose();
+                // miniMap.dispose();
 
 				setOverlaySprite(null);
 
@@ -665,7 +666,7 @@
 			if (frame.isModal()) {						
 				if (map != null) {
 					clearAllSelections();
-					map.disableMouse(true);				
+					// map.disableMouse(true);
 				}
 			}
 				
@@ -691,7 +692,7 @@
 			if (index == -1) Util.log("Closed a frame that did not call show through GameContainer");
 			frames.splice(index, 1);
 			if (frames.length == 0 && map != null) {
-				map.disableMouse(false);
+				// map.disableMouse(false);
 			}
 			if (frames.length > 0) {
 				frames[frames.length - 1].requestFocus();

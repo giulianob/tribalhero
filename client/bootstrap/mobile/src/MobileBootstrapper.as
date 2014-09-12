@@ -8,7 +8,7 @@ package src {
 
     import src.FeathersUI.Factories.IFlowFactory;
     import src.FeathersUI.Factories.MobileFlowFactory;
-    import src.Map.Map;
+    import src.FeathersUI.Map.MapVM;
     import src.Map.MiniMap.MiniMap;
 
     import starling.core.Starling;
@@ -84,7 +84,7 @@ package src {
             return closest;
         }
 
-        public function getFlowFactory(map: Map, miniMap: MiniMap): IFlowFactory {
+        public function getFlowFactory(map: MapVM, miniMap: MiniMap): IFlowFactory {
             return new MobileFlowFactory(map, miniMap);
         }
     }

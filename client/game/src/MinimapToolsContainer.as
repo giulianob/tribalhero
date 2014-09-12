@@ -9,6 +9,8 @@ package src {
     import flash.net.URLRequest;
     import flash.net.navigateToURL;
 
+    import src.FeathersUI.Map.MapView;
+
     import src.Map.ScreenPosition;
     import src.UI.Components.SimpleTooltip;
     import src.UI.Dialog.GoToDialog;
@@ -18,6 +20,7 @@ package src {
         private var minimapZoomTooltip: SimpleTooltip;
         private var musicPlayer: MusicPlayer;
         private var gameContainer: GameContainer;
+        private var map: MapView;
 
         public function MinimapToolsContainer(musicPlayer: MusicPlayer, gameContainer: GameContainer) {
             this.musicPlayer = musicPlayer;
@@ -137,7 +140,7 @@ package src {
                 gameContainer.miniMap.y = Constants.miniMapLargeScreenY(height);
                 minimapZoomTooltip.setText("Minimize map");
                 gameContainer.miniMap.setScreenRectHidden(true);
-                gameContainer.map.disableMapQueries(true);
+                map.disableMapQueries(true);
                 gameContainer.camera.scrollRate = 25;
                 btnZoomIn.visible = false;
                 btnZoomOut.visible = false;
@@ -152,7 +155,7 @@ package src {
                 gameContainer.miniMap.y = Constants.miniMapScreenY(Constants.miniMapScreenH);
                 minimapZoomTooltip.setText("World view");
                 gameContainer.miniMap.setScreenRectHidden(false);
-                gameContainer.map.disableMapQueries(false);
+                map.disableMapQueries(false);
                 gameContainer.camera.scrollRate = gameContainer.camera.getZoomFactorOverOne();
                 btnZoomIn.visible = true;
                 btnZoomOut.visible = true;
@@ -163,7 +166,7 @@ package src {
 
             minimapZoomed = zoom;
             if (query) {
-                gameContainer.map.move();
+                map.move();
             }
 
             alignMinimapTools();

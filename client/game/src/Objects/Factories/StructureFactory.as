@@ -2,6 +2,8 @@
 
     import System.Linq.Enumerable;
 
+    import src.FeathersUI.Map.MapVM;
+
     import src.FlashAssets;
     import src.Global;
     import src.Map.*;
@@ -15,10 +17,10 @@
 
     public class StructureFactory {
 
-		private static var map: Map;
+		private static var map: MapVM;
 		private static var structurePrototypes: BinaryList;
 
-		public static function init(_map: Map, data: XML):void
+		public static function init(_map: MapVM, data: XML):void
 		{
 			map = _map;
 

@@ -1,8 +1,4 @@
 ﻿package src.Objects.Factories {
-    import flash.display.DisplayObjectContainer;
-    import flash.utils.getDefinitionByName;
-
-    import src.Map.Map;
     import src.Objects.Prototypes.UnitPrototype;
     import src.Objects.Resources;
     import src.Util.BinaryList.*;
@@ -10,13 +6,9 @@
 
     public class UnitFactory {
 
-		private static var map: Map;
 		private static var unitPrototypes: BinaryList;
 
-		public static function init(_map: Map, data: XML):void
-		{
-			map = _map;
-
+        public static function init(data: XML): void {
 			unitPrototypes = new BinaryList(UnitPrototype.sortOnTypeAndLevel, UnitPrototype.compareTypeAndLevel);
 
 			for each (var unitNode: XML in data.Units.*)

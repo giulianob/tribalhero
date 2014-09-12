@@ -1,33 +1,24 @@
 ﻿package src.Objects.Factories {
-    import src.Map.Map;
     import src.Objects.Prototypes.PropertyPrototype;
     import src.Util.BinaryList.*;
 
-    /**
-	 * ...
-	 * @author Default
-	 */
 	public class PropertyFactory {
 
-		private static var map: Map;
 		private static var properties: BinaryList;
 
-		public static function init(_map: Map, data: XML):void
-		{
-			map = _map;
-
+        public static function init(data: XML): void {
 			properties = new BinaryList(PropertyPrototype.sortOnTypeAndIndex, PropertyPrototype.compareType);
 
 			for each (var propNode: XML in data.Property.*) {
 				var propPrototype: PropertyPrototype = new PropertyPrototype(
-				propNode.@index,
-				propNode.@type,
-				propNode.@name,
-				propNode.@datatype,
-				propNode.@visibility == "PUBLIC" ? 1 : 0,
-				propNode.@perhour.toUpperCase() == "TRUE" ? true : false,
-				propNode.@icon,
-				propNode.@tooltip
+                    propNode.@index,
+                    propNode.@type,
+                    propNode.@name,
+                    propNode.@datatype,
+                    propNode.@visibility == "PUBLIC" ? 1 : 0,
+                    propNode.@perhour.toUpperCase() == "TRUE",
+                    propNode.@icon,
+                    propNode.@tooltip
 				);
 				properties.add(propPrototype, false);
 			}

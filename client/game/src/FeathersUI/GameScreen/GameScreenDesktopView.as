@@ -11,8 +11,8 @@ package src.FeathersUI.GameScreen {
     import flash.events.Event;
 
     import src.FeathersUI.Controls.HoverTooltip;
+    import src.FeathersUI.Map.MapView;
     import src.Map.Camera;
-    import src.Map.Map;
     import src.Map.MiniMap.MiniMap;
     import src.Map.Position;
     import src.Objects.Factories.SpriteFactory;
@@ -21,7 +21,7 @@ package src.FeathersUI.GameScreen {
 
     public class GameScreenDesktopView extends Screen {
         private var vm: GameScreenVM;
-        private var map: Map;
+        private var map: MapView;
         private var minimap: MiniMap;
         private var btnMinimapZoom: Button;
         private var btnFind: Button;
@@ -29,10 +29,10 @@ package src.FeathersUI.GameScreen {
         private var btnMute: Button;
         private var lblCoords: Label;
 
-        public function GameScreenDesktopView(vm: GameScreenVM) {
+        public function GameScreenDesktopView(vm: GameScreenVM, mapView: MapView, miniMap: MiniMap) {
             this.vm = vm;
-            this.map = vm.map;
-            this.minimap = vm.minimap;
+            this.map = mapView;
+            this.minimap = miniMap;
         }
 
         override protected function initialize():void
@@ -95,6 +95,8 @@ package src.FeathersUI.GameScreen {
 
             addChild(map);
             addChild(minimapContainer);
+
+            map.move();
         }
 
         override public function dispose(): void {

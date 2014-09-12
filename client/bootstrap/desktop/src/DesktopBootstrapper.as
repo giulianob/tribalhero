@@ -21,6 +21,7 @@ package src {
         }
 
         public function init(stage: Starling): void {
+            Constants.initMapSize(1);
         }
 
         public function updateViewport(stage: Starling, width: Number, height: Number): void

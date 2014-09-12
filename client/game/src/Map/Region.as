@@ -7,6 +7,7 @@
     import src.Util.BinaryList.*;
 
     import starling.display.*;
+    import starling.utils.formatString;
 
     public class Region extends QuadBatch
     {
@@ -23,6 +24,8 @@
 
         public function Region(id: int, data: Array, map: Map)
         {
+            name = formatString("Region {0}", id);
+
             touchable = false;
 
             this.id = id;

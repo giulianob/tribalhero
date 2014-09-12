@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
-<!-- $TexturePacker:SmartUpdate:a5ba241a09076231c2b2331471480f19:e3cf54ffaadcc08830ec12629cc724a2:7a933e5c16be70ebe97d9bf397cbc8e2$ -->
+<!-- $TexturePacker:SmartUpdate:bd60ae1ebeceed4c7476368bde5d1799:e3cf54ffaadcc08830ec12629cc724a2:7a933e5c16be70ebe97d9bf397cbc8e2$ -->
 <TextureAtlas imagePath="OBJECTS_ATLAS.png">
     <SubTexture name="COBBLESTONE_BANNER" x="2" y="2" width="338" height="131"/>
     <SubTexture name="COBBLESTONE_THUMBNAIL" x="342" y="191" width="98" height="48"/>

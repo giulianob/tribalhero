@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
-<!-- $TexturePacker:SmartUpdate:6545c5bb49febf295c6e344a09e91a4c:46f44a8f496b5edf96e0c800c304366a:d7a1b540304f139e774ca2df89b508a1$ -->
+<!-- $TexturePacker:SmartUpdate:9d288223fce7b419214dab5b23bd189b:46f44a8f496b5edf96e0c800c304366a:d7a1b540304f139e774ca2df89b508a1$ -->
 <TextureAtlas imagePath="PIRATES_THEME_ATLAS.png">
     <SubTexture name="PIRATES_ARMORY_STRUCTURE" x="255" y="435" width="76" height="59" frameX="0" frameY="0" frameWidth="76" frameHeight="67"/>
     <SubTexture name="PIRATES_BARRACK_STRUCTURE" x="171" y="235" width="138" height="110"/>

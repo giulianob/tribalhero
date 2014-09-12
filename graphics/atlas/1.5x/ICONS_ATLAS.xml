@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
-<!-- $TexturePacker:SmartUpdate:304189ae254b81f668fe7952838a6f4a:e0502dd35f61c63f2531ce23bf4c339c:8f3239cb2f4160886615eb4f6be191c7$ -->
+<!-- $TexturePacker:SmartUpdate:0261f811bc32e6f9b6756b00b656e02e:e0502dd35f61c63f2531ce23bf4c339c:8f3239cb2f4160886615eb4f6be191c7$ -->
 <TextureAtlas imagePath="ICONS_ATLAS.png">
     <SubTexture name="COUNT_BUBBLE" x="65" y="156" width="23" height="21"/>
     <SubTexture name="DOT_SPRITE" x="2" y="241" width="21" height="12"/>

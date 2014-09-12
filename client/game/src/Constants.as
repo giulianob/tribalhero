@@ -34,27 +34,37 @@ package src
 		public static var road_end_tile_id: int = 126;
         public static var roadThemes: Array = ["DEFAULT", "COBBLESTONE"];
 
-		/* MAP CONSTANTS */					
-		public static var tileW:int = 160;
-		public static var tileH:int = 80;
+		/* MAP CONSTANTS */
+
+        // Returns the current scale compared to the default gfx.
+        // Generally for desktop this would be 1 since we use full res gfx
+        // and for mobile it would be 0.5 since the baseline is low res
+        public static var scale: Number;
+
+        // The content scale factor we should use if we load something manually like
+        // the tileset. For desktop this is 1 and for mobile it will be 2.
+        public static var contentScaleFactorBaseline: int;
+
+		public static var tileW:int;
+		public static var tileH:int;
 
 		public static var tileSetTileW:int = 12;
 		public static var tileSetTileH:int = 12;
 
-		public static var mapW:int = mapTileW * tileW;
-		public static var mapH:int = mapTileH * tileH;
+		public static var mapW:int;
+		public static var mapH:int;
 
 		public static var mapTileW:int = 3400;
 		public static var mapTileH:int = 6200;
 
-		public static var regionW:int = regionTileW * tileW;
-		public static var regionH:int = regionTileH * tileH;
+		public static var regionW:int;
+		public static var regionH:int;
 
 		public static var regionTileW:int = 34;
 		public static var regionTileH:int = 62;
 
-		public static var mapRegionW: int = mapW / regionW;
-		public static var mapRegionH: int = mapH / regionH;
+		public static var mapRegionW: int;
+		public static var mapRegionH: int;
 
 		public static var origScreenW:int = 976;
 		public static var origScreenH:int = 640;
@@ -65,17 +75,17 @@ package src
 		public static var cityStartTile: int = 16;
 
 		/* MINI MAP CONSTANTS */
-		public static var miniMapTileW: int = 4;
-		public static var miniMapTileH: int = 2;
+		public static var miniMapTileW: int;
+		public static var miniMapTileH: int;
 
-		public static var miniMapRegionW: int = miniMapRegionTileW * miniMapTileW;
-		public static var miniMapRegionH: int = miniMapRegionTileW * miniMapTileH;
+		public static var miniMapRegionW: int;
+		public static var miniMapRegionH: int;
 
 		public static var miniMapRegionTileW: int = 100;
 		public static var miniMapRegionTileH: int = 100;
 
-		public static var miniMapRegionRatioW: int = int(mapTileW / miniMapRegionTileW);
-		public static var miniMapRegionRatioH: int = int(mapTileH / miniMapRegionTileH);
+		public static var miniMapRegionRatioW: int;
+		public static var miniMapRegionRatioH: int;
 
 		// Compact mini map constants
 		public static var miniMapScreenW: int = 288;
@@ -145,6 +155,32 @@ package src
             new CoinPrice("REFILL15", 15, 700, 18),
             new CoinPrice("REFILL20", 20, 1000, 23)
         ];
+
+        public static function initMapSize(scaleBaseline: Number): void {
+            Constants.scale = scaleBaseline;
+            Constants.contentScaleFactorBaseline = int(1.0 / Constants.scale + 0.5);
+
+            var scaleOverOne: int = (int)(1.0/scaleBaseline + 0.5);
+
+            tileW = 160 / scaleOverOne;
+            tileH = 80 / scaleOverOne;
+
+            regionW = regionTileW * tileW;
+            regionH = regionTileH * tileH;
+            mapW = mapTileW * tileW;
+            mapH = mapTileH * tileH;
+            mapRegionW = mapW / regionW;
+            mapRegionH = mapH / regionH;
+
+            miniMapTileW = 4 / scaleOverOne;
+            miniMapTileH = 2 / scaleOverOne;
+
+            miniMapRegionW = miniMapRegionTileW * miniMapTileW;
+            miniMapRegionH = miniMapRegionTileW * miniMapTileH;
+
+            miniMapRegionRatioW = mapTileW / miniMapRegionTileW;
+            miniMapRegionRatioH = mapTileH / miniMapRegionTileH;
+        }
 	}
 }
 

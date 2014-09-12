@@ -4,6 +4,7 @@ package src.Graphics {
 
     import src.Constants;
     import src.FlashAssets;
+    import src.Objects.Factories.SpriteFactory;
 
     import starling.display.Image;
     import starling.textures.Texture;
@@ -17,7 +18,9 @@ package src.Graphics {
 
                 var bmp: Bitmap = FlashAssets.getSharedInstance("TILESET");
 
-                var tileset: Texture = Texture.fromBitmap(bmp, false, false, 1);
+                var tileset: Texture = Texture.fromBitmap(bmp, false, false, Constants.contentScaleFactorBaseline);
+
+                // var tileset: Texture = SpriteFactory.getStarlingImage("TILESET").texture;
 
                 for (var row: int = 0; row < Constants.tileSetTileH; row++) {
                     for (var column: int = 0; column < Constants.tileSetTileW; column++) {

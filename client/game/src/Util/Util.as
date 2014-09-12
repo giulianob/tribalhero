@@ -188,7 +188,7 @@ package src.Util {
 				spacer += "\t";
 			}
 
-			Util.log(spacer + "(" + getQualifiedClassName(obj) + ") " + obj.name + (!obj.visible ? "<invisible>" : ""));
+			Util.log(spacer + "(" + getQualifiedClassName(obj) + ") " + obj.name + (!obj.visible ? "<invisible>" : "")) + " " + obj.x + "," + obj.y;
 
 			if (!(obj is DisplayObjectContainer)) return;
 

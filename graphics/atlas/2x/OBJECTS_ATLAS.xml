@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
+<!-- $TexturePacker:SmartUpdate:bd60ae1ebeceed4c7476368bde5d1799:e3cf54ffaadcc08830ec12629cc724a2:7a933e5c16be70ebe97d9bf397cbc8e2$ -->
+<TextureAtlas imagePath="OBJECTS_ATLAS.png">
+    <SubTexture name="COBBLESTONE_BANNER" x="2" y="2" width="450" height="175"/>
+    <SubTexture name="COBBLESTONE_THUMBNAIL" x="322" y="356" width="131" height="64"/>
+    <SubTexture name="FOREST_LVL_1" x="322" y="422" width="124" height="72"/>
+    <SubTexture name="FOREST_LVL_2" x="151" y="451" width="116" height="79"/>
+    <SubTexture name="FOREST_LVL_3" x="2" y="438" width="147" height="73"/>
+    <SubTexture name="FOREST_LVL_4" x="164" y="356" width="156" height="93"/>
+    <SubTexture name="MASK_TILE" x="2" y="356" width="160" height="80"/>
+    <SubTexture name="WARELEPHANT_BANNER" x="2" y="179" width="450" height="175"/>
+    <SubTexture name="WARELEPHANT_TROOP" x="2" y="513" width="100" height="114"/>
+</TextureAtlas>

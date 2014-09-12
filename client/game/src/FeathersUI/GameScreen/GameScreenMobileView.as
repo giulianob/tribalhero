@@ -35,7 +35,7 @@ package src.FeathersUI.GameScreen {
             {
                 menu.name = "Game Screen Menu";
                 menu.layout = new TiledRowsLayout();
-                menu.maxWidth = 400;
+                menu.maxWidth = 300;
 
                 menu.addChild(createMenuButton("Battle Reports", "ICON_PAPER_SCROLL"));
                 menu.addChild(createMenuButton("Ranking", "ICON_PAPER_SCROLL"));

@@ -187,8 +187,8 @@ package src.Objects {
 		}
 
         public function setSprite(sprite: Image, spritePosition: Point): void {
-            sprite.x = spritePosition.x;
-            sprite.y = spritePosition.y;
+            sprite.x = spritePosition.x * Constants.scale;
+            sprite.y = spritePosition.y * Constants.scale;
 
             this.spritePosition = spritePosition;
 

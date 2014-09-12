@@ -18,7 +18,7 @@
 		
 		public function StructureObject(theme: String, type: int, state: GameObjectState, objX: int, objY: int, size: int, playerId: int, cityId: int, objectId: int, level: int, wallRadius: int, wallTheme: String) {
 			super(type, state, objX, objY, size, playerId, cityId, objectId);
-			
+
 			this.level = level;
             this.theme = theme;
 

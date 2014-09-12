@@ -54,7 +54,7 @@
 		}
 
 		private function fireOnMove() : void {
-            if (Constants.debug) {
+            if (Constants.debug >= 2) {
                 Util.log(StringUtil.substitute("Camera moved to {0},{1}", currentPosition.x, currentPosition.y));
             }
 

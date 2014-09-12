@@ -17,7 +17,7 @@ package src {
 
     public class MobileBootstrapper implements IBootstrapper {
         private static const dpiRatiosAllowed: Array = [0.5, 0.75, 1, 1.5, 2];
-        private static const assetSizes: Array = [0.5, 0.75, 1];
+        private static const assetSizes: Array = [1, 1.5, 2];
 
         public function MobileBootstrapper() {
             var iOS:Boolean = Capabilities.manufacturer.indexOf("iOS") != -1;
@@ -27,13 +27,15 @@ package src {
 
         public function init(stage: Starling): void {
             stage.simulateMultitouch = CONFIG::debug;
+
+            Constants.initMapSize(0.5);
         }
 
         public function updateViewport(starling: Starling, screenWidth: Number, screenHeight: Number): void {
             // Viewport is always the full screen size
             starling.viewPort = new Rectangle(0, 0, screenWidth, screenHeight);
 
-            var dpiRatio: Number = DeviceCapabilities.dpi / 326.0;
+            var dpiRatio: Number = DeviceCapabilities.dpi / 163.0;
 
             // might not need it
             // dpiRatio = findScaleFactor(dpiRatio, dpiRatiosAllowed);

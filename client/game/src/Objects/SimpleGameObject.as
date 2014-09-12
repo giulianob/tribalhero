@@ -11,6 +11,7 @@ package src.Objects {
     import src.Objects.States.GameObjectState;
 
     import starling.events.Event;
+    import starling.utils.formatString;
 
     public class SimpleGameObject extends SimpleObject {
 		
@@ -29,6 +30,7 @@ package src.Objects {
 		public function SimpleGameObject(type: int, state: GameObjectState, objX: int, objY: int, size: int, groupId: int, objectId: int)
 		{
 			super(objX, objY, size);
+            this.name = formatString("Obj({0}:{1})", groupId, objectId);
 
             mapPriority = Constants.mapObjectPriority.simpleGameObject;
 

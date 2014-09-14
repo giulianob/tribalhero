@@ -1,5 +1,7 @@
 ﻿package src.Map
 {
+    import feathers.utils.math.clamp;
+
     import flash.events.Event;
     import flash.events.EventDispatcher;
     import flash.geom.Point;
@@ -54,14 +56,14 @@
 		}
 
 		private function fireOnMove() : void {
-            if (Constants.debug >= 2) {
-                Util.log(StringUtil.substitute("Camera moved to {0},{1}", currentPosition.x, currentPosition.y));
-            }
-
 			if (updating) {
 				isDirty = true;
 				return;
 			}
+
+            //if (Constants.debug >= 2) {
+                Util.log(StringUtil.substitute("Camera moved to {0},{1} zoomFactor:{2}", currentPosition.x, currentPosition.y, zoomFactor));
+            //}
 
 			dispatchEvent(new Event(ON_MOVE));
 		}
@@ -218,7 +220,7 @@
 
         //noinspection JSUnusedGlobalSymbols
         public function set zoomFactor(factor: int): void {
-            _zoomFactor = factor;
+            _zoomFactor = clamp(factor, 50, 100);
             zoomFactorOverOne = (1.0 / getZoomFactorPercentage());
             scrollTo(currentPosition);
         }

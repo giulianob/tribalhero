@@ -17,6 +17,7 @@ package src.FeathersUI.Map {
 
     import starling.display.*;
     import starling.events.*;
+    import starling.utils.formatString;
 
     public class MapView extends Sprite {
         private var regionSpace: Sprite;
@@ -35,6 +36,8 @@ package src.FeathersUI.Map {
 
         private var vm: MapVM;
 
+        private var touchMovement: Point;
+
         public var camera: Camera;
 
         public function MapView(vm: MapVM) {
@@ -44,6 +47,7 @@ package src.FeathersUI.Map {
             this.listenersDefined = false;
             this.regionSpace = new Sprite();
             this.objContainer = vm.objContainer;
+            this.touchMovement = new Point();
 
             this.vm.regions.addEventListener(BinaryListEvent.ADDED, onRegionAdded);
             this.vm.regions.addEventListener(BinaryListEvent.REMOVED, onRegionRemoved);
@@ -81,27 +85,81 @@ package src.FeathersUI.Map {
         public function disableMouse(disable: Boolean):void
         {
             if (disable) {
-                if (listenersDefined)
+                if (!listenersDefined)
                 {
-                    Global.stage.removeEventListener(MouseEvent.MOUSE_DOWN, eventMouseDown);
-                    Global.stage.removeEventListener(MouseEvent.MOUSE_MOVE, eventMouseMove);
-                    Global.stage.removeEventListener(MouseEvent.MOUSE_UP, eventMouseUp);
-                    Global.stage.removeEventListener(flash.events.Event.MOUSE_LEAVE, eventMouseLeave);
-
-                    listenersDefined = false;
+                    return;
                 }
+
+//                    Global.stage.removeEventListener(MouseEvent.MOUSE_DOWN, eventMouseDown);
+//                    Global.stage.removeEventListener(MouseEvent.MOUSE_MOVE, eventMouseMove);
+//                    Global.stage.removeEventListener(MouseEvent.MOUSE_UP, eventMouseUp);
+//                    Global.stage.removeEventListener(flash.events.Event.MOUSE_LEAVE, eventMouseLeave);
+
+                listenersDefined = false;
             }
             else {
-                if (!listenersDefined) {
-                    Global.stage.addEventListener(MouseEvent.MOUSE_DOWN, eventMouseDown);
-                    Global.stage.addEventListener(MouseEvent.MOUSE_MOVE, eventMouseMove);
-                    Global.stage.addEventListener(MouseEvent.MOUSE_UP, eventMouseUp);
-                    Global.stage.addEventListener(flash.events.Event.MOUSE_LEAVE, eventMouseLeave);
+                Global.stage.focus = Global.gameContainer;
 
-                    listenersDefined = true;
+                if (listenersDefined) {
+                    return;
                 }
 
-                Global.stage.focus = Global.gameContainer;
+                addEventListener(TouchEvent.TOUCH, onTouched);
+//                    Global.stage.addEventListener(MouseEvent.MOUSE_DOWN, eventMouseDown);
+//                    Global.stage.addEventListener(MouseEvent.MOUSE_MOVE, eventMouseMove);
+//                    Global.stage.addEventListener(MouseEvent.MOUSE_UP, eventMouseUp);
+//                    Global.stage.addEventListener(flash.events.Event.MOUSE_LEAVE, eventMouseLeave);
+
+                listenersDefined = true;
+            }
+        }
+
+        private function onTouched(event: TouchEvent): void {
+            var touches:Vector.<Touch> = event.getTouches(this, TouchPhase.MOVED);
+
+            if (touches.length == 1)
+            {
+                trace("Single touch");
+                // one finger touching / one mouse curser moved
+                var touch:Touch = touches[0];
+                touch.getMovement(this, touchMovement);
+
+                camera.move(-touchMovement.x, -touchMovement.y);
+            }
+            else if (touches.length == 2) {
+                trace("Multi touch");
+
+                // two fingers touching -> zoom in
+                var touchA: Touch = touches[0];
+                var touchB: Touch = touches[1];
+
+                var currentPosA:Point  = touchA.getLocation(this);
+                var previousPosA:Point = touchA.getPreviousLocation(this);
+                var currentPosB:Point  = touchB.getLocation(this);
+                var previousPosB:Point = touchB.getPreviousLocation(this);
+
+                var currentVector:Point  = currentPosA.subtract(currentPosB);
+                var previousVector:Point = previousPosA.subtract(previousPosB);
+
+                var sizeDiff:Number = currentVector.length / previousVector.length;
+
+                var touchAMovement: Point = touchA.getMovement(this);
+                var touchBMovement: Point = touchB.getMovement(this);
+
+                var prevZoomFactor: int = camera.zoomFactor;
+
+                camera.beginMove();
+                camera.zoomFactor *= sizeDiff;
+
+                trace("currentVector", currentVector.length, "previousVector", previousVector.length, "sizeDiff", sizeDiff, "prevZoomFactor",prevZoomFactor, "newZoomFactor", camera.zoomFactor);
+                camera.move(-(touchAMovement.x + touchBMovement.x) * 0.5, -(touchAMovement.y + touchBMovement.y) * 0.5);
+                camera.endMove();
+
+
+                trace(formatString("sizeDiff: {0} zoomFactor: {1} currentVector: {2} previousVector: {3}", sizeDiff, camera.zoomFactor, currentVector.length, previousVector.length));
+
+                //camera.scrollRate = gameContainer.camera.getZoomFactorOverOne();
+                //camera.scrollToCenter(center);
             }
         }
 

@@ -410,7 +410,7 @@
             camera = map.camera;
 
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, eventKeyDown);
-			stage.addEventListener(MouseEvent.MOUSE_WHEEL, eventScroll);
+			//stage.addEventListener(MouseEvent.MOUSE_WHEEL, eventScroll);
 			stage.addEventListener(KeyboardEvent.KEY_UP, eventKeyUp);
 				
 			this.map = map;
@@ -517,7 +517,7 @@
 
 		public function dispose() : void {
 			stage.removeEventListener(KeyboardEvent.KEY_DOWN, eventKeyDown);
-			stage.removeEventListener(MouseEvent.MOUSE_WHEEL, eventScroll);
+			//stage.removeEventListener(MouseEvent.MOUSE_WHEEL, eventScroll);
 			stage.removeEventListener(KeyboardEvent.KEY_UP, eventKeyUp);			
 			
 			if (menu) {

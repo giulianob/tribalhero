@@ -57,6 +57,8 @@ package src
 		public static var mapTileW:int = 3400;
 		public static var mapTileH:int = 6200;
 
+        public static var regionCount:int = (mapTileW/regionTileW)*(mapTileH/regionTileH);
+
 		public static var regionW:int;
 		public static var regionH:int;
 
@@ -166,11 +168,11 @@ package src
             tileH = 80 / scaleOverOne;
 
             regionW = regionTileW * tileW;
-            regionH = regionTileH * tileH;
+            regionH = regionTileH * tileH/2;
             mapW = mapTileW * tileW;
             mapH = mapTileH * tileH;
-            mapRegionW = mapW / regionW;
-            mapRegionH = mapH / regionH;
+            mapRegionW = mapW / (regionTileW * tileW);
+            mapRegionH = mapH / (regionTileH * tileH);
 
             miniMapTileW = 4 / scaleOverOne;
             miniMapTileH = 2 / scaleOverOne;

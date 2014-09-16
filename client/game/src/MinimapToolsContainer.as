@@ -166,7 +166,7 @@ package src {
 
             minimapZoomed = zoom;
             if (query) {
-                map.move();
+                map.update();
             }
 
             alignMinimapTools();

@@ -520,18 +520,6 @@ package src.Objects {
             }).count();
         }
 
-		public function moveWithCamera(x: int, y: int):void
-		{
-			moveLayerWithCamera(x, y, bottomSpace);
-			moveLayerWithCamera(x, y, objSpace);
-		}
-
-		private function moveLayerWithCamera(x: int, y: int, layer: Sprite):void
-		{
-			layer.x = -x;
-			layer.y = -y;
-		}
-
 		private function calculateDepth(y: Number, mapPriority: int, layer: Sprite): int
 		{
 			return binarySearchDepth(y, mapPriority, 0, layer.numChildren - 1, layer);

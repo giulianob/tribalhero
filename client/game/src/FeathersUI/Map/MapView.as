@@ -1,11 +1,16 @@
 package src.FeathersUI.Map {
+    import feathers.controls.Screen;
+    import feathers.utils.math.clamp;
+
     import flash.events.MouseEvent;
+    import flash.geom.Matrix;
     import flash.geom.Point;
     import flash.geom.Rectangle;
 
     import src.Constants;
     import src.Global;
     import src.Map.Camera;
+    import src.Map.CameraEvent;
     import src.Map.MapOverlayBase;
     import src.Map.Position;
     import src.Map.Region;
@@ -17,18 +22,17 @@ package src.FeathersUI.Map {
 
     import starling.display.*;
     import starling.events.*;
-    import starling.utils.formatString;
+    import starling.utils.MatrixUtil;
 
     public class MapView extends Sprite {
+        private static const MIN_ZOOM: Number = 0.3;
+        private static const MAX_ZOOM: Number = 1.25;
+
+        private var mapContainer: Sprite;
+
         private var regionSpace: Sprite;
 
         public var objContainer: ObjectContainer;
-
-        private var mouseDown: Boolean;
-
-        private var mouseLoc: Point;
-
-        private var originPoint: Point = new Point();
 
         private var disabledMapQueries: Boolean;
 
@@ -56,9 +60,11 @@ package src.FeathersUI.Map {
             addEventListener(Event.REMOVED_FROM_STAGE, eventRemovedFromStage);
             camera.addEventListener(Camera.ON_MOVE, onMove);
 
-            addChild(new MapOverlayBase());
-            addChild(regionSpace);
-            addChild(objContainer);
+            this.mapContainer = new Sprite();
+            addChild(mapContainer);
+            mapContainer.addChild(new MapOverlayBase());
+            mapContainer.addChild(regionSpace);
+            mapContainer.addChild(objContainer);
         }
 
         override public function dispose():void
@@ -78,7 +84,6 @@ package src.FeathersUI.Map {
 
         private function onRegionAdded(event: BinaryListEvent): void {
             var newRegion: Region = event.item;
-            newRegion.moveWithCamera(camera);
             regionSpace.addChild(newRegion);
         }
 
@@ -104,7 +109,7 @@ package src.FeathersUI.Map {
                     return;
                 }
 
-                addEventListener(TouchEvent.TOUCH, onTouched);
+                mapContainer.addEventListener(TouchEvent.TOUCH, onTouched);
 //                    Global.stage.addEventListener(MouseEvent.MOUSE_DOWN, eventMouseDown);
 //                    Global.stage.addEventListener(MouseEvent.MOUSE_MOVE, eventMouseMove);
 //                    Global.stage.addEventListener(MouseEvent.MOUSE_UP, eventMouseUp);
@@ -119,16 +124,13 @@ package src.FeathersUI.Map {
 
             if (touches.length == 1)
             {
-                trace("Single touch");
                 // one finger touching / one mouse curser moved
                 var touch:Touch = touches[0];
                 touch.getMovement(this, touchMovement);
 
-                camera.move(-touchMovement.x, -touchMovement.y);
+                camera.scrollTo(new ScreenPosition(camera.currentPosition.x - touchMovement.x/mapContainer.scaleX, camera.currentPosition.y - touchMovement.y/mapContainer.scaleY));
             }
             else if (touches.length == 2) {
-                trace("Multi touch");
-
                 // two fingers touching -> zoom in
                 var touchA: Touch = touches[0];
                 var touchB: Touch = touches[1];
@@ -143,23 +145,20 @@ package src.FeathersUI.Map {
 
                 var sizeDiff:Number = currentVector.length / previousVector.length;
 
-                var touchAMovement: Point = touchA.getMovement(this);
-                var touchBMovement: Point = touchB.getMovement(this);
+                var previousLocalA:Point  = touchA.getPreviousLocation(mapContainer);
+                var previousLocalB:Point  = touchB.getPreviousLocation(mapContainer);
+                var pivotX: Number = (previousLocalA.x + previousLocalB.x) * 0.5;
+                var pivotY: Number = (previousLocalA.y + previousLocalB.y) * 0.5;
 
-                var prevZoomFactor: int = camera.zoomFactor;
+                mapContainer.x = (currentPosA.x + currentPosB.x) * 0.5;
+                mapContainer.y = (currentPosA.y + currentPosB.y) * 0.5;
 
-                camera.beginMove();
-                camera.zoomFactor *= sizeDiff;
+                mapContainer.scaleX = mapContainer.scaleY = clamp(mapContainer.scaleY*sizeDiff, MIN_ZOOM, MAX_ZOOM);
 
-                trace("currentVector", currentVector.length, "previousVector", previousVector.length, "sizeDiff", sizeDiff, "prevZoomFactor",prevZoomFactor, "newZoomFactor", camera.zoomFactor);
-                camera.move(-(touchAMovement.x + touchBMovement.x) * 0.5, -(touchAMovement.y + touchBMovement.y) * 0.5);
-                camera.endMove();
+                mapContainer.pivotX = pivotX;
+                mapContainer.pivotY = pivotY;
 
-
-                trace(formatString("sizeDiff: {0} zoomFactor: {1} currentVector: {2} previousVector: {3}", sizeDiff, camera.zoomFactor, currentVector.length, previousVector.length));
-
-                //camera.scrollRate = gameContainer.camera.getZoomFactorOverOne();
-                //camera.scrollToCenter(center);
+                normalize();
             }
         }
 
@@ -168,62 +167,11 @@ package src.FeathersUI.Map {
             disabledMapQueries = disabled;
         }
 
-        public function eventMouseDown(event: MouseEvent):void
-        {
-            originPoint = new Point(event.stageX, event.stageY);
-            mouseLoc = new Point(event.stageX, event.stageY);
-            mouseDown = true;
-
-            if (Constants.debug >= 4)
-                Util.log("MOUSE DOWN");
-        }
-
-        public function eventMouseUp(event: MouseEvent):void
-        {
-            mouseDown = false;
-
-            if (Point.distance(new Point(event.stageX, event.stageY), originPoint) < 4) {
-                vm.doSelectedObject(null);
-            }
-
-            if (Constants.debug >= 4)
-                Util.log("MOUSE UP");
-        }
-
-        public function eventMouseLeave(event: flash.events.Event):void
-        {
-            mouseDown = false;
-
-            if (Constants.debug >= 4)
-                Util.log("MOUSE LEAVE");
-        }
-
-        public function eventMouseMove(event: MouseEvent):void
-        {
-            if (!mouseDown) {
-                if (event.shiftKey) {
-                    var screenMouse: Point = TileLocator.getPointWithZoomFactor(event.stageX, event.stageY);
-                    var mapPixelPos: ScreenPosition = TileLocator.getActualCoord(camera.currentPosition.x + screenMouse.x, camera.currentPosition.y + screenMouse.y);
-                    var mapPos: Position = mapPixelPos.toPosition();
-                    Global.gameContainer.setLabelCoords(mapPos);
-                }
-
-                return;
-            }
-
-            var dx: Number = (mouseLoc.x - event.stageX) * camera.scrollRate * Constants.scale;
-            var dy: Number = (mouseLoc.y - event.stageY) * camera.scrollRate * Constants.scale;
-
-            if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
-
-            mouseLoc = new Point(event.stageX, event.stageY);
-
-            camera.move(dx, dy);
-        }
-
         public function eventAddedToStage(event: Event):void
         {
             disableMouse(false);
+
+            update();
         }
 
         public function eventRemovedFromStage(event: Event):void
@@ -231,55 +179,86 @@ package src.FeathersUI.Map {
             disableMouse(true);
         }
 
-        public function move(): void {
-            scaleX = scaleY = camera.getZoomFactorPercentage();
+        public function update(updatePositionFromCamera: Boolean = true): void {
+            if (updatePositionFromCamera) {
+                trace("Updating position from pos:",mapContainer.x,",",mapContainer.y," pivot:",mapContainer.pivotX,",",mapContainer.pivotY," scale:",mapContainer.scaleX);
+
+                mapContainer.pivotX = 0;
+                mapContainer.pivotY = 0;
+                mapContainer.x = -camera.currentPosition.x * camera.getZoomFactorPercentage();
+                mapContainer.y = -camera.currentPosition.y * camera.getZoomFactorPercentage();
+
+//                mapContainer.x = Constants.screenW/2;
+//                mapContainer.y = Constants.screenH/2;
+                mapContainer.scaleX = mapContainer.scaleY = camera.getZoomFactorPercentage();
+//                mapContainer.pivotX = camera.currentPosition.x + mapContainer.x/mapContainer.scaleX;
+//                mapContainer.pivotY = camera.currentPosition.y + mapContainer.y/mapContainer.scaleY;
+
+                trace("Position is now pos:",mapContainer.x,",",mapContainer.y," pivot:",mapContainer.pivotX,",",mapContainer.pivotY," scale:",mapContainer.scaleX);
+
+                // normalize();
+            }
 
             var pt: Position = camera.mapCenter().toPosition();
-
-            Global.gameContainer.setLabelCoords(pt);
+            trace("Center Position:", pt.x, ",", pt.y);
 
             if (!disabledMapQueries) {
                 parseRegions();
-                objContainer.moveWithCamera(camera.currentPosition.x, camera.currentPosition.y);
             }
         }
 
-        public function onMove(event: flash.events.Event) : void
-        {
-            move();
+        public function normalize(): void {
+            var result: Point = new Point();
+
+trace("Before normalize is pos:",mapContainer.x,",",mapContainer.y," pivot:",mapContainer.pivotX,",",mapContainer.pivotY," scale:",mapContainer.scaleX);
+            mapContainer.localToGlobal(new Point(0,0), result);
+trace(result);
+            mapContainer.x = result.x;
+            mapContainer.y = result.y;
+            mapContainer.pivotX = 0;
+            mapContainer.pivotY = 0;
+
+            camera.updatePositionProgramatically(-mapContainer.x/mapContainer.scaleX, -mapContainer.y/mapContainer.scaleY, mapContainer.scaleX*100.0);
         }
 
-        public function parseRegions(): void {
+        private function onMove(event: CameraEvent) : void
+        {
+            update(!event.programmatic);
+        }
+
+        private function parseRegions(): void {
             if (Constants.debug >= 3) Util.log("On move: " + camera.currentPosition.x + "," + camera.currentPosition.y);
 
             //calculate which regions we need to render
             var requiredRegions: Array = [];
 
             // Get list of required regions
-            const offset: int = 200;
+//            const offset: int = 200;
 
-            var screenRect: Rectangle = new Rectangle(
-                            camera.currentPosition.x - offset, camera.currentPosition.y - offset,
-                            Constants.screenW * camera.getZoomFactorOverOne() + offset * 2.0, Constants.screenH * camera.getZoomFactorOverOne() + offset * 2.0);
+//            var cameraRect: Rectangle = camera.cameraRectangle();
+//            cameraRect.x -= offset;
+//            cameraRect.y -= offset;
+//            cameraRect.width += offset;
+//            cameraRect.height += offset;
 
-            for (var reqX: int = -1; reqX <= Math.ceil((Constants.screenW * camera.getZoomFactorOverOne()) / Constants.regionW); reqX++) {
-                for (var reqY: int = -1; reqY <= Math.ceil((Constants.screenH * camera.getZoomFactorOverOne()) / (Constants.regionH / 2)); reqY++) {
-                    var screenPos: ScreenPosition = new ScreenPosition(camera.currentPosition.x + (Constants.regionW * reqX),
-                                    camera.currentPosition.y + (Constants.regionH / 2 * reqY));
-                    var requiredId: int = TileLocator.getRegionId(screenPos);
+            var xRegionCount: int = Math.ceil(Number(Constants.screenW) / MIN_ZOOM / Constants.regionW);
+            var yRegionCount: int = Math.ceil(Number(Constants.screenH) / MIN_ZOOM / Constants.regionH);
 
-                    var regionRect: Rectangle = TileLocator.getRegionRect(requiredId);
-                    if (!regionRect.containsRect(screenRect) && !screenRect.intersects(regionRect)) continue;
+            for (var reqX: int = -1; reqX <= xRegionCount; reqX++) {
+                for (var reqY: int = -1; reqY <= yRegionCount; reqY++) {
+                    var screenPos: ScreenPosition = new ScreenPosition(
+                                    camera.currentPosition.x + (Constants.regionW * reqX),
+                                    camera.currentPosition.y + (Constants.regionH * reqY));
 
-                    if (requiredId > -1 && requiredRegions.indexOf(requiredId) == -1) requiredRegions.push(requiredId);
+                    var requiredId: int = TileLocator.getRegionId(screenPos.toPosition());
+
+                    if (requiredId > -1 && requiredRegions.indexOf(requiredId) == -1) {
+                        requiredRegions.push(requiredId);
+                    }
                 }
             }
 
             vm.getRegions(requiredRegions);
-
-            for (var i: int = vm.regions.size() - 1; i >= 0; i--) {
-                vm.regions[i].moveWithCamera(camera);
-            }
         }
     }
 }

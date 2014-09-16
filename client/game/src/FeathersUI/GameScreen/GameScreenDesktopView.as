@@ -96,7 +96,7 @@ package src.FeathersUI.GameScreen {
             addChild(map);
             addChild(minimapContainer);
 
-            map.move();
+            map.update();
         }
 
         override public function dispose(): void {

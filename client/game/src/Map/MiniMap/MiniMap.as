@@ -86,9 +86,9 @@
 		}
 
         private function onCameraMove(event: flash.events.Event): void {
-            updatePointers(_camera.miniMapCenter);
-            parseRegions();
-            objContainer.moveWithCamera(_camera.miniMapX, _camera.miniMapY);
+//            updatePointers(_camera.miniMapCenter);
+//            parseRegions();
+//            objContainer.moveWithCamera(_camera.miniMapX, _camera.miniMapY);
         }
 
 		public function redraw() : void {

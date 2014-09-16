@@ -341,7 +341,7 @@
 			camera.scrollToCenter(pt);
 		}
 
-				public function eventKeyUp(event: KeyboardEvent):void
+        public function eventKeyUp(event: KeyboardEvent):void
 		{
 			// clear key press
 			pressedKeys[event.keyCode] = false;

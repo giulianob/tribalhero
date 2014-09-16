@@ -1,15 +1,8 @@
-/**
- * ...
- * @author Default
- * @version 0.1
- */
-
 package src.Map {
 
     import System.Linq.Enumerable;
 
     import flash.geom.Point;
-    import flash.geom.Rectangle;
 
     import src.Constants;
     import src.Global;
@@ -36,39 +29,20 @@ package src.Map {
 			return id;
 		}
 
-		public static function getRegionIdFromMapCoord(position: Position): int
-		{
-            return int(position.x / Constants.regionTileW) + int(position.y / Constants.regionTileH) * int(Constants.mapTileW / Constants.regionTileW);
-		}
-		
-		public static function getRegionRect(id: int): Rectangle
-		{
-			var x: int = (id % Constants.mapRegionW) * Constants.regionW;
-			var y: int = int(id / Constants.mapRegionW) * (Constants.regionH / 2);			
-			return new Rectangle(x, y, Constants.regionW, Constants.regionH / 2);
-		}
-
         public static function getTileIndex(position: Position): int
         {
             return (int)(position.x % Constants.regionTileW + (position.y % Constants.regionTileH) * Constants.regionTileW);
         }
 
-		public static function getRegionId(screenPosition: ScreenPosition): int
+		public static function getRegionId(position: Position): int
 		{
-			var rX: int = screenPosition.x + Constants.tileW / 2;
-			var rY: int = screenPosition.y + Constants.tileH / 2;
+            var idx: int = int(position.x / Constants.regionTileW) + int(position.y / Constants.regionTileH) * int(Constants.mapTileW / Constants.regionTileW);
 
-			var xId: int = int(rX / Constants.regionW);
-			var yId: int = int(rY / int(Constants.regionH / 2));
+            if (idx < 0 || idx >= Constants.regionCount) {
+                return -1;
+            }
 
-			if (xId < 0 || xId >= Constants.mapRegionW)
-			return -1;
-			if (yId < 0 || yId >= Constants.mapRegionH)
-			return -1;
-
-			var id: int = int(xId + yId * Constants.mapRegionW);
-
-			return id;
+            return idx;
 		}
 
         public static function getMapCoord(screenPos: ScreenPosition): Position // from screen coord to map coord

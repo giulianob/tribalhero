@@ -8,7 +8,9 @@ package src.FeathersUI.GameScreen {
 
     import src.FeathersUI.Controls.ClippedLayoutGroup;
     import src.FeathersUI.Map.MapView;
+    import src.Map.City;
     import src.Map.MiniMap.MiniMap;
+    import src.Map.ScreenPosition;
     import src.Objects.Factories.SpriteFactory;
 
     import starling.events.Event;
@@ -51,16 +53,26 @@ package src.FeathersUI.GameScreen {
             {
                 mapContainer.name = "Game Screen Drawer Container";
                 var menuButton:Button = new Button();
-                {
-                    menuButton.styleNameList.add(Button.ALTERNATE_NAME_QUIET_BUTTON);
-                    menuButton.defaultIcon = SpriteFactory.getStarlingImage("ICON_PAPER_SCROLL");
-                    menuButton.addEventListener(Event.TRIGGERED, menuButton_triggeredHandler);
+                menuButton.styleNameList.add(Button.ALTERNATE_NAME_QUIET_BUTTON);
+                menuButton.defaultIcon = SpriteFactory.getStarlingImage("ICON_PAPER_SCROLL");
+                menuButton.addEventListener(Event.TRIGGERED, menuButton_triggeredHandler);
+                menuButton.layoutData = new AnchorLayoutData(10, Number.NaN, Number.NaN, 10);
 
-                    menuButton.layoutData = new AnchorLayoutData(10, Number.NaN, Number.NaN, 10);
-                }
+                var testButton:Button = new Button();
+                testButton.styleNameList.add(Button.ALTERNATE_NAME_QUIET_BUTTON);
+                testButton.defaultIcon = SpriteFactory.getStarlingImage("ICON_MAP");
+                testButton.addEventListener(Event.TRIGGERED, function(e: Event): void {
+                    trace("Map pos is ", map.camera.currentPosition);
+                    var city: City = vm.cities[0];
+                    map.camera.scrollToCenter(city.primaryPosition.toScreenPosition());
+                    trace("New map pos is ", map.camera.currentPosition);
+                });
+
+                testButton.layoutData = new AnchorLayoutData(120, Number.NaN, Number.NaN, 10);
 
                 mapContainer.addChild(map);
                 mapContainer.addChild(menuButton);
+                //mapContainer.addChild(testButton);
             }
 
             drawers = new Drawers(mapContainer);
@@ -69,7 +81,7 @@ package src.FeathersUI.GameScreen {
 
             addChild(drawers);
 
-            map.move();
+            map.update();
         }
 
         private function createMenuButton(text: String, icon: String): Button {

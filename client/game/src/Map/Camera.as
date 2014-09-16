@@ -26,7 +26,7 @@
 		private var cuePosition: ScreenPosition;
 		
 		//Zooming factor
-		private var _zoomFactor: int = 75;
+		private var _zoomFactor: Number = 75;
 		private var zoomFactorOverOne: Number = (1.0 / (_zoomFactor / 100.0));
 
         public var scrollRate: Number = 1;
@@ -55,7 +55,7 @@
 			fireOnMove();
 		}
 
-		private function fireOnMove() : void {
+		private function fireOnMove(programmatic: Boolean = false) : void {
 			if (updating) {
 				isDirty = true;
 				return;
@@ -65,7 +65,7 @@
                 Util.log(StringUtil.substitute("Camera moved to {0},{1} zoomFactor:{2}", currentPosition.x, currentPosition.y, zoomFactor));
             //}
 
-			dispatchEvent(new Event(ON_MOVE));
+			dispatchEvent(new CameraEvent(ON_MOVE, programmatic));
 		}
 
 		public function reset(): void
@@ -218,14 +218,22 @@
 			fireOnMove();
 		}
 
+        public function updatePositionProgramatically(x: Number, y: Number, zoomFactor: Number): void {
+            currentPosition.x = x;
+            currentPosition.y = y;
+            _zoomFactor = zoomFactor;
+
+            fireOnMove(true);
+        }
+
         //noinspection JSUnusedGlobalSymbols
-        public function set zoomFactor(factor: int): void {
-            _zoomFactor = clamp(factor, 50, 100);
+        public function set zoomFactor(factor: Number): void {
+            _zoomFactor = factor;
             zoomFactorOverOne = (1.0 / getZoomFactorPercentage());
             scrollTo(currentPosition);
         }
 
-        public function get zoomFactor(): int {
+        public function get zoomFactor(): Number {
             return _zoomFactor;
         }
 

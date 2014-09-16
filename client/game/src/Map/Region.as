@@ -36,7 +36,10 @@
                     int(id / Constants.mapRegionW) * Constants.regionTileH);
 
             globalX = (id % Constants.mapRegionW) * Constants.regionW;
-            globalY = int(id / Constants.mapRegionW) * (Constants.regionH / 2);
+            globalY = int(id / Constants.mapRegionW) * Constants.regionH;
+
+            x = globalX - int(Constants.tileW / 2);
+            y = globalY - int(Constants.tileH / 2);
 
             drawRegion();
 
@@ -240,12 +243,6 @@
         public function getObject(groupId: int, objectId: int): SimpleGameObject
         {
             return primaryObjects.getById(groupId, objectId);
-        }
-
-        public function moveWithCamera(camera: Camera):void
-        {
-            x = globalX - camera.currentPosition.x - int(Constants.tileW / 2);
-            y = globalY - camera.currentPosition.y - int(Constants.tileH / 2);
         }
 
         public static function sortOnId(a:Region, b:Region):Number

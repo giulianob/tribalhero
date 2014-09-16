@@ -30,6 +30,7 @@ package src.FeathersUI.Map {
     import src.Util.Util;
 
     import starling.events.Event;
+    import starling.utils.formatString;
 
     public class MapVM extends ViewModel {
         public var regions: RegionManager;
@@ -72,10 +73,6 @@ package src.FeathersUI.Map {
 
         public function addRegion(id:int, data: Array) : Region
         {
-            if (Constants.debug >= 2) {
-                Util.log("Adding region: " + id);
-            }
-
             var newRegion: Region = new Region(id, data, objContainer);
 
             for (var i:int = pendingRegions.length - 1; i >= 0; i--)
@@ -87,6 +84,10 @@ package src.FeathersUI.Map {
             }
 
             regions.add(newRegion);
+
+            //if (Constants.debug >= 2) {
+                Util.log(formatString("Added region id:{0} to pos:{1},{2}", id, newRegion.x, newRegion.y));
+            //}
 
             return newRegion;
         }
@@ -234,9 +235,6 @@ package src.FeathersUI.Map {
                 }
 
                 if (found >= 0) {
-                    //adjust the position of this region
-                    region.moveWithCamera(camera);
-
                     if (Constants.debug >= 4) {
                         Util.log("Moved: " + region.id + " " + region.x + "," + region.y);
                     }

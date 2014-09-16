@@ -43,7 +43,7 @@
 			updating = true;
 		}
 
-		public function endMove(): void {
+		public function endMove(programmatic: Boolean = false): void {
 			updating = false;
 
 			if (!isDirty) {
@@ -52,7 +52,7 @@
 
 			isDirty = false;
 
-			fireOnMove();
+			fireOnMove(programmatic);
 		}
 
 		private function fireOnMove(programmatic: Boolean = false) : void {
@@ -209,21 +209,18 @@
 
 		public function scrollTo(screenPos: ScreenPosition): void
 		{
-			if (currentPosition.x < 0) currentPosition.x = 0;
-			if (currentPosition.y < 0) currentPosition.y = 0;
-
-			currentPosition.setXAsNumber(Math.min(screenPos.getXAsNumber(), int(Constants.mapW - (Constants.screenW * zoomFactorOverOne) - (Constants.tileW / 2.0))));
-			currentPosition.setYAsNumber(Math.min(screenPos.getYAsNumber(), int(Constants.mapTileH * int(Constants.tileH / 2.0) - (Constants.screenH * zoomFactorOverOne) - int(Constants.tileH / 2.0))));
+			currentPosition.setXAsNumber(clampX(screenPos.getXAsNumber()));
+			currentPosition.setYAsNumber(clampY(screenPos.getYAsNumber()));
 
 			fireOnMove();
 		}
 
-        public function updatePositionProgramatically(x: Number, y: Number, zoomFactor: Number): void {
-            currentPosition.x = x;
-            currentPosition.y = y;
-            _zoomFactor = zoomFactor;
+        public function clampX(value: Number): Number {
+            return clamp(value, 0, int(Constants.mapW - (Constants.screenW * zoomFactorOverOne) - (Constants.tileW / 2.0)));
+        }
 
-            fireOnMove(true);
+        public function clampY(value: Number): Number {
+            return clamp(value, 0, int(Constants.mapTileH * int(Constants.tileH / 2.0) - (Constants.screenH * zoomFactorOverOne) - int(Constants.tileH / 2.0)));
         }
 
         //noinspection JSUnusedGlobalSymbols
@@ -244,7 +241,6 @@
 		public function getZoomFactorPercentage(): Number {
 			return zoomFactor / 100.0;
 		}
-		
 	}
 }
 

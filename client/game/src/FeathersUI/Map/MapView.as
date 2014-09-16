@@ -152,13 +152,17 @@ package src.FeathersUI.Map {
 
                 mapContainer.x = (currentPosA.x + currentPosB.x) * 0.5;
                 mapContainer.y = (currentPosA.y + currentPosB.y) * 0.5;
-
                 mapContainer.scaleX = mapContainer.scaleY = clamp(mapContainer.scaleY*sizeDiff, MIN_ZOOM, MAX_ZOOM);
-
                 mapContainer.pivotX = pivotX;
                 mapContainer.pivotY = pivotY;
 
-                normalize();
+                // normalize point
+                var result: Point = new Point();
+                mapContainer.localToGlobal(new Point(0,0), result);
+                camera.beginMove();
+                camera.scrollTo(new ScreenPosition(-result.x/mapContainer.scaleX, -result.y/mapContainer.scaleY));
+                camera.zoomFactor = mapContainer.scaleX*100.0;
+                camera.endMove();
             }
         }
 
@@ -181,44 +185,20 @@ package src.FeathersUI.Map {
 
         public function update(updatePositionFromCamera: Boolean = true): void {
             if (updatePositionFromCamera) {
-                trace("Updating position from pos:",mapContainer.x,",",mapContainer.y," pivot:",mapContainer.pivotX,",",mapContainer.pivotY," scale:",mapContainer.scaleX);
+                // trace("Updating position from pos:",mapContainer.x,",",mapContainer.y," pivot:",mapContainer.pivotX,",",mapContainer.pivotY," scale:",mapContainer.scaleX);
 
                 mapContainer.pivotX = 0;
                 mapContainer.pivotY = 0;
-                mapContainer.x = -camera.currentPosition.x * camera.getZoomFactorPercentage();
-                mapContainer.y = -camera.currentPosition.y * camera.getZoomFactorPercentage();
-
-//                mapContainer.x = Constants.screenW/2;
-//                mapContainer.y = Constants.screenH/2;
+                mapContainer.x = -camera.currentPosition.getXAsNumber() * camera.getZoomFactorPercentage();
+                mapContainer.y = -camera.currentPosition.getYAsNumber() * camera.getZoomFactorPercentage();
                 mapContainer.scaleX = mapContainer.scaleY = camera.getZoomFactorPercentage();
-//                mapContainer.pivotX = camera.currentPosition.x + mapContainer.x/mapContainer.scaleX;
-//                mapContainer.pivotY = camera.currentPosition.y + mapContainer.y/mapContainer.scaleY;
 
-                trace("Position is now pos:",mapContainer.x,",",mapContainer.y," pivot:",mapContainer.pivotX,",",mapContainer.pivotY," scale:",mapContainer.scaleX);
-
-                // normalize();
+                // trace("Position is now pos:",mapContainer.x,",",mapContainer.y," pivot:",mapContainer.pivotX,",",mapContainer.pivotY," scale:",mapContainer.scaleX);
             }
-
-            var pt: Position = camera.mapCenter().toPosition();
-            trace("Center Position:", pt.x, ",", pt.y);
 
             if (!disabledMapQueries) {
                 parseRegions();
             }
-        }
-
-        public function normalize(): void {
-            var result: Point = new Point();
-
-trace("Before normalize is pos:",mapContainer.x,",",mapContainer.y," pivot:",mapContainer.pivotX,",",mapContainer.pivotY," scale:",mapContainer.scaleX);
-            mapContainer.localToGlobal(new Point(0,0), result);
-trace(result);
-            mapContainer.x = result.x;
-            mapContainer.y = result.y;
-            mapContainer.pivotX = 0;
-            mapContainer.pivotY = 0;
-
-            camera.updatePositionProgramatically(-mapContainer.x/mapContainer.scaleX, -mapContainer.y/mapContainer.scaleY, mapContainer.scaleX*100.0);
         }
 
         private function onMove(event: CameraEvent) : void

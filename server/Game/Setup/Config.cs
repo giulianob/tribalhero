@@ -158,6 +158,7 @@ namespace Game.Setup
         public static decimal ap_deduction_per_hour = .25m;
         public static decimal ap_max_per_battle = 4;
         public static bool troop_starve = true;
+        public static bool ignore_last_moved_date = false;
 
         #endregion
 

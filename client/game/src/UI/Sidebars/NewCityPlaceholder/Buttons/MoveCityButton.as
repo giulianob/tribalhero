@@ -34,10 +34,10 @@ public class MoveCityButton extends ActionButton
 
         var delta: int = Global.map.getServerTime() - Constants.session.lastMoved.time/1000;
 
-        if(delta>14*86400) {
-            new SimpleTooltip(this,StringHelper.localize("MOVE_CITY_DESC"),"Move city");
+        if(delta<0) {
+            new SimpleTooltip(this,StringHelper.localize("MOVE_CITY_DESC","Never moved"),"Move city");
         } else {
-            new SimpleTooltip(this,StringHelper.localize("MOVE_CITY2_DESC",DateUtil.niceTime(delta)),"Move city");
+            new SimpleTooltip(this,StringHelper.localize("MOVE_CITY_DESC","Last moved "+DateUtil.niceTime(delta)+" ago"),"Move city");
         }
         ///		tooltip = new NewCityTooltip(mainBuildingPrototype);
 

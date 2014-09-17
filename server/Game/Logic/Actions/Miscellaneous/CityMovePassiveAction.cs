@@ -144,7 +144,7 @@ namespace Game.Logic.Actions
             dbManager.Save(city.Owner);
             
             beginTime = SystemClock.Now;
-            endTime = SystemClock.Now.AddSeconds(10);
+            endTime = SystemClock.Now;
             return Error.Ok;
         }
 

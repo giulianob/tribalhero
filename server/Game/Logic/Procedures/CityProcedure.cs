@@ -60,7 +60,7 @@ namespace Game.Logic.Procedures
             if (city == null)
                 return Error.CityNotFound;
 
-            if (SystemClock.Now.Subtract(city.Owner.LastMoved).TotalDays < 14)
+            if (SystemClock.Now.Subtract(city.Owner.LastMoved).TotalDays < 14 && !Config.ignore_last_moved_date)
                 return Error.CityMovedWithinTwoWeeks;
 
             if (city.Battle != null)

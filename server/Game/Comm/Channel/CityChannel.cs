@@ -111,11 +111,6 @@ namespace Game.Comm.Channel
 
             city.ReferenceAdded -= ReferenceAdded;
             city.ReferenceRemoved -= ReferenceRemoved;
-
-            if (city.Owner.Session != null)
-            {
-                channel.Unsubscribe(city.Owner.Session, GetChannelName(city));
-            }
         }
 
         private string GetChannelName(ICity city)

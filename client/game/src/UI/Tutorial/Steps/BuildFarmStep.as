@@ -37,6 +37,10 @@ package src.UI.Tutorial.Steps
 		
 		private function onTimer(e: Event = null): void {
 			// If user has a farm, this step is done
+            if(map.cities.size()==0) {
+                timer.start();
+                return;
+            }
 			var farm: CityObject = map.cities.getByIndex(0).getStructureOfType(FARM_TYPE);
 			if (farm != null) 
 			{

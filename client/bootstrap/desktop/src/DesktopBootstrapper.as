@@ -8,6 +8,7 @@ package src {
 
     import src.FeathersUI.Factories.IFlowFactory;
     import src.FeathersUI.Map.MapVM;
+    import src.FeathersUI.MiniMap.MiniMapVM;
 
     import src.Map.MiniMap.MiniMap;
 
@@ -45,8 +46,8 @@ package src {
             return assets;
         }
 
-        public function getFlowFactory(map: MapVM, miniMap: MiniMap): IFlowFactory {
-            return new DesktopFlowFactory(map, miniMap);
+        public function getFlowFactory(mapVM: MapVM, miniMapVM: MiniMapVM): IFlowFactory {
+            return new DesktopFlowFactory(mapVM, miniMapVM);
         }
     }
 }

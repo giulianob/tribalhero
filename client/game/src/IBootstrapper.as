@@ -1,6 +1,7 @@
 package src {
     import src.FeathersUI.Factories.IFlowFactory;
     import src.FeathersUI.Map.MapVM;
+    import src.FeathersUI.MiniMap.MiniMapVM;
     import src.Map.MiniMap.MiniMap;
 
     import starling.core.Starling;
@@ -13,6 +14,6 @@ package src {
 
         function init(starling: Starling): void;
 
-        function getFlowFactory(map: MapVM, miniMap: MiniMap): IFlowFactory;
+        function getFlowFactory(mapVM: MapVM, miniMapVM: MiniMapVM): IFlowFactory;
     }
 }

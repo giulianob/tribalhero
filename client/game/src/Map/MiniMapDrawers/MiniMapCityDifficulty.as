@@ -8,7 +8,6 @@ package src.Map.MiniMapDrawers {
     import src.Map.MiniMap.LegendGroups.MiniMapGroupCity;
     import src.Map.MiniMap.MiniMapLegendPanel;
     import src.Map.MiniMap.MiniMapRegionObject;
-    import src.Objects.Factories.ObjectFactory;
     import src.Objects.Factories.SpriteFactory;
     import src.Util.StringHelper;
 

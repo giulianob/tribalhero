@@ -15,12 +15,10 @@
     import org.aswing.*;
 
     import src.Comm.*;
-    import src.Comm.Commands.ObjectComm;
     import src.FeathersUI.GameScreen.IGameScreenFlow;
     import src.FeathersUI.Map.MapVM;
-    import src.FeathersUI.Map.MapView;
+    import src.FeathersUI.MiniMap.MiniMapVM;
     import src.Map.*;
-    import src.Map.MiniMap.MiniMap;
     import src.Objects.Factories.*;
     import src.Objects.ObjectContainer;
     import src.UI.Flows.LoginFlow;
@@ -147,17 +145,17 @@
             var camera: Camera = new Camera(0, 0);
 
             var objContainer: ObjectContainer = new ObjectContainer();
-            var map: MapVM = new MapVM(objContainer, camera);
+            var mapVM: MapVM = new MapVM(objContainer, camera);
 
-            Global.map = map;
-			var miniMap: MiniMap = new MiniMap(camera, Constants.miniMapScreenW, Constants.miniMapScreenH);
-			
-			map.usernames.players.add(new Username(Constants.session.playerId, Constants.session.playerName));
-			map.setTimeDelta(Constants.session.timeDelta);
+            Global.map = mapVM;
+			var miniMapVM: MiniMapVM = new MiniMapVM(camera);
+
+			mapVM.usernames.players.add(new Username(Constants.session.playerId, Constants.session.playerName));
+			mapVM.setTimeDelta(Constants.session.timeDelta);
 			
 			EffectReqFactory.init(Constants.objData);
 			PropertyFactory.init(Constants.objData);
-			StructureFactory.init(map, Constants.objData);
+			StructureFactory.init(mapVM, Constants.objData);
 			TechnologyFactory.init(Constants.objData);
 			UnitFactory.init(Constants.objData);
 			WorkerFactory.init(Constants.objData);
@@ -167,9 +165,9 @@
 
             Global.gameContainer.show();
 			Global.mapComm.General.readLoginInfo(packet);
-            Global.gameContainer.setMap(map, miniMap);
+            Global.gameContainer.setMap(mapVM, miniMapVM);
 
-            var gameScreen: IGameScreenFlow = bootstrapper.getFlowFactory(map, miniMap).createGameScreenFlow();;
+            var gameScreen: IGameScreenFlow = bootstrapper.getFlowFactory(mapVM, miniMapVM).createGameScreenFlow();;
             gameScreen.show();
 		}
     }

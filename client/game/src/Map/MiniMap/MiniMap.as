@@ -192,7 +192,7 @@
 			}
 
 			regions.add(newRegion);
-			newRegion.moveWithCamera(_camera);
+//			newRegion.moveWithCamera(_camera);
 			regionSpace.addChild(newRegion);
 
 			return newRegion;
@@ -229,7 +229,7 @@
 
 			for (var c: int = 0; c <= regionsW; c++) {
 				for (var r: int = 0; r <= regionsH; r++) {
-					var requiredId: int = TileLocator.getMiniMapRegionId(camX + Constants.miniMapRegionW * c, camY + (Constants.miniMapRegionH / 2) * r);
+					var requiredId: int = TileLocator.getMiniMapRegionId(new ScreenPosition(camX + Constants.miniMapRegionW * c, camY + (Constants.miniMapRegionH / 2) * r).toPosition());
 					if (requiredId == -1 || requiredRegions.indexOf(requiredId) > -1) continue;
 					requiredRegions.push(requiredId);
 				}
@@ -253,7 +253,7 @@
 				if (found >= 0)
 				{
 					//adjust the position of this region
-					region.moveWithCamera(_camera);
+//					region.moveWithCamera(_camera);
 
 					if (Constants.debug >= 4)
 					Util.log("Moved: " + region.id + " " + region.x + "," + region.y);

@@ -196,6 +196,7 @@
 						extraProps.level = packet.readUByte();
 						extraProps.count = packet.readUByte();
 					}
+
 					newRegion.addRegionObject(objType, objGroupId, objId, objSize, position, extraProps);
 				}
 			}

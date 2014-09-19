@@ -13,6 +13,7 @@
 
     import src.Events.NavigateEvent;
     import src.FeathersUI.Map.MapVM;
+    import src.FeathersUI.MiniMap.MiniMapVM;
     import src.Map.*;
     import src.Map.MiniMap.MiniMap;
     import src.UI.*;
@@ -45,7 +46,8 @@
 
 		public var map: MapVM;
 
-		public var miniMap: MiniMap;
+		public var miniMap: MiniMapVM;
+
 		private var minimapRefreshTimer: Timer = new Timer(500000, 0);
 
 		//HUD resources container
@@ -92,7 +94,6 @@
 
 //        internal var mapHolder: starling.display.Sprite;
 //        private var miniMapHolder: starling.display.Sprite;
-        private var mapOverlayTarget: starling.display.DisplayObject;
 
 		public function GameContainer()
 		{
@@ -405,7 +406,7 @@
 			}
 		}
 
-		public function setMap(map: MapVM, miniMap: MiniMap):void
+		public function setMap(map: MapVM, miniMap: MiniMapVM):void
 		{
             camera = map.camera;
 
@@ -468,7 +469,7 @@
 			if (selectedCity) {
 				//var pt: ScreenPosition = TileLocator.getScreenCoord(selectedCity.primaryPosition);
 				//camera.scrollToCenter(pt);
-				miniMap.setCityPointer(selectedCity.name);
+				// miniMap.setCityPointer(selectedCity.name);
 			}
 
 			//Set minimap position and initial state
@@ -576,7 +577,7 @@
 			if (map) {
 				//resizeManager.removeEventListener(Event.RESIZE, map.onResize);
 				//resizeManager.removeEventListener(Event.RESIZE, message.onResize);
-				miniMap.removeEventListener(MiniMap.NAVIGATE_TO_POINT, onMinimapNavigateToPoint);
+				// miniMap.removeEventListener(MiniMap.NAVIGATE_TO_POINT, onMinimapNavigateToPoint);
 
 //				mapHolder.removeChild(map);
 //                miniMapHolder.removeChild(miniMap);
@@ -606,7 +607,7 @@
             var model: VectorListModel = VectorListModel(lstCities.getModel());
 			model.append(listItem);
 
-			miniMap.addPointer(new MiniMapPointer(city.primaryPosition.x, city.primaryPosition.y, city.name));
+			// miniMap.addPointer(new MiniMapPointer(city.primaryPosition.x, city.primaryPosition.y, city.name));
 		}
 
 		public function clearAllSelections() : void
@@ -702,7 +703,7 @@
 		public function minimapRefresh(e: Event = null):void {
 			if (miniMap == null) return;
 			
-			miniMap.parseRegions(true);
+			// miniMap.parseRegions(true);
 		}
 		
 		public function displayResources(e: Event = null):void {
@@ -753,7 +754,7 @@
 					setSidebar(null);
 					selectedCity = lstCities.getSelectedItem().city;
 					displayResources();
-					miniMap.setCityPointer(selectedCity.name);
+			//		miniMap.setCityPointer(selectedCity.name);
 					break;
 				}
 			}
@@ -769,15 +770,15 @@
 			displayResources();						
 			
 			stage.focus = this;
-			miniMap.setCityPointer(selectedCity.name);
+			//miniMap.setCityPointer(selectedCity.name);
 		}
 
 		private function onMinimapNavigateToPoint(e: NavigateEvent) : void {
-			if (minimapTools.minimapZoomed) {
-                minimapTools.zoomIntoMinimap(false);
-			}
-
-			Global.map.camera.scrollToCenter(new ScreenPosition(e.x, e.y));
+//			if (minimapTools.minimapZoomed) {
+//                minimapTools.zoomIntoMinimap(false);
+//			}
+//
+//			Global.map.camera.scrollToCenter(new ScreenPosition(e.x, e.y));
 		}
 		
 		public function setUnreadMessageCount(unreadMessages: int): void

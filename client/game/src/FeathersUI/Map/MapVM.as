@@ -85,9 +85,9 @@ package src.FeathersUI.Map {
 
             regions.add(newRegion);
 
-            //if (Constants.debug >= 2) {
+            if (Constants.debug >= 2) {
                 Util.log(formatString("Added region id:{0} to pos:{1},{2}", id, newRegion.x, newRegion.y));
-            //}
+            }
 
             return newRegion;
         }

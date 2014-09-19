@@ -65,7 +65,7 @@ package src.UI.Tooltips {
             this.position = new IntPoint(Global.stage.mouseX, Global.stage.mouseY);
 
             if (Global.map) {
-                Global.map.camera.addEventListener(Camera.ON_MOVE, onCameraMove, false, 0, true);
+                Global.map.camera.addEventListener(Camera.ON_MOVE, onCameraMove);
             }
 
 			if (this.viewObj == null || this.viewObj != obj) {
@@ -158,7 +158,7 @@ package src.UI.Tooltips {
             }
         }
 
-		private function onCameraMove(e: flash.events.Event): void {
+		private function onCameraMove(e: starling.events.Event): void {
 			// Hide if camera is moving
 			hide();
 		}

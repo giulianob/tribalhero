@@ -8,6 +8,7 @@ package src.FeathersUI.GameScreen {
 
     import src.FeathersUI.Controls.ClippedLayoutGroup;
     import src.FeathersUI.Map.MapView;
+    import src.FeathersUI.MiniMap.MiniMapView;
     import src.Map.City;
     import src.Map.MiniMap.MiniMap;
     import src.Map.ScreenPosition;
@@ -18,10 +19,10 @@ package src.FeathersUI.GameScreen {
     public class GameScreenMobileView extends Screen {
         private var vm: GameScreenVM;
         private var map: MapView;
-        private var miniMap: MiniMap;
+        private var miniMap: MiniMapView;
         private var drawers: Drawers;
 
-        public function GameScreenMobileView(vm: GameScreenVM, mapView: MapView, miniMap: MiniMap) {
+        public function GameScreenMobileView(vm: GameScreenVM, mapView: MapView, miniMap: MiniMapView) {
             this.vm = vm;
             this.map = mapView;
             this.miniMap = miniMap;

@@ -9,6 +9,7 @@ package src {
     import src.FeathersUI.Factories.IFlowFactory;
     import src.FeathersUI.Factories.MobileFlowFactory;
     import src.FeathersUI.Map.MapVM;
+    import src.FeathersUI.MiniMap.MiniMapVM;
     import src.Map.MiniMap.MiniMap;
 
     import starling.core.Starling;
@@ -20,8 +21,7 @@ package src {
         private static const assetSizes: Array = [1, 1.5, 2];
 
         public function MobileBootstrapper() {
-            var iOS:Boolean = Capabilities.manufacturer.indexOf("iOS") != -1;
-            Starling.handleLostContext = !iOS;
+            Starling.handleLostContext = true;
             Starling.multitouchEnabled = true;
         }
 
@@ -84,8 +84,8 @@ package src {
             return closest;
         }
 
-        public function getFlowFactory(map: MapVM, miniMap: MiniMap): IFlowFactory {
-            return new MobileFlowFactory(map, miniMap);
+        public function getFlowFactory(mapVM: MapVM, miniMapVM: MiniMapVM): IFlowFactory {
+            return new MobileFlowFactory(mapVM, miniMapVM);
         }
     }
 }

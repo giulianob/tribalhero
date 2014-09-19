@@ -121,6 +121,8 @@ package src {
         }
 
         public function zoomIntoMinimap(zoom: Boolean, query: Boolean = true) : void {
+            return;
+
             if (minimapZoomed == false) {
                 gameContainer.camera.cue();
             }
@@ -135,33 +137,33 @@ package src {
                 // We leave a bit of border incase the screen is smaller than the map size
                 var width: int = Math.min(Constants.screenW - 60, Constants.miniMapLargeScreenW);
                 var height: int = Math.min(Constants.screenH - 75, Constants.miniMapLargeScreenH);
-                gameContainer.miniMap.resize(width, height);
-                gameContainer.miniMap.x = Constants.miniMapLargeScreenX(width)-30;
-                gameContainer.miniMap.y = Constants.miniMapLargeScreenY(height);
+//                gameContainer.miniMap.resize(width, height);
+//                gameContainer.miniMap.x = Constants.miniMapLargeScreenX(width)-30;
+//                gameContainer.miniMap.y = Constants.miniMapLargeScreenY(height);
                 minimapZoomTooltip.setText("Minimize map");
-                gameContainer.miniMap.setScreenRectHidden(true);
+//                gameContainer.miniMap.setScreenRectHidden(true);
                 map.disableMapQueries(true);
                 gameContainer.camera.scrollRate = 25;
                 btnZoomIn.visible = false;
                 btnZoomOut.visible = false;
                 gameContainer.message.showMessage("Double click to go anywhere\nPress Escape to close this map");
-                gameContainer.miniMap.showLegend();
-                gameContainer.miniMap.showPointers();
+//                gameContainer.miniMap.showLegend();
+//                gameContainer.miniMap.showPointers();
             }
             else {
                 gameContainer.screenMessage.setVisible(true);
-                gameContainer.miniMap.resize(Constants.miniMapScreenW, Constants.miniMapScreenH);
-                gameContainer.miniMap.x = Constants.miniMapScreenX(Constants.miniMapScreenW);
-                gameContainer.miniMap.y = Constants.miniMapScreenY(Constants.miniMapScreenH);
+//                gameContainer.miniMap.resize(Constants.miniMapScreenW, Constants.miniMapScreenH);
+//                gameContainer.miniMap.x = Constants.miniMapScreenX(Constants.miniMapScreenW);
+//                gameContainer.miniMap.y = Constants.miniMapScreenY(Constants.miniMapScreenH);
                 minimapZoomTooltip.setText("World view");
-                gameContainer.miniMap.setScreenRectHidden(false);
+//                gameContainer.miniMap.setScreenRectHidden(false);
                 map.disableMapQueries(false);
                 gameContainer.camera.scrollRate = gameContainer.camera.getZoomFactorOverOne();
                 btnZoomIn.visible = true;
                 btnZoomOut.visible = true;
                 gameContainer.message.hide();
-                gameContainer.miniMap.hideLegend();
-                gameContainer.miniMap.hidePointers();
+//                gameContainer.miniMap.hideLegend();
+//                gameContainer.miniMap.hidePointers();
             }
 
             minimapZoomed = zoom;
@@ -173,8 +175,8 @@ package src {
         }
 
         private function alignMinimapTools() : void {
-            x = gameContainer.miniMap.x;
-            y = gameContainer.miniMap.y - 3;
+//            x = gameContainer.miniMap.x;
+//            y = gameContainer.miniMap.y - 3;
         }
 
 

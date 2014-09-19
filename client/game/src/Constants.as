@@ -86,7 +86,9 @@ package src
 		public static var miniMapRegionTileW: int = 100;
 		public static var miniMapRegionTileH: int = 100;
 
-		public static var miniMapRegionRatioW: int;
+        public static var miniMapRegionCount:int = (mapTileW/miniMapRegionTileW)*(mapTileH/miniMapRegionTileH);
+
+        public static var miniMapRegionRatioW: int;
 		public static var miniMapRegionRatioH: int;
 
 		// Compact mini map constants

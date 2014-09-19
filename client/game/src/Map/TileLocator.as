@@ -11,22 +11,15 @@ package src.Map {
 
     public class TileLocator {
 
-		public static function getMiniMapRegionId(rX: int, rY: int): int // from screen coord to region id
+		public static function getMiniMapRegionId(position: Position): int
 		{
-			var xId: int = int(rX / Constants.miniMapRegionW);
-			var yId: int = int(rY / int(Constants.miniMapRegionH / 2));
+            var idx: int = int(position.x / Constants.miniMapRegionTileW) + int(position.y / Constants.miniMapRegionTileH) * int(Constants.mapTileW / Constants.miniMapRegionTileW);
 
-			if (xId < 0 || xId >= Constants.miniMapRegionRatioW)
-			return -1;
-			if (yId < 0 || yId >= Constants.miniMapRegionRatioH)
-			return -1;
+            if (idx < 0 || idx >= Constants.miniMapRegionCount) {
+                return -1;
+            }
 
-			var id: int = int(xId + yId * Constants.miniMapRegionRatioW);
-
-			if (Constants.debug >= 4)
-			Util.log(rX + "," + rY + "(" + xId + "," + yId + ") =" + id);
-
-			return id;
+            return idx;
 		}
 
         public static function getTileIndex(position: Position): int

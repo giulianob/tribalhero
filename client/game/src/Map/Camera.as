@@ -2,8 +2,6 @@
 {
     import feathers.utils.math.clamp;
 
-    import flash.events.Event;
-    import flash.events.EventDispatcher;
     import flash.geom.Point;
     import flash.geom.Rectangle;
 
@@ -11,6 +9,9 @@
 
     import src.Constants;
     import src.Util.Util;
+
+    import starling.events.Event;
+    import starling.events.EventDispatcher;
 
     public class Camera extends EventDispatcher
 	{
@@ -43,8 +44,8 @@
 			updating = true;
 		}
 
-		public function endMove(programmatic: Boolean = false): void {
-			updating = false;
+        public function endMove(): void {
+            updating = false;
 
 			if (!isDirty) {
                 return;
@@ -52,11 +53,11 @@
 
 			isDirty = false;
 
-			fireOnMove(programmatic);
+			fireOnMove();
 		}
 
-		private function fireOnMove(programmatic: Boolean = false) : void {
-			if (updating) {
+        private function fireOnMove(): void {
+            if (updating) {
 				isDirty = true;
 				return;
 			}
@@ -65,7 +66,7 @@
                 Util.log(StringUtil.substitute("Camera moved to {0},{1} zoomFactor:{2}", currentPosition.x, currentPosition.y, zoomFactor));
             //}
 
-			dispatchEvent(new CameraEvent(ON_MOVE, programmatic));
+			dispatchEvent(new Event(ON_MOVE));
 		}
 
 		public function reset(): void

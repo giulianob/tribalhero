@@ -1,18 +1,12 @@
 package src.FeathersUI.Map {
-    import feathers.controls.Screen;
     import feathers.utils.math.clamp;
 
-    import flash.events.MouseEvent;
-    import flash.geom.Matrix;
     import flash.geom.Point;
-    import flash.geom.Rectangle;
 
     import src.Constants;
     import src.Global;
     import src.Map.Camera;
-    import src.Map.CameraEvent;
     import src.Map.MapOverlayBase;
-    import src.Map.Position;
     import src.Map.Region;
     import src.Map.ScreenPosition;
     import src.Map.TileLocator;
@@ -22,10 +16,9 @@ package src.FeathersUI.Map {
 
     import starling.display.*;
     import starling.events.*;
-    import starling.utils.MatrixUtil;
 
     public class MapView extends Sprite {
-        private static const MIN_ZOOM: Number = 0.3;
+        public static const MIN_ZOOM: Number = 0.3;
         private static const MAX_ZOOM: Number = 1.25;
 
         private var mapContainer: Sprite;
@@ -95,10 +88,7 @@ package src.FeathersUI.Map {
                     return;
                 }
 
-//                    Global.stage.removeEventListener(MouseEvent.MOUSE_DOWN, eventMouseDown);
-//                    Global.stage.removeEventListener(MouseEvent.MOUSE_MOVE, eventMouseMove);
-//                    Global.stage.removeEventListener(MouseEvent.MOUSE_UP, eventMouseUp);
-//                    Global.stage.removeEventListener(flash.events.Event.MOUSE_LEAVE, eventMouseLeave);
+                mapContainer.removeEventListener(TouchEvent.TOUCH, onTouched);
 
                 listenersDefined = false;
             }
@@ -110,10 +100,6 @@ package src.FeathersUI.Map {
                 }
 
                 mapContainer.addEventListener(TouchEvent.TOUCH, onTouched);
-//                    Global.stage.addEventListener(MouseEvent.MOUSE_DOWN, eventMouseDown);
-//                    Global.stage.addEventListener(MouseEvent.MOUSE_MOVE, eventMouseMove);
-//                    Global.stage.addEventListener(MouseEvent.MOUSE_UP, eventMouseUp);
-//                    Global.stage.addEventListener(flash.events.Event.MOUSE_LEAVE, eventMouseLeave);
 
                 listenersDefined = true;
             }
@@ -124,7 +110,7 @@ package src.FeathersUI.Map {
 
             if (touches.length == 1)
             {
-                // one finger touching / one mouse curser moved
+                // one finger touching / one mouse cursor moved
                 var touch:Touch = touches[0];
                 touch.getMovement(this, touchMovement);
 
@@ -185,15 +171,11 @@ package src.FeathersUI.Map {
 
         public function update(updatePositionFromCamera: Boolean = true): void {
             if (updatePositionFromCamera) {
-                // trace("Updating position from pos:",mapContainer.x,",",mapContainer.y," pivot:",mapContainer.pivotX,",",mapContainer.pivotY," scale:",mapContainer.scaleX);
-
                 mapContainer.pivotX = 0;
                 mapContainer.pivotY = 0;
                 mapContainer.x = -camera.currentPosition.getXAsNumber() * camera.getZoomFactorPercentage();
                 mapContainer.y = -camera.currentPosition.getYAsNumber() * camera.getZoomFactorPercentage();
                 mapContainer.scaleX = mapContainer.scaleY = camera.getZoomFactorPercentage();
-
-                // trace("Position is now pos:",mapContainer.x,",",mapContainer.y," pivot:",mapContainer.pivotX,",",mapContainer.pivotY," scale:",mapContainer.scaleX);
             }
 
             if (!disabledMapQueries) {
@@ -201,9 +183,9 @@ package src.FeathersUI.Map {
             }
         }
 
-        private function onMove(event: CameraEvent) : void
+        private function onMove(event: Event) : void
         {
-            update(!event.programmatic);
+            update();
         }
 
         private function parseRegions(): void {
@@ -211,15 +193,6 @@ package src.FeathersUI.Map {
 
             //calculate which regions we need to render
             var requiredRegions: Array = [];
-
-            // Get list of required regions
-//            const offset: int = 200;
-
-//            var cameraRect: Rectangle = camera.cameraRectangle();
-//            cameraRect.x -= offset;
-//            cameraRect.y -= offset;
-//            cameraRect.width += offset;
-//            cameraRect.height += offset;
 
             var xRegionCount: int = Math.ceil(Number(Constants.screenW) / MIN_ZOOM / Constants.regionW);
             var yRegionCount: int = Math.ceil(Number(Constants.screenH) / MIN_ZOOM / Constants.regionH);

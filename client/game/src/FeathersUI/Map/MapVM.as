@@ -1,6 +1,4 @@
 package src.FeathersUI.Map {
-    import flash.geom.Rectangle;
-
     import src.Constants;
     import src.FeathersUI.ViewModel;
     import src.Global;
@@ -8,8 +6,6 @@ package src.FeathersUI.Map {
     import src.Map.CityList;
     import src.Map.Region;
     import src.Map.RegionManager;
-    import src.Map.ScreenPosition;
-    import src.Map.TileLocator;
     import src.Map.UsernameManager;
     import src.Objects.BarbarianTribe;
     import src.Objects.Forest;

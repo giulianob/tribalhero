@@ -19,11 +19,6 @@ public class MiniMapGroupStronghold {
 
 
     public function MiniMapGroupStronghold() {
-     /*   var button:JButton = new JButton(StringHelper.localize("MINIMAP_LEGEND_STRONGHOLD"));
-        GameLookAndFeel.changeClass(button, "GameJBoxButton");
-        button.addActionListener(onChange);
-        legendPanel.addRaw(button);*/
-
         filter.addOnChangeListener(onChange);
         filter.applyLegend(legendPanel);
     }

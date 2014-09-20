@@ -278,9 +278,8 @@ namespace Game.Data
         }
 
         public bool HasPurchasedTheme(string theme)
-        {
-            // TODO
-            return true;
+        {            
+            return ThemePurchases.Any(x => x.ThemeId == theme);
         }
 
         public void UpdateCoins(int coins)
@@ -295,6 +294,13 @@ namespace Game.Data
 
         public void AddTheme(string themeId)
         {
+            if (HasPurchasedTheme(themeId))
+            {
+                return;
+            }
+
+            ThemePurchases.Add(new ThemePurchase {ThemeId = themeId});
+
             channel.Post(PlayerChannel, () =>
             {
                 var packet = new Packet(Command.PlayerThemePurchased);

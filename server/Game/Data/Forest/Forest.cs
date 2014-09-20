@@ -27,8 +27,6 @@ namespace Game.Data.Forest
 
         public const string DB_TABLE = "forests";
 
-        private readonly byte lvl = 1;
-
         private readonly IActionFactory actionFactory;
 
         private readonly IScheduler scheduler;

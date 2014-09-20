@@ -544,6 +544,7 @@
     <Compile Include="Logic\IGameTask.cs" />
     <Compile Include="Module\Chat.cs" />
     <Compile Include="Module\IQueueListener.cs" />
+    <Compile Include="Module\MapDataExport.cs" />
     <Compile Include="Module\QueueListener.cs" />
     <Compile Include="Module\Remover\CityRemover.cs" />
     <Compile Include="Module\Remover\ActivePlayerSelector.cs" />

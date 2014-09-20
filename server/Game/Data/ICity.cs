@@ -58,12 +58,7 @@ namespace Game.Data
         event City.CityEventHandler<ActionReferenceArgs> ReferenceRemoved;
 
         #endregion
-
-        /// <summary>
-        ///     Enumerates only through structures in this city
-        /// </summary>
-        Dictionary<uint, IStructure>.Enumerator Structures { get; }
-
+        
         /// <summary>
         ///     Radius of city. This affects city wall and where user can build.
         /// </summary>

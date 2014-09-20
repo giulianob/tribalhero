@@ -55,3 +55,4 @@ client/.idea/workspace.xml
 app/tmp/cache/persistent/tribalheroserver_*
 app/tmp/cache/models/tribalheroserver_*
 site/app/tmp/cache/tribalheroserver_*
+site/app/webroot/map.json

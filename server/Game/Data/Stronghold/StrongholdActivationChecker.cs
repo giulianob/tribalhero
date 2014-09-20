@@ -59,14 +59,24 @@ namespace Game.Data.Stronghold
             var lastNeutralActivationTimeVar = systemVariableManager["Stronghold.neutral_check"];
             var lastNeutralActivationTime = (DateTime)lastNeutralActivationTimeVar.Value;
             if (SystemClock.Now.Subtract(lastNeutralActivationTime).TotalHours >= 8)
-            {
-                var mapCenter = new Position(Config.map_width / 2, Config.map_height / 2);
+            {                
                 if (strongholdManager.All(s => s.StrongholdState != StrongholdState.Neutral))
                 {
-                    var stronghold = strongholdManager.Where(s => s.StrongholdState == StrongholdState.Inactive)
+                    var mapCenter = new Position(Config.map_width / 2, Config.map_height / 2);
+                    
+                    var stronghold = strongholdManager.Where(s => s.StrongholdState == StrongholdState.Inactive && s.NearbyCitiesCount > 0)
                                                       .OrderByDescending(s => strongholdActivationCondition.Score(s))
                                                       .ThenBy(s => tileLocator.TileDistance(s.PrimaryPosition, 1, mapCenter, 1))
                                                       .FirstOrDefault();
+
+                    // Do the same check for a SH but w/o nearby cities restriction
+                    if (stronghold == null)
+                    {
+                        stronghold = strongholdManager.Where(s => s.StrongholdState == StrongholdState.Inactive)
+                                                      .OrderByDescending(s => strongholdActivationCondition.Score(s))
+                                                      .ThenBy(s => tileLocator.TileDistance(s.PrimaryPosition, 1, mapCenter, 1))
+                                                      .FirstOrDefault();
+                    }
 
                     if (stronghold != null)
                     {

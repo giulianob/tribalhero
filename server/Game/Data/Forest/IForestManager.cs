@@ -1,10 +1,13 @@
-﻿using Game.Util.Locking;
+﻿using System.Collections.Generic;
+using Game.Util.Locking;
 
 namespace Game.Data.Forest
 {
     public interface IForestManager
     {
         int ForestCount { get; }
+
+        IEnumerable<IForest> AllForests { get; }
 
         void StartForestCreator();
 

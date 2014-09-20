@@ -76,7 +76,12 @@ namespace Game.Module
                 var stopWatch = new Stopwatch();
                 stopWatch.Start();
 
-                var tmpFile = Path.GetTempFileName();
+                var tmpFile = Path.GetFullPath(Path.Combine(Config.data_folder, "map.json.tmp"));
+                if (File.Exists(tmpFile))
+                {
+                    File.Delete(tmpFile);
+                }
+
                 using (var file = File.Create(tmpFile))
                     using (StreamWriter sw = new StreamWriter(file))
                         using (JsonWriter jw = new JsonTextWriter(sw))

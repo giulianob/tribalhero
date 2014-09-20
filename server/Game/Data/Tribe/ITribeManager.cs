@@ -9,6 +9,8 @@ namespace Game.Map
     {
         int TribeCount { get; }
 
+        IEnumerable<ITribe> AllTribes { get; }
+
         bool TryGetTribe(uint tribeId, out ITribe tribe);
 
         void Add(ITribe tribe);

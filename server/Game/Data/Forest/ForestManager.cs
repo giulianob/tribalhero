@@ -1,5 +1,6 @@
 ﻿#region
 
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Data.Troop;
@@ -32,7 +33,7 @@ namespace Game.Data.Forest
 
         private readonly ILocker locker;
 
-        private readonly Dictionary<uint, IForest> forests;
+        private readonly ConcurrentDictionary<uint, IForest> forests;
 
         private readonly LargeIdGenerator objectIdGenerator = new LargeIdGenerator(Config.forest_id_max, Config.forest_id_min);
 
@@ -60,7 +61,7 @@ namespace Game.Data.Forest
             this.mapFactory = mapFactory;
             this.locker = locker;
 			
-            forests = new Dictionary<uint, IForest>();
+            forests = new ConcurrentDictionary<uint, IForest>();
         }
 
         public int ForestCount
@@ -80,7 +81,7 @@ namespace Game.Data.Forest
         {
             objectIdGenerator.Set(forest.ObjectId);
 
-            forests.Add(forest.ObjectId, forest);
+            forests.TryAdd(forest.ObjectId, forest);
         }
 
         public bool HasForestNear(uint x, uint y, int radius)
@@ -135,7 +136,7 @@ namespace Game.Data.Forest
                 forest.BeginUpdate();
                 world.Regions.Add(forest);
                 world.Regions.UnlockRegion(x, y);
-                forests.Add(forest.ObjectId, forest);                
+                forests.TryAdd(forest.ObjectId, forest);                
                 forest.RecalculateForest();
                 forest.EndUpdate();
 
@@ -146,7 +147,10 @@ namespace Game.Data.Forest
         {
             lock (forests)
             {
-                forests.Remove(forest.ObjectId);
+                if (!forests.TryRemove(forest.ObjectId, out forest))
+                {
+                    return;
+                }
 
                 forest.BeginUpdate();
                 world.Regions.Remove(forest);
@@ -212,7 +216,14 @@ namespace Game.Data.Forest
                     });
                 }
             }
-            
+        }
+
+        public IEnumerable<IForest> AllForests
+        {
+            get
+            {
+                return forests.Values.AsEnumerable();
+            }
         }
     }
 }

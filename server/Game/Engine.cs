@@ -81,6 +81,8 @@ namespace Game
 
         private readonly TServer thriftServer;
 
+        private readonly MapDataExport mapDataExport;
+
         public Engine(INetworkServer server,
                       IPolicyServer policyServer,
                       TServer thriftServer,
@@ -99,7 +101,8 @@ namespace Game
                       ICityChannel cityChannel,
                       IStrongholdManagerLogger strongholdManagerLogger,
                       StoreSync storeSync,
-                      IQueueListener queueListener)
+                      IQueueListener queueListener, 
+                      MapDataExport mapDataExport)
         {
             this.server = server;
             this.policyServer = policyServer;
@@ -120,6 +123,7 @@ namespace Game
             this.strongholdManagerLogger = strongholdManagerLogger;
             this.storeSync = storeSync;
             this.queueListener = queueListener;
+            this.mapDataExport = mapDataExport;
         }
 
         public EngineState State { get; private set; }
@@ -309,6 +313,9 @@ _________ _______ _________ ______   _______  _
             {
                 playersRemoverFactory.CreatePlayersRemover(playerSelector.CreateNewbieIdleSelector()).Start();
             }
+
+            // Start data export
+            mapDataExport.Start(TimeSpan.FromMinutes(30));
 
             State = EngineState.Started;
         }

@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -66,7 +67,7 @@ namespace Game.Data
 
         private readonly object objLock = new object();
 
-        private readonly Dictionary<uint, IStructure> structures = new Dictionary<uint, IStructure>();
+        private readonly ConcurrentDictionary<uint, IStructure> structures = new ConcurrentDictionary<uint, IStructure>();
                      
         public event CityEventHandler<TechnologyEventArgs> TechnologyCleared = (sender, args) => { };
                      
@@ -82,7 +83,7 @@ namespace Game.Data
 
         public event CityEventHandler<GameObjectArgs> ObjectUpdated = (sender, args) => { };
 
-        private readonly Dictionary<uint, ITroopObject> troopobjects = new Dictionary<uint, ITroopObject>();
+        private readonly ConcurrentDictionary<uint, ITroopObject> troopobjects = new ConcurrentDictionary<uint, ITroopObject>();
 
         public event CityEventHandler<ActionReferenceArgs> ReferenceRemoved = (sender, args) => { };
 
@@ -152,18 +153,7 @@ namespace Game.Data
         private string troopTheme;
 
         private string wallTheme;
-
-        /// <summary>
-        ///     Enumerates only through structures in this city
-        /// </summary>
-        public Dictionary<uint, IStructure>.Enumerator Structures
-        {
-            get
-            {
-                return structures.GetEnumerator();
-            }
-        }
-
+        
         /// <summary>
         ///     Radius of city. This affects city wall and where user can build.
         /// </summary>
@@ -221,7 +211,7 @@ namespace Game.Data
         {
             get
             {
-                return troopobjects.Values;
+                return troopobjects.Values.AsEnumerable();
             }
         }
 
@@ -497,15 +487,13 @@ namespace Game.Data
         {
             lock (objLock)
             {
-                if (troopobjects.ContainsKey(objId))
+                if (!troopobjects.TryAdd(objId, troop))
                 {
                     return false;
                 }
 
                 troop.City = this;
-
-                troopobjects.Add(objId, troop);
-
+                
                 objectIdGen.Set(objId);
 
                 if (save)
@@ -525,14 +513,12 @@ namespace Game.Data
         {
             lock (objLock)
             {
-                if (structures.ContainsKey(objId))
+                if (!structures.TryAdd(objId, structure))
                 {
                     return false;
                 }
 
-                structure.City = this;
-
-                structures.Add(objId, structure);
+                structure.City = this;                
 
                 objectIdGen.Set(objId);
 
@@ -775,7 +761,7 @@ namespace Game.Data
 
         IEnumerator<IStructure> IEnumerable<IStructure>.GetEnumerator()
         {
-            return ((IEnumerable<IStructure>)structures.Values).GetEnumerator();
+            return structures.Values.GetEnumerator();
         }
 
         /// <summary>
@@ -790,7 +776,10 @@ namespace Game.Data
                 structure.Technologies.Clear();
                 structure.Technologies.EndUpdate();
 
-                structures.Remove(structure.ObjectId);
+                if (!structures.TryRemove(structure.ObjectId, out structure))
+                {
+                    return;
+                }
 
                 structure.ObjectUpdated -= OnObjectUpdated;
                 structure.Technologies.TechnologyCleared -= OnTechnologyCleared;
@@ -818,7 +807,10 @@ namespace Game.Data
         {
             lock (objLock)
             {
-                troopobjects.Remove(troop.ObjectId);
+                if (!troopobjects.TryRemove(troop.ObjectId, out troop))
+                {
+                    return;
+                }
 
                 dbManager.Delete(troop);
 

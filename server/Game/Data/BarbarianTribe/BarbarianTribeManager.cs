@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using Common;
 using Game.Map;
 using Game.Setup;
@@ -188,6 +190,14 @@ namespace Game.Data.BarbarianTribe
             }
 
             Generate(barbarianTribesToDelete.Count());
+        }
+
+        public IEnumerable<IBarbarianTribe> AllTribes
+        {
+            get
+            {
+                return this.barbarianTribes.Values.AsEnumerable();
+            }
         }
     }
 }

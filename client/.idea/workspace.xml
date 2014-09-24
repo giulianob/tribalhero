@@ -74,42 +74,27 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="MapView.as" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/game/src/FeathersUI/Map/MapView.as">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1411" max-vertical-offset="3519">
-              <caret line="106" column="0" selection-start-line="106" selection-start-column="0" selection-end-line="106" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MiniMapRegion.as" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/game/src/Map/MiniMap/MiniMapRegion.as">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="461" max-vertical-offset="1258">
-              <caret line="39" column="31" selection-start-line="39" selection-start-column="31" selection-end-line="39" selection-end-column="31" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MinimapInfoTooltip.as" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/game/src/UI/Tooltips/MinimapInfoTooltip.as">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="106" max-vertical-offset="3400">
-              <caret line="38" column="49" selection-start-line="38" selection-start-column="49" selection-end-line="38" selection-end-column="49" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="RegionComm.as" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="RegionComm.as" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/game/src/Comm/Commands/RegionComm.as">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.72291666" vertical-offset="2373" max-vertical-offset="3468">
-              <caret line="168" column="20" selection-start-line="168" selection-start-column="20" selection-end-line="168" selection-end-column="20" />
-              <folding />
+            <state vertical-scroll-proportion="0.0" vertical-offset="2571" max-vertical-offset="3604">
+              <caret line="145" column="0" selection-start-line="145" selection-start-column="0" selection-end-line="145" selection-end-column="0" />
+              <folding>
+                <element signature="e#33#63#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TileLocator.as" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/game/src/Map/TileLocator.as">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4709">
+              <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+              <folding>
+                <marker date="1411577148700" expanded="true" signature="16:9547" placeholder="{...}" />
+                <marker date="1411577148700" expanded="true" signature="227:9545" placeholder="{...}" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -117,28 +102,18 @@
       <file leaf-file-name="Constants.as" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/game/src/Constants.as">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="2176" max-vertical-offset="2856">
-              <caret line="157" column="12" selection-start-line="157" selection-start-column="12" selection-end-line="157" selection-end-column="12" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="1334" max-vertical-offset="2958">
+              <caret line="90" column="26" selection-start-line="90" selection-start-column="26" selection-end-line="90" selection-end-column="26" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MinimapToolsContainer.as" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/game/src/MinimapToolsContainer.as">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1948" max-vertical-offset="2992">
-              <caret line="137" column="2" selection-start-line="137" selection-start-column="2" selection-end-line="137" selection-end-column="2" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MiniMapView.as" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="MiniMapView.as" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/game/src/FeathersUI/MiniMap/MiniMapView.as">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="3451" max-vertical-offset="4471">
-              <caret line="217" column="84" selection-start-line="217" selection-start-column="84" selection-end-line="217" selection-end-column="84" />
+            <state vertical-scroll-proportion="-2.9483871" vertical-offset="3154" max-vertical-offset="4692">
+              <caret line="78" column="0" selection-start-line="78" selection-start-column="0" selection-end-line="78" selection-end-column="0" />
               <folding>
                 <element signature="e#38#68#0" expanded="true" />
               </folding>
@@ -146,11 +121,45 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Camera.as" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/game/src/Map/Camera.as">
+      <file leaf-file-name="GameScreenMobileFlow.as" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/game/src/FeathersUI/GameScreen/GameScreenMobileFlow.as">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="2382" max-vertical-offset="4114">
-              <caret line="84" column="28" selection-start-line="84" selection-start-column="28" selection-end-line="84" selection-end-column="28" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="279" max-vertical-offset="918">
+              <caret line="38" column="0" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
+              <folding>
+                <element signature="e#40#85#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="WorldMapMobileView.as" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/game/src/FeathersUI/MiniMap/WorldMapMobileView.as">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="102" max-vertical-offset="1037">
+              <caret line="23" column="43" selection-start-line="23" selection-start-column="43" selection-end-line="23" selection-end-column="43" />
+              <folding>
+                <element signature="e#37#69#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GameScreenMobileView.as" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/game/src/FeathersUI/GameScreen/GameScreenMobileView.as">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="510" max-vertical-offset="1598">
+              <caret line="58" column="0" selection-start-line="58" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="library.swf" pinned="false" current="false" current-in-tab="false">
+        <entry file="jar://$PROJECT_DIR$/lib/swc/starling/starling.swc!/library.swf">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="28194" max-vertical-offset="40426">
+              <caret line="1669" column="29" selection-start-line="1669" selection-start-column="29" selection-end-line="1669" selection-end-column="29" />
               <folding />
             </state>
           </provider>
@@ -159,20 +168,20 @@
       <file leaf-file-name="MiniMapVM.as" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/game/src/FeathersUI/MiniMap/MiniMapVM.as">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="884" max-vertical-offset="2567">
-              <caret line="55" column="54" selection-start-line="55" selection-start-column="54" selection-end-line="55" selection-end-column="54" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="1218" max-vertical-offset="2227">
+              <caret line="120" column="47" selection-start-line="120" selection-start-column="47" selection-end-line="120" selection-end-column="47" />
               <folding>
-                <element signature="e#37#58#0" expanded="true" />
+                <element signature="e#37#67#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MiniMapRegionObject.as" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/game/src/Map/MiniMap/MiniMapRegionObject.as">
+      <file leaf-file-name="BinaryList.as" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/game/src/Util/BinaryList/BinaryList.as">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="163" max-vertical-offset="969">
-              <caret line="19" column="44" selection-start-line="19" selection-start-column="44" selection-end-line="19" selection-end-column="44" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="1470" max-vertical-offset="3502">
+              <caret line="103" column="24" selection-start-line="103" selection-start-column="24" selection-end-line="103" selection-end-column="24" />
               <folding />
             </state>
           </provider>
@@ -201,9 +210,7 @@
         <option value="$PROJECT_DIR$/game/src/Objects/ObjectContainer.as" />
         <option value="$PROJECT_DIR$/game/src/Map/Region.as" />
         <option value="$PROJECT_DIR$/game/src/Map/RegionManager.as" />
-        <option value="$PROJECT_DIR$/game/src/Map/Camera.as" />
         <option value="$PROJECT_DIR$/game/src/UI/Tooltips/Tooltip.as" />
-        <option value="$PROJECT_DIR$/game/src/Map/TileLocator.as" />
         <option value="$PROJECT_DIR$/game/src/Map/MiniMap/MiniMap.as" />
         <option value="$PROJECT_DIR$/game/src/FeathersUI/GameScreen/GameScreenDesktopFlow.as" />
         <option value="$PROJECT_DIR$/game/src/FeathersUI/Factories/DesktopFlowFactory.as" />
@@ -229,16 +236,18 @@
         <option value="$PROJECT_DIR$/game/src/StarlingStage.as" />
         <option value="$PROJECT_DIR$/game/src/FeathersUI/GameScreen/GameScreenVM.as" />
         <option value="$PROJECT_DIR$/game/src/FeathersUI/MiniMap/WorldMapMobileView.as" />
-        <option value="$PROJECT_DIR$/game/src/FeathersUI/GameScreen/GameScreenMobileView.as" />
         <option value="$PROJECT_DIR$/game/src/FeathersUI/GameScreen/GameScreenMobileFlow.as" />
-        <option value="$PROJECT_DIR$/game/src/Map/MiniMap/MiniMapRegion.as" />
         <option value="$PROJECT_DIR$/game/src/MinimapToolsContainer.as" />
-        <option value="$PROJECT_DIR$/game/src/Constants.as" />
-        <option value="$PROJECT_DIR$/game/src/FeathersUI/MiniMap/MiniMapVM.as" />
-        <option value="$PROJECT_DIR$/game/src/Comm/Commands/RegionComm.as" />
         <option value="$PROJECT_DIR$/game/src/Map/MiniMap/MiniMapRegionObject.as" />
-        <option value="$PROJECT_DIR$/game/src/FeathersUI/MiniMap/MiniMapView.as" />
         <option value="$PROJECT_DIR$/game/src/FeathersUI/Map/MapView.as" />
+        <option value="$PROJECT_DIR$/game/src/Map/Camera.as" />
+        <option value="$PROJECT_DIR$/game/src/Constants.as" />
+        <option value="$PROJECT_DIR$/game/src/Map/MiniMap/MiniMapRegion.as" />
+        <option value="$PROJECT_DIR$/game/src/Map/TileLocator.as" />
+        <option value="$PROJECT_DIR$/game/src/FeathersUI/MiniMap/MiniMapVM.as" />
+        <option value="$PROJECT_DIR$/game/src/FeathersUI/GameScreen/GameScreenMobileView.as" />
+        <option value="$PROJECT_DIR$/game/src/FeathersUI/MiniMap/MiniMapView.as" />
+        <option value="$PROJECT_DIR$/game/src/Comm/Commands/RegionComm.as" />
       </list>
     </option>
   </component>
@@ -675,7 +684,7 @@
       <recent name="" />
     </key>
   </component>
-  <component name="RunManager" selected="Flash App.Air Emulator (iPhone Retina)">
+  <component name="RunManager" selected="Flash App.Web">
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
       <module name="" />
       <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m" />
@@ -1229,12 +1238,12 @@
       <workItem from="1410519825264" duration="21799000" />
       <workItem from="1410718790371" duration="43114000" />
       <workItem from="1411006077796" duration="14992000" />
-      <workItem from="1411231523633" duration="21188000" />
+      <workItem from="1411231523633" duration="28327000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="701488000" />
+    <option name="totallyTimeSpent" value="708627000" />
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
@@ -1263,10 +1272,10 @@
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32937366" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32683983" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.26881722" sideWeight="0.62017995" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.21645021" sideWeight="0.62017995" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30038512" sideWeight="0.67688024" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.37365592" sideWeight="0.59914714" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.08064516" sideWeight="0.59914714" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.37982005" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24903475" sideWeight="0.325" order="1" side_tool="true" content_ui="tabs" />
@@ -1278,8 +1287,8 @@
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2962725" sideWeight="0.7116992" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24462366" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.08933162" sideWeight="0.7116992" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24327958" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24733475" sideWeight="0.67548746" order="4" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -1337,7 +1346,7 @@
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="621" />
+      <option name="time" value="628" />
     </breakpoint-manager>
   </component>
   <component name="antWorkspaceConfiguration">
@@ -1345,23 +1354,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/game/src/GameContainer.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="6869" max-vertical-offset="14042">
-          <caret line="417" column="17" selection-start-line="417" selection-start-column="17" selection-end-line="417" selection-end-column="17" />
-          <folding>
-            <element signature="e#19#42#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/FeathersUI/Controls/ClippedLayoutGroup.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="306">
-          <caret line="6" column="17" selection-start-line="6" selection-start-column="17" selection-end-line="6" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/src/promise/com/codecatalyst/promise/Promise.as">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.3846154" vertical-offset="9342" max-vertical-offset="13515">
@@ -1573,14 +1565,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/FeathersUI/GameScreen/GameScreenMobileView.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="962" max-vertical-offset="1598">
-          <caret line="101" column="55" selection-start-line="101" selection-start-column="55" selection-end-line="101" selection-end-column="55" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/src/starling-graphics/starling/display/graphics/RoundedRectangle.as">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="5083">
@@ -1605,16 +1589,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/FeathersUI/MiniMap/WorldMapMobileView.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="153" max-vertical-offset="1037">
-          <caret line="42" column="0" selection-start-line="42" selection-start-column="0" selection-end-line="42" selection-end-column="0" />
-          <folding>
-            <element signature="e#37#69#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/game/src/IBootstrapper.as">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="323">
@@ -1628,16 +1602,6 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="1837" max-vertical-offset="2550">
           <caret line="169" column="64" selection-start-line="169" selection-start-column="64" selection-end-line="169" selection-end-column="64" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/FeathersUI/GameScreen/GameScreenMobileFlow.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="45" max-vertical-offset="918">
-          <caret line="30" column="50" selection-start-line="30" selection-start-column="50" selection-end-line="30" selection-end-column="50" />
-          <folding>
-            <element signature="e#40#85#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1661,14 +1625,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="5563" max-vertical-offset="9435">
           <caret line="350" column="24" selection-start-line="350" selection-start-column="24" selection-end-line="350" selection-end-column="24" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/Map/TileLocator.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="986" max-vertical-offset="4760">
-          <caret line="73" column="0" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -1697,21 +1653,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/Map/Camera.as">
+    <entry file="file://$PROJECT_DIR$/game/src/Map/MiniMap/MiniMapRegionObject.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1121" max-vertical-offset="4114">
-          <caret line="84" column="28" selection-start-line="84" selection-start-column="28" selection-end-line="84" selection-end-column="28" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="163" max-vertical-offset="969">
+          <caret line="19" column="44" selection-start-line="19" selection-start-column="44" selection-end-line="19" selection-end-column="44" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/FeathersUI/MiniMap/MiniMapVM.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="884" max-vertical-offset="2567">
-          <caret line="55" column="54" selection-start-line="55" selection-start-column="54" selection-end-line="55" selection-end-column="54" />
-          <folding>
-            <element signature="e#37#58#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1723,45 +1669,112 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/FeathersUI/MiniMap/MiniMapView.as">
+    <entry file="file://$PROJECT_DIR$/game/src/Map/Camera.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="3451" max-vertical-offset="4471">
-          <caret line="217" column="84" selection-start-line="217" selection-start-column="84" selection-end-line="217" selection-end-column="84" />
-          <folding>
-            <element signature="e#38#68#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/src/Map/MiniMap/MiniMapRegionObject.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="163" max-vertical-offset="969">
-          <caret line="19" column="44" selection-start-line="19" selection-start-column="44" selection-end-line="19" selection-end-column="44" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4114">
+          <caret line="88" column="0" selection-start-line="88" selection-start-column="0" selection-end-line="88" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/game/src/Map/MiniMap/MiniMapRegion.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="461" max-vertical-offset="1258">
-          <caret line="39" column="31" selection-start-line="39" selection-start-column="31" selection-end-line="39" selection-end-column="31" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="317" max-vertical-offset="1258">
+          <caret line="39" column="24" selection-start-line="39" selection-start-column="24" selection-end-line="39" selection-end-column="24" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/lib/swc/starling/starling.swc!/library.swf">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="28194" max-vertical-offset="40426">
+          <caret line="1669" column="29" selection-start-line="1669" selection-start-column="29" selection-end-line="1669" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/Map/TileLocator.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4709">
+          <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+          <folding>
+            <marker date="1411577148700" expanded="true" signature="16:9547" placeholder="{...}" />
+            <marker date="1411577148700" expanded="true" signature="227:9545" placeholder="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/game/src/Constants.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2176" max-vertical-offset="2856">
-          <caret line="157" column="12" selection-start-line="157" selection-start-column="12" selection-end-line="157" selection-end-column="12" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="1334" max-vertical-offset="2958">
+          <caret line="90" column="26" selection-start-line="90" selection-start-column="26" selection-end-line="90" selection-end-column="26" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/Util/BinaryList/BinaryList.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1470" max-vertical-offset="3502">
+          <caret line="103" column="24" selection-start-line="103" selection-start-column="24" selection-end-line="103" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/FeathersUI/GameScreen/GameScreenMobileFlow.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="279" max-vertical-offset="918">
+          <caret line="38" column="0" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
+          <folding>
+            <element signature="e#40#85#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/FeathersUI/MiniMap/WorldMapMobileView.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="102" max-vertical-offset="1037">
+          <caret line="23" column="43" selection-start-line="23" selection-start-column="43" selection-end-line="23" selection-end-column="43" />
+          <folding>
+            <element signature="e#37#69#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/FeathersUI/MiniMap/MiniMapVM.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1218" max-vertical-offset="2227">
+          <caret line="120" column="47" selection-start-line="120" selection-start-column="47" selection-end-line="120" selection-end-column="47" />
+          <folding>
+            <element signature="e#37#67#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/game/src/Comm/Commands/RegionComm.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.72291666" vertical-offset="2373" max-vertical-offset="3468">
-          <caret line="168" column="20" selection-start-line="168" selection-start-column="20" selection-end-line="168" selection-end-column="20" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="2571" max-vertical-offset="3604">
+          <caret line="145" column="0" selection-start-line="145" selection-start-column="0" selection-end-line="145" selection-end-column="0" />
+          <folding>
+            <element signature="e#33#63#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/FeathersUI/GameScreen/GameScreenMobileView.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="510" max-vertical-offset="1598">
+          <caret line="58" column="0" selection-start-line="58" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/src/FeathersUI/MiniMap/MiniMapView.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-2.9483871" vertical-offset="3154" max-vertical-offset="4692">
+          <caret line="78" column="0" selection-start-line="78" selection-start-column="0" selection-end-line="78" selection-end-column="0" />
+          <folding>
+            <element signature="e#38#68#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

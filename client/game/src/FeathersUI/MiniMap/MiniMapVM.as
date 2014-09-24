@@ -1,4 +1,6 @@
 package src.FeathersUI.MiniMap {
+    import flash.utils.Dictionary;
+
     import src.Constants;
     import src.FeathersUI.ViewModel;
     import src.Global;
@@ -7,21 +9,16 @@ package src.FeathersUI.MiniMap {
     import src.Map.MiniMap.MiniMapLegend;
     import src.Map.MiniMap.MiniMapRegion;
     import src.Map.MiniMap.MiniMapRegionList;
-    import src.Map.MiniMap.MiniMapRegionObject;
-    import src.Map.Position;
     import src.Map.ScreenPosition;
-    import src.Objects.Factories.SpriteFactory;
     import src.Objects.ObjectContainer;
     import src.Util.Util;
-
-    import starling.display.Image;
 
     public class MiniMapVM extends ViewModel {
         public static const EVENT_NAVIGATE_TO_POINT: String = "EVENT_NAVIGATE_TO_POINT";
 
         public var regions: MiniMapRegionList;
         public var camera: Camera;
-        private var pendingRegions: Array = [];
+        private var pendingRegions: Dictionary = new Dictionary();
 		public var objContainer: ObjectContainer;
 
         // TODO: Refactor minimap drawer into view?
@@ -73,13 +70,8 @@ package src.FeathersUI.MiniMap {
             bottomRightObj.setIcon(bottomRight);
             */
 
-            for (var i:int = pendingRegions.length - 1; i >= 0; i--)
-            {
-                if (pendingRegions[i] == id)
-                {
-                    pendingRegions.splice(i, 1);
-                    break;
-                }
+            if (pendingRegions[id] != null) {
+                delete pendingRegions[id];
             }
 
             regions.add(newRegion);
@@ -87,24 +79,12 @@ package src.FeathersUI.MiniMap {
             return newRegion;
         }
 
-        public function getRegions(requiredRegions: Array): void {
+        public function getRegions(requiredRegions: Dictionary): void {
             //remove any outdated regions from regions we have
             for (var i: int = regions.size() - 1; i >= 0; i--) {
                 var region: MiniMapRegion = regions.getByIndex(i);
 
-                var found: int = -1;
-                for (var a: int = 0; a < requiredRegions.length; a++) {
-                    if (region.id == requiredRegions[a]) {
-                        found = a;
-                        break;
-                    }
-                }
-
-                if (found >= 0) {
-                    //remove it from required regions since we already have it
-                    requiredRegions.splice(found, 1);
-                }
-                else {
+                if (requiredRegions[region.id] == null) {
                     //region is outdated, remove it from buffer
                     region.disposeData();
                     regions.removeByIndex(i);
@@ -112,33 +92,33 @@ package src.FeathersUI.MiniMap {
                     if (Constants.debug >= 3) {
                         Util.log("Discarded minimap region: " + i);
                     }
+                } else {
+                    //remove it from required regions since we already have it
+                    delete requiredRegions[region.id];
                 }
-
-                region = null;
             }
 
             if (Constants.debug >= 3) {
                 Util.log("Minimap region required before pending removal:" + requiredRegions);
             }
 
+            var regionsToQuery: Array = [];
             //remove any pending regions from the required regions list we need
             //and add any regions we are going to be asking the server to the pending regions list
-            for (i = requiredRegions.length - 1; i >= 0; i--) {
-                if (pendingRegions.indexOf(requiredRegions[i]) > -1) {
-                    requiredRegions.splice(i, 1);
-                }
-                else {
-                    pendingRegions.push(requiredRegions[i]);
+            for each (var requiredRegionId:int in requiredRegions) {
+                if (pendingRegions[requiredRegionId] == null) {
+                    pendingRegions[requiredRegionId] = requiredRegionId;
+                    regionsToQuery.push(requiredRegionId);
                 }
             }
 
             //regions that we still need, query server
-            if (requiredRegions.length > 0) {
+            if (regionsToQuery.length > 0) {
                 if (Constants.debug >= 3) {
-                    Util.log("Required minimap regions:" + requiredRegions);
+                    Util.log("Required minimap regions:" + regionsToQuery);
                 }
 
-                Global.mapComm.Region.getMiniMapRegion(requiredRegions);
+                Global.mapComm.Region.getMiniMapRegion(regionsToQuery);
             }
         }
     }

@@ -91,6 +91,9 @@ package src
         public static var miniMapRegionRatioW: int;
 		public static var miniMapRegionRatioH: int;
 
+        public static var miniMapTileRatioW: int;
+        public static var miniMapTileRatioH: int;
+
 		public static var stealthRangeNames: Array = ["", "1st row", "2nd row", "3rd row", "4th row"];
 
 		/* Ranking Types */
@@ -157,6 +160,9 @@ package src
 
             miniMapRegionRatioW = mapTileW / miniMapRegionTileW;
             miniMapRegionRatioH = mapTileH / miniMapRegionTileH;
+
+            miniMapTileRatioW = tileW / miniMapTileW;
+            miniMapTileRatioH = tileH / miniMapTileH;
         }
 	}
 }

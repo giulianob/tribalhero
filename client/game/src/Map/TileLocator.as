@@ -13,7 +13,7 @@ package src.Map {
 
 		public static function getMiniMapRegionId(position: Position): int
 		{
-            var idx: int = int(position.x / Constants.miniMapRegionTileW) + int(position.y / Constants.miniMapRegionTileH) * int(Constants.mapTileW / Constants.miniMapRegionTileW);
+            var idx: int = int(position.x / Constants.miniMapRegionTileW) + int(position.y / Constants.miniMapRegionTileH) * Constants.miniMapRegionRatioW;
 
             if (idx < 0 || idx >= Constants.miniMapRegionCount) {
                 return -1;

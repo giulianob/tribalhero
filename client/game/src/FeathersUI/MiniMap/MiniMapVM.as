@@ -7,9 +7,14 @@ package src.FeathersUI.MiniMap {
     import src.Map.MiniMap.MiniMapLegend;
     import src.Map.MiniMap.MiniMapRegion;
     import src.Map.MiniMap.MiniMapRegionList;
+    import src.Map.MiniMap.MiniMapRegionObject;
+    import src.Map.Position;
     import src.Map.ScreenPosition;
+    import src.Objects.Factories.SpriteFactory;
     import src.Objects.ObjectContainer;
     import src.Util.Util;
+
+    import starling.display.Image;
 
     public class MiniMapVM extends ViewModel {
         public static const EVENT_NAVIGATE_TO_POINT: String = "EVENT_NAVIGATE_TO_POINT";
@@ -49,6 +54,24 @@ package src.FeathersUI.MiniMap {
                 Util.log("Adding city region: " + id);
 
             var newRegion: MiniMapRegion = new MiniMapRegion(id, mapFilter, objContainer);
+
+            // just for testing
+            // it adds random icons at the top right, center, and bottom left of each region
+            /*
+            var globalX: int = (id % Constants.miniMapRegionRatioW) * Constants.miniMapRegionW;
+            var globalY: int = int(id / Constants.miniMapRegionRatioW) * Constants.miniMapRegionH;
+            var topLeft: Image = SpriteFactory.getStarlingImage("MINIMAP_SMALL_CIRCLE_SPRITE");
+            var topLeftObj: MiniMapRegionObject = newRegion.addRegionObject(0, 1000, 1000, 1, new ScreenPosition(globalX, globalY), {});
+            topLeftObj.setIcon(topLeft);
+
+            var center: Image = SpriteFactory.getStarlingImage("COUNT_BUBBLE");
+            var centerObj: MiniMapRegionObject = newRegion.addRegionObject(0, 1000, 1000, 1, new ScreenPosition(globalX + Constants.miniMapRegionW/2, globalY + Constants.miniMapRegionH/2), {});
+            centerObj.setIcon(center);
+
+            var bottomRight: Image = SpriteFactory.getStarlingImage("ICON_GLOBE_STANDALONE");
+            var bottomRightObj: MiniMapRegionObject = newRegion.addRegionObject(0, 1000, 1000, 1, new ScreenPosition(globalX + Constants.miniMapRegionW, globalY + Constants.miniMapRegionH), {});
+            bottomRightObj.setIcon(bottomRight);
+            */
 
             for (var i:int = pendingRegions.length - 1; i >= 0; i--)
             {

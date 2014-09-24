@@ -3,6 +3,7 @@ package src {
     import com.codecatalyst.promise.Promise;
 
     import feathers.controls.ScreenNavigator;
+    import feathers.motion.transitions.ScreenSlidingStackTransitionManager;
 
     import flash.display.Stage;
 
@@ -20,10 +21,13 @@ package src {
         public var assets: AssetManager;
         private static var stageInitDeferred: Deferred;
 
-        public var navigator: ScreenNavigator = new ScreenNavigator();
+        public var navigator: ScreenNavigator;
 
         public function StarlingStage() {
             super();
+
+            navigator = new ScreenNavigator();
+            new ScreenSlidingStackTransitionManager(navigator);
 
             addChild(navigator);
 

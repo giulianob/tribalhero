@@ -9,7 +9,7 @@ package src.FeathersUI.Factories {
         private var mapVM: MapVM;
         private var miniMapVM: MiniMapVM;
 
-        public function MobileFlowFactory(map: MapVM, miniMapVM: MiniMapVM) {
+        public function MobileFlowFactory(mapVM: MapVM, miniMapVM: MiniMapVM) {
             this.mapVM = mapVM;
             this.miniMapVM = miniMapVM;
         }

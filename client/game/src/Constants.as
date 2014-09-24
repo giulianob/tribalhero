@@ -91,35 +91,6 @@ package src
         public static var miniMapRegionRatioW: int;
 		public static var miniMapRegionRatioH: int;
 
-		// Compact mini map constants
-		public static var miniMapScreenW: int = 288;
-		public static var miniMapScreenH: int = 138;
-
-		public static var miniMapScreenX: Function = function(width: int) : int {
-			return screenW - width - 6;
-		};
-
-		public static var miniMapScreenY: Function = function(height: int) : int {
-			return screenH - height - 5;
-		};
-
-		// Expanded mini map constants
-		public static var miniMapLargeScreenW: int = 800;
-		public static var miniMapLargeScreenH: int = 550;
-
-		public static var miniMapLargeScreenX: Function = function(width: int) : int {        
-			var x : int = ((screenW - 0) / 2) - ((width +0) / 2);
-			if (x < MiniMapLegend.LEGEND_WIDTH) {
-				var delta : int = MiniMapLegend.LEGEND_WIDTH - x;
-				return x - delta;
-			}
-			return x;
-		};
-
-		public static var miniMapLargeScreenY: Function = function(height: int) : int {
-			return (screenH / 2) - (height / 2) + 30;
-		};
-
 		public static var stealthRangeNames: Array = ["", "1st row", "2nd row", "3rd row", "4th row"];
 
 		/* Ranking Types */
@@ -161,6 +132,8 @@ package src
         ];
 
         public static function initMapSize(scaleBaseline: Number): void {
+            trace("Setting scale basline to " + scaleBaseline);
+
             Constants.scale = scaleBaseline;
             Constants.contentScaleFactorBaseline = int(1.0 / Constants.scale + 0.5);
 
@@ -180,7 +153,7 @@ package src
             miniMapTileH = 2 / scaleOverOne;
 
             miniMapRegionW = miniMapRegionTileW * miniMapTileW;
-            miniMapRegionH = miniMapRegionTileW * miniMapTileH;
+            miniMapRegionH = miniMapRegionTileH * miniMapTileH/2.0;
 
             miniMapRegionRatioW = mapTileW / miniMapRegionTileW;
             miniMapRegionRatioH = mapTileH / miniMapRegionTileH;

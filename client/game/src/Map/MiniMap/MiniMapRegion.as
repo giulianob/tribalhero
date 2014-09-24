@@ -40,7 +40,7 @@
 		public function addRegionObject(type: int, groupId: int, objectId: int, size: int, position: ScreenPosition, extraProps: *) : MiniMapRegionObject {
 			var regionObject: MiniMapRegionObject = new MiniMapRegionObject(type, groupId, objectId, size, position, extraProps);
 
-			objContainer.addObject(regionObject);
+            objContainer.addObject(regionObject);
 
             new MinimapInfoTooltip(regionObject);
 			

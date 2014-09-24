@@ -10,6 +10,7 @@ package src.FeathersUI.MiniMap {
     import src.Constants;
     import src.FeathersUI.Map.MapView;
     import src.Map.Camera;
+    import src.Map.Position;
     import src.Map.ScreenPosition;
     import src.Map.TileLocator;
     import src.Objects.Factories.SpriteFactory;
@@ -19,6 +20,9 @@ package src.FeathersUI.MiniMap {
     import starling.display.*;
     import starling.display.graphics.RoundedRectangle;
     import starling.events.Event;
+    import starling.events.Touch;
+    import starling.events.TouchEvent;
+    import starling.events.TouchPhase;
 
     public class MiniMapView extends FeathersControl {
         private var screenRect: Shape;
@@ -30,6 +34,7 @@ package src.FeathersUI.MiniMap {
 
         private var vm: MiniMapVM;
         private var camera: Camera;
+        private var touchMovement: Point = new Point();
 
         public function MiniMapView(vm: MiniMapVM) {
             this.name = "MiniMapView";
@@ -48,7 +53,20 @@ package src.FeathersUI.MiniMap {
             addChild(mapContainer);
             addChild(screenRect);
 
+            this.addEventListener(TouchEvent.TOUCH, onTouched);
             this.camera.addEventListener(Camera.ON_MOVE, onCameraMove);
+        }
+
+        private function onTouched(event: TouchEvent): void {
+            var touches: Vector.<Touch> = event.getTouches(this, TouchPhase.MOVED);
+
+            if (touches.length == 1) {
+                // one finger touching / one mouse cursor moved
+                var touch: Touch = touches[0];
+                touch.getMovement(this, touchMovement);
+
+                camera.scrollTo(new ScreenPosition(camera.currentPosition.x - touchMovement.x / mapContainer.scaleX, camera.currentPosition.y - touchMovement.y / mapContainer.scaleY));
+            }
         }
 
         override public function dispose(): void {
@@ -61,6 +79,10 @@ package src.FeathersUI.MiniMap {
             this.invalidate(INVALIDATION_FLAG_SCROLL);
         }
 
+        private var screenRectWidth: Number;
+
+        private var screenRectHeight: Number;
+
         protected function layout() : void {
             var sizeInvalid:Boolean = this.isInvalid(INVALIDATION_FLAG_SIZE);
             var cameraChanged:Boolean = this.isInvalid(INVALIDATION_FLAG_SCROLL);
@@ -68,20 +90,19 @@ package src.FeathersUI.MiniMap {
             if (cameraChanged || sizeInvalid) {
                 var tilesW: Number = (Constants.screenW * vm.camera.getZoomFactorOverOne()) / Constants.tileW + 0.5;
                 var tilesH: Number = (Constants.screenH * vm.camera.getZoomFactorOverOne()) / Constants.tileH + 0.5;
-                var screenRectWidth: Number = tilesW * Constants.miniMapTileW;
-                var screenRectHeight: Number = tilesH * Constants.miniMapTileH;
+                screenRectWidth = tilesW * Constants.miniMapTileW;
+                screenRectHeight = tilesH * Constants.miniMapTileH;
 
                 mapContainer.x = -camera.miniMapX + (this.actualWidth/2 - screenRectWidth/2);
                 mapContainer.y = -camera.miniMapY + (this.actualHeight/2 - screenRectHeight/2);
 
                 mapContainer.clipRect = new Rectangle(-mapContainer.x, -mapContainer.y, this.actualWidth, this.actualHeight);
+
+                parseRegions();
             }
 
             if (sizeInvalid) {
-                parseRegions();
-
                 // Redraw screen rectangle
-
                 if (screenRectWidth < this.actualWidth && screenRectHeight < this.actualHeight) {
                     // Draw the white rectangle that represents what the player can see
                     screenRect.graphics.clear();
@@ -166,16 +187,33 @@ package src.FeathersUI.MiniMap {
             //calculate which regions we need to render
             var requiredRegions: Array = [];
 
-            var xRegionCount: int = Math.ceil(Number(this.actualWidth) / MapView.MIN_ZOOM / Constants.miniMapRegionW);
-            var yRegionCount: int = Math.ceil(Number(this.actualHeight) / MapView.MIN_ZOOM / Constants.miniMapRegionH);
+            var xRegionCount: int = Math.ceil(Number(this.actualWidth) / Constants.miniMapRegionW) + 1;
+            var yRegionCount: int = Math.ceil(Number(this.actualHeight) / Constants.miniMapRegionH) + 1;
 
-            for (var reqX: int = -1; reqX <= xRegionCount; reqX++) {
-                for (var reqY: int = -1; reqY <= yRegionCount; reqY++) {
-                    var screenPos: ScreenPosition = new ScreenPosition(
-                                    camera.currentPosition.x + (Constants.miniMapRegionW * reqX),
-                                    camera.currentPosition.y + (Constants.miniMapRegionH * reqY));
+            // We always want the region to be odd otherwise we would have
+            // to do more complex calculations when looping below to figure out
+            // whether we should have the negative side of the loop should get the extra
+            // iteration or the positive
+            if (xRegionCount%2==0) { xRegionCount++; }
+            if (yRegionCount%2==0) { yRegionCount++; }
 
-                    var requiredId: int = TileLocator.getMiniMapRegionId(screenPos.toPosition());
+            var cameraPosition: Position = camera.currentPosition.toPosition();
+
+            // Figure out where the loop should start and end
+            // We can assume xRegionCount and yRegionCount are always odd so if xRegionCount is 5 for example
+            // we basically want the loop to go -2,-1,0,1,2
+            var xStartingLoop: int = int(-xRegionCount/2.0);
+            var xEndingLoop: int = int(xRegionCount/2.0);
+            var yStartingLoop: int = int(-yRegionCount/2.0);
+            var yEndingLoop: int = int(yRegionCount/2.0);
+
+            var regionPosition: Position = new Position();
+            for (var reqX: int = xStartingLoop; reqX <= xEndingLoop; reqX++) {
+                for (var reqY: int = yStartingLoop; reqY <= yEndingLoop; reqY++) {
+                    regionPosition.x = cameraPosition.x + Constants.miniMapRegionTileW * reqX;
+                    regionPosition.y = cameraPosition.y + Constants.miniMapRegionTileH * reqY;
+
+                    var requiredId: int = TileLocator.getMiniMapRegionId(regionPosition);
 
                     if (requiredId > -1 && requiredRegions.indexOf(requiredId) == -1) {
                         requiredRegions.push(requiredId);

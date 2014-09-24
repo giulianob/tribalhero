@@ -50,7 +50,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			if (isEnabled())
 			{
 				var pt: ScreenPosition = mapDestinationPos.toScreenPosition();
-				Global.map.camera.ScrollToCenter(pt);
+				Global.map.camera.scrollToCenter(pt);
 			}
 
 			event.stopImmediatePropagation();

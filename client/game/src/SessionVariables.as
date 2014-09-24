@@ -10,7 +10,7 @@ package src {
         public static const THEME_PURCHASED: String = "THEME_PURCHASED";
 
         public var username: String = "1234";
-        public var hostname: String = "local.tribalhero.com";
+        public var hostname: String = "gblpt";
         public var serverPort: int = 443;
         public var sessionId: String;
         public var playerName: String;

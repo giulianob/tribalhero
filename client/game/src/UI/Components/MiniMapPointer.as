@@ -2,11 +2,11 @@ package src.UI.Components
 {
     import com.greensock.*;
 
-    import flash.display.DisplayObject;
-    import flash.display.MovieClip;
-    import flash.display.Sprite;
-    import flash.events.Event;
-    import flash.events.MouseEvent;
+    import src.Objects.Factories.SpriteFactory;
+
+    import starling.display.*;
+    import starling.events.*;
+
     import flash.geom.Point;
 
     import org.aswing.AsWingConstants;
@@ -19,7 +19,9 @@ package src.UI.Components
     import src.UI.LookAndFeel.GameLookAndFeel;
     import src.UI.Tooltips.Tooltip;
 
-	public class MiniMapPointer extends Sprite
+    import starling.utils.deg2rad;
+
+    public class MiniMapPointer extends Sprite
 	{
 		private var cityMinimapPoint:ScreenPosition;
 		private var center:Point;
@@ -35,7 +37,7 @@ package src.UI.Components
 		public function MiniMapPointer(x:int, y:int, name:String) {
             cityMinimapPoint = TileLocator.getMiniMapScreenCoord(x, y);
             pointerName = name;
-            pointer = new ICON_MINIMAP_ARROW_BLUE();
+            pointer = SpriteFactory.getStarlingImage("ICON_MINIMAP_ARROW_BLUE");
             addChild(pointer);
 
             tooltip = new Tooltip();
@@ -45,8 +47,7 @@ package src.UI.Components
             GameLookAndFeel.changeClass(tooltipDistanceLabel, "Tooltip.italicsText");
             tooltip.getUI().setLayout(new SoftBoxLayout(AsWingConstants.VERTICAL));
             tooltip.getUI().appendAll(tooltipCityLabel, tooltipDistanceLabel);
-            addEventListener(MouseEvent.MOUSE_MOVE, onRollOver);
-            addEventListener(MouseEvent.ROLL_OUT, onRollOut);
+            addEventListener(TouchEvent.TOUCH, onTouch);
         }
 		
 		public function getPointerName():String
@@ -54,7 +55,7 @@ package src.UI.Components
 			return pointerName;
 		}
 		
-		public function setIcon(icon:MovieClip):void
+		public function setIcon(icon:DisplayObject):void
 		{
 			this.removeChild(pointer);
 			pointer = icon;
@@ -62,22 +63,24 @@ package src.UI.Components
 			if (center != null)
 				update(center, lastWidth, lastHeight);
 		}
-		
-		private function onRollOver(e:Event):void
-		{
-			var distance:int = TileLocator.distance(
-                    cityMinimapPoint.x / Constants.miniMapTileW, cityMinimapPoint.y, 1,
-                    (center.x + x - lastWidth / 2) / Constants.miniMapTileW, (center.y + y - lastHeight / 2), 1);
 
-			tooltipDistanceLabel.setText(distance + " tiles away");
-			tooltip.show(pointer);
-		}
-		
-		private function onRollOut(e:Event = null):void
-		{
-			tooltip.hide();
-		}
-		
+
+        private function onTouch(e: TouchEvent): void {
+            if (e.getTouch(this, TouchPhase.HOVER)) {
+                var distance:int = TileLocator.distance(
+                        cityMinimapPoint.x / Constants.miniMapTileW, cityMinimapPoint.y, 1,
+                        (center.x + x - lastWidth / 2) / Constants.miniMapTileW, (center.y + y - lastHeight / 2), 1);
+
+                tooltipDistanceLabel.setText(distance + " tiles away");
+                tooltip.show(pointer);
+            }
+
+            var endedTouch: Touch = e.getTouch(this, TouchPhase.ENDED);
+            if (endedTouch && !this.hitTest(endedTouch.getLocation(this))) {
+                tooltip.hide();
+            }
+        }
+
 		public function update(center:Point, mapWidth:int, mapHeight:int):void
 		{
 			this.center = center;
@@ -122,7 +125,7 @@ package src.UI.Components
 				x = (int)(mapWidth / 2 + (dx > 0 ? 1 : -1) * xBasedOnYRadius);
 				y = (int)(mapHeight / 2 + (dy > 0 ? radiusY : -radiusY - 15)); //
 			}
-			TweenMax.to(pointer, 0, {transformAroundCenter: {shortRotation: {rotation: angleDegree}}});
+			TweenMax.to(pointer, 0, {transformAroundCenterStarling: {shortRotation: {rotation: deg2rad(angleDegree), useRadians: true}}});
 		}
 	}
 

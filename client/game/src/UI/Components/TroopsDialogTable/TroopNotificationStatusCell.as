@@ -3,6 +3,7 @@ package src.UI.Components.TroopsDialogTable
     import org.aswing.*;
 
     import src.Objects.Actions.*;
+    import src.Objects.Factories.SpriteFactory;
     import src.UI.Components.*;
     import src.UI.Components.TableCells.*;
     import src.Util.StringHelper;
@@ -36,7 +37,7 @@ package src.UI.Components.TroopsDialogTable
             lblCountdown.setTime(notification.endTime);
 			
 			lblState.setText(StringHelper.localize(isAttack ? "STR_ATTACKING" : "STR_DEFENDING"));
-			lblState.setIcon(isAttack ? new AssetIcon(new ICON_SINGLE_SWORD) : new AssetIcon(new ICON_SHIELD));
+			lblState.setIcon(isAttack ? new AssetIcon(SpriteFactory.getFlashSprite("ICON_SINGLE_SWORD")) : new AssetIcon(SpriteFactory.getFlashSprite("ICON_SHIELD")));
 		}
 		
 		override protected function getCellLayout():LayoutManager 

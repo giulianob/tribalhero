@@ -13,6 +13,7 @@
     import src.Objects.*;
     import src.Objects.Actions.Action;
     import src.Objects.Actions.Notification;
+    import src.Objects.Factories.SpriteFactory;
     import src.Objects.Process.*;
     import src.Objects.Troop.*;
     import src.UI.*;
@@ -295,16 +296,16 @@
 			var pnlGroup: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
 			pnlGroup.setBorder(new EmptyBorder(null, new Insets(10, 0, 0, 0)));
 			
-			var lblGroupTitle: JLabel = new JLabel(title, new AssetIcon(new ICON_COLLAPSE), AsWingConstants.LEFT);
+			var lblGroupTitle: JLabel = new JLabel(title, new AssetIcon(SpriteFactory.getFlashSprite("ICON_COLLAPSE")), AsWingConstants.LEFT);
 			lblGroupTitle.useHandCursor = true;
 			lblGroupTitle.addEventListener(MouseEvent.CLICK, function (e: Event): void {				
 				if (troopTable.isVisible()) {
 					troopTable.setVisible(false);
-					lblGroupTitle.setIcon(new AssetIcon(new ICON_EXPAND));
+					lblGroupTitle.setIcon(new AssetIcon(SpriteFactory.getFlashSprite("ICON_EXPAND")));
 				}
 				else {
 					troopTable.setVisible(true);
-					lblGroupTitle.setIcon(new AssetIcon(new ICON_COLLAPSE));
+					lblGroupTitle.setIcon(new AssetIcon(SpriteFactory.getFlashSprite("ICON_COLLAPSE")));
 				}				
 			});
 			

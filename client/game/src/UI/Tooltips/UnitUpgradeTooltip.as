@@ -8,6 +8,7 @@ package src.UI.Tooltips {
     import src.Map.City;
     import src.Objects.Effects.Formula;
     import src.Objects.Effects.RequirementFormula;
+    import src.Objects.Factories.SpriteFactory;
     import src.Objects.Prototypes.EffectReqPrototype;
     import src.Objects.Prototypes.UnitPrototype;
     import src.Objects.StructureObject;
@@ -108,7 +109,7 @@ package src.UI.Tooltips {
 			GameLookAndFeel.changeClass(lblLevel, "Tooltip.text");
 
 			lblNextLvlTime = new JLabel();
-			lblNextLvlTime.setIcon(new AssetIcon(new ICON_CLOCK()));
+			lblNextLvlTime.setIcon(new AssetIcon(SpriteFactory.getFlashSprite("ICON_CLOCK")));
 			lblNextLvlTime.setIconTextGap(0);
 			lblNextLvlTime.setHorizontalAlignment(AsWingConstants.RIGHT);
 			lblNextLvlTime.setConstraints("East");

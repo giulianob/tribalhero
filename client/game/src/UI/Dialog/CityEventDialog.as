@@ -167,21 +167,21 @@
 		
 		private function recreateResourcesPanel():void {
 			pnlResources.removeAll();
-			lblGold = resourceLabelMaker(StringHelper.localize("GOLD_DESC"), new AssetIcon(new ICON_GOLD()));
-			lblWood = resourceLabelMaker(StringHelper.localize("WOOD_DESC"), new AssetIcon(new ICON_WOOD()));
-			lblCrop = resourceLabelMaker(StringHelper.localize("CROP_DESC"), new AssetIcon(new ICON_CROP()));
-			lblIron = resourceLabelMaker(StringHelper.localize("IRON_DESC"), new AssetIcon(new ICON_IRON()));
-			lblUnits = simpleLabelMaker(StringHelper.localize("UNITS_DESC"), new AssetIcon(new ICON_SINGLE_SWORD()));			
+			lblGold = resourceLabelMaker(StringHelper.localize("GOLD_DESC"), new AssetIcon(SpriteFactory.getFlashSprite("ICON_GOLD")));
+			lblWood = resourceLabelMaker(StringHelper.localize("WOOD_DESC"), new AssetIcon(SpriteFactory.getFlashSprite("ICON_WOOD")));
+			lblCrop = resourceLabelMaker(StringHelper.localize("CROP_DESC"), new AssetIcon(SpriteFactory.getFlashSprite("ICON_CROP")));
+			lblIron = resourceLabelMaker(StringHelper.localize("IRON_DESC"), new AssetIcon(SpriteFactory.getFlashSprite("ICON_IRON")));
+			lblUnits = simpleLabelMaker(StringHelper.localize("UNITS_DESC"), new AssetIcon(SpriteFactory.getFlashSprite("ICON_SINGLE_SWORD")));
 			
 			var laborTime:String = DateUtil.niceTime(Formula.laborRate(city));
 			
-			lblLabor = simpleLabelMaker(StringHelper.localize("LABOR_DESC", laborTime), new AssetIcon(new ICON_LABOR()));
+			lblLabor = simpleLabelMaker(StringHelper.localize("LABOR_DESC", laborTime), new AssetIcon(SpriteFactory.getFlashSprite("ICON_LABOR")));
 			
-			lblUpkeep = simpleLabelMaker(StringHelper.localize("UPKEEP_DESC"), new AssetIcon(new ICON_CROP()));
-			lblDefensePoints = simpleLabelMaker(StringHelper.localize("DEFENSE_POINTS_DESC"), new AssetIcon(new ICON_SHIELD()));
-			lblAttackPoints = simpleLabelMaker(StringHelper.localize("ATTACK_POINTS_DESC"), new AssetIcon(new ICON_BATTLE()));
-			lblValue = simpleLabelMaker(StringHelper.localize("INFLUENCE_POINTS_DESC"), new AssetIcon(new ICON_UPGRADE()));		
-			lblApPoints = simpleLabelMaker(StringHelper.localize("AP_POINTS_DESC"), new AssetIcon(new ICON_HAMMER()));
+			lblUpkeep = simpleLabelMaker(StringHelper.localize("UPKEEP_DESC"), new AssetIcon(SpriteFactory.getFlashSprite("ICON_CROP")));
+			lblDefensePoints = simpleLabelMaker(StringHelper.localize("DEFENSE_POINTS_DESC"), new AssetIcon(SpriteFactory.getFlashSprite("ICON_SHIELD")));
+			lblAttackPoints = simpleLabelMaker(StringHelper.localize("ATTACK_POINTS_DESC"), new AssetIcon(SpriteFactory.getFlashSprite("ICON_BATTLE")));
+			lblValue = simpleLabelMaker(StringHelper.localize("INFLUENCE_POINTS_DESC"), new AssetIcon(SpriteFactory.getFlashSprite("ICON_UPGRADE")));
+			lblApPoints = simpleLabelMaker(StringHelper.localize("AP_POINTS_DESC"), new AssetIcon(SpriteFactory.getFlashSprite("ICON_HAMMER")));
 			
 			pnlResources.appendAll(lblGold, lblWood, lblCrop, lblIron, lblLabor, lblUpkeep, lblDefensePoints, lblAttackPoints, lblValue, lblUnits, lblApPoints);			
 		}
@@ -255,7 +255,7 @@
 				lstCities.addEventListener(InteractiveEvent.SELECTION_CHANGED, onChangeCitySelection);
 				lstCities.setPreferredSize(new IntDimension(150, 22));
 				
-				lblUpkeepMsg = new JLabel(StringHelper.localize("CITY_OVERVIEW_TROOPS_STARVING"), new AssetIcon(new ICON_CROP()));
+				lblUpkeepMsg = new JLabel(StringHelper.localize("CITY_OVERVIEW_TROOPS_STARVING"), new AssetIcon(SpriteFactory.getFlashSprite("ICON_CROP")));
 				lblUpkeepMsg.setBorder(new LineBorder(null, new ASColor(0xff0000), 2, 10));				
 				
 				pnlResources = new JPanel(new GridLayout(0, 3, 20, 10));			

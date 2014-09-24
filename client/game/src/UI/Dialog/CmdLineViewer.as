@@ -134,7 +134,7 @@ package src.UI.Dialog
 					}
 					else if (e.keyCode == Keyboard.ESCAPE)
 					{
-						stage.focus = Global.map;
+						stage.focus = Global.gameContainer;
 					}
 					else {
 						channelHotkeys(e);

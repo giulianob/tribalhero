@@ -1,4 +1,5 @@
 ﻿package src {
+
     import flash.display.*;
     import flash.events.*;
     import flash.net.*;
@@ -10,9 +11,11 @@
     import org.aswing.event.*;
     import org.aswing.geom.*;
 
+    import src.Events.NavigateEvent;
+    import src.FeathersUI.Map.MapVM;
+    import src.FeathersUI.MiniMap.MiniMapVM;
     import src.Map.*;
     import src.Map.MiniMap.MiniMap;
-    import src.Objects.*;
     import src.UI.*;
     import src.UI.Components.*;
     import src.UI.Components.ScreenMessages.*;
@@ -20,6 +23,8 @@
     import src.UI.Flows.StoreFlow;
     import src.UI.Tutorial.GameTutorial;
     import src.Util.*;
+
+    import starling.display.Sprite;
 
     public class GameContainer extends GameContainer_base {
 
@@ -34,19 +39,16 @@
 		private var sidebar: GameJSidebar;
 
 		//Container for sidebar
-		private var sidebarHolder: Sprite;
+		private var sidebarHolder: flash.display.Sprite;
 		
 		//Container for cmd line
-		private var cmdLineHolder: Sprite;
+		private var cmdLineHolder: flash.display.Sprite;
 
-		public var map: Map;
-		public var miniMap: MiniMap;				
-		public var minimapHolder: Sprite;
+		public var map: MapVM;
+
+		public var miniMap: MiniMapVM;
+
 		private var minimapRefreshTimer: Timer = new Timer(500000, 0);
-
-		//Holds any overlay. Overlays are used for different cursor types.
-		private var mapOverlay: Sprite;
-		private var mapOverlayTarget: Sprite;
 
 		//HUD resources container
 		private var resourcesContainer: ResourcesContainer;
@@ -58,14 +60,14 @@
 		public var frames: Array = [];
 
 		public var selectedCity: City;
-		public var camera: Camera = new Camera(0, 0);
+		public var camera: Camera;
 
 		//Resources timer that fires every second
 		public var resourcesTimer: Timer = new Timer(1000);
 
 		//On screen message component
 		public var screenMessage: ScreenMessagePanel;
-        public var screenMessageHolder: Sprite;
+        public var screenMessageHolder: flash.display.Sprite;
 
 		//Holds the tools above the minimap
 		public var minimapTools: MinimapToolsContainer;
@@ -87,7 +89,11 @@
 		
 		// Game tutorial handler
 		private var tutorial: GameTutorial;
+
         private var lblCoords: JLabel;
+
+//        internal var mapHolder: starling.display.Sprite;
+//        private var miniMapHolder: starling.display.Sprite;
 
 		public function GameContainer()
 		{
@@ -125,7 +131,6 @@
 			chains.visible = false;
 
 			// Manually add coords.
-            // TODO: Change minimap tools into a regular JPanel
             lblCoords = new JLabel("", null, AsWingConstants.LEFT);
             lblCoords.mouseEnabled = false;
             lblCoords.setLocationXY(80, -20);
@@ -159,29 +164,33 @@
 			btnMenu.addEventListener(MouseEvent.CLICK, onMenuClick);		
 
 			// Set up holders
-			sidebarHolder = new Sprite();
+			sidebarHolder = new flash.display.Sprite();
 			sidebarHolder.x = Constants.screenW - GameJSidebar.WIDTH - 15;
 			sidebarHolder.y = 60;			
 			
-			cmdLineHolder = new Sprite();				
-			minimapHolder = new Sprite();
-            screenMessageHolder = new Sprite();
+			cmdLineHolder = new flash.display.Sprite();
+            screenMessageHolder = new flash.display.Sprite();
             screenMessageHolder.mouseEnabled = false;
             screenMessageHolder.mouseChildren = false;
 			
             addChild(screenMessageHolder);
 			addChild(cmdLineHolder);								
-			addChild(minimapHolder);				
+			addChild(minimapTools);
 			addChild(sidebarHolder);
-			
+
+//            mapHolder = new starling.display.Sprite();
+//            mapHolder.visible = false;
+//            miniMapHolder = new starling.display.Sprite();
+//            miniMapHolder.visible = false;
+//
+//            Global.starlingStage.addChild(mapHolder);
+//            Global.starlingStage.addChild(miniMapHolder);
+
 			// Bar bg			
 			var barBgClass: Class = UIManager.getDefaults().get("GameMenu.bar");
 			barBg = new barBgClass() as DisplayObject;						
 			addChildAt(barBg, 1);
 			
-			// Minimap tools
-			minimapHolder.addChild(minimapTools);
-
 			// Set up minimap refresh timer
 			minimapRefreshTimer.addEventListener(TimerEvent.TIMER, minimapRefresh);
 			
@@ -330,10 +339,10 @@
 			if (selectedCity == null) return;
 
 			var pt: ScreenPosition = TileLocator.getScreenCoord(selectedCity.primaryPosition);
-			Global.gameContainer.map.camera.ScrollToCenter(pt);
+			camera.scrollToCenter(pt);
 		}
 
-				public function eventKeyUp(event: KeyboardEvent):void
+        public function eventKeyUp(event: KeyboardEvent):void
 		{
 			// clear key press
 			pressedKeys[event.keyCode] = false;
@@ -383,10 +392,10 @@
 				// Moving around with arrow keys
 				map.camera.beginMove();
 				var keyScrollRate: int = minimapTools.minimapZoomed ? 1150 : 500 * map.camera.getZoomFactorOverOne();
-				if (e.keyCode == Keyboard.LEFT) map.camera.MoveLeft(keyScrollRate);
-				if (e.keyCode == Keyboard.RIGHT) map.camera.MoveRight(keyScrollRate);
-				if (e.keyCode == Keyboard.UP) map.camera.MoveUp(keyScrollRate);
-				if (e.keyCode == Keyboard.DOWN) map.camera.MoveDown(keyScrollRate);
+				if (e.keyCode == Keyboard.LEFT) map.camera.moveLeft(keyScrollRate);
+				if (e.keyCode == Keyboard.RIGHT) map.camera.moveRight(keyScrollRate);
+				if (e.keyCode == Keyboard.UP) map.camera.moveUp(keyScrollRate);
+				if (e.keyCode == Keyboard.DOWN) map.camera.moveDown(keyScrollRate);
 				map.camera.endMove();
 				
 				// Zoom into minimap with +/- keys
@@ -397,10 +406,12 @@
 			}
 		}
 
-		public function setMap(map: Map, miniMap: MiniMap):void
-		{				             
+		public function setMap(map: MapVM, miniMap: MiniMapVM):void
+		{
+            camera = map.camera;
+
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, eventKeyDown);
-			stage.addEventListener(MouseEvent.MOUSE_WHEEL, eventScroll);
+			//stage.addEventListener(MouseEvent.MOUSE_WHEEL, eventScroll);
 			stage.addEventListener(KeyboardEvent.KEY_UP, eventKeyUp);
 				
 			this.map = map;
@@ -409,21 +420,12 @@
 			// Clear current city list
 			(lstCities.getModel() as VectorListModel).clear();
 
-			// Add map			
-			mapHolder.addChild(map);
-			minimapHolder.addChild(miniMap);
+			// Add map
+            // mapHolder.addChild(map);
+            // miniMapHolder.addChild(miniMap);
 
             // Set initial map zoom
-            mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactorPercentage();
-
-			// Create map overlay
-			this.mapOverlay = new MovieClip();
-			this.mapOverlay.graphics.beginFill(0xCCFF00);
-			this.mapOverlay.graphics.drawRect(0, 0, Constants.screenW, Constants.screenH);
-			this.mapOverlay.visible = false;
-			this.mapOverlay.mouseEnabled = false;
-			this.mapOverlay.name = "Overlay";
-			addChild(this.mapOverlay);
+//            mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactorPercentage();
 
 			// Populate city list
 			for each (var city: City in map.cities) {
@@ -436,7 +438,7 @@
 				selectedCity = lstCities.getSelectedItem().city;
 			}
 			else {
-				map.onMove();
+				// map.move();
 			}
 
 			//Show resources box
@@ -450,37 +452,37 @@
 			// Add objects to resize manager
 			resizeManager = new ResizeManager(stage);
 
-			resizeManager.addObject(this.mapOverlay, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_TOP | ResizeManager.ANCHOR_LEFT | ResizeManager.ANCHOR_BOTTOM);
-			resizeManager.addObject(sidebarHolder, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_TOP);
-			resizeManager.addObject(barBg, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_LEFT);
-			resizeManager.addObject(resourcesContainer, ResizeManager.ANCHOR_TOP | ResizeManager.ANCHOR_RIGHT);
-			resizeManager.addObject(miniMap, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_BOTTOM);
-			resizeManager.addObject(minimapTools, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_BOTTOM);
-			resizeManager.addObject(chains, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_TOP);
-			if (cmdLine) resizeManager.addObject(cmdLine, ResizeManager.ANCHOR_BOTTOM | ResizeManager.ANCHOR_LEFT);
+			// resizeManager.addObject(sidebarHolder, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_TOP);
+			// resizeManager.addObject(barBg, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_LEFT);
+			// resizeManager.addObject(resourcesContainer, ResizeManager.ANCHOR_TOP | ResizeManager.ANCHOR_RIGHT);
+			// resizeManager.addObject(miniMap, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_BOTTOM);
+			// resizeManager.addObject(minimapTools, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_BOTTOM);
+			// resizeManager.addObject(chains, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_TOP);
+			// if (cmdLine) resizeManager.addObject(cmdLine, ResizeManager.ANCHOR_BOTTOM | ResizeManager.ANCHOR_LEFT);
 
-			resizeManager.addEventListener(Event.RESIZE, map.onResize);
-			resizeManager.addEventListener(Event.RESIZE, message.onResize);
+			//resizeManager.addEventListener(Event.RESIZE, map.onResize);
+			// resizeManager.addEventListener(Event.RESIZE, message.onResize);
 
-			resizeManager.forceMove();
+			// resizeManager.forceMove();
 
 			// Scroll to city center
 			if (selectedCity) {
-				var pt: ScreenPosition = TileLocator.getScreenCoord(selectedCity.primaryPosition);
-				Global.gameContainer.camera.ScrollToCenter(pt);
-				miniMap.setCityPointer(selectedCity.name);
+				//var pt: ScreenPosition = TileLocator.getScreenCoord(selectedCity.primaryPosition);
+				//camera.scrollToCenter(pt);
+				// miniMap.setCityPointer(selectedCity.name);
 			}
 
 			//Set minimap position and initial state
-			miniMap.addEventListener(MiniMap.NAVIGATE_TO_POINT, onMinimapNavigateToPoint);
-            minimapTools.zoomIntoMinimap(false, false);
+			//miniMap.addEventListener(MiniMap.NAVIGATE_TO_POINT, onMinimapNavigateToPoint);
+            //minimapTools.zoomIntoMinimap(false, false);
 			
 			// Refresh unread messages
 			Global.mapComm.Messaging.refreshUnreadCounts();		
 
 			// Begin game tutorial
-			tutorial = new GameTutorial();
-			tutorial.start(Constants.session.tutorialStep, map, Global.mapComm.General);
+            // TODO: convert
+			// tutorial = new GameTutorial();
+			// tutorial.start(Constants.session.tutorialStep, map, Global.mapComm.General);
 		}
 
 		public function show() : void {
@@ -492,9 +494,6 @@
 			menu.addMenuItem("Wiki").addActionListener(onWikiClick);
 			menu.addMenuItem("Help").addActionListener(onHelpClick);			
 			menu.addMenuItem("Logout").addActionListener(onLogoutClick);
-
-			// Reset camera pos
-			camera.reset();
 
 			// Close any previous open frames (Shouldnt really have any but just to be safe)
 			closeAllFrames();
@@ -519,7 +518,7 @@
 
 		public function dispose() : void {
 			stage.removeEventListener(KeyboardEvent.KEY_DOWN, eventKeyDown);
-			stage.removeEventListener(MouseEvent.MOUSE_WHEEL, eventScroll);
+			//stage.removeEventListener(MouseEvent.MOUSE_WHEEL, eventScroll);
 			stage.removeEventListener(KeyboardEvent.KEY_UP, eventKeyUp);			
 			
 			if (menu) {
@@ -576,14 +575,17 @@
 			clearAllSelections();
 
 			if (map) {
-				resizeManager.removeEventListener(Event.RESIZE, map.onResize);
-				resizeManager.removeEventListener(Event.RESIZE, message.onResize);
-				miniMap.removeEventListener(MiniMap.NAVIGATE_TO_POINT, onMinimapNavigateToPoint);
+				//resizeManager.removeEventListener(Event.RESIZE, map.onResize);
+				//resizeManager.removeEventListener(Event.RESIZE, message.onResize);
+				// miniMap.removeEventListener(MiniMap.NAVIGATE_TO_POINT, onMinimapNavigateToPoint);
 
-				map.dispose();
-				mapHolder.removeChild(map);
-				removeChild(mapOverlay);
-				minimapHolder.removeChild(miniMap);
+//				mapHolder.removeChild(map);
+//                miniMapHolder.removeChild(miniMap);
+
+                // map.dispose();
+                // miniMap.dispose();
+
+				setOverlaySprite(null);
 
 				map = null;
 				miniMap = null;
@@ -605,7 +607,7 @@
             var model: VectorListModel = VectorListModel(lstCities.getModel());
 			model.append(listItem);
 
-			miniMap.addPointer(new MiniMapPointer(city.primaryPosition.x, city.primaryPosition.y, city.name));
+			// miniMap.addPointer(new MiniMapPointer(city.primaryPosition.x, city.primaryPosition.y, city.name));
 		}
 
 		public function clearAllSelections() : void
@@ -634,7 +636,7 @@
 				sidebar.show(sidebarHolder);								
 			}					
 			
-			stage.focus = map;
+			stage.focus = this;
 		}
 		
 		public function closeAllFrames(onlyClosableFrames: Boolean = false) : void {
@@ -665,7 +667,7 @@
 			if (frame.isModal()) {						
 				if (map != null) {
 					clearAllSelections();
-					map.disableMouse(true);				
+					// map.disableMouse(true);
 				}
 			}
 				
@@ -691,7 +693,7 @@
 			if (index == -1) Util.log("Closed a frame that did not call show through GameContainer");
 			frames.splice(index, 1);
 			if (frames.length == 0 && map != null) {
-				map.disableMouse(false);
+				// map.disableMouse(false);
 			}
 			if (frames.length > 0) {
 				frames[frames.length - 1].requestFocus();
@@ -701,7 +703,7 @@
 		public function minimapRefresh(e: Event = null):void {
 			if (miniMap == null) return;
 			
-			miniMap.parseRegions(true);
+			// miniMap.parseRegions(true);
 		}
 		
 		public function displayResources(e: Event = null):void {
@@ -717,31 +719,27 @@
 
 			Global.gameContainer.selectedCity.dispatchEvent(new Event(City.RESOURCES_UPDATE));
 
-			resourcesContainer.displayResources();
+			// TODO: convert
+			// resourcesContainer.displayResources();
 		}
 
-		public function setOverlaySprite(object: Sprite):void
+		public function setOverlaySprite(object: starling.display.Sprite):void
 		{
-			if (this.mapOverlayTarget != null)
-			{
-				this.mapOverlayTarget.hitArea = null;
-
-				var disposeTmp: IDisposable = this.mapOverlayTarget as IDisposable;
-
-				if (disposeTmp != null)
-					disposeTmp.dispose();
-
-				mapHolder.removeChild(this.mapOverlayTarget);
-				this.mapOverlayTarget = null;
-			}
-
-			this.mapOverlayTarget = object;
-
-			if (this.mapOverlayTarget != null)
-			{
-				mapHolder.addChild(this.mapOverlayTarget);
-				this.mapOverlayTarget.hitArea = this.mapOverlay;
-			}
+            return;
+//  we had a temporary starling container
+// where we were adding the overlay
+//			if (this.mapOverlayTarget != null)
+//			{
+//				mapHolder.removeChild(this.mapOverlayTarget);
+//                this.mapOverlayTarget.dispose();
+//			}
+//
+//			this.mapOverlayTarget = object;
+//
+//			if (this.mapOverlayTarget != null)
+//			{
+//				mapHolder.addChild(this.mapOverlayTarget);
+//			}
 		}
 
 		public function selectCity(cityId: int) : void {
@@ -756,7 +754,7 @@
 					setSidebar(null);
 					selectedCity = lstCities.getSelectedItem().city;
 					displayResources();
-					miniMap.setCityPointer(selectedCity.name);
+			//		miniMap.setCityPointer(selectedCity.name);
 					break;
 				}
 			}
@@ -771,16 +769,16 @@
 			selectedCity = lstCities.getSelectedItem().city;
 			displayResources();						
 			
-			stage.focus = map;
-			miniMap.setCityPointer(selectedCity.name);
+			stage.focus = this;
+			//miniMap.setCityPointer(selectedCity.name);
 		}
 
-		private function onMinimapNavigateToPoint(e: MouseEvent) : void {
-			if (minimapTools.minimapZoomed) {
-                minimapTools.zoomIntoMinimap(false);
-			}
-
-			Global.map.camera.ScrollToCenter(new ScreenPosition(e.localX, e.localY));
+		private function onMinimapNavigateToPoint(e: NavigateEvent) : void {
+//			if (minimapTools.minimapZoomed) {
+//                minimapTools.zoomIntoMinimap(false);
+//			}
+//
+//			Global.map.camera.scrollToCenter(new ScreenPosition(e.x, e.y));
 		}
 		
 		public function setUnreadMessageCount(unreadMessages: int): void

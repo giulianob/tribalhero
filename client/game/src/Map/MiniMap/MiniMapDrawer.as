@@ -1,63 +1,60 @@
-package src.Map.MiniMap
-{
-import flash.events.Event;
+package src.Map.MiniMap {
+    import flash.events.Event;
 
-import src.Map.MiniMap.LegendGroups.MiniMapGroupCity;
-import src.Map.MiniMap.LegendGroups.MiniMapGroupOther;
-import src.Map.MiniMap.LegendGroups.MiniMapGroupStronghold;
-import src.Map.MiniMapDrawers.*;
-import src.Objects.Factories.ObjectFactory;
+    import src.Map.MiniMap.LegendGroups.MiniMapGroupCity;
+    import src.Map.MiniMap.LegendGroups.MiniMapGroupOther;
+    import src.Map.MiniMap.LegendGroups.MiniMapGroupStronghold;
+    import src.Objects.Factories.ObjectFactory;
 
-public class MiniMapDrawer
-	{
+    public class MiniMapDrawer {
 
         private var groupCity: MiniMapGroupCity = new MiniMapGroupCity();
         private var groupStronghold: MiniMapGroupStronghold = new MiniMapGroupStronghold();
         private var groupOther: MiniMapGroupOther = new MiniMapGroupOther();
 
-        private var callback:Function = null;
+        private var callback: Function = null;
 
-		public function MiniMapDrawer() {
+        public function MiniMapDrawer() {
             groupCity.addOnChangeListener(onChange);
             groupStronghold.addOnChangeListener(onChange);
             groupOther.addOnChangeListener(onChange);
         }
 
-        private function onChange(e:Event) : void {
-            if(callback!=null) callback();
+        private function onChange(e: Event): void {
+            if (callback != null) callback();
         }
 
         public function addOnChangeListener(callback: Function): void {
-            this.callback=callback;
+            this.callback = callback;
         }
 
-		public function apply(obj: MiniMapRegionObject) : void {
-			obj.removeSprite();
+        public function apply(obj: MiniMapRegionObject): void {
+            obj.removeSprite();
 
-			switch(obj.type) {
+            switch (obj.type) {
                 case ObjectFactory.TYPE_CITY:
                     groupCity.applyCity(obj);
                     break;
-				case ObjectFactory.TYPE_TROOP_OBJ:
+                case ObjectFactory.TYPE_TROOP_OBJ:
                     groupCity.applyTroop(obj);
-					break;
-				case ObjectFactory.TYPE_STRONGHOLD:
+                    break;
+                case ObjectFactory.TYPE_STRONGHOLD:
                     groupStronghold.applyStronghold(obj);
-					break;
+                    break;
                 case ObjectFactory.TYPE_FOREST:
                     groupOther.applyForest(obj);
                     break;
-				case ObjectFactory.TYPE_BARBARIAN_TRIBE:
+                case ObjectFactory.TYPE_BARBARIAN_TRIBE:
                     groupOther.applyBarbarian(obj);
-					break;
-			}
-		}
+                    break;
+            }
+        }
 
-		public function applyLegend(legend: MiniMapLegend) : void {
+        public function applyLegend(legend: MiniMapLegend): void {
             legend.addPanel(groupCity.getLegendPanel());
             legend.addPanel(groupStronghold.getLegendPanel());
             legend.addPanel(groupOther.getLegendPanel());
-		}
+        }
 
-	}
+    }
 }

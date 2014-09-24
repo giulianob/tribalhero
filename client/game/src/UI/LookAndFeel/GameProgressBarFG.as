@@ -37,7 +37,7 @@ package src.UI.LookAndFeel
 		override public function updateDecorator(com:Component, g:Graphics2D, bounds:IntRectangle):void{
 			checkReloadAssets(com);
 
-			var bounds:IntRectangle = bounds.clone();
+			bounds = bounds.clone();
 			if(fgMargin != null){
 				bounds = fgMargin.getInsideBounds(bounds);
 			}

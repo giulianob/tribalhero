@@ -1,20 +1,17 @@
 package src {
     import com.greensock.TweenMax;
-    import com.greensock.easing.Elastic;
-    import com.greensock.easing.Linear;
-    import com.greensock.easing.Quad;
 
     import fl.motion.AdjustColor;
 
     import flash.events.Event;
     import flash.events.MouseEvent;
     import flash.filters.ColorMatrixFilter;
-    import flash.geom.Matrix;
     import flash.net.URLRequest;
     import flash.net.navigateToURL;
 
-    import src.Map.ScreenPosition;
+    import src.FeathersUI.Map.MapView;
 
+    import src.Map.ScreenPosition;
     import src.UI.Components.SimpleTooltip;
     import src.UI.Dialog.GoToDialog;
 
@@ -23,6 +20,7 @@ package src {
         private var minimapZoomTooltip: SimpleTooltip;
         private var musicPlayer: MusicPlayer;
         private var gameContainer: GameContainer;
+        private var map: MapView;
 
         public function MinimapToolsContainer(musicPlayer: MusicPlayer, gameContainer: GameContainer) {
             this.musicPlayer = musicPlayer;
@@ -92,7 +90,7 @@ package src {
 
             TweenMax.to(gameContainer.camera, duration, {
                 zoomFactor: newValue,
-                onUpdateParams: [gameContainer.camera.GetCenter()],
+                onUpdateParams: [gameContainer.camera.mapCenter()],
                 onUpdate: onZoomUpdate
             });
         }
@@ -108,16 +106,14 @@ package src {
 
             TweenMax.to(gameContainer.camera, duration, {
                 zoomFactor: newValue,
-                onUpdateParams: [gameContainer.camera.GetCenter()],
+                onUpdateParams: [gameContainer.camera.mapCenter()],
                 onUpdate: onZoomUpdate
             });
         }
 
         private function onZoomUpdate(center: ScreenPosition): void {
-            gameContainer.map.scrollRate = gameContainer.camera.getZoomFactorOverOne();
-            gameContainer.miniMap.redraw();
-            gameContainer.mapHolder.scaleX = gameContainer.mapHolder.scaleY = gameContainer.camera.getZoomFactorPercentage();
-            gameContainer.camera.ScrollToCenter(center);
+            gameContainer.camera.scrollRate = gameContainer.camera.getZoomFactorOverOne();
+            gameContainer.camera.scrollToCenter(center);
         }
 
         public function onZoomIntoMinimap(e: Event):void {
@@ -125,6 +121,8 @@ package src {
         }
 
         public function zoomIntoMinimap(zoom: Boolean, query: Boolean = true) : void {
+            return;
+
             if (minimapZoomed == false) {
                 gameContainer.camera.cue();
             }
@@ -137,48 +135,48 @@ package src {
             if (zoom) {
                 gameContainer.screenMessage.setVisible(false);
                 // We leave a bit of border incase the screen is smaller than the map size
-                var width: int = Math.min(Constants.screenW - 60, Constants.miniMapLargeScreenW);
-                var height: int = Math.min(Constants.screenH - 75, Constants.miniMapLargeScreenH);
-                gameContainer.miniMap.resize(width, height);
-                gameContainer.miniMap.x = Constants.miniMapLargeScreenX(width)-30;
-                gameContainer.miniMap.y = Constants.miniMapLargeScreenY(height);
+//                var width: int = Math.min(Constants.screenW - 60, Constants.miniMapLargeScreenW);
+//                var height: int = Math.min(Constants.screenH - 75, Constants.miniMapLargeScreenH);
+//                gameContainer.miniMap.resize(width, height);
+//                gameContainer.miniMap.x = Constants.miniMapLargeScreenX(width)-30;
+//                gameContainer.miniMap.y = Constants.miniMapLargeScreenY(height);
                 minimapZoomTooltip.setText("Minimize map");
-                gameContainer.miniMap.setScreenRectHidden(true);
-                gameContainer.map.disableMapQueries(true);
-                gameContainer.map.scrollRate = 25;
+//                gameContainer.miniMap.setScreenRectHidden(true);
+                map.disableMapQueries(true);
+                gameContainer.camera.scrollRate = 25;
                 btnZoomIn.visible = false;
                 btnZoomOut.visible = false;
                 gameContainer.message.showMessage("Double click to go anywhere\nPress Escape to close this map");
-                gameContainer.miniMap.showLegend();
-                gameContainer.miniMap.showPointers();
+//                gameContainer.miniMap.showLegend();
+//                gameContainer.miniMap.showPointers();
             }
             else {
                 gameContainer.screenMessage.setVisible(true);
-                gameContainer.miniMap.resize(Constants.miniMapScreenW, Constants.miniMapScreenH);
-                gameContainer.miniMap.x = Constants.miniMapScreenX(Constants.miniMapScreenW);
-                gameContainer.miniMap.y = Constants.miniMapScreenY(Constants.miniMapScreenH);
+//                gameContainer.miniMap.resize(Constants.miniMapScreenW, Constants.miniMapScreenH);
+//                gameContainer.miniMap.x = Constants.miniMapScreenX(Constants.miniMapScreenW);
+//                gameContainer.miniMap.y = Constants.miniMapScreenY(Constants.miniMapScreenH);
                 minimapZoomTooltip.setText("World view");
-                gameContainer.miniMap.setScreenRectHidden(false);
-                gameContainer.map.disableMapQueries(false);
-                gameContainer.map.scrollRate = gameContainer.camera.getZoomFactorOverOne();
+//                gameContainer.miniMap.setScreenRectHidden(false);
+                map.disableMapQueries(false);
+                gameContainer.camera.scrollRate = gameContainer.camera.getZoomFactorOverOne();
                 btnZoomIn.visible = true;
                 btnZoomOut.visible = true;
                 gameContainer.message.hide();
-                gameContainer.miniMap.hideLegend();
-                gameContainer.miniMap.hidePointers();
+//                gameContainer.miniMap.hideLegend();
+//                gameContainer.miniMap.hidePointers();
             }
 
             minimapZoomed = zoom;
             if (query) {
-                gameContainer.map.move(true);
+                map.update();
             }
 
             alignMinimapTools();
         }
 
         private function alignMinimapTools() : void {
-            x = gameContainer.miniMap.x;
-            y = gameContainer.miniMap.y - 3;
+//            x = gameContainer.miniMap.x;
+//            y = gameContainer.miniMap.y - 3;
         }
 
 

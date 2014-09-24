@@ -4,6 +4,8 @@
     import flash.text.*;
     import flash.utils.Timer;
 
+    import src.Global;
+
     public class GeneralCounter extends TextField
 	{
 		private static const secs: int = 1;		
@@ -17,7 +19,7 @@
 			textColor = 0xFFFFFF;
 			selectable = false;
 			
-			mouseEnabled = false;
+			mouseEnabled = true;
 			
 			var textFormat: TextFormat = new TextFormat();
 			textFormat.bold = true;
@@ -29,6 +31,11 @@
 			timer.start();
 			
 			text = "? " + title;
+
+            addEventListener(MouseEvent.CLICK, function(e: Event): void {
+                Util.dumpDisplayObject(Global.stage);
+                Util.dumpStarlingStage();
+            });
 		}
 		
 		public function updateCounter(): void

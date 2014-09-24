@@ -9,6 +9,7 @@ package src.UI.Components
     import org.aswing.JLabel;
 
     import src.Global;
+    import src.Objects.Factories.SpriteFactory;
     import src.Util.DateUtil;
 
     public class CountDownLabel extends JLabel
@@ -23,7 +24,7 @@ package src.UI.Components
 			this.negativeText = negativeText;
 			
 			setHorizontalAlignment(AsWingConstants.RIGHT);
-			setIcon(new AssetIcon(new ICON_CLOCK()));						
+			setIcon(new AssetIcon(SpriteFactory.getFlashSprite("ICON_CLOCK")));
 			
 			timer = new Timer(1000);
 			timer.addEventListener(TimerEvent.TIMER, function(e: Event = null): void {

@@ -75,7 +75,7 @@
 			}
 			
 			var pt: ScreenPosition = TileLocator.getScreenCoord(new Position(getCoordX(), getCoordY()));
-			Global.gameContainer.map.camera.ScrollToCenter(pt);
+			Global.gameContainer.map.camera.scrollToCenter(pt);
 			
 			getFrame().dispose();
 		}

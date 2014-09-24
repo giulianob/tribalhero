@@ -18,7 +18,7 @@
 
         private function removeFromPrimaryRegionAndTiles(obj: SimpleGameObject, dispose: Boolean): Boolean
         {
-            var regionId: int = TileLocator.getRegionIdFromMapCoord(obj.primaryPosition.toPosition());
+            var regionId: int = TileLocator.getRegionId(obj.primaryPosition.toPosition());
             var primaryRegion: Region = get(regionId);
 
             if (primaryRegion == null)
@@ -30,7 +30,7 @@
 
             for each (var position: Position in TileLocator.foreachMultitileObject(obj))
             {
-                regionId = TileLocator.getRegionIdFromMapCoord(position);
+                regionId = TileLocator.getRegionId(position);
                 var region: Region = get(regionId);
 
                 if (region == null) {
@@ -47,7 +47,7 @@
 
         public function addObject(obj: SimpleGameObject, fadeIn: Boolean = true): void
         {
-            var regionId: int = TileLocator.getRegionIdFromMapCoord(obj.primaryPosition.toPosition());
+            var regionId: int = TileLocator.getRegionId(obj.primaryPosition.toPosition());
             var primaryRegion: Region = get(regionId);
 
             if (primaryRegion == null)
@@ -63,7 +63,7 @@
 
             for each (var position: Position in TileLocator.foreachMultitileObject(obj))
             {
-                regionId = TileLocator.getRegionIdFromMapCoord(position);
+                regionId = TileLocator.getRegionId(position);
                 var region: Region = get(regionId);
 
                 if (region == null)
@@ -115,7 +115,7 @@
 			
 			Global.map.requeryIfSelected(obj);
 			
-			obj.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));		
+			obj.dispatchEventWith(SimpleGameObject.OBJECT_UPDATE);
 			
 			return obj;
 		}
@@ -159,14 +159,14 @@
 				
 			Global.map.requeryIfSelected(currentObj);
 
-            currentObj.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
+            currentObj.dispatchEventWith(SimpleGameObject.OBJECT_UPDATE);
 					
 			return currentObj;
 		}
 
 		public function getObjectsInTile(position: Position, objClass: * = null): Array
 		{
-			var regionId: int = TileLocator.getRegionIdFromMapCoord(position);
+			var regionId: int = TileLocator.getRegionId(position);
 			var region: Region = get(regionId);
 
 			if (region == null) {
@@ -178,7 +178,7 @@
 
 		public function getTileAt(position: Position): int
 		{
-			var regionId: int = TileLocator.getRegionIdFromMapCoord(position);
+			var regionId: int = TileLocator.getRegionId(position);
 			var region: Region = get(regionId);
 
 			if (region == null)
@@ -188,7 +188,7 @@
 		}
 
 		public function setTileType(position: Position, tileType: int) : void {
-			var regionId: int = TileLocator.getRegionIdFromMapCoord(position);
+			var regionId: int = TileLocator.getRegionId(position);
 			var region: Region = get(regionId);
 			
 			if (region == null)
@@ -206,8 +206,6 @@
 				return;
 
 			region.redraw();
-
-            region.moveWithCamera(Global.map.camera);
 		}
 	}
 

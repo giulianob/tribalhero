@@ -12,6 +12,7 @@
     import src.Map.*;
     import src.Objects.*;
     import src.Objects.Actions.*;
+    import src.Objects.Factories.SpriteFactory;
     import src.Objects.Factories.TroopFactory;
     import src.Objects.Troop.*;
     import src.UI.Components.CityLabel;
@@ -49,7 +50,7 @@
 
                 for each (var theme: String in Constants.session.themesPurchased) {
                     var newSprite: String = TroopFactory.getSpriteName(theme);
-                    if (!Assets.doesSpriteExist(newSprite)) {
+                    if (!FlashAssets.doesSpriteExist(newSprite)) {
                         continue;
                     }
 
@@ -81,7 +82,7 @@
 		}
 
         private function createThemeMenuItem(theme: String): JMenuItem {
-            var sprite: DisplayObject = TroopFactory.getSprite(theme);
+            var sprite: DisplayObject = SpriteFactory.getFlashSprite(TroopFactory.getSpriteName(theme));
             Util.resizeSprite(sprite, 85, 85);
 
             var menuItem: JMenuItem = new JMenuItem(StringHelper.localize(theme + "_THEME_NAME"), new AssetIcon(sprite));
@@ -94,7 +95,7 @@
             return menuItem
         }
 
-		public function onObjectUpdate(e: Event):void
+		public function onObjectUpdate(e: *):void
 		{
 			update();
 		}
@@ -275,7 +276,7 @@
 
 				var lblTime: JLabel = new JLabel(DateUtil.formatTime(timeLeft));
 				lblTime.setHorizontalAlignment(AsWingConstants.RIGHT);
-				lblTime.setIcon(new AssetIcon(new ICON_CLOCK()));
+				lblTime.setIcon(new AssetIcon(SpriteFactory.getFlashSprite("ICON_CLOCK")));
 				lblTime.setConstraints("South");
 
 				//component layoution

@@ -17,6 +17,7 @@
     import src.Constants;
     import src.Global;
     import src.Map.City;
+    import src.Objects.Factories.SpriteFactory;
     import src.UI.Dialog.CityEventDialog;
     import src.UI.LookAndFeel.GameLookAndFeel;
     import src.UI.Tooltips.ResourcesTooltip;
@@ -58,12 +59,12 @@
 
 		public function displayResources():void
 		{			
-			var resourceLabelMaker: Function = function(key: String, value: int, max : int, iconClass: Class = null, labelWidth: int = 30) : JLabel {							
+			var resourceLabelMaker: Function = function(key: String, value: int, max : int, iconClass: String = null, labelWidth: int = 30) : JLabel {
 				
 				var label: JLabel = labels[key];
 				
 				if (!label) {
-					label = new JLabel(value.toString(), !iconClass ? null : new AssetIcon((new iconClass()) as DisplayObject));
+					label = new JLabel(value.toString(), !iconClass ? null : new AssetIcon((SpriteFactory.getFlashSprite(iconClass)) as DisplayObject));
 					label.mouseEnabled = false;
 					label.setPreferredSize(new IntDimension(labelWidth, 16));				
 					label.mouseChildren = false;
@@ -88,11 +89,11 @@
 
 			var selectedCity: City = Global.gameContainer.selectedCity;
 
-			resourceLabelMaker("labor", selectedCity.resources.labor.getValue(), -1, ICON_LABOR, 50);
-			resourceLabelMaker("gold", selectedCity.resources.gold.getValue(), -1, ICON_GOLD, 61);
-			resourceLabelMaker("wood", selectedCity.resources.wood.getValue(), selectedCity.resources.wood.getLimit(), ICON_WOOD, 61);
-			resourceLabelMaker("crop", selectedCity.resources.crop.getValue(), selectedCity.resources.crop.getLimit(), ICON_CROP, 61);
-			resourceLabelMaker("iron", selectedCity.resources.iron.getValue(), selectedCity.resources.iron.getLimit(), ICON_IRON, 56);
+			resourceLabelMaker("labor", selectedCity.resources.labor.getValue(), -1, "ICON_LABOR", 50);
+			resourceLabelMaker("gold", selectedCity.resources.gold.getValue(), -1, "ICON_GOLD", 61);
+			resourceLabelMaker("wood", selectedCity.resources.wood.getValue(), selectedCity.resources.wood.getLimit(), "ICON_WOOD", 61);
+			resourceLabelMaker("crop", selectedCity.resources.crop.getValue(), selectedCity.resources.crop.getLimit(), "ICON_CROP", 61);
+			resourceLabelMaker("iron", selectedCity.resources.iron.getValue(), selectedCity.resources.iron.getLimit(), "ICON_IRON", 56);
 
 			if (!frame)
 			{

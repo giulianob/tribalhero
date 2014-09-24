@@ -5,12 +5,16 @@
  */
 
 package src.Util {
+    import feathers.controls.LayoutGroup;
+    import feathers.core.FeathersControl;
+
     import flash.display.DisplayObject;
     import flash.display.DisplayObjectContainer;
     import flash.display.Stage;
+    import flash.events.TimerEvent;
     import flash.external.ExternalInterface;
-    import flash.geom.Point;
     import flash.geom.Rectangle;
+    import flash.utils.Timer;
     import flash.utils.getQualifiedClassName;
 
     import mx.utils.StringUtil;
@@ -21,7 +25,6 @@ package src.Util {
     import org.aswing.Container;
     import org.aswing.FocusManager;
     import org.aswing.JFrame;
-    import org.aswing.JPanel;
     import org.aswing.JScrollPane;
     import org.aswing.JTextComponent;
     import org.aswing.JViewport;
@@ -29,9 +32,21 @@ package src.Util {
     import org.aswing.geom.IntPoint;
 
     import src.Constants;
+    import src.Global;
     import src.UI.GameJImagePanelBackground;
 
+    import starling.display.DisplayObject;
+    import starling.utils.formatString;
+
     public class Util {
+
+        public static function callLater(func:Function, time:int=40):void{
+            var timer:Timer = new Timer(time, 1);
+            timer.addEventListener(TimerEvent.TIMER, function(e:TimerEvent):void{
+                func();
+            });
+            timer.start();
+        }
 
         public static function calculateSize(width: Number, height: Number, targetW: Number, targetH: Number): IntDimension
         {
@@ -59,7 +74,7 @@ package src.Util {
             return new IntDimension(rW, rH);
         }
 
-        public static function resizeSprite(sprite: DisplayObject, targetW: Number, targetH: Number): void {
+        public static function resizeSprite(sprite: flash.display.DisplayObject, targetW: Number, targetH: Number): void {
             sprite.scaleX = 1;
             sprite.scaleY = 1;
 
@@ -94,7 +109,7 @@ package src.Util {
 		}
 		
 		public static function centerSprite(obj: DisplayObjectContainer) : void {
-			var item: DisplayObject;
+			var item: flash.display.DisplayObject;
 			
 			for (var i: int = 0; i < obj.numChildren; i++)
 			{
@@ -113,15 +128,67 @@ package src.Util {
 			return component is JFrame ? component as JFrame : getFrameEx(component.getParent());
 		}
 
-		public static function dumpDisplayObject(obj: DisplayObject, depth: int = 0):void {
-			if (depth == 0) Util.log("===========================");
+        public static function dumpStarlingStage(): void {
+            trace("========================================");
+            trace("Starling stage:");
+
+            var dumpStarlingDisplayObject: Function = function(obj: starling.display.DisplayObject, depth: int = 0): void {
+                var spacer: String = "";
+                for (var j: int = 0; j < depth; j++) {
+                    spacer += "\t";
+                }
+
+                var objDesc: Array = [getQualifiedClassName(obj), formatString("name={0} x={1} y={2} size={3}x{4}", obj.name, obj.x, obj.y, obj.width, obj.height)];
+
+                var feathersControl: FeathersControl = obj as FeathersControl;
+                if (feathersControl) {
+                    if (feathersControl.layoutData) {
+                        for (var prop: String in feathersControl.layoutData) {
+                            if (!feathersControl.layoutData.hasOwnProperty(prop)) {
+                                continue;
+                            }
+
+                            objDesc.push(formatString("layoutData.{0}={1}", prop, feathersControl.layoutData[prop]));
+                        }
+                    }
+
+                    var layoutGroup: LayoutGroup = obj as LayoutGroup;
+                    if (layoutGroup) {
+                        objDesc.push(formatString("layout={0}", layoutGroup.layout));
+                    }
+                }
+
+                var container: starling.display.DisplayObjectContainer = obj as starling.display.DisplayObjectContainer;
+                if (container == null) {
+                    return;
+                }
+
+                trace(spacer + objDesc.join(","));
+
+                for (var i: int = 0; i < container.numChildren; i++)
+                {
+                    var child: starling.display.DisplayObject = container.getChildAt(i);
+
+                    dumpStarlingDisplayObject(child, depth + 1);
+                }
+            };
+
+            dumpStarlingDisplayObject(Global.starlingStage);
+
+            trace("========================================");
+        }
+
+		public static function dumpDisplayObject(obj: flash.display.DisplayObject, depth: int = 0):void {
+			if (depth == 0) {
+                Util.log("===========================");
+            }
 
 			var spacer: String = "";
 			for (var j: int = 0; j < depth; j++) {
 				spacer += "\t";
 			}
 
-			Util.log(spacer + "(" + getQualifiedClassName(obj) + ") " + obj.name + (!obj.visible ? "<invisible>" : ""));
+			Util.log(spacer + "(" + getQualifiedClassName(obj) + ") " + obj.name + (!obj.visible ? "<invisible>" : "")) + " " + obj.x + "," + obj.y;
 
 			if (!(obj is DisplayObjectContainer)) return;
 
@@ -129,7 +196,7 @@ package src.Util {
 
 			for (var i: int = 0; i < container.numChildren; i++)
 			{
-				var child: DisplayObject = container.getChildAt(i);
+				var child: flash.display.DisplayObject = container.getChildAt(i);
 
 				dumpDisplayObject(child, depth + 1);
 			}

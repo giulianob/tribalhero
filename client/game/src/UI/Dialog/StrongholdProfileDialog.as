@@ -50,12 +50,12 @@
 			btnGoTo.addActionListener(function(e: Event):void {
 				Global.gameContainer.closeAllFrames(true);
 				var pt:ScreenPosition = TileLocator.getScreenCoord(new Position(self.profileData.strongholdX, self.profileData.strongholdY));
-				Global.map.camera.ScrollToCenter(pt);
+				Global.map.camera.scrollToCenter(pt);
 			});
 			
 			btnSendReinforcement.addActionListener(function(e:Event): void {
 				var point: ScreenPosition = TileLocator.getScreenCoord(new Position(self.profileData.strongholdX, self.profileData.strongholdY));
-				Global.gameContainer.camera.ScrollToCenter(point);
+				Global.gameContainer.camera.scrollToCenter(point);
 				var process : ReinforcementSendProcess = new ReinforcementSendProcess(Global.gameContainer.selectedCity, new Location(Location.STRONGHOLD, self.profileData.strongholdId));
 				process.execute();
 			});			

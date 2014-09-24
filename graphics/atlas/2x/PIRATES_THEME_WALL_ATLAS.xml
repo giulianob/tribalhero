@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
+<!-- $TexturePacker:SmartUpdate:b93e715c8e627adbb8a538bdc7a78304:2e3becce6dc449f70067a99ce1adf9fd:2e30bebe150843423691f90be2098cc2$ -->
+<TextureAtlas imagePath="PIRATES_THEME_WALL_ATLAS.png">
+    <SubTexture name="PIRATES_WALL" x="2" y="2" width="1906" height="634" frameX="-9" frameY="0" frameWidth="2048" frameHeight="640"/>
+</TextureAtlas>

@@ -1,5 +1,4 @@
 ﻿package src.Objects.Factories {
-    import src.Map.Map;
     import src.Objects.Prototypes.EffectPrototype;
     import src.Objects.Prototypes.TechnologyPrototype;
     import src.Objects.Resources;
@@ -7,13 +6,9 @@
 
     public class TechnologyFactory {
 
-		private static var map: Map;
 		private static var technologies: BinaryList;
 
-		public static function init(_map: Map, data: XML):void
-		{
-			map = _map;
-
+        public static function init(data: XML): void {
 			technologies = new BinaryList(TechnologyPrototype.sortOnTypeAndLevel, TechnologyPrototype.compareTypeAndLevel);
 
 			for each (var techNode: XML in data.Technologies.*)
@@ -26,7 +21,7 @@
 					var effect: EffectPrototype = new EffectPrototype();
 					effect.effectCode = effectNode.@effect;
 					effect.location = effectNode.@location;
-					effect.isPrivate = effectNode.@private.toLowerCase() == 'true';
+					effect.isPrivate = effectNode.attribute("private").toLowerCase() == 'true';
 					effect.param1 = effectNode.@param1;
 					effect.param2 = effectNode.@param2;
 					effect.param3 = effectNode.@param3;

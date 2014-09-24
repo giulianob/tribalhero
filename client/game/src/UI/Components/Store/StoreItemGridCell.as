@@ -20,7 +20,7 @@ package src.UI.Components.Store {
     import org.aswing.ext.GridList;
     import org.aswing.ext.GridListCell;
 
-    import src.Assets;
+    import src.FlashAssets;
     import src.Objects.Store.StoreItem;
     import src.Objects.Theme;
     import src.UI.Components.CoinLabel;

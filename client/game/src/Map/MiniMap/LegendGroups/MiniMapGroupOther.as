@@ -23,16 +23,13 @@ public class MiniMapGroupOther {
     private var callback : Function = null;
 
     public function MiniMapGroupOther() {
-        var button:JButton = new JButton(StringHelper.localize("MINIMAP_LEGEND_OTHER"));
-        GameLookAndFeel.changeClass(button, "GameJBoxButton");
-   //    legendPanel.addRaw(button);
-
         treeDrawer.addOnChangeListener(onChange);
         treeDrawer.applyLegend(legendPanel);
 
         barbarianDrawer.addOnChangeListener(onChange);
         barbarianDrawer.applyLegend(legendPanel);
     }
+
     private function onChange(e:Event): void {
         if(callback!=null) callback(e);
     }

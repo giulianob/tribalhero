@@ -36,7 +36,7 @@ public class GameJBoxBackground implements GroundDecorator, UIResource{
 		shape.graphics.clear();
 		
 		if(c.isOpaque()){			
-			var g: Graphics2D = new Graphics2D(shape.graphics);
+			g = new Graphics2D(shape.graphics);
 			shape.alpha = 0.8;
 			g.fillRoundRect(new SolidBrush(ASColor.BLACK), b.x, b.y, b.width, b.height, 10);			
 		}

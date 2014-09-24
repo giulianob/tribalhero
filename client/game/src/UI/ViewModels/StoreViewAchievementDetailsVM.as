@@ -1,5 +1,5 @@
 package src.UI.ViewModels {
-    import src.Assets;
+    import src.FlashAssets;
     import src.Constants;
     import src.Global;
     import src.Map.City;
@@ -8,7 +8,7 @@ package src.UI.ViewModels {
     import src.Objects.Store.StoreItemAchievement;
     import src.Objects.Store.StoreItemTheme;
     import src.Objects.Store.StructureStoreAsset;
-    import src.UI.ViewModel;
+    import src.FeathersUI.ViewModel;
 
     public class StoreViewAchievementDetailsVM extends ViewModel {
         public static const EVENT_CONFIRM_PURCHASE_ITEM: String = "EVENT_CONFIRM_PURCHASE_ITEM";

@@ -1,6 +1,5 @@
 ﻿package src.UI.Cursors {
-    import flash.display.*;
-    import flash.events.*;
+    import starling.events.*;
     import flash.geom.*;
 
     import src.*;
@@ -14,11 +13,9 @@
     import src.UI.Tooltips.*;
     import src.Util.*;
 
-    public class GroundReinforceCursor extends MovieClip implements IDisposable
+    public class GroundReinforceCursor extends MapOverlayBase
 	{
 		private var objPosition: ScreenPosition = new ScreenPosition();
-
-		private var originPoint: Point;
 
 		private var cursor: GroundCircle;
 
@@ -33,8 +30,6 @@
 		private var onAccept: Function;
 
 		public function GroundReinforceCursor(city: City, onAccept: Function, troop: TroopStub):void {
-            doubleClickEnabled = true;
-
             this.city = city;
             this.onAccept = onAccept;
 
@@ -46,16 +41,9 @@
             var size: int = 0;
 
             cursor = new GroundCircle(size);
-            cursor.alpha = 0.6;
-
-            Global.map.objContainer.addObject(cursor, ObjectContainer.LOWER);
 
             addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
-            addEventListener(MouseEvent.DOUBLE_CLICK, onMouseDoubleClick);
-            addEventListener(MouseEvent.CLICK, onMouseStop, true);
-            addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-            addEventListener(MouseEvent.MOUSE_OVER, onMouseStop);
-            addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+            addEventListener(TouchEvent.TOUCH, onTouched);
 
             Global.gameContainer.setOverlaySprite(this);
         }
@@ -67,14 +55,15 @@
 
 		public function onAddedToStage(e: Event):void
 		{
-			moveTo(stage.mouseX, stage.mouseY);
+			moveTo(Global.stage.mouseX, Global.stage.mouseY);
 		}
 
-		public function dispose():void
+		override public function dispose():void
 		{
+            super.dispose();
+
 			if (cursor != null)
 			{
-				Global.map.objContainer.removeObject(cursor, ObjectContainer.LOWER);
 				cursor.dispose();
 			}
 
@@ -87,39 +76,33 @@
 				highlightedObj.setHighlighted(false);
 				highlightedObj = null;
 			}
+
+            removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+            removeEventListener(TouchEvent.TOUCH, onTouched);
 		}
 
-		public function onMouseStop(event: MouseEvent):void
+        public function onTouched(event: TouchEvent): void {
+            var clickTouch: Touch = event.getTouch(this, TouchPhase.BEGAN);
+            if (clickTouch && clickTouch.tapCount == 2) {
+                onDoubleClicked();
+            }
+
+            var moveTouch: Touch = event.getTouch(this, TouchPhase.HOVER);
+            if (moveTouch) {
+                var mousePos: Point = TileLocator.getPointWithZoomFactor(moveTouch.globalX, moveTouch.globalY);
+                moveTo(mousePos.x, mousePos.y);
+            }
+
+            event.stopImmediatePropagation();
+        }
+
+		public function onDoubleClicked():void
 		{
-			event.stopImmediatePropagation();
-		}
-
-		public function onMouseDoubleClick(event: MouseEvent):void
-		{
-			if (Point.distance(TileLocator.getPointWithZoomFactor(event.stageX, event.stageY), originPoint) > 4) return;
-
-			event.stopImmediatePropagation();
-
-			if (highlightedObj == null) 
+			if (highlightedObj == null)
 				return;
 
 			if (onAccept != null)
 				onAccept(this);
-		}
-
-		public function onMouseDown(event: MouseEvent):void
-		{
-			originPoint = TileLocator.getPointWithZoomFactor(event.stageX, event.stageY);
-		}
-
-		public function onMouseMove(event: MouseEvent):void
-		{
-			if (event.buttonDown) {
-				return;
-			}
-
-			var mousePos: Point = TileLocator.getPointWithZoomFactor(event.stageX, event.stageY);
-			moveTo(mousePos.x, mousePos.y);
 		}
 
 		public function moveTo(x: int, y: int):void
@@ -130,14 +113,9 @@
 
 			if (!pos.equals(objPosition))
 			{
-				Global.map.objContainer.removeObject(cursor, ObjectContainer.LOWER);
-
 				objPosition = pos;
 
-                cursor.x = cursor.primaryPosition.x = pos.x;
-                cursor.y = cursor.primaryPosition.y = pos.y;
-
-				Global.map.objContainer.addObject(cursor, ObjectContainer.LOWER);
+                cursor.moveTo(pos);
 
 				validate();
 			}
@@ -155,8 +133,6 @@
 				tooltip.hide();
 				tooltip = null;			
 			}						
-
-            cursor.visible = true;
 
 			var objects: Array = Global.map.regions.getObjectsInTile(objPosition.toPosition(), [StructureObject, Stronghold]);
 		
@@ -182,7 +158,7 @@
                 tooltip.show(gameObj);
 			}
 
-            cursor.visible = false;
+            cursor.clear();
 
 			gameObj.setHighlighted(true);
 			highlightedObj = gameObj;
@@ -191,10 +167,13 @@
 			var distance: int = TileLocator.distance(city.primaryPosition.x, city.primaryPosition.y, 1, targetMapDistance.x, targetMapDistance.y, 1);
 			var timeAwayInSeconds: int = Formula.moveTimeTotal(city, troopSpeed, distance, false);			
 
-			if (Constants.debug)
-				Global.gameContainer.message.showMessage("Speed [" +troopSpeed+"] Distance [" + distance + "] in " + timeAwayInSeconds + " sec("+DateUtil.formatTime(timeAwayInSeconds)+")");
-			else
-				Global.gameContainer.message.showMessage(StringHelper.localize("REINFORCE_DISTANCE_MESSAGE", DateUtil.niceTime(timeAwayInSeconds)));
+            var message: String = StringHelper.localize("REINFORCE_DISTANCE_MESSAGE", DateUtil.niceTime(timeAwayInSeconds));
+
+			if (Constants.debug) {
+				message += "Speed [" +troopSpeed+"] Distance [" + distance + "] in " + timeAwayInSeconds + " sec("+DateUtil.formatTime(timeAwayInSeconds)+")";
+            }
+
+            Global.gameContainer.message.showMessage(message);
 		}
 	}
 

@@ -5,6 +5,7 @@
     import org.aswing.*;
 
     import src.Objects.Effects.Formula;
+    import src.Objects.Factories.SpriteFactory;
     import src.UI.LookAndFeel.GameLookAndFeel;
 
     public class NewCityResourcesPanel extends JPanel
@@ -24,8 +25,8 @@
 			removeAll();
 			var data:* = Formula.getResourceNewCity();
 
-			append(labelMaker(data.influenceRequired, data.influenceCurrent, new AssetIcon(new ICON_UPGRADE())));
-			append(labelMaker(data.wagonRequired, data.wagonCurrent, new AssetIcon(new WAGON_UNIT())));
+			append(labelMaker(data.influenceRequired, data.influenceCurrent, new AssetIcon(SpriteFactory.getFlashSprite("ICON_UPGRADE"))));
+			append(labelMaker(data.wagonRequired, data.wagonCurrent, new AssetIcon(SpriteFactory.getFlashSprite("WAGON_UNIT"))));
 		}
 
 		private function labelMaker(value: int, afford: int, icon: Icon = null) : JLabel {

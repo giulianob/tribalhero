@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
+<!-- $TexturePacker:SmartUpdate:5e44ee50ab758b518e0515172b641858:8542df0d40908ef9338d59ba53274c8b:c26248d96afa52c798d9ab36ad9408ac$ -->
+<TextureAtlas imagePath="FEUDALJAPAN_THEME_WALL_ATLAS.png">
+    <SubTexture name="FEUDALJAPAN_WALL" x="2" y="2" width="960" height="318" frameX="0" frameY="0" frameWidth="1024" frameHeight="320"/>
+</TextureAtlas>

@@ -50,7 +50,7 @@ package src.UI.Tutorial.Steps
 					
 					var mainBuildingScreenPos: ScreenPosition = city.MainBuilding.primaryPosition.toScreenPosition();
                     var mainBuildingPoint: Point = new Point(mainBuildingScreenPos.x, mainBuildingScreenPos.y);
-					if (!Global.gameContainer.camera.CameraRectangle().containsPoint(mainBuildingPoint)) {
+					if (!Global.gameContainer.camera.cameraRectangle().containsPoint(mainBuildingPoint)) {
 						return;
 					}					
 				}

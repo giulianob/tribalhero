@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
+<!-- $TexturePacker:SmartUpdate:9d288223fce7b419214dab5b23bd189b:46f44a8f496b5edf96e0c800c304366a:d7a1b540304f139e774ca2df89b508a1$ -->
+<TextureAtlas imagePath="PIRATES_THEME_ATLAS.png">
+    <SubTexture name="PIRATES_ARMORY_STRUCTURE" x="250" y="672" width="101" height="89"/>
+    <SubTexture name="PIRATES_BARRACK_STRUCTURE" x="318" y="187" width="184" height="146"/>
+    <SubTexture name="PIRATES_BASEMENT_STRUCTURE" x="353" y="691" width="107" height="60"/>
+    <SubTexture name="PIRATES_BLACKSMITH_STRUCTURE" x="117" y="732" width="112" height="115"/>
+    <SubTexture name="PIRATES_CANNON_TOWER_STRUCTURE" x="102" y="866" width="100" height="112"/>
+    <SubTexture name="PIRATES_DEAD_FIELD_STRUCTURE" x="231" y="763" width="104" height="58"/>
+    <SubTexture name="PIRATES_FARM_STRUCTURE" x="353" y="531" width="128" height="85"/>
+    <SubTexture name="PIRATES_FIELD_STRUCTURE" x="2" y="804" width="109" height="60"/>
+    <SubTexture name="PIRATES_FOREST_CAMP_STRUCTURE" x="130" y="672" width="118" height="58"/>
+    <SubTexture name="PIRATES_FOUNDRY_STRUCTURE" x="2" y="736" width="111" height="66"/>
+    <SubTexture name="PIRATES_GRAPE_FIELD_STRUCTURE" x="2" y="674" width="113" height="60"/>
+    <SubTexture name="PIRATES_LUMBERMILL_STRUCTURE" x="353" y="618" width="127" height="71"/>
+    <SubTexture name="PIRATES_MARKET_STRUCTURE" x="2" y="589" width="126" height="83"/>
+    <SubTexture name="PIRATES_REFINERY_STRUCTURE" x="353" y="753" width="106" height="80"/>
+    <SubTexture name="PIRATES_STABLE_STRUCTURE" x="187" y="531" width="164" height="139"/>
+    <SubTexture name="PIRATES_STRONGHOLD_STRUCTURE" x="237" y="335" width="232" height="194"/>
+    <SubTexture name="PIRATES_THUMBNAIL" x="237" y="335" width="232" height="194"/>
+    <SubTexture name="PIRATES_TOWER_STRUCTURE" x="2" y="866" width="98" height="117"/>
+    <SubTexture name="PIRATES_TOWNCENTER_STRUCTURE" x="2" y="2" width="314" height="191" frameX="-9" frameY="0" frameWidth="340" frameHeight="191"/>
+    <SubTexture name="PIRATES_TRADING_POST_STRUCTURE" x="2" y="369" width="221" height="111"/>
+    <SubTexture name="PIRATES_TRAINING_GROUND_STRUCTURE" x="2" y="482" width="183" height="105"/>
+    <SubTexture name="PIRATES_UNIVERSITY_STRUCTURE" x="318" y="2" width="185" height="183"/>
+    <SubTexture name="PIRATES_WORKSHOP_STRUCTURE" x="2" y="195" width="233" height="172"/>
+</TextureAtlas>

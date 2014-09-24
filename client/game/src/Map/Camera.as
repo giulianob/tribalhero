@@ -62,9 +62,9 @@
 				return;
 			}
 
-            //if (Constants.debug >= 2) {
+            if (Constants.debug >= 2) {
                 Util.log(StringUtil.substitute("Camera moved to {0},{1} zoomFactor:{2}", currentPosition.x, currentPosition.y, zoomFactor));
-            //}
+            }
 
 			dispatchEvent(new Event(ON_MOVE));
 		}

@@ -43,7 +43,7 @@
             objContainer.addObject(regionObject);
 
             new MinimapInfoTooltip(regionObject);
-			
+
 			mapFilter.apply(regionObject);
 			objects.push(regionObject);
 			return regionObject;

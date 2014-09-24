@@ -6,9 +6,9 @@ package src.FeathersUI.MiniMap {
 
     import flash.geom.Point;
     import flash.geom.Rectangle;
+    import flash.utils.Dictionary;
 
     import src.Constants;
-    import src.FeathersUI.Map.MapView;
     import src.Map.Camera;
     import src.Map.Position;
     import src.Map.ScreenPosition;
@@ -35,6 +35,14 @@ package src.FeathersUI.MiniMap {
         private var vm: MiniMapVM;
         private var camera: Camera;
         private var touchMovement: Point = new Point();
+
+        private var xStartingLoop: int;
+        private var xRegionCount: Number;
+        private var yRegionCount: Number;
+        private var xEndingLoop: int;
+        private var yStartingLoop: int;
+        private var yEndingLoop: int;
+        private var parseRegionPosition: Position = new Position();
 
         public function MiniMapView(vm: MiniMapVM) {
             this.name = "MiniMapView";
@@ -65,7 +73,7 @@ package src.FeathersUI.MiniMap {
                 var touch: Touch = touches[0];
                 touch.getMovement(this, touchMovement);
 
-                camera.scrollTo(new ScreenPosition(camera.currentPosition.x - touchMovement.x / mapContainer.scaleX, camera.currentPosition.y - touchMovement.y / mapContainer.scaleY));
+                camera.scrollTo(new ScreenPosition(camera.currentPosition.x - touchMovement.x*Constants.miniMapTileRatioW, camera.currentPosition.y - touchMovement.y*Constants.miniMapTileRatioH));
             }
         }
 
@@ -97,11 +105,11 @@ package src.FeathersUI.MiniMap {
                 mapContainer.y = -camera.miniMapY + (this.actualHeight/2 - screenRectHeight/2);
 
                 mapContainer.clipRect = new Rectangle(-mapContainer.x, -mapContainer.y, this.actualWidth, this.actualHeight);
-
-                parseRegions();
             }
 
             if (sizeInvalid) {
+                setUpSizeVariablesForParseRegion();
+
                 // Redraw screen rectangle
                 if (screenRectWidth < this.actualWidth && screenRectHeight < this.actualHeight) {
                     // Draw the white rectangle that represents what the player can see
@@ -118,6 +126,10 @@ package src.FeathersUI.MiniMap {
                 bgRect.material.color = 0x000000;
                 bgRect.alpha = 0.8;
                 bg.addChild(bgRect);
+            }
+
+            if (cameraChanged || sizeInvalid) {
+                parseRegions();
             }
         }
 
@@ -181,14 +193,9 @@ package src.FeathersUI.MiniMap {
             }
         }
 
-        private function parseRegions(): void {
-            if (Constants.debug >= 3) Util.log("On move: " + camera.currentPosition.x + "," + camera.currentPosition.y);
-
-            //calculate which regions we need to render
-            var requiredRegions: Array = [];
-
-            var xRegionCount: int = Math.ceil(Number(this.actualWidth) / Constants.miniMapRegionW) + 1;
-            var yRegionCount: int = Math.ceil(Number(this.actualHeight) / Constants.miniMapRegionH) + 1;
+        private function setUpSizeVariablesForParseRegion(): void {
+            xRegionCount = Math.ceil(Number(this.actualWidth) / Constants.miniMapRegionW) + 1;
+            yRegionCount = Math.ceil(Number(this.actualHeight) / Constants.miniMapRegionH) + 1;
 
             // We always want the region to be odd otherwise we would have
             // to do more complex calculations when looping below to figure out
@@ -197,26 +204,32 @@ package src.FeathersUI.MiniMap {
             if (xRegionCount%2==0) { xRegionCount++; }
             if (yRegionCount%2==0) { yRegionCount++; }
 
-            var cameraPosition: Position = camera.currentPosition.toPosition();
-
             // Figure out where the loop should start and end
             // We can assume xRegionCount and yRegionCount are always odd so if xRegionCount is 5 for example
             // we basically want the loop to go -2,-1,0,1,2
-            var xStartingLoop: int = int(-xRegionCount/2.0);
-            var xEndingLoop: int = int(xRegionCount/2.0);
-            var yStartingLoop: int = int(-yRegionCount/2.0);
-            var yEndingLoop: int = int(yRegionCount/2.0);
+            xStartingLoop = int(-xRegionCount / 2.0);
+            xEndingLoop = int(xRegionCount / 2.0);
+            yStartingLoop = int(-yRegionCount / 2.0);
+            yEndingLoop = int(yRegionCount / 2.0);
+        }
 
-            var regionPosition: Position = new Position();
+        private function parseRegions(): void {
+            if (Constants.debug >= 3) Util.log("On move: " + camera.currentPosition.x + "," + camera.currentPosition.y);
+
+            //calculate which regions we need to render
+            var requiredRegions: Dictionary = new Dictionary();
+
+            var cameraPosition: Position = camera.currentPosition.toPosition();
+
             for (var reqX: int = xStartingLoop; reqX <= xEndingLoop; reqX++) {
                 for (var reqY: int = yStartingLoop; reqY <= yEndingLoop; reqY++) {
-                    regionPosition.x = cameraPosition.x + Constants.miniMapRegionTileW * reqX;
-                    regionPosition.y = cameraPosition.y + Constants.miniMapRegionTileH * reqY;
+                    parseRegionPosition.x = cameraPosition.x + Constants.miniMapRegionTileW * reqX;
+                    parseRegionPosition.y = cameraPosition.y + Constants.miniMapRegionTileH * reqY;
 
-                    var requiredId: int = TileLocator.getMiniMapRegionId(regionPosition);
+                    var requiredId: int = TileLocator.getMiniMapRegionId(parseRegionPosition);
 
-                    if (requiredId > -1 && requiredRegions.indexOf(requiredId) == -1) {
-                        requiredRegions.push(requiredId);
+                    if (requiredId > -1) {
+                        requiredRegions[requiredId] = requiredId;
                     }
                 }
             }

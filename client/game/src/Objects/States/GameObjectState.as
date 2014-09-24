@@ -1,6 +1,6 @@
 package src.Objects.States
 {
-    import flash.display.*;
+    import starling.display.*;
 
     public class GameObjectState
 	{

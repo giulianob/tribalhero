@@ -3,7 +3,7 @@ package src.UI.Tutorial
     import org.aswing.AsWingManager;
 
     import src.Comm.Commands.GeneralComm;
-    import src.Map.Map;
+    import src.FeathersUI.Map.MapVM;
     import src.UI.Tutorial.Steps.*;
 
     public class GameTutorial
@@ -23,14 +23,14 @@ package src.UI.Tutorial
 		
 		private var currentStepIndex: int = 0;
 		private var currentStep: TutorialStep;
-		private var map: Map;		
+		private var map: MapVM;
 		private var generalComm:GeneralComm;
 		
 		/**
 		 * Starts the game tutorial
 		 * @param	map
 		 */
-		public function start(startStep: int, map: Map, generalComm: GeneralComm): void {
+		public function start(startStep: int, map: MapVM, generalComm: GeneralComm): void {
 			this.generalComm = generalComm;
 			this.map = map;
 			currentStepIndex = startStep;

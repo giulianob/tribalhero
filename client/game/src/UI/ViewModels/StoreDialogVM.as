@@ -5,7 +5,7 @@ package src.UI.ViewModels {
     import src.Objects.Store.StoreItem;
     import src.Objects.Store.StoreItemAchievement;
     import src.Objects.Store.StoreItemTheme;
-    import src.UI.ViewModel;
+    import src.FeathersUI.ViewModel;
 
     public class StoreDialogVM extends ViewModel {
         public static const EVENT_VIEW_THEME: String = "EVENT_VIEW_THEME";

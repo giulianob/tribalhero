@@ -8,7 +8,7 @@ package src.UI.Dialog {
     import org.aswing.ext.GridListItemEvent;
     import org.aswing.ext.MultilineLabel;
 
-    import src.Assets;
+    import src.FlashAssets;
     import src.Global;
     import src.Map.City;
     import src.Objects.Store.IStoreAsset;
@@ -45,7 +45,7 @@ package src.UI.Dialog {
             lblDescription = new MultilineLabel(viewModel.theme.localizedDescription, 3, 100);
 
             var pnlPreviewImage: JPanel = new JPanel(new CenterLayout());
-            pnlPreviewImage.appendAll(new AssetPane(Assets.getInstance(viewModel.theme.id + "_THEME_BANNER")));
+            pnlPreviewImage.appendAll(new AssetPane(FlashAssets.getInstance(viewModel.theme.id + "_THEME_BANNER")));
 
             var gridStoreItems: GridList = new GridList(new VectorListModel(viewModel.getThemeAssets()), new GeneralGridListCellFactory(StoreItemAssetGridCell), 5, 0);
             gridStoreItems.setTracksHeight(true);
@@ -78,7 +78,7 @@ package src.UI.Dialog {
             appendAll(previewTabs);
 
             if (!viewModel.theme.hasPurchased()) {
-                btnBuy = new JButton(t("STORE_VIEW_THEME_DIALOG_BUY", viewModel.theme.cost), new AssetIcon(Assets.getInstance("ICON_COIN")));
+                btnBuy = new JButton(t("STORE_VIEW_THEME_DIALOG_BUY", viewModel.theme.cost), new AssetIcon(FlashAssets.getInstance("ICON_COIN")));
                 btnBuy.setHorizontalTextPosition(AsWingConstants.LEFT);
                 btnBuy.setIconTextGap(0);
 

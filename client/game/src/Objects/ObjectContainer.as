@@ -3,9 +3,12 @@ package src.Objects {
 
     import System.Linq.Enumerable;
 
-    import flash.display.*;
-    import flash.events.*;
-    import flash.geom.*;
+    import flash.display.DisplayObject;
+
+    import flash.geom.Point;
+
+    import starling.display.*;
+    import starling.events.*;
     import flash.utils.Dictionary;
 
     import src.*;
@@ -27,7 +30,6 @@ package src.Objects {
 		private var highlightedObject: SimpleObject;
 
 		private var originClick: Point = new Point(0, 0);
-		private var ignoreClick: Boolean = false;
 
 		private var objTooltip: Tooltip = null;
 		
@@ -47,8 +49,6 @@ package src.Objects {
 			objSpace = new Sprite();
 			addChild(objSpace);
 
-			this.mouseEnabled = mouseEnabled;
-
 			if (mouseEnabled)
 			{
 				addEventListener(Event.ADDED_TO_STAGE, addToStage);
@@ -59,29 +59,47 @@ package src.Objects {
 			objSpace.name = "Object Space";
 		}
 
-		public function addToStage(e: Event) : void {
-			objSpace.addEventListener(MouseEvent.MOUSE_MOVE, eventMouseMove);
-			objSpace.addEventListener(MouseEvent.CLICK, eventMouseClick);
-			objSpace.addEventListener(MouseEvent.MOUSE_DOWN, eventMouseDown);
-			objSpace.addEventListener(MouseEvent.MOUSE_OUT, eventMouseOut);
-		}
+        public function addToStage(e: Event) : void {
+            objSpace.addEventListener(TouchEvent.TOUCH, onTouched);
+        }
 
-		public function removeFromStage(e: Event) : void {			
-			objSpace.removeEventListener(MouseEvent.MOUSE_MOVE, eventMouseMove);
-			objSpace.removeEventListener(MouseEvent.CLICK, eventMouseClick);
-			objSpace.removeEventListener(MouseEvent.MOUSE_DOWN, eventMouseDown);
-			objSpace.removeEventListener(MouseEvent.MOUSE_OUT, eventMouseOut);
-		}
+        public function removeFromStage(e: Event) : void {
+            objSpace.removeEventListener(TouchEvent.TOUCH, onTouched);
+        }
 		
 		public function disableMouse(disabled: Boolean) : void {
 			mouseDisabled = disabled;
 		}
-		
-		public function eventMouseClick(e: MouseEvent):void
+
+        public function onTouched(e: TouchEvent): void {
+            if (mouseDisabled) {
+                return;
+            }
+
+            var clickEvent: Touch = e.getTouch(objSpace, TouchPhase.BEGAN);
+            if (clickEvent) {
+                onMouseDown(clickEvent);
+                return;
+            }
+
+            if (e.getTouch(objSpace, TouchPhase.ENDED)) {
+                onClicked(e);
+                return;
+            }
+
+            var hoverTouch: Touch = e.getTouch(objSpace, TouchPhase.HOVER);
+            if (hoverTouch) {
+                onMouseMove(hoverTouch);
+            }
+            else {
+                resetHighlightedObject();
+                resetDimmedObjects();
+            }
+        }
+
+		public function onClicked(e: TouchEvent):void
 		{
-			if (mouseDisabled) return;
-			
-			if (highlightedObject && !ignoreClick)
+			if (highlightedObject)
 			{
 				var multiObjects: Array = [];
 
@@ -112,41 +130,30 @@ package src.Objects {
 				e.stopImmediatePropagation();
 			}
 
-			ignoreClick = false;
-			eventMouseMove(e);
+			onMouseMove(e.getTouch(objSpace, TouchPhase.ENDED));
 		}
 
-		public function eventMouseDown(e: MouseEvent):void
+		public function onMouseDown(touch: Touch):void
 		{
-			if (mouseDisabled) return;
-			
-			originClick = new Point(e.stageX, e.stageY);
+            originClick = new Point(touch.globalX, touch.globalY);
 		}
 
-		public function eventMouseOut(e: MouseEvent):void
+		public function onMouseMove(touch: Touch):void
 		{
-			if (mouseDisabled) return;
-			
-			resetHighlightedObject();
-			resetDimmedObjects();
-			ignoreClick = false;
-		}
+            if (hasInteractiveFlashObjectAtPosition(touch.globalX, touch.globalY)) {
+                resetDimmedObjects();
+                resetHighlightedObject();
 
-		public function eventMouseMove(e: MouseEvent):void
-		{
-			if (mouseDisabled) return;
-			
-			if (e.buttonDown)
-			{
-				if (Point.distance(new Point(e.stageX, e.stageY), originClick) > 4)
-				ignoreClick = true;
-			}
+                return;
+            }
 
             var screenPos: ScreenPosition = TileLocator.getActualCoord(
-                    e.stageX * Global.gameContainer.camera.getZoomFactorOverOne() + Global.gameContainer.camera.currentPosition.x,
-                    e.stageY * Global.gameContainer.camera.getZoomFactorOverOne() + Global.gameContainer.camera.currentPosition.y);
+                    touch.globalX * Global.gameContainer.camera.getZoomFactorOverOne() + Global.gameContainer.camera.currentPosition.x,
+                    touch.globalY * Global.gameContainer.camera.getZoomFactorOverOne() + Global.gameContainer.camera.currentPosition.y);
 
-            if (screenPos.x < 0 || screenPos.y < 0) return;
+            if (screenPos.x < 0 || screenPos.y < 0) {
+                return;
+            }
 
 			var tilePos: Position = screenPos.toPosition();
 
@@ -178,10 +185,11 @@ package src.Objects {
 					}
 				}
 
-				if (obj.hitTestPoint(e.stageX, e.stageY, true))
+				if (obj.hitTest(touch.getLocation(obj), false))
 				{
-					if (!highestObj || obj.primaryPosition.y < highestObj.primaryPosition.y || (highestObj is SimpleObject && obj is SimpleGameObject))
+					if (!highestObj || obj.primaryPosition.y < highestObj.primaryPosition.y || (highestObj is SimpleObject && obj is SimpleGameObject)) {
 						highestObj = obj;
+                    }
 
 					objects.push(obj);
 				}
@@ -193,14 +201,19 @@ package src.Objects {
 				found = true;
 			}
 
-			if (!found && !highestObj) 
-				return;			
-			
-			// If we still have the same highest obj then stop here
-			if (highlightedObject == highestObj) {
+			if (!found && !highestObj) {
+                resetHighlightedObject();
+                resetDimmedObjects();
+
+                return;
+            }
+
+            // If we still have the same highest obj then stop here
+            if (highlightedObject == highestObj) {
 				// Adjust tooltip to current mouse position
-				if (objTooltip) 
-					objTooltip.show(highestObj);				
+				if (objTooltip) {
+					objTooltip.show(obj);
+                }
 				return;
 			}
 			
@@ -252,6 +265,43 @@ package src.Objects {
 			highestObj.setHighlighted(true);			
 		}
 
+        private function hasInteractiveFlashObjectAtPosition(globalX: Number, globalY: Number): Boolean {
+            // this is temporary while we have UI built using regular stage
+            // we want to make those sprites block mouse access to starling sprites
+            // We need to check each object for visibility and also check if all of its parents have mouse children enabled
+
+            var objectsUnderPoint: Array = Global.stage.getObjectsUnderPoint(new Point(globalX, globalY));
+            for each (var flashDisplayObject: flash.display.DisplayObject in objectsUnderPoint) {
+                if (!flashDisplayObject.visible) {
+                    continue;
+                }
+
+                var flashInteractive: flash.display.InteractiveObject = flashDisplayObject as flash.display.InteractiveObject;
+                if (flashInteractive && !flashInteractive.mouseEnabled) {
+                    continue;
+                }
+
+                var parent: flash.display.DisplayObjectContainer = flashDisplayObject.parent;
+                var hasInvisibleParent: Boolean = false;
+                while (parent) {
+                    if (!parent.visible || !parent.mouseChildren) {
+                        hasInvisibleParent = true;
+                        break;
+                    }
+
+                    parent = parent.parent;
+                }
+
+                if (hasInvisibleParent) {
+                    continue;
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
 		public function resetObjects():void
 		{
 			resetHighlightedObject();
@@ -298,7 +348,7 @@ package src.Objects {
 			}
 		}
 		
-		public function addObject(obj: DisplayObject, layer: int = 0):void
+		public function addObject(obj: starling.display.DisplayObject, layer: int = 0):void
 		{
 			var simpleObj: SimpleObject = obj as SimpleObject;
 
@@ -395,7 +445,7 @@ package src.Objects {
             }
         }
 
-		public function removeObject(obj: DisplayObject, layer: int = 0, dispose: Boolean = true):void
+		public function removeObject(obj: starling.display.DisplayObject, layer: int = 0, dispose: Boolean = true):void
 		{
 			if (obj == null) {
 				return;
@@ -470,19 +520,6 @@ package src.Objects {
             }).count();
         }
 
-		public function moveWithCamera(x: int, y: int):void
-		{
-			var camera: Camera = new Camera(x, y);
-			moveLayerWithCamera(camera, bottomSpace);
-			moveLayerWithCamera(camera, objSpace);
-		}
-
-		private function moveLayerWithCamera(camera: Camera, layer: Sprite):void
-		{
-			layer.x = -camera.currentPosition.x;
-			layer.y = -camera.currentPosition.y;
-		}
-
 		private function calculateDepth(y: Number, mapPriority: int, layer: Sprite): int
 		{
 			return binarySearchDepth(y, mapPriority, 0, layer.numChildren - 1, layer);
@@ -493,7 +530,7 @@ package src.Objects {
 			while (low <= high) {
 				var mid: int = (low + high) / 2;
 
-				var currentObj: DisplayObject = layer.getChildAt(mid) as DisplayObject;
+				var currentObj: starling.display.DisplayObject = layer.getChildAt(mid) as starling.display.DisplayObject;
 				var simpleObj: SimpleObject = currentObj as SimpleObject;
 				var objY: Number = simpleObj == null ? currentObj.y : simpleObj.primaryPosition.y;
                 var objPriority: int = simpleObj == null ? Constants.mapObjectPriority.displayObject : simpleObj.mapPriority;

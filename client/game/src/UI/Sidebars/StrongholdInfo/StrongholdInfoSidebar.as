@@ -10,6 +10,7 @@
     import src.*;
     import src.Map.Position;
     import src.Objects.*;
+    import src.Objects.Factories.SpriteFactory;
     import src.Objects.Factories.StrongholdFactory;
     import src.Objects.Stronghold.*;
     import src.UI.*;
@@ -41,7 +42,7 @@
 			update();
 		}
 
-		public function onObjectUpdate(e: Event):void
+		public function onObjectUpdate(e: *):void
 		{
 			update();
 		}
@@ -71,7 +72,7 @@
 
                     for each (var theme: String in Constants.session.themesPurchased) {
                         var newSprite: String = StrongholdFactory.getSpriteName(theme);
-                        if (!Assets.doesSpriteExist(newSprite)) {
+                        if (!FlashAssets.doesSpriteExist(newSprite)) {
                             continue;
                         }
 
@@ -118,7 +119,7 @@
 		}
 
         private function createThemeMenuItem(theme: String): JMenuItem {
-            var sprite: DisplayObject = StrongholdFactory.getSprite(theme);
+            var sprite: DisplayObject = SpriteFactory.getFlashSprite(StrongholdFactory.getSpriteName(theme));
             Util.resizeSprite(sprite, 85, 85);
 
             var menuItem: JMenuItem = new JMenuItem(t(theme + "_THEME_NAME"), new AssetIcon(sprite));

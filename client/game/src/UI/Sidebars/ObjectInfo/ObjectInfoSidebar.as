@@ -9,7 +9,7 @@ package src.UI.Sidebars.ObjectInfo {
     import org.aswing.border.*;
     import org.aswing.ext.*;
 
-    import src.Assets;
+    import src.FlashAssets;
     import src.Constants;
     import src.Global;
     import src.Map.*;
@@ -58,7 +58,7 @@ package src.UI.Sidebars.ObjectInfo {
 
                 for each (var theme: String in Constants.session.themesPurchased) {
                     var newSprite: String = StructureFactory.getSpriteName(theme, obj.type, obj.level);
-                    if (!Assets.doesSpriteExist(newSprite)) {
+                    if (!FlashAssets.doesSpriteExist(newSprite)) {
                         continue;
                     }
 
@@ -101,7 +101,7 @@ package src.UI.Sidebars.ObjectInfo {
 		}
 
         private function createThemeMenuItem(theme: String): JMenuItem {
-            var sprite: DisplayObject = StructureFactory.getSprite(theme, gameObject.type, gameObject.level);
+            var sprite: DisplayObject = SpriteFactory.getFlashSprite(StructureFactory.getSpriteName(theme, gameObject.type, gameObject.level));
             Util.resizeSprite(sprite, 85, 85);
 
             var menuItem: JMenuItem = new JMenuItem(StringHelper.localize(theme + "_THEME_NAME"), new AssetIcon(sprite));
@@ -151,9 +151,9 @@ package src.UI.Sidebars.ObjectInfo {
                 addStatRow("OBJECT_INFO_SIDEBAR_THEME_LABEL", themeLink);
 
 				if (structPrototype.maxlabor > 0) {
-					addStatRow("OBJECT_INFO_SIDEBAR_LABORERS_LABEL", gameObject.labor + "/" + structPrototype.maxlabor, new AssetIcon(new ICON_LABOR()));
+					addStatRow("OBJECT_INFO_SIDEBAR_LABORERS_LABEL", gameObject.labor + "/" + structPrototype.maxlabor, new AssetIcon(SpriteFactory.getFlashSprite("ICON_LABOR")));
 				} else if (gameObject.labor > 0) {
-					addStatRow("OBJECT_INFO_SIDEBAR_LABORERS_LABEL", gameObject.labor.toString(), new AssetIcon(new ICON_LABOR()));
+					addStatRow("OBJECT_INFO_SIDEBAR_LABORERS_LABEL", gameObject.labor.toString(), new AssetIcon(SpriteFactory.getFlashSprite("ICON_LABOR")));
 				}
 
 				var propPrototype: Array = PropertyFactory.getAllProperties(gameObject.type);
@@ -350,7 +350,7 @@ package src.UI.Sidebars.ObjectInfo {
 
 				var lblTime: JLabel = new JLabel(DateUtil.formatTime(timeLeft));
 				lblTime.setHorizontalAlignment(AsWingConstants.RIGHT);
-				lblTime.setIcon(new AssetIcon(new ICON_CLOCK()));
+				lblTime.setIcon(new AssetIcon(SpriteFactory.getFlashSprite("ICON_CLOCK")));
 				lblTime.setConstraints("South");
 
 				//component layoution
@@ -393,7 +393,7 @@ package src.UI.Sidebars.ObjectInfo {
 			validateButtons();
 		}
 
-		public function onObjectUpdate(event: Event):void
+		public function onObjectUpdate(event: *):void
 		{
 			update();			
 		}

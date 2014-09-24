@@ -15,6 +15,7 @@ package src.UI.Dialog {
     import org.aswing.geom.*;
 
     import src.Global;
+    import src.Objects.Factories.SpriteFactory;
     import src.Objects.Resources;
     import src.UI.Components.SimpleResourcesPanel;
     import src.UI.GameJPanel;
@@ -127,7 +128,7 @@ package src.UI.Dialog {
 			pnlTime = new JPanel(new FlowLayout(AsWingConstants.CENTER, 0, 0, false));		
 			pnlTime.setBorder(new SimpleTitledBorder(null, "Total Time"));
 			
-			lblTime = new JLabel("", new AssetIcon(new ICON_CLOCK()), AsWingConstants.CENTER);
+			lblTime = new JLabel("", new AssetIcon(SpriteFactory.getFlashSprite("ICON_CLOCK")), AsWingConstants.CENTER);
 			pnlTime.append(lblTime);
 		}		
 			

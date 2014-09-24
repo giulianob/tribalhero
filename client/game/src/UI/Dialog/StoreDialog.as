@@ -24,7 +24,7 @@ package src.UI.Dialog {
     import org.aswing.ext.GridListItemEvent;
     import org.aswing.geom.IntDimension;
 
-    import src.Assets;
+    import src.FlashAssets;
     import src.Constants;
     import src.Global;
     import src.Objects.Store.StoreItem;
@@ -76,7 +76,7 @@ package src.UI.Dialog {
 
             var balanceLabel:JLabel = new JLabel(t("STORE_DIALOG_CURRENT_BALANCE"), null);
 
-            currentBalance = new JLabelButton(Constants.session.coins.toString(), new AssetIcon(Assets.getInstance("ICON_COIN")), AsWingConstants.RIGHT);
+            currentBalance = new JLabelButton(Constants.session.coins.toString(), new AssetIcon(FlashAssets.getInstance("ICON_COIN")), AsWingConstants.RIGHT);
             currentBalance.setHorizontalTextPosition(JLabel.LEFT);
             currentBalance.setIconTextGap(0);
 

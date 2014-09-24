@@ -1,22 +1,26 @@
 ﻿package src.UI.Components.Tribe
 {
     import flash.display.MovieClip;
+    import flash.display.Sprite;
     import flash.events.MouseEvent;
 
     import org.aswing.AssetIcon;
     import org.aswing.JOptionPane;
 
     import src.Global;
+    import src.Objects.Factories.SpriteFactory;
     import src.UI.Components.SimpleTooltip;
     import src.UI.Dialog.InfoDialog;
     import src.Util.StringHelper;
 
     public class KickIcon extends AssetIcon
 	{		
-		private var icon: MovieClip = new ICON_UNFRIEND();
+		private var icon: Sprite;
 
 		public function KickIcon(playerId: int)
 		{
+            icon = SpriteFactory.getFlashSprite("ICON_UNFRIEND");
+
 			super(icon);
 
 			icon.buttonMode = true;

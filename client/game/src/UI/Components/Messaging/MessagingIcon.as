@@ -1,24 +1,22 @@
 ﻿package src.UI.Components.Messaging
 {
-    import flash.display.MovieClip;
+    import flash.display.Sprite;
     import flash.events.MouseEvent;
 
     import org.aswing.AssetIcon;
 
+    import src.Objects.Factories.SpriteFactory;
     import src.UI.Components.SimpleTooltip;
     import src.UI.Dialog.MessageCreateDialog;
 
-    /**
-	 * ...
-	 * @author Giuliano Barberi
-	 */
-	public class MessagingIcon extends AssetIcon
+    public class MessagingIcon extends AssetIcon
 	{
-		private var to: String;
-		private var icon: MovieClip = new ICON_MESSAGE();
+		private var icon: Sprite;
 
 		public function MessagingIcon(to: String)
 		{
+            icon = SpriteFactory.getFlashSprite("ICON_MESSAGE");
+
 			super(icon);
 
 			icon.buttonMode = true;

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<flex-config>
+  <target-player>14.0</target-player>
+  <frames>
+    <frame>
+        <label>start</label>
+        <classname>src.Main</classname>
+    </frame>
+    <frame>
+        <label>start</label>
+        <classname>src.DesktopBootstrapper</classname>
+    </frame>    
+  </frames>
+  <compiler>
+    <keep-as3-metadata>
+      <name>Bindable</name>
+      <name>Managed</name>
+      <name>ChangeEvent</name>
+      <name>NonCommittingChangeEvent</name>
+      <name>Transient</name>
+      <name>EmbedPosition</name>
+    </keep-as3-metadata>
+    <define append="true">
+      <name>CONFIG::debug</name>
+      <value>false</value>
+    </define>
+    <define append="true">
+      <name>CONFIG::version</name>
+      <value>0</value>
+    </define>
+    <define append="true">
+      <name>CONFIG::revision</name>
+      <value>0</value>
+    </define>
+    <source-path append="true">
+      <path-element>game</path-element>
+      <path-element>bootstrap/desktop</path-element>
+      <path-element>lib/src/starling-graphics</path-element>
+      <path-element>lib/src/starling-pixelmask</path-element>
+      <path-element>lib/src/starling-pixelperfecttouch</path-element>
+      <path-element>lib/src/promise</path-element>
+    </source-path>
+    <library-path append="true">
+      <path-element>lib/swc/Game/Game.swc</path-element>
+      <path-element>lib/swc/aswing/AsWing.swc</path-element>
+      <path-element>lib/swc/starling/starling.swc</path-element>
+      <path-element>lib/swc/feathers/feathers.swc</path-element>
+      <path-element>lib/swc/feathers/MetalWorksMobileTheme.swc</path-element>      
+      <path-element>lib/swc/feathers/MetalWorksDesktopTheme.swc</path-element>      
+      <path-element>lib/swc/as3corelib/as3corelib.swc</path-element>
+      <path-element>lib/swc/flash/flash.swc</path-element>
+      <path-element>lib/swc/tweenmax/greensock.swc</path-element>
+      <path-element>lib/swc/theminer/TheMiner_en.swc</path-element>
+      <path-element>lib/swc/actionlinq/Linq_Flash.swc</path-element>
+    </library-path>
+  </compiler>
+  <file-specs>
+    <path-element>bootstrap/desktop/src/Preloader.as</path-element>
+  </file-specs>
+  <default-background-color>#E8E2BE</default-background-color>
+  <default-frame-rate>30</default-frame-rate>
+  <default-size>
+    <width>976</width>
+    <height>640</height>
+  </default-size>
+</flex-config>

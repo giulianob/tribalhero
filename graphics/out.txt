@@ -1,0 +1,64 @@
+
+C:\source\tribalhero\graphics>set "PATH=C:/Program Files/CodeAndWeb/TexturePacker/bin;C:/Program Files/CodeAndWeb/TexturePacker/bin;C:/Program Files/CodeAndWeb/TexturePacker/bin;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\Microsoft SQL Server\110\Tools\Binn\;C:\Program Files (x86)\Graphviz 2.28\bin;C:\wamp\bin\mysql\mysql5.5.16\bin;C:\wamp\bin\php\php5.3.8;C:\Program Files (x86)\Git\cmd;C:\Program Files (x86)\Java\jre6\bin;C:\Program Files (x86)\Subversion\bin;C:\ProgramData\Composer\bin;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files (x86)\Windows Kits\8.1\Windows Performance Toolkit\;C:\Program Files (x86)\nodejs\;C:\Program Files\Microsoft Network Monitor 3\;C:\Program Files (x86)\Microsoft SDKs\TypeScript\1.0\;C:\Program Files\ngrok;C:\Program Files\TortoiseHg\;C:\Chocolatey\bin;C:\bin\apache-ant-1.9.4\bin;C:\Users\giuliano\AppData\Roaming\npm" 
+
+C:\source\tribalhero\graphics>set "NO_SCALE=--variant 1:noscale" 
+
+C:\source\tribalhero\graphics>set "HD_SCALE_VARIANT=--variant 0.25:0.5 --variant 0.5:1 --variant 0.75:1.5 --variant 1:2" 
+
+C:\source\tribalhero\graphics>set "DEFAULT_SETTINGS=--format sparrow --enable-rotation --multipack" 
+
+C:\source\tribalhero\graphics>set "DEFAULT_THEME_SETTINGS=--format sparrow --enable-rotation --multipack --variant 1:noscale --ignore-files *_BANNER.png --ignore-files *_WALL.png" 
+
+C:\source\tribalhero\graphics>TexturePacker.exe --format sparrow --enable-rotation --multipack --variant 1:noscale  --data atlas\{v}\Tilemap.xml  --sheet atlas\{v}\Tilemap.png  Tilemap.png 
+Resulting sprite sheet is 1024x2048
+Writing sprite sheet to atlas\noscale\Tilemap.png
+Writing atlas\noscale\Tilemap.xml
+
+C:\source\tribalhero\graphics>TexturePacker.exe --format sparrow --enable-rotation --multipack --variant 1:noscale  --data atlas\{v}\DEFAULT_THEME_WALL_ATLAS.xml  --sheet atlas\{v}\DEFAULT_THEME_WALL_ATLAS.png  themes\default\DEFAULT_WALL.png 
+Resulting sprite sheet is 512x2048
+Writing sprite sheet to atlas\noscale\DEFAULT_THEME_WALL_ATLAS.png
+Writing atlas\noscale\DEFAULT_THEME_WALL_ATLAS.xml
+
+C:\source\tribalhero\graphics>TexturePacker.exe --format sparrow --enable-rotation --multipack --variant 1:noscale --ignore-files *_BANNER.png --ignore-files *_WALL.png  --data atlas\{v}\DEFAULT_THEME_ATLAS.xml  --sheet atlas\{v}\DEFAULT_THEME_ATLAS.png  themes\default 
+Resulting sprite sheet is 512x1024
+Writing sprite sheet to atlas\noscale\DEFAULT_THEME_ATLAS.png
+Writing atlas\noscale\DEFAULT_THEME_ATLAS.xml
+
+C:\source\tribalhero\graphics>TexturePacker.exe --format sparrow --enable-rotation --multipack --variant 1:noscale  --data atlas\{v}\PIRATES_THEME_WALL_ATLAS.xml  --sheet atlas\{v}\PIRATES_THEME_WALL_ATLAS.png  themes\pirates\PIRATES_WALL.png 
+Resulting sprite sheet is 1024x2048
+Writing sprite sheet to atlas\noscale\PIRATES_THEME_WALL_ATLAS.png
+Writing atlas\noscale\PIRATES_THEME_WALL_ATLAS.xml
+
+C:\source\tribalhero\graphics>TexturePacker.exe --format sparrow --enable-rotation --multipack --variant 1:noscale --ignore-files *_BANNER.png --ignore-files *_WALL.png  --data atlas\{v}\PIRATES_THEME_ATLAS.xml  --sheet atlas\{v}\PIRATES_THEME_ATLAS.png  themes\pirates 
+Resulting sprite sheet is 512x1024
+Writing sprite sheet to atlas\noscale\PIRATES_THEME_ATLAS.png
+Writing atlas\noscale\PIRATES_THEME_ATLAS.xml
+
+C:\source\tribalhero\graphics>TexturePacker.exe --format sparrow --enable-rotation --multipack --variant 1:noscale  --data atlas\{v}\FEUDALJAPAN_THEME_WALL_ATLAS.xml  --sheet atlas\{v}\FEUDALJAPAN_THEME_WALL_ATLAS.png  themes\feudaljapan\FEUDALJAPAN_WALL.png 
+Resulting sprite sheet is 1024x2048
+Writing sprite sheet to atlas\noscale\FEUDALJAPAN_THEME_WALL_ATLAS.png
+Writing atlas\noscale\FEUDALJAPAN_THEME_WALL_ATLAS.xml
+
+C:\source\tribalhero\graphics>TexturePacker.exe --format sparrow --enable-rotation --multipack --variant 1:noscale --ignore-files *_BANNER.png --ignore-files *_WALL.png  --data atlas\{v}\FEUDALJAPAN_THEME_ATLAS.xml  --sheet atlas\{v}\FEUDALJAPAN_THEME_ATLAS.png  themes\feudaljapan 
+Resulting sprite sheet is 1024x1024
+Writing sprite sheet to atlas\noscale\FEUDALJAPAN_THEME_ATLAS.png
+Writing atlas\noscale\FEUDALJAPAN_THEME_ATLAS.xml
+
+C:\source\tribalhero\graphics>TexturePacker.exe --format sparrow --enable-rotation --multipack --variant 0.25:0.5 --variant 0.5:1 --variant 0.75:1.5 --variant 1:2  --data atlas\{v}\ICONS_ATLAS.xml  --sheet atlas\{v}\ICONS_ATLAS.png  icons\general 
+Resulting sprite sheet for variant '0.5' is 32x64
+Resulting sprite sheet for variant '1' is 128x32
+Resulting sprite sheet for variant '1.5' is 64x128
+Resulting sprite sheet for variant '2' is 128x128
+Writing sprite sheet to atlas\0.5\ICONS_ATLAS.png
+Writing sprite sheet to atlas\1\ICONS_ATLAS.png
+Writing sprite sheet to atlas\1.5\ICONS_ATLAS.png
+Writing sprite sheet to atlas\2\ICONS_ATLAS.png
+Writing atlas\0.5\ICONS_ATLAS.xml
+Writing atlas\1\ICONS_ATLAS.xml
+Writing atlas\1.5\ICONS_ATLAS.xml
+Writing atlas\2\ICONS_ATLAS.xml
+
+C:\source\tribalhero\graphics>TexturePacker.exe --format sparrow --enable-rotation --multipack --variant 1:noscale  --data atlas\{v}\OBJECTS_ATLAS.xml  --sheet atlas\{v}\OBJECTS_ATLAS.png  objects  themes\warelephant  themes\cobblestone 
+Resulting sprite sheet is 512x1024
+Writing sprite sheet to atlas\noscale\OBJECTS_ATLAS.png
+Writing atlas\noscale\OBJECTS_ATLAS.xml

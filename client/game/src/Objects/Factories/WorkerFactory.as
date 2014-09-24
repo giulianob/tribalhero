@@ -1,5 +1,4 @@
 ﻿package src.Objects.Factories {
-    import src.Map.Map;
     import src.Objects.Actions.*;
     import src.Objects.Effects.EffectReqManager;
     import src.Objects.Prototypes.EffectPrototype;
@@ -7,19 +6,12 @@
     import src.Util.BinaryList.*;
     import src.Util.Util;
 
-    /**
-	 * ...
-	 * @author Default
-	 */
 	public class WorkerFactory {
 
-		private static var map: Map;
 		private static var workers: BinaryList;
 
-		public static function init(_map: Map, data: XML):void
+		public static function init(data: XML):void
 		{
-			map = _map;
-
 			workers = new BinaryList(Worker.sortOnType, Worker.compare);
 
 			for each (var workerNode: XML in data.Workers.*)

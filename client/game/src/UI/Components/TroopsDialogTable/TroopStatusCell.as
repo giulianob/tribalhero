@@ -6,6 +6,7 @@ package src.UI.Components.TroopsDialogTable
     import src.Map.City;
     import src.Objects.Actions.Action;
     import src.Objects.Actions.Notification;
+    import src.Objects.Factories.SpriteFactory;
     import src.Objects.Troop.TroopStub;
     import src.UI.Components.CountDownLabel;
     import src.UI.Components.TableCells.AbstractPanelTableCell;
@@ -43,13 +44,13 @@ package src.UI.Components.TroopsDialogTable
 				var notifications: * = city.notifications.getByObject(troopStub.cityId, troopStub.objectId);
 				for each (var notification: Notification in notifications) {
 					if (Action.actionCategory[notification.type] == Action.CATEGORY_ATTACK) {
-						icon = new AssetIcon(new ICON_SINGLE_SWORD);
+						icon = new AssetIcon(SpriteFactory.getFlashSprite("ICON_SINGLE_SWORD"));
 						lblCountdown.setTime(notification.endTime);
 						lblCountdown.setVisible(true);
 						break;
 					}
                     else if (Action.actionCategory[notification.type] == Action.CATEGORY_DEFENSE) {
-						icon = new AssetIcon(new ICON_SHIELD);
+						icon = new AssetIcon(SpriteFactory.getFlashSprite("ICON_SHIELD"));
 						lblCountdown.setTime(notification.endTime);
 						lblCountdown.setVisible(true);
 						break;
@@ -58,7 +59,7 @@ package src.UI.Components.TroopsDialogTable
 			}
 			
 			if (!icon) {
-				icon = troopStub.state == TroopStub.WAITING_IN_OFFENSIVE_ASSIGNMENT ? new AssetIcon(new ICON_SINGLE_SWORD) : new AssetIcon(new ICON_SHIELD);
+				icon = troopStub.state == TroopStub.WAITING_IN_OFFENSIVE_ASSIGNMENT ? new AssetIcon(SpriteFactory.getFlashSprite("ICON_SINGLE_SWORD")) : new AssetIcon(SpriteFactory.getFlashSprite("ICON_SHIELD"));
 			}
 			
 			lblState.setText(troopStub.getStateName());

@@ -400,7 +400,7 @@
 			}
 			
 			if (Global.map.selectedObject != null)
-				Global.map.selectedObject.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
+				Global.map.selectedObject.dispatchEventWith(SimpleGameObject.OBJECT_UPDATE);
 		}
 		
 		public function onReceiveTechnologyChanged(packet:Packet):void
@@ -468,7 +468,7 @@
 			}
 			
 			if (Global.map.selectedObject != null)
-				Global.map.selectedObject.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
+				Global.map.selectedObject.dispatchEventWith(SimpleGameObject.OBJECT_UPDATE);
 		}
 		
 		public function getSendResourcesConfirmation(resources:Resources, cityId:int, objId:int, targetCityName:String, callback:Function):void
@@ -612,7 +612,7 @@
 		public function onReceiveNotificationLocation(packet:Packet, custom:*):void
 		{
 			var pt:ScreenPosition = TileLocator.getScreenCoord(new Position(packet.readUInt(), packet.readUInt()));
-			Global.map.camera.ScrollToCenter(pt);
+			Global.map.camera.scrollToCenter(pt);
 		}
 			
 		public function gotoCityLocationByName(cityName:String):void
@@ -639,7 +639,7 @@
 				return;
 			}
 			var pt:ScreenPosition = TileLocator.getScreenCoord(new Position(packet.readUInt(), packet.readUInt()));
-			Global.map.camera.ScrollToCenter(pt);
+			Global.map.camera.scrollToCenter(pt);
 			Global.gameContainer.closeAllFrames(true);
 		}
 		

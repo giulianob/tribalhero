@@ -26,7 +26,7 @@
 				Global.gameContainer.clearAllSelections();
 				Global.gameContainer.closeAllFrames(true);			
 				var pt: ScreenPosition = TileLocator.getScreenCoord(new Position(x, y));
-				Global.map.camera.ScrollToCenter(pt);
+				Global.map.camera.scrollToCenter(pt);
 			});
 		}
 		

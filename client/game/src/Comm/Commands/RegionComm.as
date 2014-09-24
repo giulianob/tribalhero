@@ -2,8 +2,6 @@
 
     import System.Linq.Enumerable;
 
-    import flash.geom.Point;
-
     import src.Comm.*;
     import src.Constants;
     import src.Global;
@@ -76,7 +74,7 @@
 
 				Global.map.regions.setTileType(pos, tileType);
 
-                regionIds.push(TileLocator.getRegionIdFromMapCoord(pos));
+                regionIds.push(TileLocator.getRegionId(pos));
 			}
 
             for each (var regionId: int in Enumerable.from(regionIds).distinct().toArray()) {
@@ -113,8 +111,8 @@
 			for (var i:int = 0; i < regionCnt; i++)
 			{
 				var id: int = packet.readUShort();
-                trace("Region " + id);
-				var mapArray:Array = packet.read2dShortArray(Constants.regionTileW, Constants.regionTileH);
+
+                var mapArray:Array = packet.read2dShortArray(Constants.regionTileW, Constants.regionTileH);
 
 				var newRegion: Region = Global.map.addRegion(id, mapArray);
 
@@ -129,8 +127,6 @@
             for each (var obj: SimpleGameObject in objectsToAdd) {
                 Global.map.regions.addObject(obj);
             }
-
-			Global.map.objContainer.moveWithCamera(Global.gameContainer.camera.currentPosition.x, Global.gameContainer.camera.currentPosition.y);
 		}
 
 		public function getMiniMapRegion(ids: Array):void
@@ -200,11 +196,10 @@
 						extraProps.level = packet.readUByte();
 						extraProps.count = packet.readUByte();
 					}
+
 					newRegion.addRegionObject(objType, objGroupId, objId, objSize, position, extraProps);
 				}
 			}
-
-			Global.gameContainer.miniMap.objContainer.moveWithCamera(Global.gameContainer.camera.miniMapX, Global.gameContainer.camera.miniMapY);
 		}
 	}
 }

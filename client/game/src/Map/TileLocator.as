@@ -1,15 +1,8 @@
-/**
- * ...
- * @author Default
- * @version 0.1
- */
-
 package src.Map {
 
     import System.Linq.Enumerable;
 
     import flash.geom.Point;
-    import flash.geom.Rectangle;
 
     import src.Constants;
     import src.Global;
@@ -18,34 +11,15 @@ package src.Map {
 
     public class TileLocator {
 
-		public static function getMiniMapRegionId(rX: int, rY: int): int // from screen coord to region id
+		public static function getMiniMapRegionId(position: Position): int
 		{
-			var xId: int = int(rX / Constants.miniMapRegionW);
-			var yId: int = int(rY / int(Constants.miniMapRegionH / 2));
+            var idx: int = int(position.x / Constants.miniMapRegionTileW) + int(position.y / Constants.miniMapRegionTileH) * int(Constants.mapTileW / Constants.miniMapRegionTileW);
 
-			if (xId < 0 || xId >= Constants.miniMapRegionRatioW)
-			return -1;
-			if (yId < 0 || yId >= Constants.miniMapRegionRatioH)
-			return -1;
+            if (idx < 0 || idx >= Constants.miniMapRegionCount) {
+                return -1;
+            }
 
-			var id: int = int(xId + yId * Constants.miniMapRegionRatioW);
-
-			if (Constants.debug >= 4)
-			Util.log(rX + "," + rY + "(" + xId + "," + yId + ") =" + id);
-
-			return id;
-		}
-
-		public static function getRegionIdFromMapCoord(position: Position): int
-		{
-            return int(position.x / Constants.regionTileW) + int(position.y / Constants.regionTileH) * int(Constants.mapTileW / Constants.regionTileW);
-		}
-		
-		public static function getRegionRect(id: int): Rectangle
-		{
-			var x: int = (id % Constants.mapRegionW) * Constants.regionW;
-			var y: int = int(id / Constants.mapRegionW) * (Constants.regionH / 2);			
-			return new Rectangle(x, y, Constants.regionW, Constants.regionH / 2);
+            return idx;
 		}
 
         public static function getTileIndex(position: Position): int
@@ -53,6 +27,14 @@ package src.Map {
             return (int)(position.x % Constants.regionTileW + (position.y % Constants.regionTileH) * Constants.regionTileW);
         }
 
+		public static function getRegionId(position: Position): int
+		{
+            var idx: int = int(position.x / Constants.regionTileW) + int(position.y / Constants.regionTileH) * int(Constants.mapTileW / Constants.regionTileW);
+            if (idx < 0 || idx >= Constants.regionCount) {
+                return -1;
+            }
+            return idx;
+		}
         public static function getMapCoord(screenPos: ScreenPosition): Position // from screen coord to map coord
 		{
 			var xcoord: int = int(Math.max(screenPos.x + int(Constants.tileW / 2), 0) / Constants.tileW);

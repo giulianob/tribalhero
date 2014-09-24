@@ -19,7 +19,7 @@
 		}
 
         override public function getIcon(): DisplayObjectContainer {
-            return StructureFactory.getSprite(theme, type, level);
+            return SpriteFactory.getFlashSprite(StructureFactory.getSpriteName(theme, type, level, true));
         }
 
 		public override function get name(): String {

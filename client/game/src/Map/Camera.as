@@ -1,11 +1,17 @@
 ﻿package src.Map
 {
-    import flash.events.Event;
-    import flash.events.EventDispatcher;
+    import feathers.utils.math.clamp;
+
     import flash.geom.Point;
     import flash.geom.Rectangle;
 
+    import mx.utils.StringUtil;
+
     import src.Constants;
+    import src.Util.Util;
+
+    import starling.events.Event;
+    import starling.events.EventDispatcher;
 
     public class Camera extends EventDispatcher
 	{
@@ -21,8 +27,16 @@
 		private var cuePosition: ScreenPosition;
 		
 		//Zooming factor
-		private var _zoomFactor: int = 75;
-		private var zoomFactorOverOne: Number = (1.0 / (75 / 100.0));
+		private var _zoomFactor: Number = 75;
+		private var zoomFactorOverOne: Number = (1.0 / (_zoomFactor / 100.0));
+
+        public var scrollRate: Number = 1;
+
+        public function Camera(x: Number, y: Number)
+        {
+            currentPosition.setXAsNumber(x);
+            currentPosition.setYAsNumber(y);
+        }
 
 		public function beginMove(): void {
 			if (updating) return;
@@ -30,8 +44,8 @@
 			updating = true;
 		}
 
-		public function endMove(): void {
-			updating = false;
+        public function endMove(): void {
+            updating = false;
 
 			if (!isDirty) {
                 return;
@@ -42,11 +56,15 @@
 			fireOnMove();
 		}
 
-		private function fireOnMove() : void {
-			if (updating) {
+        private function fireOnMove(): void {
+            if (updating) {
 				isDirty = true;
 				return;
 			}
+
+            //if (Constants.debug >= 2) {
+                Util.log(StringUtil.substitute("Camera moved to {0},{1} zoomFactor:{2}", currentPosition.x, currentPosition.y, zoomFactor));
+            //}
 
 			dispatchEvent(new Event(ON_MOVE));
 		}
@@ -76,22 +94,16 @@
 		
 		public function get miniMapCenter(): Point
 		{			
-			var point: ScreenPosition = GetCenter();
+			var point: ScreenPosition = mapCenter();
 			return new Point((point.x / Constants.tileW) * Constants.miniMapTileW, (point.y / Constants.tileH) * Constants.miniMapTileH);
 		}
 
-		public function Camera(x: Number, y: Number)
+		public function moveLeft(step :int): void
 		{
-			currentPosition.setXAsNumber(x);
-            currentPosition.setYAsNumber(y);
+			moveLeftEx(step);
 		}
 
-		public function MoveLeft(step :int): void
-		{
-			MoveLeftEx(step);
-		}
-
-		private function MoveLeftEx(step: int): void
+		private function moveLeftEx(step: int): void
 		{
             currentPosition.x -= step;
 
@@ -102,12 +114,12 @@
 			fireOnMove();
 		}
 
-		public function MoveRight(step: int): void
+		public function moveRight(step: int): void
 		{
-			MoveRightEx(step);
+			moveRightEx(step);
 		}
 
-		private  function MoveRightEx(step: int): void
+		private function moveRightEx(step: int): void
 		{
             currentPosition.x += step;
 
@@ -118,12 +130,12 @@
 			fireOnMove();
 		}
 
-		public function MoveDown(step: int): void
+		public function moveDown(step: int): void
 		{
-			MoveDownEx(step);
+			moveDownEx(step);
 		}
 
-		private function MoveDownEx(step: int): void
+		private function moveDownEx(step: int): void
 		{
             currentPosition.y += step;
 
@@ -134,12 +146,12 @@
 			fireOnMove();
 		}
 
-		public function MoveUp(step: int): void
+		public function moveUp(step: int): void
 		{
-			MoveUpEx(step);			
+			moveUpEx(step);
 		}
 
-		private function MoveUpEx(step: int): void
+		private function moveUpEx(step: int): void
 		{
             currentPosition.y -= step;
 
@@ -150,36 +162,36 @@
 			fireOnMove();
 		}
 
-		public function Move(dx: int, dy: int): void
+		public function move(dx: int, dy: int): void
 		{
 			beginMove();
 
 			if (dx > 0) {
-			    MoveRightEx(dx);
+			    moveRightEx(dx);
             }
 			else {
-			    MoveLeftEx(-dx);
+			    moveLeftEx(-dx);
             }
 
 			if (dy > 0) {
-			    MoveDownEx(dy);
+			    moveDownEx(dy);
             }
 			else {
-			    MoveUpEx(-dy);
+			    moveUpEx(-dy);
             }
 
 			endMove();
 		}
 
-		public function ScrollToCenter(screenPos: ScreenPosition): void
+		public function scrollToCenter(screenPos: ScreenPosition): void
 		{
             var zoomFactorPercentage: Number = getZoomFactorPercentage();
-			ScrollTo(new ScreenPosition(
+			scrollTo(new ScreenPosition(
                     screenPos.getXAsNumber() - (Number(Constants.screenW) / zoomFactorPercentage) / 2.0,
                     screenPos.getYAsNumber() - (Constants.screenH / zoomFactorPercentage) / 2.0));
 		}
 		
-		public function GetCenter(): ScreenPosition
+		public function mapCenter(): ScreenPosition
 		{
             var zoomFactorPercentage: Number = getZoomFactorPercentage();
             return new ScreenPosition(
@@ -187,7 +199,7 @@
                     currentPosition.getYAsNumber() + (Constants.screenH / zoomFactorPercentage) / 2.0);
 		}
 
-		public function CameraRectangle() : Rectangle
+		public function cameraRectangle() : Rectangle
 		{
 			return new Rectangle(
                     currentPosition.x,
@@ -196,25 +208,30 @@
                     Constants.screenH * zoomFactorOverOne);
 		}
 
-		public function ScrollTo(screenPos: ScreenPosition): void
+		public function scrollTo(screenPos: ScreenPosition): void
 		{
-			if (currentPosition.x < 0) currentPosition.x = 0;
-			if (currentPosition.y < 0) currentPosition.y = 0;
-
-			currentPosition.setXAsNumber(Math.min(screenPos.getXAsNumber(), int(Constants.mapW - (Constants.screenW * zoomFactorOverOne) - (Constants.tileW / 2.0))));
-			currentPosition.setYAsNumber(Math.min(screenPos.getYAsNumber(), int(Constants.mapTileH * int(Constants.tileH / 2.0) - (Constants.screenH * zoomFactorOverOne) - int(Constants.tileH / 2.0))));
+			currentPosition.setXAsNumber(clampX(screenPos.getXAsNumber()));
+			currentPosition.setYAsNumber(clampY(screenPos.getYAsNumber()));
 
 			fireOnMove();
 		}
 
-        //noinspection JSUnusedGlobalSymbols
-        public function set zoomFactor(factor: int): void {
-            _zoomFactor = factor;
-            zoomFactorOverOne = (1.0 / getZoomFactorPercentage());
-            ScrollTo(currentPosition);
+        public function clampX(value: Number): Number {
+            return clamp(value, 0, int(Constants.mapW - (Constants.screenW * zoomFactorOverOne) - (Constants.tileW / 2.0)));
         }
 
-        public function get zoomFactor(): int {
+        public function clampY(value: Number): Number {
+            return clamp(value, 0, int(Constants.mapTileH * int(Constants.tileH / 2.0) - (Constants.screenH * zoomFactorOverOne) - int(Constants.tileH / 2.0)));
+        }
+
+        //noinspection JSUnusedGlobalSymbols
+        public function set zoomFactor(factor: Number): void {
+            _zoomFactor = factor;
+            zoomFactorOverOne = (1.0 / getZoomFactorPercentage());
+            scrollTo(currentPosition);
+        }
+
+        public function get zoomFactor(): Number {
             return _zoomFactor;
         }
 
@@ -225,7 +242,6 @@
 		public function getZoomFactorPercentage(): Number {
 			return zoomFactor / 100.0;
 		}
-		
 	}
 }
 

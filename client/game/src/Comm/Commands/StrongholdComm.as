@@ -46,7 +46,7 @@ package src.Comm.Commands
 		private function readStrongholdPublicProfile(packet: Packet, custom: * ): void {
 			// We don't actually have a public profile we just send the map there
 			var pt:ScreenPosition = TileLocator.getScreenCoord(new Position(packet.readUInt(), packet.readUInt()));
-			Global.map.camera.ScrollToCenter(pt);
+			Global.map.camera.scrollToCenter(pt);
 			Global.gameContainer.closeAllFrames(true);
 			
 			if (custom && custom.callback) {
@@ -153,7 +153,7 @@ package src.Comm.Commands
 				return;
 			}
 			var pt:ScreenPosition = TileLocator.getScreenCoord(new Position(packet.readUInt(), packet.readUInt()));
-			Global.map.camera.ScrollToCenter(pt);
+			Global.map.camera.scrollToCenter(pt);
 			Global.gameContainer.closeAllFrames(true);
 		}		
 		

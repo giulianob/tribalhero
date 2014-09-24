@@ -38,7 +38,7 @@
 				{
 					var cityObj: CityObject = value.cityObj;
 					Global.map.selectWhenViewable(cityObj.city.id, cityObj.objectId);
-					Global.map.camera.ScrollToCenter(cityObj.primaryPosition.toScreenPosition());
+					Global.map.camera.scrollToCenter(cityObj.primaryPosition.toScreenPosition());
 					Util.getFrame(getParent()).dispose();
 				}
 			});

@@ -2,6 +2,7 @@
     import org.aswing.*;
 
     import src.Map.City;
+    import src.Objects.Factories.SpriteFactory;
     import src.Objects.Factories.UnitFactory;
     import src.Objects.Prototypes.UnitPrototype;
     import src.Objects.Troop.TroopTemplate;
@@ -64,7 +65,7 @@
 			lblUpkeep = new JLabel();
 			lblUpkeep.setConstraints("East");
 			lblUpkeep.setHorizontalAlignment(AsWingConstants.RIGHT);
-			lblUpkeep.setIcon(new AssetIcon(new ICON_CROP()));
+			lblUpkeep.setIcon(new AssetIcon(SpriteFactory.getFlashSprite("ICON_CROP")));
 			lblUpkeep.setHorizontalTextPosition(AsWingConstants.LEFT);
 			lblUpkeep.setIconTextGap(0);
 			GameLookAndFeel.changeClass(lblUpkeep, "Tooltip.text");

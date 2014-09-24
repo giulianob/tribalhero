@@ -1,6 +1,8 @@
 package src.Objects.Store {
     import flash.display.Sprite;
 
+    import src.Objects.Factories.SpriteFactory;
+
     import src.Objects.Factories.StructureFactory;
     import src.Objects.Prototypes.StructurePrototype;
 
@@ -18,7 +20,7 @@ package src.Objects.Store {
         }
 
         public function thumbnail(): Sprite {
-            return Sprite(StructureFactory.getSprite(item.themeId, structurePrototype.type, structurePrototype.level));
+            return SpriteFactory.getFlashSprite(StructureFactory.getSpriteName(item.themeId, structurePrototype.type, structurePrototype.level));
         }
     }
 }

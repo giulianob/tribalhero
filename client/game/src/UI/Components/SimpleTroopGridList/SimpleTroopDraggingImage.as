@@ -10,6 +10,8 @@
     import org.aswing.graphics.Graphics2D;
     import org.aswing.graphics.Pen;
 
+    import src.Objects.Factories.SpriteFactory;
+
     import src.Objects.Factories.UnitFactory;
 
     /**
@@ -45,7 +47,7 @@ public class SimpleTroopDraggingImage implements DraggingImage
 		g.drawLine(new Pen(ASColor.RED, 2), x+1+r, y+1, x+1, y+1+r);
 		g.drawRectangle(new Pen(ASColor.GRAY), x, y, w, h);		
 			
-		icon = UnitFactory.getSprite(troopGridCell.getCellValue().data.type, troopGridCell.getCellValue().level) as DisplayObject;				
+		icon = SpriteFactory.getFlashSprite(UnitFactory.getSpriteName(troopGridCell.getCellValue().data.type, troopGridCell.getCellValue().level));
 	}
 	
 	public function getDisplay():DisplayObject

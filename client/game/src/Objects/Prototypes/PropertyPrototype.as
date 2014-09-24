@@ -10,6 +10,8 @@ package src.Objects.Prototypes {
 
     import org.aswing.AssetIcon;
 
+    import src.Objects.Factories.SpriteFactory;
+
     public class PropertyPrototype {
 
 		public static const VISIBILITY_PRIVATE: int = 0;
@@ -73,10 +75,8 @@ package src.Objects.Prototypes {
 		public function getIcon(): AssetIcon 
 		{
 			if (icon == "" || icon == null) return null;
-			
-			var objRef: Class = getDefinitionByName("ICON_" + icon) as Class;
 
-			return new AssetIcon(new objRef() as DisplayObject);
+			return new AssetIcon(SpriteFactory.getFlashSprite("ICON_" + icon));
 		}
 		
 		public function toString(value: *): String

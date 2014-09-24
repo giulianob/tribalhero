@@ -1,6 +1,5 @@
 package src.UI.Components
 {
-    import flash.display.DisplayObject;
     import flash.display.Stage;
     import flash.events.Event;
     import flash.events.EventDispatcher;
@@ -14,10 +13,6 @@ package src.UI.Components
 
     import src.Constants;
 
-    /**
-	 * ...
-	 * @author Giuliano Barberi
-	 */
 	public class ResizeManager implements IEventDispatcher
 	{
 		private var dispatcher: EventDispatcher;
@@ -53,16 +48,15 @@ package src.UI.Components
 		}
 
 		public function onResize(e: Event = null) : void {
-
 			resizeDelay.stop();
 
-			Constants.screenW = stage.stageWidth;
-			Constants.screenH = stage.stageHeight;
+			//Constants.screenW = stage.stageWidth;
+			//Constants.screenH = stage.stageHeight;
 
 			var delta: IntDimension = new IntDimension(stage.stageWidth - lastSize.width, stage.stageHeight - lastSize.height);
 
 			for each (var def: * in objects) {
-				var obj: DisplayObject = def.obj;
+				var obj: * = def.obj;
 
 				if (obj is JPanel) {
 					var frame: JFrame = (obj as JPanel).getParent() as JFrame;
@@ -74,9 +68,6 @@ package src.UI.Components
 				}
 
 				var anchors: int = def.anchors;
-
-				var origWidth: int = obj.width / obj.scaleX;
-				var origHeight: int = obj.height / obj.scaleY;
 
 				var stageScaleX: Number = stage.stageWidth / originalStageSize.width;
 				var stageScaleY: Number = stage.stageHeight / originalStageSize.height;
@@ -100,11 +91,11 @@ package src.UI.Components
 			dispatchEvent(new Event(Event.RESIZE));
 		}
 
-		public function addObject(obj: DisplayObject, anchors: int) : void {
+		public function addObject(obj: *, anchors: int) : void {
 			objects.push({anchors: anchors, obj: obj});
 		}
 
-		public function removeObject(obj: DisplayObject) : void {
+		public function removeObject(obj: *) : void {
 			for (var i: int = 0; i < objects.length; i++) {
 				if (objects[i].obj == obj) {
 					objects.splice(i, 1);

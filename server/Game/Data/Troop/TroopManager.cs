@@ -241,9 +241,10 @@ namespace Game.Data.Troop
                 stub.Starve(percent, bypassProtection);
                 stub.EndUpdate();
 
-                // Remove it if it's been starved to death (and isn't the default troop)
-                if (stub.TotalCount == 0 && !stub.IsDefault())
-                {
+                // Remove it if it's been starved to death, isn't the default troop, and there are no troop objs
+                // referencing this stub
+                if (stub.TotalCount == 0 && !stub.IsDefault() && stub.City.TroopObjects.All(p => p.Stub.TroopId != stub.TroopId))
+                {                    
                     if (stub.Station != null)
                     {
                         stub.Station.Troops.RemoveStationed(stub.StationTroopId);

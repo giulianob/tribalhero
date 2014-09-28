@@ -3,6 +3,8 @@ package src.UI.Dialog {
 
     import fl.lang.Locale;
 
+    import flash.events.Event;
+
     import mx.utils.StringUtil;
 
     import org.aswing.*;
@@ -14,6 +16,7 @@ package src.UI.Dialog {
     import src.UI.Components.*;
     import src.UI.Components.TroopCompositionGridList.TroopCompositionGridList;
     import src.UI.LookAndFeel.*;
+    import src.Util.FunctionUtil;
     import src.Util.StringHelper;
 
     public class AssignmentInfoDialog extends GameJPanel {
@@ -98,9 +101,7 @@ package src.UI.Dialog {
                     var cityId: int = troop.cityId;
                     var stubId: int = troop.stub.id;
                     var assignmentId: int = assignment.id;
-                    lblRemove.addActionListener(function(): void {
-                        removeStub(assignmentId, cityId, stubId);
-                    });
+                    lblRemove.addActionListener(FunctionUtil.bind(removeStub, this, assignmentId, cityId, stubId));
 
                     actionsHolder.append(lblRemove);
                 }
@@ -122,7 +123,7 @@ package src.UI.Dialog {
 			appendAll(pnlHeader, scrollTroops);
 		}
 
-        private function removeStub(assignmentId: int, cityId: int, stubId: int): void {
+        private function removeStub(assignmentId: int, cityId: int, stubId: int, e: Event): void {
             InfoDialog.showMessageDialog("Confirm", "Are you sure you want to remove the troop from this assignment?", function(result: int): void {
                 if (result != JOptionPane.YES) {
                     return;

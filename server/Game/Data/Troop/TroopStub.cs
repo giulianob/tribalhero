@@ -15,6 +15,9 @@ using Persistance;
 
 namespace Game.Data.Troop
 {
+    // if you add more states which might cause a reference to be saved somewhere
+    // then make sure to also add that state to the starve condition so we dont remove a troop
+    // which has a reference to it
     public enum TroopState
     {
         Idle = 0,

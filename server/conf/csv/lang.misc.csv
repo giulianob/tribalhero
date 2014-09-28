@@ -344,6 +344,9 @@ DEFAULT_THEME_DESCRIPTION,The original Tribal Hero theme.
 PIRATES_THEME_NAME,Shipwrecked Pirates
 PIRATES_THEME_DESCRIPTION,"At the edge of the world, where land meets ocean, a group of bandits have joined together to strike terror into the heart of the world. No longer bound by water, Shipwrecked Pirates have appeared to conquer the lands of Tribal Hero with buildings inspired by sailing the high seas."
 ,
+STEAMWORKS_THEME_NAME,Steamworks
+STEAMWORKS_THEME_DESCRIPTION,"Delve deep into the world of anachronistic technologies and retro-futuristic inventions as your city becomes industrialized and filled with steam-powered machinery."
+,
 FEUDALJAPAN_THEME_NAME,Feudal Japan
 FEUDALJAPAN_THEME_DESCRIPTION,"In the Land of the rising sun, Simplicity Functionality and Beauty are not only the way of life, but also the philosophy of architecture and warfare. Experience this new building set inspired by Ancient Japanese culture."
 ,
@@ -352,6 +355,15 @@ COBBLESTONE_THEME_DESCRIPTION,"An elegant road made from large cobblestones."
 ,
 WARELEPHANT_THEME_NAME,War Elephant
 WARELEPHANT_THEME_DESCRIPTION,"Rampage through your opponent's city atop a towering behemoth, bring new meaning to crushing your enemies with style!"
+,
+T47ONEEYE_THEME_NAME,"T47 One-eye"
+T47ONEEYE_THEME_DESCRIPTION,"Named after the great general Abrams One-eye, crush your enemies with style with this new unit theme."
+,
+LOVELACE_THEME_NAME,"2A8 Lovelace"
+LOVELACE_THEME_DESCRIPTION,"Named after the beautiful but battle-hardened warhero of the Second Tribal War, wreak havoc with this new Tribal Hero tank theme fueled only by the blood and tears of your enemies."
+,
+PANZERN470_THEME_NAME,"Panzer N#470"
+PANZERN470_THEME_DESCRIPTION,"Panzer a fitting name for an elegant yet powerful killing machine, trample your enemies with this new tank theme.""
 ,
 STORE_DIALOG_TITLE,Store
 STORE_DIALOG_PURCHASED_ITEMS,Items Owned

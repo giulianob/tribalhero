@@ -80,16 +80,19 @@ namespace Game.Data
             return Error.Ok;
         }
 
-        public Error ApplyToAll(ICity city, string id)
+        public Error ApplyToAll(ICity city, string id, bool applyWall)
         {
             if (!HasTheme(city.Owner, id))
             {
                 return Error.ThemeNotPurchased;
             }
 
-            city.BeginUpdate();
-            city.WallTheme = id;
-            city.EndUpdate();
+            if (applyWall)
+            {
+                city.BeginUpdate();
+                city.WallTheme = id;
+                city.EndUpdate();
+            }
 
             foreach (var structure in city)
             {

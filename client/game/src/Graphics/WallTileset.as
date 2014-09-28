@@ -9,12 +9,20 @@ package src.Graphics {
 
     import src.Constants;
     import src.Objects.SimpleObject;
+    import src.Objects.Theme;
 
     public class WallTileset {
 
 
         public static function getTile(theme: String, tileId: int): Bitmap {
-            var wallTileset: Bitmap = Assets.getSharedInstance(getSpriteName(theme));
+            var wallTileset: Bitmap;
+
+            if (hasWall(theme)) {
+                wallTileset = Assets.getSharedInstance(getSpriteName(theme));
+            }
+            else {
+                wallTileset = Assets.getSharedInstance(getSpriteName(Theme.DEFAULT_THEME_ID));
+            }
 
             var tilesetsrcX:int = int(tileId % Constants.tileSetTileW) * Constants.tileW;
             var tilesetsrcY:int = int(tileId / Constants.tileSetTileW) * Constants.tileH * 2;
@@ -35,6 +43,14 @@ package src.Graphics {
 
         public static function getSpriteName(theme: String): String {
             return theme + "_WALL_TILESET";
+        }
+
+        public static function hasWall(theme: String): Boolean {
+            return Assets.doesSpriteExist(getSpriteName(theme));
+        }
+
+        public static function useDefaultWall(theme: String): Boolean {
+            return theme == Theme.DEFAULT_THEME_ID || !hasWall(theme);
         }
     }
 }

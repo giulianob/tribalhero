@@ -44,7 +44,7 @@ package src.UI.ViewModels {
         }
 
         public function isWallIncluded(): Boolean {
-            return Assets.doesSpriteExist(WallTileset.getSpriteName(theme.id));
+            return WallTileset.hasWall(theme.id);
         }
 
         public function isRoadIncluded(): Boolean {
@@ -95,7 +95,7 @@ package src.UI.ViewModels {
         }
 
         public function applyAllTheme(city: City): void {
-            Global.mapComm.Store.applyThemeToAll(city.id, theme.themeId).then(function(): void {
+            Global.mapComm.Store.applyThemeToAll(city.id, theme.themeId, WallTileset.hasWall(theme.themeId)).then(function(): void {
                dispatch(EVENT_COMPLETED_APPLY_ALL_THEME);
             });
         }

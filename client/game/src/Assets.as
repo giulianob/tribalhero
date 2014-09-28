@@ -723,5 +723,150 @@
 
         [Embed(source = "../../../graphics/themes/warelephant/BANNER.png")]
         public static const WARELEPHANT_THEME_BANNER: Class;
+
+        // Steamworks structure pack
+        [Embed(source = "../../../graphics/themes/steamworks/THUMBNAIL.png")]
+        public static const STEAMWORKS_THEME_THUMBNAIL: Class;
+
+        [Embed(source = "../../../graphics/themes/steamworks/BANNER.png")]
+        public static const STEAMWORKS_THEME_BANNER: Class;
+
+        [Embed(source = "../../../graphics/themes/default/CONSTRUCTION_SMALL.png")]
+        [EmbedPosition(name = "map", x = 32, y = "1")]
+        public static const STEAMWORKS_BUILDING_1: Class;
+
+        [Embed(source = "../../../graphics/themes/default/CONSTRUCTION.png")]
+        [EmbedPosition(name = "map", x = 102, y = "-3")]
+        public static const STEAMWORKS_BUILDING_2: Class;
+
+        [Embed(source = "../../../graphics/themes/default/CONSTRUCTION.png")]
+        [EmbedPosition(name = "map", x = 177, y = "68")]
+        public static const STEAMWORKS_BUILDING_3: Class;
+
+        [Embed(source = "../../../graphics/themes/steamworks/ARMORY_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "8", y = "-20")]
+        public static const STEAMWORKS_ARMORY_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/steamworks/FIELD_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "16", y = "-17")]
+        public static const STEAMWORKS_FIELD_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/steamworks/BARRACK_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "80", y = "-34")]
+        public static const STEAMWORKS_BARRACK_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/steamworks/FOUNDRY_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "20", y = "-23")]
+        public static const STEAMWORKS_FOUNDRY_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/steamworks/STRONGHOLD_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "3", y = "-81")]
+        public static const STEAMWORKS_STRONGHOLD_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/steamworks/FARM_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "16", y = "-35")]
+        public static const STEAMWORKS_FARM_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/steamworks/MARKET_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "20", y = "-10")]
+        public static const STEAMWORKS_MARKET_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/steamworks/REFINERY_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "17", y = "-19")]
+        public static const STEAMWORKS_REFINERY_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/steamworks/STABLE_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "72", y = "-58")]
+        public static const STEAMWORKS_STABLE_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/steamworks/TOWER_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "41", y = "-31")]
+        public static const STEAMWORKS_TOWER_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/steamworks/TOWNCENTER_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "96", y = "-90")]
+        public static const STEAMWORKS_TOWNCENTER_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/steamworks/TRADING_POST_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "71", y = "-24")]
+        public static const STEAMWORKS_TRADING_POST_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/steamworks/UNIVERSITY_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "21", y = "-95")]
+        public static const STEAMWORKS_UNIVERSITY_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/steamworks/LUMBERMILL_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "15", y = "-35")]
+        public static const STEAMWORKS_LUMBERMILL_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/steamworks/WORKSHOP_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "42", y = "-82")]
+        public static const STEAMWORKS_WORKSHOP_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/steamworks/TRAINING_GROUND_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "23", y = "-57")]
+        public static const STEAMWORKS_TRAINING_GROUND_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/steamworks/CANNON_TOWER_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "50", y = "-17")]
+        public static const STEAMWORKS_CANNON_TOWER_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/steamworks/BLACKSMITH_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "24", y = "-46")]
+        public static const STEAMWORKS_BLACKSMITH_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/steamworks/BASEMENT_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "30", y = "2")]
+        public static const STEAMWORKS_BASEMENT_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/steamworks/FOREST_CAMP_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "33", y = "-11")]
+        public static const STEAMWORKS_FOREST_CAMP_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/steamworks/DEAD_FIELD_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "16", y = "-17")]
+        public static const STEAMWORKS_DEAD_FIELD_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/steamworks/GRAPE_FIELD_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "16", y = "-16")]
+        public static const STEAMWORKS_GRAPE_FIELD_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/steamworks/TRIBAL_FESTIVAL_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "-4", y = "-24")]
+        public static const STEAMWORKS_TRIBAL_FESTIVAL_STRUCTURE: Class;
+
+        /* T47 One Eye Theme */
+        [Embed(source = "../../../graphics/themes/t47oneeye/TROOP.png")]
+        [EmbedPosition(name = "map", x = "42", y = "-10")]
+        public static const T47ONEEYE_TROOP: Class;
+
+        [Embed(source = "../../../graphics/themes/t47oneeye/TROOP.png")]
+        public static const T47ONEEYE_THEME_THUMBNAIL: Class;
+
+        [Embed(source = "../../../graphics/themes/t47oneeye/BANNER.png")]
+        public static const T47ONEEYE_THEME_BANNER: Class;
+
+        /* 2A8 Lovelace Theme */
+        [Embed(source = "../../../graphics/themes/lovelace/TROOP.png")]
+        [EmbedPosition(name = "map", x = "38", y = "-20")]
+        public static const LOVELACE_TROOP: Class;
+
+        [Embed(source = "../../../graphics/themes/lovelace/TROOP.png")]
+        public static const LOVELACE_THEME_THUMBNAIL: Class;
+
+        [Embed(source = "../../../graphics/themes/lovelace/BANNER.png")]
+        public static const LOVELACE_THEME_BANNER: Class;
+
+        /* panzern470 Theme */
+        [Embed(source = "../../../graphics/themes/panzern470/TROOP.png")]
+        [EmbedPosition(name = "map", x = "28", y = "-24")]
+        public static const PANZERN470_TROOP: Class;
+
+        [Embed(source = "../../../graphics/themes/panzern470/TROOP.png")]
+        public static const PANZERN470_THEME_THUMBNAIL: Class;
+
+        [Embed(source = "../../../graphics/themes/panzern470/BANNER.png")]
+        public static const PANZERN470_THEME_BANNER: Class;
+
     }
 }

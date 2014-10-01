@@ -831,9 +831,17 @@
         [EmbedPosition(name = "map", x = "16", y = "-16")]
         public static const STEAMWORKS_GRAPE_FIELD_STRUCTURE: Class;
 
+        [Embed(source = "../../../graphics/themes/steamworks/TRIBAL_CARNIVAL_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "18", y = "-29")]
+        public static const STEAMWORKS_TRIBAL_CARNIVAL_STRUCTURE: Class;
+
         [Embed(source = "../../../graphics/themes/steamworks/TRIBAL_FESTIVAL_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "-4", y = "-24")]
+        [EmbedPosition(name = "map", x = "25", y = "-31")]
         public static const STEAMWORKS_TRIBAL_FESTIVAL_STRUCTURE: Class;
+
+        [Embed(source = "../../../graphics/themes/steamworks/TRIBAL_FAIR_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = "23", y = "-24")]
+        public static const STEAMWORKS_TRIBAL_FAIR_STRUCTURE: Class;
 
         /* T47 One Eye Theme */
         [Embed(source = "../../../graphics/themes/t47oneeye/TROOP.png")]

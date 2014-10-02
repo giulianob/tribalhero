@@ -143,11 +143,17 @@ namespace Game.Logic.Actions
                 barbarianTribe.BeginUpdate();
                 barbarianTribe.Battle = null;
                 barbarianTribe.State = GameObjectStateFactory.NormalState();
-                // Reset resources
-                barbarianTribe.Resource.Clear();
-                barbarianTribe.Resource.Add(formula.BarbarianTribeResources(barbarianTribe.Lvl));
-                // Lower camps remaining
-                barbarianTribe.CampRemains--;
+
+                var initialBarbResources = formula.BarbarianTribeResources(barbarianTribe);
+                if (!initialBarbResources.Equals(barbarianTribe.Resource))
+                {
+                    // Lower camps remaining
+                    barbarianTribe.CampRemains--;
+
+                    // Reset resources
+                    barbarianTribe.Resource.Clear();
+                    barbarianTribe.Resource.Add(formula.BarbarianTribeResources(barbarianTribe));
+                }
 
                 barbarianTribe.EndUpdate();
 

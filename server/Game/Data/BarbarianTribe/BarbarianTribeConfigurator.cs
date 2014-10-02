@@ -13,13 +13,10 @@ namespace Game.Data.BarbarianTribe
 
         private readonly IRegionManager regionManager;
 
-        private readonly ITileLocator tileLocator;
-
-        public BarbarianTribeConfigurator(MapFactory mapFactory, IRegionManager regionManager, ITileLocator tileLocator)
+        public BarbarianTribeConfigurator(MapFactory mapFactory, IRegionManager regionManager)
         {
             this.mapFactory = mapFactory;
             this.regionManager = regionManager;
-            this.tileLocator = tileLocator;
         }
 
         public bool Next(int count, out byte level, out Position position)

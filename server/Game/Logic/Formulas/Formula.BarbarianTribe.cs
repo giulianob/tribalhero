@@ -15,8 +15,19 @@ namespace Game.Logic.Formulas
         private SlotMachineCalculator barbarianTribeIronCalculator;
         private SlotMachineCalculator barbarianTribeGoldCalculator;
 
-        public virtual Resource BarbarianTribeResources(byte level)
+        public virtual Resource BarbarianTribeResources(IBarbarianTribe barbarianTribe)
         {
+            int seed;
+            unchecked
+            {
+                seed = (int)(barbarianTribe.ObjectId +
+                             barbarianTribe.PrimaryPosition.X +
+                             barbarianTribe.PrimaryPosition.Y +
+                             2 ^ barbarianTribe.CampRemains);
+            }
+
+            var rand = new Random(seed);
+
             barbarianTribeCropCalculator = barbarianTribeCropCalculator ??
                                            new SlotMachineCalculator(new[] {92, 208, 461, 864, 1423, 2142, 3027, 4081, 5308, 6709},
                                                                      new[] {138, 311, 692, 1296, 2134, 3213, 4540, 6122, 7961, 10064},
@@ -41,10 +52,10 @@ namespace Game.Logic.Formulas
                                                                      new[] {0.0001, 0.001, 0.01, 0.05, 0.1, 0.3, 0.5, 0.6, 0.75, 0.9},
                                                                      new[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
 
-            return new Resource(barbarianTribeCropCalculator.Roll(level, Config.Random),
-                                barbarianTribeGoldCalculator.Roll(level, Config.Random),
-                                barbarianTribeIronCalculator.Roll(level, Config.Random),
-                                barbarianTribeWoodCalculator.Roll(level, Config.Random));
+            return new Resource(barbarianTribeCropCalculator.Roll(barbarianTribe.Lvl, rand),
+                                barbarianTribeGoldCalculator.Roll(barbarianTribe.Lvl, rand),
+                                barbarianTribeIronCalculator.Roll(barbarianTribe.Lvl, rand),
+                                barbarianTribeWoodCalculator.Roll(barbarianTribe.Lvl, rand));
         }
 
         public virtual void BarbarianTribeUpkeep(byte level, out int upkeep, out byte unitLevel)

@@ -50,7 +50,6 @@ namespace Game.Data.BarbarianTribe
                               uint x,
                               uint y,
                               int count,
-                              Resource resources,
                               IDbManager dbManager,
                               IActionWorker actionWorker) 
             : base(id, x, y)
@@ -59,15 +58,15 @@ namespace Game.Data.BarbarianTribe
 
             Lvl = level;
             Worker = actionWorker;
-            Resource = resources;
             CampRemains = (byte)count;
             Created = DateTime.UtcNow;
             LastAttacked = DateTime.MinValue;
 
-            Resource.StatsUpdate += ResourceOnStatsUpdate;
-
             actionWorker.LockDelegate = () => this;
             actionWorker.Location = this;
+
+            Resource = new Resource();
+            Resource.StatsUpdate += ResourceOnStatsUpdate;
         }
 
         private void ResourceOnStatsUpdate()

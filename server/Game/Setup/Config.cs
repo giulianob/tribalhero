@@ -53,7 +53,7 @@ namespace Game.Setup
         public static uint region_width = 34;
         public static uint region_height = 62;
         public static ushort road_start_tile_id = 60;
-        public static ushort road_end_tile_id = 90;
+        public static ushort road_end_tile_id = 126;
         public static uint minimap_region_width = 100;
         public static uint minimap_region_height = 100;
         public static int friend_invite_radius = 250;
@@ -62,7 +62,7 @@ namespace Game.Setup
 
         #region Database Settings
 
-        public static string database_schema_version = "20140824214357";
+        public static string database_schema_version = "1111";
         public static bool database_verbose;
         public static bool database_empty;
         public static bool database_load_players = true;
@@ -93,7 +93,6 @@ namespace Game.Setup
         #region Idle Settings
 
         public static bool players_remove_idle = true;
-        public static int idle_days = 3;
 
         #endregion
 
@@ -164,10 +163,10 @@ namespace Game.Setup
 
         #region Barbarian Tribe Settings
 
-        public static int barbariantribe_generate = 2200;
+        public static int barbariantribe_generate = 2200; // not used anymore in new weighted algo but old impl. is still here so leaving it
         public static int barbariantribe_camp_count = 10;
         public static int barbariantribe_idle_check_interval_in_sec = 1800;
-        public static int barbariantribe_idle_duration_in_sec = 86400 * 3;
+        public static int barbariantribe_idle_duration_in_sec = 86400 * 2;
         public static double barbarian_tribes_npc_randomness = 0.4;           
 
         #endregion
@@ -176,7 +175,7 @@ namespace Game.Setup
         
         public static bool actions_instant_time;
         public static bool actions_skip_city_actions;
-        public static int actions_free_cancel_interval_in_sec = 60;
+        public static int actions_free_cancel_interval_in_sec = 70; // it's really 60 seconds but give an extra 10 seconds to account for latency
         public static bool actions_ignore_requirements;
 
         #endregion

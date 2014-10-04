@@ -179,7 +179,8 @@ namespace Game
                                                                                     container.GetInstance<StrongholdCommandLineModule>(),
                                                                                     container.GetInstance<RegionCommandsLineModule>(),
                                                                                     container.GetInstance<BarbarianTribeCommandsLineModule>(),
-                                                                                    container.GetInstance<SystemCommandLineModule>()),
+                                                                                    container.GetInstance<SystemCommandLineModule>(),
+                                                                                    container.GetInstance<BarbarianTribeCommandsLineModule>()),
                                                      Lifestyle.Singleton);
 
             container.Register<IProcessor>(() => new Processor(container.GetInstance<AssignmentCommandsModule>(),
@@ -265,7 +266,7 @@ namespace Game
             #region Barbarian Tribe
 
             container.Register<IBarbarianTribeManager, BarbarianTribeManager>(Lifestyle.Singleton);
-            container.Register<IBarbarianTribeConfigurator, BarbarianTribeConfigurator>(Lifestyle.Singleton);
+            container.Register<IBarbarianTribeConfigurator, BarbarianTribeWeightedConfigurator>(Lifestyle.Singleton);
             container.Register<IBarbarianTribeFactory, BarbarianTribeFactory>();
             container.Register<BarbarianTribeChecker>(Lifestyle.Singleton);
 

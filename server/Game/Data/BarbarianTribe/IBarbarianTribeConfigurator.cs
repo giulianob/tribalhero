@@ -1,10 +1,11 @@
+using System.Collections.Generic;
 using Game.Map;
 
 namespace Game.Data.BarbarianTribe
 {
     public interface IBarbarianTribeConfigurator
     {
-        bool Next(int count, out byte level, out Position position);
+        IEnumerable<BarbarianTribeConfiguration> Create(IEnumerable<IBarbarianTribe> existingBarbarianTribes, int existingBarbarianTribeCount);
 
         bool IsLocationAvailable(Position position);
     }

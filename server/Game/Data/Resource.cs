@@ -186,7 +186,7 @@ namespace Game.Data
         {
             get
             {
-                return (Crop + Wood + Gold * 2 + Iron * 2 + Labor * 100) / 100m;
+                return (Crop + Wood + Gold * 2 + Iron * 2 + Labor * 50) / 100m;
             }
         }
 

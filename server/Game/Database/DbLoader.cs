@@ -576,6 +576,7 @@ namespace Game.Database
                                                         (byte)reader["radius"],
                                                         (decimal)reader["alignment_point"],
                                                         (string)reader["default_theme_id"],
+                                                        (string)reader["road_theme_id"],
                                                         (string)reader["wall_theme_id"],
                                                         (string)reader["troop_theme_id"]);
 
@@ -586,6 +587,7 @@ namespace Game.Database
                     city.HideNewUnits = (bool)reader["hide_new_units"];
                     city.Value = (ushort)reader["value"];
                     city.Deleted = (City.DeletedState)reader["deleted"];
+                    city.ExpenseValue = (decimal)reader["expense_value"];
 
                     World.Cities.DbLoaderAdd(city);
                 }

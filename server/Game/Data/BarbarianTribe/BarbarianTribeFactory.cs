@@ -30,7 +30,12 @@ namespace Game.Data.BarbarianTribe
             }
 
             var worker = actionWorkerFactory.CreateActionWorker(null, new SimpleLocation(LocationType.BarbarianTribe, id));
-            var barbarianTribe = new BarbarianTribe(id, level, position.X, position.Y, count, formula.BarbarianTribeResources(level), kernel.Get<IDbManager>(), worker);
+            var barbarianTribe = new BarbarianTribe(id, level, position.X, position.Y, count, kernel.Get<IDbManager>(), worker);
+
+            var resources = formula.BarbarianTribeResources(barbarianTribe);
+            barbarianTribe.Resource.Clear();
+            barbarianTribe.Resource.Add(resources);
+
             worker.LockDelegate = () => barbarianTribe;
             return barbarianTribe;
         }

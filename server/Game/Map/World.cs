@@ -120,7 +120,7 @@ namespace Game.Map
 
         public int GetActivePlayerCount()
         {
-            return new ActivePlayerSelector(Config.idle_days).GetPlayerIds().Count();
+            return new ActivePlayerSelector().GetPlayerIds().Count();
         }
 
         public void Add(IBattleManager battleManager)

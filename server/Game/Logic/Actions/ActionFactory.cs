@@ -238,7 +238,7 @@ namespace Game.Logic.Actions
 
         public CityPassiveAction CreateCityPassiveAction(uint cityId)
         {
-            return new CityPassiveAction(cityId, kernel.Get<IObjectTypeFactory>(), kernel.Get<ILocker>(), kernel.Get<Formula>(), kernel.Get<IActionFactory>(), kernel.Get<Procedure>(), kernel.Get<IGameObjectLocator>(), kernel.Get<IBattleFormulas>());
+            return new CityPassiveAction(cityId, kernel.Get<IObjectTypeFactory>(), kernel.Get<ILocker>(), kernel.Get<Formula>(), kernel.Get<IActionFactory>(), kernel.Get<Procedure>(), kernel.Get<IGameObjectLocator>(), kernel.Get<IBattleFormulas>(), kernel.Get<IStructureCsvFactory>(), kernel.Get<TechnologyFactory>(), kernel.Get<UnitFactory>());
         }
 
         public RetreatChainAction CreateRetreatChainAction(uint cityId, ITroopObjectInitializer troopObjectInitializer)

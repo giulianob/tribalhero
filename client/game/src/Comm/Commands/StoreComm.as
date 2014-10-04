@@ -3,11 +3,8 @@ package src.Comm.Commands {
     import com.codecatalyst.promise.Promise;
 
     import src.Comm.Commands;
-
     import src.Comm.Packet;
-
     import src.Comm.Session;
-
     import src.Map.MapComm;
     import src.Objects.Store.StoreItem;
     import src.Objects.Store.StoreItemAchievement;
@@ -75,11 +72,12 @@ package src.Comm.Commands {
             return mapComm.send(session, packet);
         }
 
-        public function applyThemeToAll(cityId: int, theme: String): Promise {
+        public function applyThemeToAll(cityId: int, theme: String, applyWall: Boolean): Promise {
             var packet: Packet = new Packet();
             packet.cmd = Commands.STORE_THEME_APPLY_TO_ALL;
             packet.writeUInt(cityId);
             packet.writeString(theme);
+            packet.writeBoolean(applyWall);
 
             return mapComm.send(session, packet);
         }
@@ -87,6 +85,15 @@ package src.Comm.Commands {
         public function setWallTheme(cityId: int, theme: String): Promise {
             var packet: Packet = new Packet();
             packet.cmd = Commands.WALL_SET_THEME;
+            packet.writeUInt(cityId);
+            packet.writeString(theme);
+
+            return mapComm.send(session, packet);
+        }
+
+        public function setRoadTheme(cityId: int, theme: String): Promise {
+            var packet: Packet = new Packet();
+            packet.cmd = Commands.ROAD_SET_THEME;
             packet.writeUInt(cityId);
             packet.writeString(theme);
 

@@ -1,8 +1,10 @@
 #region
 
+using System.Linq;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Data.Troop;
+using Game.Setup;
 
 #endregion
 
@@ -29,10 +31,17 @@ namespace Game.Logic.Procedures
             return true;
         }
 
-        public virtual void TroopStubDelete(ICity city, ITroopStub stub)
+        public virtual Error TroopStubDelete(ICity city, ITroopStub stub)
         {
+            if (city.TroopObjects.Any(t => t.Stub == stub))
+            {
+                return Error.TroopObjectExistsForStub;
+            }
+
             AddToNormal(stub, city.DefaultTroop);
             city.Troops.Remove(stub.TroopId);
+
+            return Error.Ok;
         }
 
         public virtual void TroopObjectCreate(ICity city, ITroopStub stub, out ITroopObject troopObject)

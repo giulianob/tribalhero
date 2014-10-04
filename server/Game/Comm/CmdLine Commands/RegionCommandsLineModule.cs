@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using Game.Data;
 using Game.Map;
+using Game.Module;
 using Game.Util;
 using NDesk.Options;
 
@@ -16,9 +17,12 @@ namespace Game.Comm
 
         private readonly IWorld world;
 
-        public RegionCommandsLineModule(IWorld world)
+        private readonly MapDataExport mapDataExport;
+
+        public RegionCommandsLineModule(IWorld world, MapDataExport mapDataExport)
         {
             this.world = world;
+            this.mapDataExport = mapDataExport;
         }
 
         public void RegisterCommands(CommandLineProcessor processor)
@@ -26,6 +30,14 @@ namespace Game.Comm
             processor.RegisterCommand("dumpregion", DumpRegion, PlayerRights.Bureaucrat);
             processor.RegisterCommand("dumpregioncache", DumpRegionCache, PlayerRights.Bureaucrat);
             processor.RegisterCommand("cleanregioncache", CleanRegionCache, PlayerRights.Bureaucrat);            
+            processor.RegisterCommand("exportmapjson", ExportMapJson, PlayerRights.Bureaucrat);            
+        }
+
+        public string ExportMapJson(Session session, String[] parms)
+        {
+            mapDataExport.Export();
+
+            return "OK!";
         }
 
         public string CleanRegionCache(Session session, String[] parms)

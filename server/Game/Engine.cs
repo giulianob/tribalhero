@@ -81,6 +81,8 @@ namespace Game
 
         private readonly TServer thriftServer;
 
+        private readonly MapDataExport mapDataExport;
+
         public Engine(INetworkServer server,
                       IPolicyServer policyServer,
                       TServer thriftServer,
@@ -99,7 +101,8 @@ namespace Game
                       ICityChannel cityChannel,
                       IStrongholdManagerLogger strongholdManagerLogger,
                       StoreSync storeSync,
-                      IQueueListener queueListener)
+                      IQueueListener queueListener, 
+                      MapDataExport mapDataExport)
         {
             this.server = server;
             this.policyServer = policyServer;
@@ -120,6 +123,7 @@ namespace Game
             this.strongholdManagerLogger = strongholdManagerLogger;
             this.storeSync = storeSync;
             this.queueListener = queueListener;
+            this.mapDataExport = mapDataExport;
         }
 
         public EngineState State { get; private set; }
@@ -148,16 +152,27 @@ namespace Game
                 {
                     var stackTrace = Environment.StackTrace;
                     Logger.Error("Unhandled exception but did not have exception object. Stack trace:", stackTrace);
-                }
-                else if (!(ex is Exception))
-                {
-                    Logger.Error("Unhandled exception. Object was not exception. {0}", ex);
-                }
-                else
-                {
-                    Logger.ErrorException("Unhandled exception", (Exception)ex);
+                    return;
                 }
 
+                if (!(ex is Exception))
+                {
+                    Logger.Error("Unhandled exception. Object was not exception. {0}", ex);
+                    return;
+                }
+
+                var aggregateException = ex as AggregateException;
+                if (aggregateException != null)
+                {                    
+                    Logger.ErrorException("Unhandled exception aggregate", aggregateException);
+                    foreach (var innerException in aggregateException.Flatten().InnerExceptions)
+                    {
+                        Logger.ErrorException("Aggregate inner exception", innerException);
+                    }
+                    return;
+                }
+
+                Logger.ErrorException("Unhandled exception", (Exception)ex);
             }
             finally
             {
@@ -266,10 +281,6 @@ _________ _______ _________ ______   _______  _
             strongholdManagerLogger.Listen(strongholdManager);
 
             // Initialize barbarian tribes
-            if (Config.barbariantribe_generate > 0 && barbarianTribeManager.Count < Config.barbariantribe_generate) // Only generate if there is none.
-            {
-                barbarianTribeManager.Generate(Config.barbariantribe_generate - barbarianTribeManager.Count);
-            }            
             barbarianTribeChecker.Start(TimeSpan.FromSeconds(Config.barbariantribe_idle_check_interval_in_sec));
 
             // Initialize game market
@@ -298,6 +309,9 @@ _________ _______ _________ ______   _______  _
             {
                 playersRemoverFactory.CreatePlayersRemover(playerSelector.CreateNewbieIdleSelector()).Start();
             }
+
+            // Start data export
+            mapDataExport.Start(TimeSpan.FromMinutes(30));
 
             State = EngineState.Started;
         }

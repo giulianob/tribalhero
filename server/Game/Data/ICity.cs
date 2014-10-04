@@ -59,12 +59,7 @@ namespace Game.Data
         event City.CityEventHandler<ActionReferenceArgs> ReferenceRemoved;
 
         #endregion
-
-        /// <summary>
-        ///     Enumerates only through structures in this city
-        /// </summary>
-        Dictionary<uint, IStructure>.Enumerator Structures { get; }
-
+        
         /// <summary>
         ///     Radius of city. This affects city wall and where user can build.
         /// </summary>
@@ -123,6 +118,8 @@ namespace Game.Data
         ///     Default theme for a city
         /// </summary>
         string DefaultTheme { get; set; }
+
+        string RoadTheme { get; set; }
 
         /// <summary>
         ///     Player that owns this city
@@ -200,6 +197,8 @@ namespace Game.Data
         bool IsUpdating { get; }
 
         bool InWorld { get; }
+		
+        decimal ExpenseValue { get; set; }
 
         void BeginUpdate();
 

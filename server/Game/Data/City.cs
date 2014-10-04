@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -68,7 +69,7 @@ namespace Game.Data
 
         private readonly object objLock = new object();
 
-        private readonly Dictionary<uint, IStructure> structures = new Dictionary<uint, IStructure>();
+        private readonly ConcurrentDictionary<uint, IStructure> structures = new ConcurrentDictionary<uint, IStructure>();
                      
         public event CityEventHandler<TechnologyEventArgs> TechnologyCleared = (sender, args) => { };
                      
@@ -84,7 +85,7 @@ namespace Game.Data
 
         public event CityEventHandler<GameObjectArgs> ObjectUpdated = (sender, args) => { };
 
-        private readonly Dictionary<uint, ITroopObject> troopobjects = new Dictionary<uint, ITroopObject>();
+        private readonly ConcurrentDictionary<uint, ITroopObject> troopobjects = new ConcurrentDictionary<uint, ITroopObject>();
 
         public event CityEventHandler<ActionReferenceArgs> ReferenceRemoved = (sender, args) => { };
 
@@ -107,6 +108,8 @@ namespace Game.Data
         private byte radius;
 
         private ushort value;
+        
+        private decimal expenseValue;
 
         #region Properties
 
@@ -147,21 +150,12 @@ namespace Game.Data
 
         private string defaultTheme;
         
+        private string roadTheme;
+        
         private string troopTheme;
 
         private string wallTheme;
-
-        /// <summary>
-        ///     Enumerates only through structures in this city
-        /// </summary>
-        public Dictionary<uint, IStructure>.Enumerator Structures
-        {
-            get
-            {
-                return structures.GetEnumerator();
-            }
-        }
-
+        
         /// <summary>
         ///     Radius of city. This affects city wall and where user can build.
         /// </summary>
@@ -219,7 +213,7 @@ namespace Game.Data
         {
             get
             {
-                return troopobjects.Values;
+                return troopobjects.Values.AsEnumerable();
             }
         }
 
@@ -246,6 +240,21 @@ namespace Game.Data
                 CheckUpdateMode();
 
                 defaultTheme = value;
+                RaisePropertyChanged();
+            }
+        }
+        
+        public string RoadTheme
+        {
+            get
+            {
+                return roadTheme;
+            }
+            set
+            {
+                CheckUpdateMode();
+
+                roadTheme = value;
                 RaisePropertyChanged();
             }
         }
@@ -401,17 +410,31 @@ namespace Game.Data
         {
             get
             {
-                return Owner.IsIdle ? 50 : alignmentPoint;
+                return Owner.IsIdleForAWeek ? 50 : alignmentPoint;
             }
             set
             {
-                if (Owner.IsIdle)
+                if (Owner.IsIdleForAWeek)
                 {
                     value = 50;
                 }
 
                 CheckUpdateMode();
                 alignmentPoint = Math.Min(100m, Math.Max(0m, value));
+                RaisePropertyChanged();
+            }
+        }
+
+        public decimal ExpenseValue
+        {
+            get
+            {
+                return expenseValue;
+            }
+            set
+            {
+                CheckUpdateMode();
+                this.expenseValue = value;
                 RaisePropertyChanged();
             }
         }
@@ -466,15 +489,13 @@ namespace Game.Data
         {
             lock (objLock)
             {
-                if (troopobjects.ContainsKey(objId))
+                if (!troopobjects.TryAdd(objId, troop))
                 {
                     return false;
                 }
 
                 troop.City = this;
-
-                troopobjects.Add(objId, troop);
-
+                
                 objectIdGen.Set(objId);
 
                 if (save)
@@ -494,14 +515,12 @@ namespace Game.Data
         {
             lock (objLock)
             {
-                if (structures.ContainsKey(objId))
+                if (!structures.TryAdd(objId, structure))
                 {
                     return false;
                 }
 
-                structure.City = this;
-
-                structures.Add(objId, structure);
+                structure.City = this;                
 
                 objectIdGen.Set(objId);
 
@@ -615,6 +634,7 @@ namespace Game.Data
                     byte radius,
                     decimal ap,
                     string defaultTheme,
+                    string roadTheme,
                     string troopTheme,
                     string wallTheme,
                     IActionWorker worker,
@@ -642,6 +662,7 @@ namespace Game.Data
             PrimaryPosition = position;
             AlignmentPoint = ap;
             DefaultTheme = defaultTheme;
+            RoadTheme = roadTheme;
             WallTheme = wallTheme;
             TroopTheme = troopTheme;
             Resource = resource;
@@ -742,7 +763,7 @@ namespace Game.Data
 
         IEnumerator<IStructure> IEnumerable<IStructure>.GetEnumerator()
         {
-            return ((IEnumerable<IStructure>)structures.Values).GetEnumerator();
+            return structures.Values.GetEnumerator();
         }
 
         /// <summary>
@@ -757,7 +778,10 @@ namespace Game.Data
                 structure.Technologies.Clear();
                 structure.Technologies.EndUpdate();
 
-                structures.Remove(structure.ObjectId);
+                if (!structures.TryRemove(structure.ObjectId, out structure))
+                {
+                    return;
+                }
 
                 structure.ObjectUpdated -= OnObjectUpdated;
                 structure.Technologies.TechnologyCleared -= OnTechnologyCleared;
@@ -785,7 +809,10 @@ namespace Game.Data
         {
             lock (objLock)
             {
-                troopobjects.Remove(troop.ObjectId);
+                if (!troopobjects.TryRemove(troop.ObjectId, out troop))
+                {
+                    return;
+                }
 
                 dbManager.Delete(troop);
 
@@ -882,8 +909,10 @@ namespace Game.Data
                         new DbColumn("y", PrimaryPosition.Y, DbType.UInt32),
                         new DbColumn("deleted", Deleted, DbType.Int32),
                         new DbColumn("default_theme_id", DefaultTheme, DbType.String),
+                        new DbColumn("road_theme_id", RoadTheme, DbType.String),
                         new DbColumn("wall_theme_id", WallTheme, DbType.String),
                         new DbColumn("troop_theme_id", TroopTheme, DbType.String),
+                        new DbColumn("expense_value", ExpenseValue, DbType.Decimal),
                 };
             }
         }

@@ -4,6 +4,7 @@
     import flash.events.Event;
 
     import src.Global;
+    import src.Graphics.WallTileset;
     import src.Map.Position;
     import src.Map.ScreenPosition;
 
@@ -516,7 +517,7 @@
 		public function draw(radius: int):void {
             this.radius = radius;
 
-            drawWithArray(_theme == Theme.DEFAULT_THEME_ID ? WALLS_DEFAULT : WALLS_NEW);
+            drawWithArray(WallTileset.useDefaultWall(_theme) ? WALLS_DEFAULT : WALLS_NEW);
 		}
 
         private function drawWithArray(walls: Array): void {

@@ -1,6 +1,7 @@
 ﻿using System;
 using Game.Data;
 using Game.Data.Store;
+using Game.Map;
 using Game.Setup;
 using Game.Util.Locking;
 
@@ -34,11 +35,13 @@ namespace Game.Comm.ProcessorCommands
         {
             uint cityId;
             string itemId;
+            bool applyWall;
 
             try
             {
                 cityId = packet.GetUInt32();
                 itemId = packet.GetString();
+                applyWall = packet.GetBoolean();
             }
             catch(Exception)
             {
@@ -55,7 +58,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                var result = themeManager.ApplyToAll(city, itemId);
+                var result = themeManager.ApplyToAll(city, itemId, applyWall);
 
                 ReplyWithResult(session, packet, result);
             });

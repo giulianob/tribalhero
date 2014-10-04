@@ -31,6 +31,7 @@ namespace Game.Battle.RewardStrategies
             barbarianTribe.EndUpdate();
         }
 
+
         public void GiveAttackerRewards(ICombatObject attacker, int attackPoints, Resource loot)
         {
             // Barb tribes dont give any attack points so just give them loot
@@ -39,7 +40,7 @@ namespace Game.Battle.RewardStrategies
 
         public void GiveDefendersRewards(ICombatObject attacker, int defensePoints, Resource loot)
         {
-            if (!loot.Empty)
+            if (!loot.Empty)    
             {
                 barbarianTribe.BeginUpdate();                
                 barbarianTribe.Resource.Add(loot);

@@ -10,13 +10,10 @@ namespace Game.Data.BarbarianTribe
         private readonly IBarbarianTribeManager manager;
         private readonly IScheduler scheduler;
 
-        private readonly IDbManager dbManager;
-
-        public BarbarianTribeChecker(IBarbarianTribeManager manager, IScheduler scheduler, IDbManager dbManager)
+        public BarbarianTribeChecker(IBarbarianTribeManager manager, IScheduler scheduler)
         {
             this.manager = manager;
             this.scheduler = scheduler;
-            this.dbManager = dbManager;
         }
 
         /// <summary>

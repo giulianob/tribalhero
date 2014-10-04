@@ -14,10 +14,12 @@ namespace Game.Data.BarbarianTribe
 
         bool TryGetBarbarianTribe(uint id, out IBarbarianTribe barbarianTribe);
 
-        void Generate(int count);
+        void Generate();
         
         void RelocateAsNeeded();
 
         bool RelocateBarbarianTribe(IBarbarianTribe barbarianTribe);
+
+        void RelocateIdleBarbCamps();
     }
 }

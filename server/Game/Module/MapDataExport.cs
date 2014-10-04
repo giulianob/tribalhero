@@ -69,7 +69,7 @@ namespace Game.Module
             scheduler.Put(this);
         }
 
-        public void Callback(object custom)
+        public void Export()
         {
             try
             {
@@ -115,6 +115,11 @@ namespace Game.Module
             {
                 logger.Error(e, "Error while creating export file");
             }
+        }
+
+        public void Callback(object custom)
+        {
+            Export();
 
             Time = SystemClock.Now.Add(TimeSpan);
             scheduler.Put(this);

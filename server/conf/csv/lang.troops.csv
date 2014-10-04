@@ -51,7 +51,7 @@ GLADIATOR_UNIT,Gladiator
 1_HEAVY_CAVALRY_UNIT_DESC,"An all-around unit which does not deal a whole lot of damage and has high upkeep, but most importantly, they hang around as long as they can to protect other units that are behind them. They are the meatshield in case the first row is destroyed. Knight is very strong against Cannon Tower, slightly weak against Hoplite and Helepolis."
 1_HELEPOLIS_UNIT,Helepolis
 1_HELEPOLIS_PLURAL_UNIT,Helepolises
-1_HELEPOLIS_UNIT_DESC,Machine that shoots thousands of arrows every minute. 
+1_HELEPOLIS_UNIT_DESC,"Machine that shoots thousands of arrows every minute.  Beware when Helepolis is sent with the troops, overall movement will be lowered to have the same speed as the Helepolis regardless of the troop's composition."
 1_CATAPULT_UNIT,Catapult
 1_CATAPULT_PLURAL_UNIT,Catapults
 1_CATAPULT_UNIT_DESC,"The only unit that does meaningful damage to structures. Catapults are also strong against machines but can fall quickly to any melee units. Beware when Catapult is sent with the troops, overall movement will be lowered to have the same speed as the Catapult regardless of the troop's composition."

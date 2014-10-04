@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Common;
 using Game.Map;
 using Game.Setup;
@@ -64,23 +65,29 @@ namespace Game.Data.BarbarianTribe
             return barbarianTribes.TryGetValue(id, out barbarianTribe);
         }
 
-        public void Generate(int count)
+        public void Generate()
         {
-            for (var i = 0; i < count; ++i)
+            var sw = new Stopwatch();
+            sw.Start();
+
+            foreach (var newBarbarianTribeConfiguration in barbarianTribeConfigurator.Create(AllTribes, Count))
             {
-                byte level;
-                Position position;
+                var newBarbarianTribe = barbarianTribeFactory.CreateBarbarianTribe(idGenerator.GetNext(),
+                                                                                   newBarbarianTribeConfiguration.Level,
+                                                                                   newBarbarianTribeConfiguration.PrimaryPosition,
+                                                                                   Config.barbariantribe_camp_count);
 
-                if (!barbarianTribeConfigurator.Next(Config.barbariantribe_generate, out level, out position))
-                {
-                    break;
-                }
+                multiObjectLockFactory().Lock(new ILockable[] {newBarbarianTribe})
+                                        .Do(() => Add(newBarbarianTribe));
 
-                IBarbarianTribe barbarianTribe = barbarianTribeFactory.CreateBarbarianTribe(idGenerator.GetNext(), level, position, Config.barbariantribe_camp_count);
-                multiObjectLockFactory().Lock(new ILockable[] {barbarianTribe})
-                                        .Do(() => Add(barbarianTribe));
-                logger.Info(string.Format("Added barbarianTribe[{0},{1}] Number[{2}] ", position.X, position.Y, i));
+                logger.Info(string.Format("Added barbarianTribe[{0},{1}] Number[{2}] ",
+                                          newBarbarianTribe.PrimaryPosition.X,
+                                          newBarbarianTribe.PrimaryPosition.Y,
+                                          Count));
             }
+
+            sw.Stop();
+            logger.Info("Completed generating barb camps in {0}", sw.Elapsed);
         }
 
         public bool CreateBarbarianTribeNear(byte level, int campCount, uint x, uint y, byte radius)
@@ -140,16 +147,8 @@ namespace Game.Data.BarbarianTribe
 
         public bool RelocateBarbarianTribe(IBarbarianTribe barbarianTribe)
         {
-            bool removed = multiObjectLockFactory().Lock(new ILockable[] {barbarianTribe})
-                                               .Do(() => Remove(barbarianTribe));
-
-            if (!removed)
-            {
-                return false;
-            }
-
-            Generate(1);
-            return true;
+            return multiObjectLockFactory().Lock(new ILockable[] {barbarianTribe})
+                                           .Do(() => Remove(barbarianTribe));
         }
 
         private bool Remove(IBarbarianTribe barbarianTribe)
@@ -179,9 +178,10 @@ namespace Game.Data.BarbarianTribe
         }
 
         public void RelocateAsNeeded()
-        {
+        {            
             var barbarianTribesToDelete = barbarianTribes.Values.Where(bt => (bt.Created.Add(TimeSpan.FromSeconds(Config.barbariantribe_idle_duration_in_sec)) < DateTime.UtcNow &&
-                                                                              bt.LastAttacked == DateTime.MinValue) || bt.CampRemains == 0).ToArray();
+                                                                              bt.LastAttacked == DateTime.MinValue) || bt.CampRemains == 0)
+                                                         .ToArray();
 
             foreach(var barbarianTribe in barbarianTribesToDelete)
             {
@@ -189,7 +189,20 @@ namespace Game.Data.BarbarianTribe
                                         .Do(() => Remove(barbarianTribe));
             }
 
-            Generate(barbarianTribesToDelete.Count());
+            Generate();
+        }
+
+        public void RelocateIdleBarbCamps()
+        {
+            var barbarianTribesToDelete = barbarianTribes.Values.Where(bt => bt.LastAttacked == DateTime.MinValue).ToArray();
+
+            foreach(var barbarianTribe in barbarianTribesToDelete)
+            {
+                multiObjectLockFactory().Lock(new ILockable[] {barbarianTribe})
+                                        .Do(() => Remove(barbarianTribe));
+            }
+
+            Generate();
         }
 
         public IEnumerable<IBarbarianTribe> AllTribes

@@ -281,10 +281,6 @@ _________ _______ _________ ______   _______  _
             strongholdManagerLogger.Listen(strongholdManager);
 
             // Initialize barbarian tribes
-            if (Config.barbariantribe_generate > 0 && barbarianTribeManager.Count < Config.barbariantribe_generate) // Only generate if there is none.
-            {
-                barbarianTribeManager.Generate(Config.barbariantribe_generate - barbarianTribeManager.Count);
-            }            
             barbarianTribeChecker.Start(TimeSpan.FromSeconds(Config.barbariantribe_idle_check_interval_in_sec));
 
             // Initialize game market

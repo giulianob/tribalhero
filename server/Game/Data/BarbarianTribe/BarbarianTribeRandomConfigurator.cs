@@ -1,11 +1,11 @@
-using System;
+using System.Collections.Generic;
 using System.Linq;
 using Game.Map;
 using Game.Setup;
 
 namespace Game.Data.BarbarianTribe
 {
-    class BarbarianTribeConfigurator : IBarbarianTribeConfigurator
+    class BarbarianTribeRandomConfigurator : IBarbarianTribeConfigurator
     {
         private static readonly int[] LevelProbability = {0, 8, 23, 37, 49, 60, 70, 78, 85, 93, 100};
 
@@ -13,13 +13,13 @@ namespace Game.Data.BarbarianTribe
 
         private readonly IRegionManager regionManager;
 
-        public BarbarianTribeConfigurator(MapFactory mapFactory, IRegionManager regionManager)
+        public BarbarianTribeRandomConfigurator(MapFactory mapFactory, IRegionManager regionManager)
         {
             this.mapFactory = mapFactory;
             this.regionManager = regionManager;
         }
 
-        public bool Next(int count, out byte level, out Position position)
+        private bool Next(out byte level, out Position position)
         {            
             var limit = 0;
             do
@@ -36,14 +36,33 @@ namespace Game.Data.BarbarianTribe
             }
             while (!IsLocationAvailable(position));
             
-            var ratio = count / 100m;
-            var index = Config.Random.Next(count);
+            var ratio = Config.barbariantribe_generate / 100m;
+            var index = Config.Random.Next(Config.barbariantribe_generate);
+
+            // ReSharper disable once LoopVariableIsNeverChangedInsideLoop
             for (level = 1; index >= (decimal)LevelProbability[level] * ratio; level++)
             {
                 // this gets the level based on distribution
             }
             
             return true;
+        }
+
+        public IEnumerable<BarbarianTribeConfiguration> Create(IEnumerable<IBarbarianTribe> existingBarbarianTribes, int existingBarbarianTribeCount)
+        {
+            var toGenerate = Config.barbariantribe_generate - existingBarbarianTribeCount;
+
+            for (var i = 0; i < toGenerate; i++)
+            {
+                byte level;
+                Position position;
+                if (!Next(out level, out position))
+                {
+                    continue;
+                }
+
+                yield return new BarbarianTribeConfiguration(level, position);
+            }
         }
 
         public bool IsLocationAvailable(Position position)

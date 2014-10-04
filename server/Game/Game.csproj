@@ -260,12 +260,14 @@
     <Compile Include="Data\AchievementList.cs" />
     <Compile Include="Data\AchievementTier.cs" />
     <Compile Include="Data\AggressiveLazyValue.cs" />
+    <Compile Include="Data\BarbarianTribe\BarbarianTribeConfiguration.cs" />
     <Compile Include="Data\BarbarianTribe\BarbarianTribeFactory.cs" />
+    <Compile Include="Data\BarbarianTribe\BarbarianTribeWeightedConfigurator.cs" />
     <Compile Include="Data\BarbarianTribe\IBarbarianTribeConfigurator.cs" />
     <Compile Include="Data\BarbarianTribe\IBarbarianTribeFactory.cs" />
     <Compile Include="Data\BarbarianTribe\IBarbarianTribeManager.cs" />
     <Compile Include="Data\BarbarianTribe\BarbarianTribeChecker.cs" />
-    <Compile Include="Data\BarbarianTribe\BarbarianTribeConfigurator.cs" />
+    <Compile Include="Data\BarbarianTribe\BarbarianTribeRandomConfigurator.cs" />
     <Compile Include="Data\BarbarianTribe\BarbarianTribeManager.cs" />
     <Compile Include="Data\CityFactory.cs" />
     <Compile Include="Data\Events\ActionReferenceArgs.cs" />

@@ -185,6 +185,8 @@ namespace Game.Setup
         CityIncomingAttack = 617,
 
         CityMovedWithinTwoWeeks = 618,
+		
+        TroopObjectExistsForStub = 619,
 
         #endregion
 
@@ -229,6 +231,8 @@ namespace Game.Setup
         TribeCannotRejoinYet = 729,
 
         TribeCannotCreateYet = 730,
+
+        AssignmentTroopCannotBeRemovedAfterDispatch = 740,
 
         AssignmentDone = 741,
 

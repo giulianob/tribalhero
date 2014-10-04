@@ -178,8 +178,9 @@
             for (var reqX: int = -1; reqX <= Math.ceil((Constants.screenW * camera.getZoomFactorOverOne()) / Constants.regionW); reqX++) {
                 for (var reqY: int = -1; reqY <= Math.ceil((Constants.screenH * camera.getZoomFactorOverOne()) / (Constants.regionH / 2)); reqY++) {
                     var screenPos: ScreenPosition = new ScreenPosition(camera.currentPosition.x + (Constants.regionW * reqX),
-                            camera.currentPosition.y + (Constants.regionH / 2 * reqY));
-                    var requiredId: int = TileLocator.getRegionId(screenPos);
+                                                                       camera.currentPosition.y + (Constants.regionH / 2 * reqY));
+
+                    var requiredId: int = TileLocator.getRegionIdFromMapCoord(screenPos.toPosition());
 
                     var regionRect: Rectangle = TileLocator.getRegionRect(requiredId);
                     if (!regionRect.containsRect(screenRect) && !screenRect.intersects(regionRect)) continue;

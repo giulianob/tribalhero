@@ -27,8 +27,8 @@ glob:site/nbproject/project.properties
 glob:site/nbproject/private/private.xml
 glob:site/app/tmp/cache/cake_*
 glob:site/app/webroot/files/Game.swf
-glob:site/app/config/core.php
-glob:site/app/config/database.php
+glob:site/app/Config/core.php
+glob:site/app/Config/database.php
 glob:site/app/views/database/generated/*.ctp
 glob:site/app/views/database/generated/*.php
 glob:site/app/webroot/img/tree/game-tree.png
@@ -52,3 +52,8 @@ glob:client/*.apk
 
 syntax: glob
 client/.idea/workspace.xml
+app/tmp/cache/persistent/tribalheroserver_*
+app/tmp/cache/models/tribalheroserver_*
+site/app/tmp/cache/tribalheroserver_*
+site/app/webroot/map.json
+site/app/webroot/map.json.tmp

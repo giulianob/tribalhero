@@ -25,6 +25,7 @@ package src.UI.ViewModels {
         public static const EVENT_COIN_PURCHASE_NEEDED: String = "EVENT_COIN_PURCHASE_NEEDED";
         public static const EVENT_COMPLETED_APPLY_ALL_THEME: String = "EVENT_COMPLETED_APPLY_ALL_THEME";
         public static const EVENT_COMPLETED_APPLY_WALL_THEME: String = "EVENT_COMPLETED_APPLY_WALL_THEME";
+        public static const EVENT_COMPLETED_APPLY_ROAD_THEME: String = "EVENT_COMPLETED_APPLY_ROAD_THEME";
         public static const EVENT_COMPLETED_SET_DEFAULT_THEME: String = "EVENT_COMPLETED_SET_DEFAULT_THEME";
         public static const EVENT_COMPLETED_SET_DEFAULT_TROOP_THEME: String = "EVENT_COMPLETED_SET_DEFAULT_TROOP_THEME";
 
@@ -43,7 +44,11 @@ package src.UI.ViewModels {
         }
 
         public function isWallIncluded(): Boolean {
-            return Assets.doesSpriteExist(WallTileset.getSpriteName(theme.id));
+            return WallTileset.hasWall(theme.id);
+        }
+
+        public function isRoadIncluded(): Boolean {
+            return Constants.roadThemes.indexOf(theme.id) >= 0;
         }
 
         public function isTroopIncluded(): Boolean {
@@ -90,7 +95,7 @@ package src.UI.ViewModels {
         }
 
         public function applyAllTheme(city: City): void {
-            Global.mapComm.Store.applyThemeToAll(city.id, theme.themeId).then(function(): void {
+            Global.mapComm.Store.applyThemeToAll(city.id, theme.themeId, WallTileset.hasWall(theme.themeId)).then(function(): void {
                dispatch(EVENT_COMPLETED_APPLY_ALL_THEME);
             });
         }
@@ -98,6 +103,12 @@ package src.UI.ViewModels {
         public function applyWallTheme(city: City): void {
             Global.mapComm.Store.setWallTheme(city.id, theme.themeId).then(function(): void {
                dispatch(EVENT_COMPLETED_APPLY_WALL_THEME);
+            });
+        }
+
+        public function applyRoadTheme(city: City): void {
+            Global.mapComm.Store.setRoadTheme(city.id, theme.themeId).then(function(): void {
+               dispatch(EVENT_COMPLETED_APPLY_ROAD_THEME);
             });
         }
 

@@ -27,26 +27,26 @@ namespace Testing.FormulaTests
         }
 
         [Theory]
-        [InlineData(1, 500)]
-        [InlineData(2, 600)]
-        [InlineData(3, 700)]
-        [InlineData(4, 800)]
-        [InlineData(5, 950)]
-        [InlineData(6, 1100)]
-        [InlineData(7, 1250)]
-        [InlineData(8, 1450)]
-        [InlineData(9, 1650)]
-        [InlineData(10, 1850)]
-        [InlineData(11, 2100)]
-        [InlineData(12, 2350)]
-        [InlineData(13, 2600)]
-        [InlineData(14, 2900)]
-        [InlineData(15, 3200)]
-        [InlineData(16, 3500)]
-        [InlineData(17, 3850)]
-        [InlineData(18, 4200)]
-        [InlineData(19, 4600)]
-        [InlineData(20, 5000)]
+        [InlineData(1, 250)]
+        [InlineData(2, 300)]
+        [InlineData(3, 350)]
+        [InlineData(4, 400)]
+        [InlineData(5, 475)]
+        [InlineData(6, 550)]
+        [InlineData(7, 625)]
+        [InlineData(8, 725)]
+        [InlineData(9, 825)]
+        [InlineData(10, 925)]
+        [InlineData(11, 1050)]
+        [InlineData(12, 1175)]
+        [InlineData(13, 1300)]
+        [InlineData(14, 1450)]
+        [InlineData(15, 1600)]
+        [InlineData(16, 1750)]
+        [InlineData(17, 1925)]
+        [InlineData(18, 2100)]
+        [InlineData(19, 2300)]
+        [InlineData(20, 2500)]
         public void TestMeterValue(int level, int expectedValue)
         {
             var systemVariableManager = Substitute.For<ISystemVariableManager>();
@@ -300,7 +300,7 @@ namespace Testing.FormulaTests
 
             var formula = fixture.Create<Formula>();
             SystemClock.SetClock(DateTime.MinValue.Add(new TimeSpan(30, 0, 0, 0)));
-            formula.StrongholdMainBattleMeter(1).Should().Be(500);
+            formula.StrongholdMainBattleMeter(1).Should().Be(250);
         }
 
         [Theory, AutoNSubstituteData]
@@ -314,7 +314,7 @@ namespace Testing.FormulaTests
 
             var formula = fixture.Create<Formula>();
             SystemClock.SetClock(DateTime.MinValue.Add(new TimeSpan(30, 1, 0, 0)));
-            formula.StrongholdMainBattleMeter(1).Should().Be(501);
+            formula.StrongholdMainBattleMeter(1).Should().Be(250);
         }
 
         [Theory, AutoNSubstituteData]
@@ -328,7 +328,7 @@ namespace Testing.FormulaTests
 
             var formula = fixture.Create<Formula>();
             SystemClock.SetClock(DateTime.MinValue.Add(new TimeSpan(30, 999, 0, 0)));
-            formula.StrongholdMainBattleMeter(1).Should().Be(3992);
+            formula.StrongholdMainBattleMeter(1).Should().Be(1996);
         }
 
         [Theory, AutoNSubstituteData]
@@ -342,7 +342,7 @@ namespace Testing.FormulaTests
 
             var formula = fixture.Create<Formula>();
             SystemClock.SetClock(DateTime.MinValue.Add(new TimeSpan(30, 1000, 0, 0)));
-            formula.StrongholdMainBattleMeter(1).Should().Be(4000);
+            formula.StrongholdMainBattleMeter(1).Should().Be(2000);
         }
 
         [Theory, AutoNSubstituteData]
@@ -356,7 +356,7 @@ namespace Testing.FormulaTests
 
             var formula = fixture.Create<Formula>();
             SystemClock.SetClock(DateTime.MinValue.Add(new TimeSpan(30, 2000, 0, 0)));
-            formula.StrongholdMainBattleMeter(1).Should().Be(4000);
+            formula.StrongholdMainBattleMeter(1).Should().Be(2000);
         }
 
         [Theory, AutoNSubstituteData]
@@ -370,7 +370,7 @@ namespace Testing.FormulaTests
 
             var formula = fixture.Create<Formula>();
             SystemClock.SetClock(DateTime.MaxValue.Subtract(new TimeSpan(30, 0, 0, 0)));
-            formula.StrongholdMainBattleMeter(1).Should().Be(500);
+            formula.StrongholdMainBattleMeter(1).Should().Be(250);
         }
 
         [Theory, AutoNSubstituteData]
@@ -384,8 +384,8 @@ namespace Testing.FormulaTests
 
             var formula = fixture.Create<Formula>();
             SystemClock.SetClock(DateTime.MinValue.Add(new TimeSpan(30, 999, 0, 0)));
-            formula.StrongholdMainBattleMeter(1).Should().Be(3992);
-            formula.StrongholdMainBattleMeter(20).Should().Be(39917);
+            formula.StrongholdMainBattleMeter(1).Should().Be(1996);
+            formula.StrongholdMainBattleMeter(20).Should().Be(19958);
         }
     }
 }

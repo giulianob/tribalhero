@@ -8,9 +8,11 @@ if (!defined('APP_DIR')) {
 	define('APP_DIR', dirname(dirname(RUCKUSING_BASE)) . DS . 'app');
 }
 
-require_once APP_DIR . DS . 'config' . DS . 'database.php';
+require_once APP_DIR . DS . 'Config' . DS . 'database.php';
 
 $dbConfig = new DATABASE_CONFIG();
+
+$driverParts = explode('/', $dbConfig->default['datasource'], 2);
 
 //----------------------------
 // DATABASE CONFIGURATION
@@ -18,7 +20,7 @@ $dbConfig = new DATABASE_CONFIG();
 $ruckusing_db_config = array(
 	
     'development' => array(
-        'type'      => $dbConfig->default['driver'],
+        'type'      => strtolower($driverParts[1]),
         'host'      => $dbConfig->default['host'],
         'port'      => !empty($dbConfig->default['port']) ? $dbConfig->default['port'] : 3306,
         'database'  => $dbConfig->default['database'],
@@ -27,7 +29,7 @@ $ruckusing_db_config = array(
     ),
 
 	'test' => array(
-        'type'      => $dbConfig->test['driver'],
+        'type'      => strtolower($driverParts[1]),
         'host'      => $dbConfig->test['host'],
         'port'      => !empty($dbConfig->test['port']) ? $dbConfig->test['port'] : 3306,
         'database'  => $dbConfig->test['database'],

@@ -446,7 +446,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                var lockedRegions = world.Regions.LockRegions(x, y, formula.GetInitialCityRadius());
+                var lockedRegions = world.Regions.LockMultitileRegions(x, y, formula.GetInitialCityRadius());
 
                 if ((error = cityProcedure.PositionCheckForNewCity(new Position(x, y))) != Error.Ok)
                 {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -18,7 +19,7 @@ namespace Game.Map
 {
     public class CityManager : ICityManager
     {
-        private readonly Dictionary<uint, ICity> cities = new Dictionary<uint, ICity>();
+        private readonly ConcurrentDictionary<uint, ICity> cities = new ConcurrentDictionary<uint, ICity>();
 
         private readonly LargeIdGenerator cityIdGen = new LargeIdGenerator(Config.city_id_max, Config.city_id_min);
 
@@ -81,12 +82,15 @@ namespace Game.Map
         {
             lock (cities)
             {
+                if (!cities.TryRemove(city.Id, out city))
+                {
+                    return;
+                }
+
                 city.BeginUpdate();
                 dbManager.DeleteDependencies(city);
                 city.Deleted = City.DeletedState.Deleted;
-                city.EndUpdate();
-
-                cities.Remove(city.Id);
+                city.EndUpdate();                
 
                 DeregisterEvents(city);
             }
@@ -132,7 +136,11 @@ namespace Game.Map
 
                 if (city.Deleted != City.DeletedState.Deleted)
                 {
-                    cities.Add(city.Id, city);
+                    if (!cities.TryAdd(city.Id, city))
+                    {
+                        return;
+                    }
+
                     RegisterEvents(city);
                 }
             }
@@ -199,7 +207,7 @@ namespace Game.Map
         {
             lock (cities)
             {
-                return cities.Values.ToList();
+                return cities.Values.AsEnumerable();
             }
         }
 

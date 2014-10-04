@@ -1,1 +1,0 @@
-..\..\cake\console\cake.bat -app ..\ unread_reports

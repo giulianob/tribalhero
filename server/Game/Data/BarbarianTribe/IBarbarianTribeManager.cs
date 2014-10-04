@@ -1,8 +1,12 @@
+using System.Collections.Generic;
+
 namespace Game.Data.BarbarianTribe
 {
     public interface IBarbarianTribeManager
     {
         int Count { get; }
+
+        IEnumerable<IBarbarianTribe> AllTribes { get; }
 
         void DbLoaderAdd(IBarbarianTribe barbarianTribe);
 
@@ -10,10 +14,12 @@ namespace Game.Data.BarbarianTribe
 
         bool TryGetBarbarianTribe(uint id, out IBarbarianTribe barbarianTribe);
 
-        void Generate(int count);
+        void Generate();
         
         void RelocateAsNeeded();
 
         bool RelocateBarbarianTribe(IBarbarianTribe barbarianTribe);
+
+        void RelocateIdleBarbCamps();
     }
 }

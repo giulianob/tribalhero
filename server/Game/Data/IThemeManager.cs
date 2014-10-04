@@ -15,11 +15,13 @@ namespace Game.Data
 
         Error SetDefaultTheme(ICity city, string id);
 
-        Error ApplyToAll(ICity city, string id);
+        Error ApplyToAll(ICity city, string id, bool applyWall);
 
         Error SetStructureTheme(IStructure structure, string id);
 
         Error SetWallTheme(ICity city, string theme);
+        
+        Error SetRoadTheme(ICity city, string theme);
 
         Error SetStrongholdTheme(IStronghold stronghold, IPlayer player, string id);
 

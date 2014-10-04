@@ -105,8 +105,6 @@ namespace Game.Logic.Actions
             newStructureId = uint.Parse(properties["new_structure_id"]);
         }
 
-        #region Overrides of GameAction
-
         public override ActionType Type
         {
             get
@@ -185,7 +183,7 @@ namespace Game.Logic.Actions
                 return Error.ResourceNotEnough;
             }
 
-            var lockedRegions = world.Regions.LockRegions(x, y, formula.GetInitialCityRadius());
+            var lockedRegions = world.Regions.LockMultitileRegions(x, y, formula.GetInitialCityRadius());
 
             if (!objectTypeFactory.IsTileType("CityStartTile", world.Regions.GetTileType(x, y)))
             {
@@ -263,10 +261,6 @@ namespace Game.Logic.Actions
             });
         }
 
-        #endregion
-
-        #region Overrides of ScheduledActiveAction
-
         public override void Callback(object custom)
         {
             ICity newCity;
@@ -295,7 +289,5 @@ namespace Game.Logic.Actions
                 StateChange(ActionState.Completed);
             });
         }
-
-        #endregion
     }
 }

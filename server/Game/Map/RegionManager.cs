@@ -54,23 +54,25 @@ namespace Game.Map
 
         private byte[] MapData { get; set; }
 
-        public IEnumerable<ushort> GetRegionIds(uint x, uint y, byte size)
+        private IEnumerable<Position> GetMultitileRegionIds(uint x, uint y, byte size)
         {
-            return tileLocator.ForeachMultitile(x, y, size)
-                              .Select(p => regionLocator.GetRegionIndex(p.X, p.Y))
-                              .Distinct()
-                              .OrderBy(p => p);
+            return tileLocator.ForeachMultitile(x, y, size);
         }
 
-        public IEnumerable<ushort> LockRegions(uint x, uint y, byte size)
+        public IEnumerable<ushort> LockMultitileRegions(uint x, uint y, byte size)
         {
-            return LockRegions(GetRegionIds(x, y, size));
+            return LockRegions(GetMultitileRegionIds(x, y, size));
+        }
+
+        public IEnumerable<ushort> LockRegions(IEnumerable<Position> positions)
+        {
+            return LockRegions(positions.Select(p => regionLocator.GetRegionIndex(p.X, p.Y)));
         }
 
         private IEnumerable<ushort> LockRegions(IEnumerable<ushort> regionIds)
         {
             var lockedRegions = new List<ushort>();
-            foreach (var regionId in regionIds)
+            foreach (var regionId in regionIds.Distinct().OrderBy(p => p))
             {
                 var region = GetRegion(regionId);
 
@@ -169,7 +171,7 @@ namespace Game.Map
                 return;
             }
 
-            var lockedRegions = LockRegions(obj.PrimaryPosition.X, obj.PrimaryPosition.Y, obj.Size);
+            var lockedRegions = LockMultitileRegions(obj.PrimaryPosition.X, obj.PrimaryPosition.Y, obj.Size);
 
             if (RemoveFromPrimaryRegionAndAllTiles(obj, obj.PrimaryPosition.X, obj.PrimaryPosition.Y))
             {
@@ -297,8 +299,8 @@ namespace Game.Map
             }
 
             // Lock regions from both old and new positions
-            var lockedRegions = LockRegions(GetRegionIds(sender.PrimaryPosition.X, sender.PrimaryPosition.Y, sender.Size)
-                                                    .Concat(GetRegionIds(origX, origY, sender.Size)));
+            var lockedRegions = LockRegions(GetMultitileRegionIds(sender.PrimaryPosition.X, sender.PrimaryPosition.Y, sender.Size)
+                                                    .Concat(GetMultitileRegionIds(origX, origY, sender.Size)));
 
             ushort previousPrimaryRegionId = regionLocator.GetRegionIndex(origX, origY);
             ushort newPrimaryRegionId = regionLocator.GetRegionIndex(sender);

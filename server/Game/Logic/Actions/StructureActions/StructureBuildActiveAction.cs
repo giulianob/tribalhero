@@ -163,7 +163,7 @@ namespace Game.Logic.Actions
             
             var structureBaseStats = structureCsvFactory.GetBaseStats(type, level);
 
-            var lockedRegions = world.Regions.LockRegions(X, Y, structureBaseStats.Size);
+            var lockedRegions = world.Regions.LockMultitileRegions(X, Y, structureBaseStats.Size);
 
             foreach (var position in tileLocator.ForeachMultitile(X, Y, structureBaseStats.Size))
             {

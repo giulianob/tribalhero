@@ -292,14 +292,14 @@ ATTIC_STORAGE_TECHNOLOGY_LVL_6,Increase capacity of the city resources by 300% o
 ATTIC_STORAGE_TECHNOLOGY_LVL_7,Increase capacity of the city resources by 350% of basements' capacity.
 ATTIC_STORAGE_TECHNOLOGY_LVL_8,Increase capacity of the city resources by 400% of basements' capacity.
 ,
-FIVE_FOR_FOUR_TECHNOLOGY_NAME,Five For Four
-FIVE_FOR_FOUR_TECHNOLOGY_LVL_1,Receive the 5th unit free for every 4 units that are trained for this structure only.
-FOUR_FOR_THREE_TECHNOLOGY_NAME,Four For Three
-FOUR_FOR_THREE_TECHNOLOGY_LVL_1,Receive the 4th unit free for every 3 units that are trained for this structure only.
 THREE_FOR_TWO_TECHNOLOGY_NAME,Three For Two
 THREE_FOR_TWO_TECHNOLOGY_LVL_1,Receive the 3rd unit free for every 2 units that are trained for this structure only.
+FIVE_FOR_THREE_TECHNOLOGY_NAME,Five For Three
+FIVE_FOR_THREE_TECHNOLOGY_LVL_1,Receive the 4th and 5th unit free for every 3 units that are trained for this structure only.
 TWO_FOR_ONE_TECHNOLOGY_NAME,Two For One
-TWO_FOR_ONE_TECHNOLOGY_LVL_1,Receive the 2nd unit free for every 1 unit that is trained for this structure only.
+TWO_FOR_ONE_TECHNOLOGY_LVL_1,Receive the 2nd unit free for every 1 units that are trained for this structure only.
+THREE_FOR_ONE_TECHNOLOGY_NAME,Three For One
+THREE_FOR_ONE_TECHNOLOGY_LVL_1,Receive the 2nd and 3rd unit free for every 1 unit that is trained for this structure only.
 ,
 HAPPYHOUR_TECHNOLOGY_NAME,Happy Hour
 HAPPYHOUR_TECHNOLOGY_SUMMARY,Increases the laborer production rate by {0}%. (30% for the first then 8% for every additional)

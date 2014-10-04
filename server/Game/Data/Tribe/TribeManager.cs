@@ -289,5 +289,13 @@ namespace Game.Data.Tribe
                 }
             }
         }
+
+        public IEnumerable<ITribe> AllTribes
+        {
+            get
+            {
+                return Tribes.Values.AsEnumerable();
+            }
+        }
     }
 }

@@ -109,11 +109,19 @@ namespace Game.Data
 
         public bool SoundMuted { get; set; }
 
-        public bool IsIdle
+        public bool IsIdleForAWeek
         {
             get
             {
-                return Session == null && SystemClock.Now.Subtract(LastLogin).TotalDays > Config.idle_days;
+                return Session == null && SystemClock.Now.Subtract(LastLogin).TotalDays > 7;
+            }
+        }
+
+        public bool IsIdleForThreeDays
+        {
+            get
+            {
+                return Session == null && SystemClock.Now.Subtract(LastLogin).TotalDays > 3;
             }
         }
 
@@ -272,9 +280,8 @@ namespace Game.Data
         }
 
         public bool HasPurchasedTheme(string theme)
-        {
-            // TODO
-            return true;
+        {            
+            return ThemePurchases.Any(x => x.ThemeId == theme);
         }
 
         public void UpdateCoins(int coins)
@@ -289,6 +296,13 @@ namespace Game.Data
 
         public void AddTheme(string themeId)
         {
+            if (HasPurchasedTheme(themeId))
+            {
+                return;
+            }
+
+            ThemePurchases.Add(new ThemePurchase {ThemeId = themeId});
+
             channel.Post(PlayerChannel, () =>
             {
                 var packet = new Packet(Command.PlayerThemePurchased);

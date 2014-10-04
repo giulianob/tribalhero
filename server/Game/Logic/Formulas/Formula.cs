@@ -160,7 +160,7 @@ namespace Game.Logic.Formulas
         /// <returns></returns>
         public virtual int GetWoodRate(ICity city)
         {
-            return 40 + city.Lvl * 5 + city.Sum(x =>
+            return 60 + city.Lvl * 5 + city.Sum(x =>
                 {
                     object rate;
                     if (!ObjectTypeFactory.IsStructureType("ForestCamp", x) || x.Lvl == 0 ||

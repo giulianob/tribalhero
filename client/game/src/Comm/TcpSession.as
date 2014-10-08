@@ -220,7 +220,7 @@
 					
 					if ( (incomingPacket.option & Options.REPLY) != Options.REPLY)
 					{
-						if (Constants.debug >= 1)
+						if (Constants.debug > 1)
 							Util.log("Channel notification: " + incomingPacket.toString());							
 						
 						dispatcher.dispatchEvent(new PacketEvent(Commands.CHANNEL_NOTIFICATION, incomingPacket));

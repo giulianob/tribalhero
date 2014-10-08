@@ -6,7 +6,7 @@
     import src.Constants;
     import src.Global;
     import src.Map.*;
-    import src.Map.MiniMap.MiniMapRegion;
+    import src.FeathersUI.MiniMap.MiniMapRegion;
     import src.Objects.Factories.ObjectFactory;
     import src.Objects.SimpleGameObject;
 

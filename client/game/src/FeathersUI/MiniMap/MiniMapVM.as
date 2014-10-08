@@ -5,10 +5,9 @@ package src.FeathersUI.MiniMap {
     import src.FeathersUI.ViewModel;
     import src.Global;
     import src.Map.Camera;
-    import src.Map.MiniMap.MiniMapDrawer;
-    import src.Map.MiniMap.MiniMapLegend;
-    import src.Map.MiniMap.MiniMapRegion;
-    import src.Map.MiniMap.MiniMapRegionList;
+    import src.FeathersUI.MiniMapDrawer.MiniMapDrawer;
+    import src.FeathersUI.MiniMap.MiniMapRegion;
+    import src.FeathersUI.MiniMap.MiniMapRegionList;
     import src.Map.ScreenPosition;
     import src.Objects.ObjectContainer;
     import src.Util.Util;
@@ -21,9 +20,7 @@ package src.FeathersUI.MiniMap {
         private var pendingRegions: Dictionary = new Dictionary();
 		public var objContainer: ObjectContainer;
 
-        // TODO: Refactor minimap drawer into view?
-        private var mapFilter: MiniMapDrawer = new MiniMapDrawer();
-        private var legend: MiniMapLegend = new MiniMapLegend();
+        public var mapFilter: MiniMapDrawer = new MiniMapDrawer();
 
         public function MiniMapVM(camera: Camera) {
             this.camera = camera;
@@ -31,12 +28,13 @@ package src.FeathersUI.MiniMap {
             this.regions = new MiniMapRegionList();
 
             mapFilter.addOnChangeListener(filterChanged);
-            mapFilter.applyLegend(legend);
         }
 
         public function navigateToPoint(pos: ScreenPosition): void {
+            camera.clearCue();
             camera.scrollToCenter(pos);
-            dispatch(EVENT_NAVIGATE_TO_POINT);
+
+            dispatchWith(EVENT_NAVIGATE_TO_POINT);
         }
 
         public function filterChanged(): void {
@@ -47,8 +45,9 @@ package src.FeathersUI.MiniMap {
 
         public function addMiniMapRegion(id:int) : MiniMapRegion
         {
-            if (Constants.debug >= 2)
+            if (Constants.debug >= 2) {
                 Util.log("Adding city region: " + id);
+            }
 
             var newRegion: MiniMapRegion = new MiniMapRegion(id, mapFilter, objContainer);
 

@@ -2,7 +2,7 @@
     import flash.geom.Point;
 
     import src.Global;
-    import src.Map.MapOverlayBase;
+    import src.FeathersUI.Map.MapOverlayBase;
     import src.Map.ScreenPosition;
     import src.Map.TileLocator;
     import src.Objects.Factories.ObjectFactory;

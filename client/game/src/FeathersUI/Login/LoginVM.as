@@ -5,7 +5,7 @@ package src.FeathersUI.Login {
         public static const LOGIN: String = "LOGIN";
 
         public function login(username: String, password: String, address: String): void {
-            dispatch(LOGIN, username, password, address);
+            dispatchWith(LOGIN, username, password, address);
         }
     }
 }

@@ -1,7 +1,5 @@
 package src.FeathersUI.MiniMap {
 
-    import System.Linq.Enumerable;
-
     import feathers.core.FeathersControl;
 
     import flash.geom.Point;
@@ -13,7 +11,6 @@ package src.FeathersUI.MiniMap {
     import src.Map.Position;
     import src.Map.ScreenPosition;
     import src.Map.TileLocator;
-    import src.Objects.Factories.SpriteFactory;
     import src.UI.Components.MiniMapPointer;
     import src.Util.Util;
 
@@ -25,12 +22,21 @@ package src.FeathersUI.MiniMap {
     import starling.events.TouchPhase;
 
     public class MiniMapView extends FeathersControl {
-        private var screenRect: Shape;
-        private var mapContainer: Sprite;
-        private var bg: Sprite;
         private var pointers: Array = [];
         private var pointersVisible: Boolean = false;
         private var cityPointer: MiniMapPointer;
+
+        private var mapContainer: Sprite;
+        private var bg: Sprite;
+
+        private var screenRect: Shape;
+        private var screenRectWidth: Number;
+        private var screenRectHeight: Number;
+
+        private var shouldParseRegions: Boolean = true;
+        private var parseRegionDirtyFlag: Boolean;
+
+        private var _backgroundRadius: Number = 10;
 
         private var vm: MiniMapVM;
         private var camera: Camera;
@@ -49,7 +55,6 @@ package src.FeathersUI.MiniMap {
             this.vm = vm;
             this.camera = vm.camera;
 
-
             mapContainer = new Sprite();
 
             screenRect = new Shape();
@@ -65,15 +70,36 @@ package src.FeathersUI.MiniMap {
             this.camera.addEventListener(Camera.ON_MOVE, onCameraMove);
         }
 
+        public function get backgroundRadius(): Number {
+            return _backgroundRadius;
+        }
+
+        public function set backgroundRadius(value: Number): void {
+            if (_backgroundRadius == value) {
+                return;
+            }
+
+            _backgroundRadius = value;
+            this.invalidate(INVALIDATION_FLAG_SIZE);
+        }
+
         private function onTouched(event: TouchEvent): void {
-            var touches: Vector.<Touch> = event.getTouches(this, TouchPhase.MOVED);
+            var movedTouch: Touch = event.getTouch(this, TouchPhase.MOVED);
 
-            if (touches.length == 1) {
+            if (movedTouch) {
                 // one finger touching / one mouse cursor moved
-                var touch: Touch = touches[0];
-                touch.getMovement(this, touchMovement);
-
+                movedTouch.getMovement(this, touchMovement);
                 camera.scrollTo(new ScreenPosition(camera.currentPosition.x - touchMovement.x*Constants.miniMapTileRatioW, camera.currentPosition.y - touchMovement.y*Constants.miniMapTileRatioH));
+            }
+
+            var endTouch:Touch = event.getTouch(this, TouchPhase.ENDED);
+
+            if (endTouch && endTouch.tapCount == 2) {
+                var touchPosition: Point = endTouch.getLocation(this);
+                var camX: int = -mapContainer.x;
+                var camY: int = -mapContainer.y;
+
+                vm.navigateToPoint(new ScreenPosition((camX + touchPosition.x) * Constants.miniMapTileRatioW, (camY + touchPosition.y) * Constants.miniMapTileRatioH));
             }
         }
 
@@ -86,10 +112,6 @@ package src.FeathersUI.MiniMap {
         private function onCameraMove(event: Event): void {
             this.invalidate(INVALIDATION_FLAG_SCROLL);
         }
-
-        private var screenRectWidth: Number;
-
-        private var screenRectHeight: Number;
 
         protected function layout() : void {
             var sizeInvalid:Boolean = this.isInvalid(INVALIDATION_FLAG_SIZE);
@@ -122,7 +144,7 @@ package src.FeathersUI.MiniMap {
 
                 // Set up the black transparent bg
                 bg.removeChildren();
-                var bgRect: RoundedRectangle = new RoundedRectangle(this.actualWidth, this.actualHeight);
+                var bgRect: RoundedRectangle = new RoundedRectangle(this.actualWidth, this.actualHeight, _backgroundRadius, _backgroundRadius, _backgroundRadius, _backgroundRadius);
                 bgRect.material.color = 0x000000;
                 bgRect.alpha = 0.8;
                 bg.addChild(bgRect);
@@ -144,53 +166,17 @@ package src.FeathersUI.MiniMap {
             this.layout();
         }
 
-        public function setScreenRectHidden(hidden: Boolean) : void {
-            screenRect.visible = !hidden;
-        }
+        public function enableRegionFetching(enable: Boolean): void {
+            shouldParseRegions = enable;
 
-        public function addPointer(pointer: MiniMapPointer): void {
-            pointer.visible = pointersVisible;
-            pointers.push(pointer);
-            addChild(pointer);
-        }
-
-        public function setCityPointer(name: String): void {
-            if (cityPointer != null && cityPointer.getPointerName() != name) {
-                cityPointer.setIcon(SpriteFactory.getStarlingImage("ICON_MINIMAP_ARROW_BLUE"));
-            } else if (cityPointer!=null) {
-                return;
-            }
-
-            cityPointer = Enumerable.from(pointers).first(function(p:MiniMapPointer):Boolean {
-                return p.getPointerName() == name;
-            });
-
-            if (cityPointer != null) {
-                cityPointer.setIcon(SpriteFactory.getStarlingImage("ICON_MINIMAP_ARROW_RED"));
+            if (enable && parseRegionDirtyFlag) {
+                parseRegionDirtyFlag = false;
+                parseRegions();
             }
         }
 
-        public function showPointers(): void {
-            if (pointersVisible) return;
-            pointersVisible = true;
-            for each(var pointer:MiniMapPointer in pointers) {
-                pointer.visible = true;
-            }
-        }
-
-        public function hidePointers(): void {
-            if (!pointersVisible) return;
-            pointersVisible = false;
-            for each(var pointer:MiniMapPointer in pointers) {
-                pointer.visible = false
-            }
-        }
-
-        public function updatePointers(center: Point): void {
-            if (!pointersVisible) return;
-            for each(var pointer:MiniMapPointer in pointers) {
-                pointer.update(center, this.actualWidth, this.actualHeight);
-            }
+        public function showScreenRect(visible: Boolean) : void {
+            screenRect.visible = visible;
         }
 
         private function setUpSizeVariablesForParseRegion(): void {
@@ -214,7 +200,14 @@ package src.FeathersUI.MiniMap {
         }
 
         private function parseRegions(): void {
-            if (Constants.debug >= 3) Util.log("On move: " + camera.currentPosition.x + "," + camera.currentPosition.y);
+            if (!shouldParseRegions) {
+                parseRegionDirtyFlag = true;
+                return;
+            }
+
+            if (Constants.debug >= 3) {
+                Util.log("On move: " + camera.currentPosition.x + "," + camera.currentPosition.y);
+            }
 
             //calculate which regions we need to render
             var requiredRegions: Dictionary = new Dictionary();
@@ -237,34 +230,52 @@ package src.FeathersUI.MiniMap {
             vm.getRegions(requiredRegions);
         }
 
-//        private function onNavigate(e: TouchEvent) : void {
-//
-//            var touch: Touch = e.getTouch(this, TouchPhase.ENDED);
-//
-//            if (touch != null) {
-//
-//                var currentMousePoint: Point = new Point(touch.globalX, touch.globalY);
-//                if (Point.distance(currentMousePoint, lastClickPoint) > 10 || (new Date().time) - lastClick > 350) {
-//                    lastClick = new Date().time;
-//                    lastClickPoint = currentMousePoint;
-//                    return;
-//                }
-//
-//                lastClick = new Date().time;
-//                //Calculate where the user clicked in real map position
-//                var camX: int = _camera.miniMapX - mapContainer.x;
-//                var camY: int = _camera.miniMapY - mapContainer.y;
-//
-//                var local: Point = touch.getLocation(this);
-//                var centeredOffsetX: int = local.x;
-//                var centeredOffsetY: int = local.y;
-//
-//                var mapX: int = ((camX + centeredOffsetX) / Constants.miniMapTileW) * Constants.tileW;
-//                var mapY: int = ((camY + centeredOffsetY) / Constants.miniMapTileH) * Constants.tileH;
-//
-//                var event: NavigateEvent = new NavigateEvent(NAVIGATE_TO_POINT, mapX, mapY);
-//                dispatchEvent(event);
-//            }
-//        }
+/*
+ public function addPointer(pointer: MiniMapPointer): void {
+ pointer.visible = pointersVisible;
+ pointers.push(pointer);
+ addChild(pointer);
+ }
+
+ public function setCityPointer(name: String): void {
+ if (cityPointer != null && cityPointer.getPointerName() != name) {
+ cityPointer.setIcon(SpriteFactory.getStarlingImage("ICON_MINIMAP_ARROW_BLUE"));
+ } else if (cityPointer!=null) {
+ return;
+ }
+
+ cityPointer = Enumerable.from(pointers).first(function(p:MiniMapPointer):Boolean {
+ return p.getPointerName() == name;
+ });
+
+ if (cityPointer != null) {
+ cityPointer.setIcon(SpriteFactory.getStarlingImage("ICON_MINIMAP_ARROW_RED"));
+ }
+ }
+
+ public function showPointers(): void {
+ if (pointersVisible) return;
+ pointersVisible = true;
+ for each(var pointer:MiniMapPointer in pointers) {
+ pointer.visible = true;
+ }
+ }
+
+ public function hidePointers(): void {
+ if (!pointersVisible) return;
+ pointersVisible = false;
+ for each(var pointer:MiniMapPointer in pointers) {
+ pointer.visible = false
+ }
+ }
+
+ public function updatePointers(center: Point): void {
+ if (!pointersVisible) return;
+ for each(var pointer:MiniMapPointer in pointers) {
+ pointer.update(center, this.actualWidth, this.actualHeight);
+ }
+ }
+
+ */
     }
 }

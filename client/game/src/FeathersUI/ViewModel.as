@@ -1,5 +1,4 @@
 package src.FeathersUI {
-    import src.UI.*;
     import flash.events.EventDispatcher;
 
     public class ViewModel {
@@ -9,7 +8,7 @@ package src.FeathersUI {
             _eventDispatcher = new EventDispatcher();
         }
 		
-        public function on(event: String, listener: Function, ... params): void {
+        public function addEventListener(event: String, listener: Function, ... params): void {
             var localListener: Function = listener;
             var localParams: Array = params;
 
@@ -18,7 +17,7 @@ package src.FeathersUI {
             }, false, 0, false);
         }
 
-        public function dispatch(eventType: String, ... params): void {
+        public function dispatchWith(eventType: String, ... params): void {
             _eventDispatcher.dispatchEvent(new ViewModelEvent(eventType, params));
         }
     }

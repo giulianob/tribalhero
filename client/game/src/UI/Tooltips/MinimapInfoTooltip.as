@@ -8,7 +8,7 @@
     import org.aswing.SoftBoxLayout;
 
     import src.Global;
-    import src.Map.MiniMap.MiniMapRegionObject;
+    import src.FeathersUI.MiniMap.MiniMapRegionObject;
     import src.Map.Position;
     import src.Map.TileLocator;
     import src.Map.Username;

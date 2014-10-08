@@ -2,6 +2,8 @@
 package src.UI.Cursors {
     import System.Linq.Enumerable;
 
+    import src.FeathersUI.Map.MapOverlayBase;
+
     import starling.events.*;
     import flash.geom.*;
 

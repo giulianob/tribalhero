@@ -87,40 +87,40 @@ package src.UI.ViewModels {
 
         public function buy(): void {
             if (Constants.session.coins < theme.cost) {
-                dispatch(EVENT_COIN_PURCHASE_NEEDED, theme);
+                dispatchWith(EVENT_COIN_PURCHASE_NEEDED, theme);
             }
             else {
-                dispatch(EVENT_CONFIRM_PURCHASE_ITEM, theme);
+                dispatchWith(EVENT_CONFIRM_PURCHASE_ITEM, theme);
             }
         }
 
         public function applyAllTheme(city: City): void {
             Global.mapComm.Store.applyThemeToAll(city.id, theme.themeId).then(function(): void {
-               dispatch(EVENT_COMPLETED_APPLY_ALL_THEME);
+               dispatchWith(EVENT_COMPLETED_APPLY_ALL_THEME);
             });
         }
 
         public function applyWallTheme(city: City): void {
             Global.mapComm.Store.setWallTheme(city.id, theme.themeId).then(function(): void {
-               dispatch(EVENT_COMPLETED_APPLY_WALL_THEME);
+               dispatchWith(EVENT_COMPLETED_APPLY_WALL_THEME);
             });
         }
 
         public function applyRoadTheme(city: City): void {
             Global.mapComm.Store.setRoadTheme(city.id, theme.themeId).then(function(): void {
-               dispatch(EVENT_COMPLETED_APPLY_ROAD_THEME);
+               dispatchWith(EVENT_COMPLETED_APPLY_ROAD_THEME);
             });
         }
 
         public function setDefaultTheme(city: City): void {
             Global.mapComm.Store.setDefaultTheme(city.id, theme.themeId).then(function(): void {
-                dispatch(EVENT_COMPLETED_SET_DEFAULT_THEME);
+                dispatchWith(EVENT_COMPLETED_SET_DEFAULT_THEME);
             });
         }
 
         public function setDefaultTroopTheme(city: *): void {
             Global.mapComm.Store.setDefaultTroopTheme(city.id, theme.themeId).then(function(): void {
-                dispatch(EVENT_COMPLETED_SET_DEFAULT_TROOP_THEME);
+                dispatchWith(EVENT_COMPLETED_SET_DEFAULT_TROOP_THEME);
             });
         }
     }

@@ -18,9 +18,9 @@ package src.UI.Flows {
         public function showStore(): void {
             var storeVm: StoreDialogVM = new StoreDialogVM();
 
-            storeVm.on(StoreDialogVM.EVENT_VIEW_THEME, viewThemeDetails);
-            storeVm.on(StoreDialogVM.EVENT_VIEW_ACHIEVEMENT, viewAchievementDetails);
-            storeVm.on(StoreDialogVM.EVENT_WANT_TO_PURCHASE_COINS, wantToPurchaseCoins);
+            storeVm.addEventListener(StoreDialogVM.EVENT_VIEW_THEME, viewThemeDetails);
+            storeVm.addEventListener(StoreDialogVM.EVENT_VIEW_ACHIEVEMENT, viewAchievementDetails);
+            storeVm.addEventListener(StoreDialogVM.EVENT_WANT_TO_PURCHASE_COINS, wantToPurchaseCoins);
 
             new StoreDialog(storeVm).show();
         }
@@ -29,12 +29,12 @@ package src.UI.Flows {
             var vm: StoreViewAchievementDetailsVM = new StoreViewAchievementDetailsVM(item);
             var viewItemDetailsDialog: StoreViewAchievementDetailsDialog = new StoreViewAchievementDetailsDialog(vm);
 
-            vm.on(StoreViewThemeDetailsVM.EVENT_COIN_PURCHASE_NEEDED, function(item: StoreItem): void {
+            vm.addEventListener(StoreViewThemeDetailsVM.EVENT_COIN_PURCHASE_NEEDED, function(item: StoreItem): void {
                 viewItemDetailsDialog.getFrame().dispose();
                 needToPurchaseCoins(item);
             });
 
-            vm.on(StoreViewThemeDetailsVM.EVENT_CONFIRM_PURCHASE_ITEM, function(item: StoreItem): void {
+            vm.addEventListener(StoreViewThemeDetailsVM.EVENT_CONFIRM_PURCHASE_ITEM, function(item: StoreItem): void {
                 viewItemDetailsDialog.getFrame().dispose();
                 confirmPurchaseItem(item);
             });
@@ -46,12 +46,12 @@ package src.UI.Flows {
             var vm: StoreViewThemeDetailsVM = new StoreViewThemeDetailsVM(item);
             var viewItemDetailsDialog: StoreViewThemeDetailsDialog = new StoreViewThemeDetailsDialog(vm);
 
-            vm.on(StoreViewThemeDetailsVM.EVENT_COIN_PURCHASE_NEEDED, function(item: StoreItem): void {
+            vm.addEventListener(StoreViewThemeDetailsVM.EVENT_COIN_PURCHASE_NEEDED, function(item: StoreItem): void {
                 viewItemDetailsDialog.getFrame().dispose();
                 needToPurchaseCoins(item);
             });
 
-            vm.on(StoreViewThemeDetailsVM.EVENT_CONFIRM_PURCHASE_ITEM, function(item: StoreItem): void {
+            vm.addEventListener(StoreViewThemeDetailsVM.EVENT_CONFIRM_PURCHASE_ITEM, function(item: StoreItem): void {
                 viewItemDetailsDialog.getFrame().dispose();
                 confirmPurchaseItem(item);
             });
@@ -62,7 +62,7 @@ package src.UI.Flows {
         private function wantToPurchaseCoins(): void {
             var vm: StoreBuyCoinsVM = new StoreBuyCoinsVM();
             var buyCoinsDialog: StoreBuyCoinsDialog = new StoreBuyCoinsDialog(vm);
-            vm.on(StoreBuyCoinsVM.EVENT_COINS_PURCHASED, function(): void {
+            vm.addEventListener(StoreBuyCoinsVM.EVENT_COINS_PURCHASED, function(): void {
                 buyCoinsDialog.getFrame().dispose();
             });
 
@@ -73,11 +73,11 @@ package src.UI.Flows {
             var vm: StoreConfirmBuyVM = new StoreConfirmBuyVM(item);
             var confirmDialog: StoreConfirmBuyDialog = new StoreConfirmBuyDialog(vm);
 
-            vm.on(StoreConfirmBuyVM.EVENT_CONFIRM_BUY_ITEM_FAILURE, function (item: StoreItem): void {
+            vm.addEventListener(StoreConfirmBuyVM.EVENT_CONFIRM_BUY_ITEM_FAILURE, function (item: StoreItem): void {
                 confirmDialog.getFrame().dispose();
             });
 
-            vm.on(StoreConfirmBuyVM.EVENT_CONFIRM_BUY_ITEM_SUCCESS, function (item: StoreItem): void {
+            vm.addEventListener(StoreConfirmBuyVM.EVENT_CONFIRM_BUY_ITEM_SUCCESS, function (item: StoreItem): void {
                 confirmDialog.getFrame().dispose();
                 InfoDialog.showMessageDialog(t("STORE_BUY_ITEM_CONFIRMATION_TITLE"), item.localizedPurchasedMessage);
             });
@@ -88,7 +88,7 @@ package src.UI.Flows {
         private function needToPurchaseCoins(item: StoreItem): void {
             var vm: StoreBuyCoinsVM = new StoreBuyCoinsVM(item.cost);
             var buyCoinsDialog: StoreBuyCoinsDialog = new StoreBuyCoinsDialog(vm);
-            vm.on(StoreBuyCoinsVM.EVENT_ITEM_COST_COINS_PURCHASED, function(item: StoreItem): void {
+            vm.addEventListener(StoreBuyCoinsVM.EVENT_ITEM_COST_COINS_PURCHASED, function(item: StoreItem): void {
                 buyCoinsDialog.getFrame().dispose();
                 confirmPurchaseItem(item);
             }, item);

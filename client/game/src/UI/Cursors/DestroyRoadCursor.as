@@ -4,6 +4,8 @@ package src.UI.Cursors {
     import flash.geom.Point;
     import flash.utils.Timer;
 
+    import src.FeathersUI.Map.MapOverlayBase;
+
     import src.Global;
     import src.Map.*;
     import src.Objects.*;

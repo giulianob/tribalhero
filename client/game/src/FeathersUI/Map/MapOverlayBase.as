@@ -1,4 +1,4 @@
-package src.Map {
+package src.FeathersUI.Map {
     import flash.geom.Point;
     import flash.geom.Rectangle;
 

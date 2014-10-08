@@ -14,10 +14,10 @@ package src.UI.ViewModels {
 
         public function viewItemDetails(item: StoreItem): void {
             if (item is StoreItemTheme) {
-                dispatch(EVENT_VIEW_THEME, item);
+                dispatchWith(EVENT_VIEW_THEME, item);
             }
             else if (item is StoreItemAchievement) {
-                dispatch(EVENT_VIEW_ACHIEVEMENT, item);
+                dispatchWith(EVENT_VIEW_ACHIEVEMENT, item);
             }
             else {
                 throw new Error("Unknown item type");
@@ -25,7 +25,7 @@ package src.UI.ViewModels {
         }
 
         public function buyCoins(): void {
-            dispatch(EVENT_WANT_TO_PURCHASE_COINS);
+            dispatchWith(EVENT_WANT_TO_PURCHASE_COINS);
         }
 
         public function loadItems(): Promise {

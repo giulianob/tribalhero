@@ -1,4 +1,4 @@
-﻿package src.Map.MiniMap
+﻿package src.FeathersUI.MiniMap
 {
     import src.Util.BinaryList.*;
 

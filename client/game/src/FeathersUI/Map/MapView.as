@@ -6,7 +6,7 @@ package src.FeathersUI.Map {
     import src.Constants;
     import src.Global;
     import src.Map.Camera;
-    import src.Map.MapOverlayBase;
+    import src.FeathersUI.Map.MapOverlayBase;
     import src.Map.Region;
     import src.Map.ScreenPosition;
     import src.Map.TileLocator;
@@ -36,6 +36,8 @@ package src.FeathersUI.Map {
         private var touchMovement: Point;
 
         public var camera: Camera;
+
+        private var parseRegionIsDirty: Boolean;
 
         public function MapView(vm: MapVM) {
             this.name = "Map View";
@@ -155,6 +157,11 @@ package src.FeathersUI.Map {
         public function disableMapQueries(disabled: Boolean) : void {
             objContainer.disableMouse(disabled);
             disabledMapQueries = disabled;
+
+            if (!disabled && parseRegionIsDirty) {
+                parseRegionIsDirty = false;
+                update();
+            }
         }
 
         public function eventAddedToStage(event: Event):void
@@ -178,9 +185,7 @@ package src.FeathersUI.Map {
                 mapContainer.scaleX = mapContainer.scaleY = camera.getZoomFactorPercentage();
             }
 
-            if (!disabledMapQueries) {
-                parseRegions();
-            }
+            parseRegions();
         }
 
         private function onMove(event: Event) : void
@@ -189,6 +194,11 @@ package src.FeathersUI.Map {
         }
 
         private function parseRegions(): void {
+            if (disabledMapQueries) {
+                parseRegionIsDirty = true;
+                return;
+            }
+
             if (Constants.debug >= 3) Util.log("On move: " + camera.currentPosition.x + "," + camera.currentPosition.y);
 
             //calculate which regions we need to render

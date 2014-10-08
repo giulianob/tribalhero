@@ -112,7 +112,7 @@ package src.UI.Flows {
 
             var loginVM: LoginVM = new LoginVM();            
             loginDialog = new LoginDialog(loginVM);
-			loginVM.on(LoginVM.LOGIN, onConnect);
+			loginVM.addEventListener(LoginVM.LOGIN, onConnect);
 
             PopUpManager.addPopUp(loginDialog);
         }

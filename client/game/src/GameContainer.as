@@ -15,7 +15,6 @@
     import src.FeathersUI.Map.MapVM;
     import src.FeathersUI.MiniMap.MiniMapVM;
     import src.Map.*;
-    import src.Map.MiniMap.MiniMap;
     import src.UI.*;
     import src.UI.Components.*;
     import src.UI.Components.ScreenMessages.*;

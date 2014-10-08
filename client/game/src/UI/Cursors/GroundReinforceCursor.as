@@ -1,4 +1,6 @@
 ﻿package src.UI.Cursors {
+    import src.FeathersUI.Map.MapOverlayBase;
+
     import starling.events.*;
     import flash.geom.*;
 

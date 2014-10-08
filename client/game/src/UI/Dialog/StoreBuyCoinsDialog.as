@@ -37,7 +37,7 @@ package src.UI.Dialog {
 
             createUI();
 
-            viewModel.on(StoreBuyCoinsVM.EVENT_COINS_PURCHASED, function(): void {
+            viewModel.addEventListener(StoreBuyCoinsVM.EVENT_COINS_PURCHASED, function(): void {
                 createUI();
             });
         }

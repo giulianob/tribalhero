@@ -21,10 +21,10 @@ package src.UI.ViewModels {
         }
 
         private function onCoinsUpdate(event: Event): void {
-            dispatch(EVENT_COINS_PURCHASED);
+            dispatchWith(EVENT_COINS_PURCHASED);
 
             if (Constants.session.coins >= itemCost) {
-                dispatch(EVENT_ITEM_COST_COINS_PURCHASED);
+                dispatchWith(EVENT_ITEM_COST_COINS_PURCHASED);
             }
         }
 

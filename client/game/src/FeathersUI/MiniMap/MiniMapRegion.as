@@ -1,5 +1,7 @@
-﻿package src.Map.MiniMap
+﻿package src.FeathersUI.MiniMap
 {
+    import src.Map.MiniMap.*;
+    import src.FeathersUI.MiniMapDrawer.MiniMapDrawer;
     import src.Map.*;
     import src.Objects.ObjectContainer;
     import src.UI.Tooltips.*;

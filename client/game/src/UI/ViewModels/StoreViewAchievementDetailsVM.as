@@ -26,10 +26,10 @@ package src.UI.ViewModels {
 
         public function buy(): void {
             if (Constants.session.coins < achievement.cost) {
-                dispatch(EVENT_COIN_PURCHASE_NEEDED, achievement);
+                dispatchWith(EVENT_COIN_PURCHASE_NEEDED, achievement);
             }
             else {
-                dispatch(EVENT_CONFIRM_PURCHASE_ITEM, achievement);
+                dispatchWith(EVENT_CONFIRM_PURCHASE_ITEM, achievement);
             }
         }
     }

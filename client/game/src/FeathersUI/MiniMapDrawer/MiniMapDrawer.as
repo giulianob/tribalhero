@@ -1,9 +1,9 @@
-package src.Map.MiniMap {
-    import flash.events.Event;
+package src.FeathersUI.MiniMapDrawer {
+    import src.FeathersUI.MiniMap.MiniMapRegionObject;
+    import src.FeathersUI.MiniMapDrawer.LegendGroups.MiniMapGroupCity;
+    import src.FeathersUI.MiniMapDrawer.LegendGroups.MiniMapGroupOther;
+    import src.FeathersUI.MiniMapDrawer.LegendGroups.MiniMapGroupStronghold;
 
-    import src.Map.MiniMap.LegendGroups.MiniMapGroupCity;
-    import src.Map.MiniMap.LegendGroups.MiniMapGroupOther;
-    import src.Map.MiniMap.LegendGroups.MiniMapGroupStronghold;
     import src.Objects.Factories.ObjectFactory;
 
     public class MiniMapDrawer {
@@ -20,8 +20,10 @@ package src.Map.MiniMap {
             groupOther.addOnChangeListener(onChange);
         }
 
-        private function onChange(e: Event): void {
-            if (callback != null) callback();
+        private function onChange(): void {
+            if (callback != null) {
+                callback();
+            }
         }
 
         public function addOnChangeListener(callback: Function): void {
@@ -50,10 +52,12 @@ package src.Map.MiniMap {
             }
         }
 
-        public function applyLegend(legend: MiniMapLegend): void {
-            legend.addPanel(groupCity.getLegendPanel());
-            legend.addPanel(groupStronghold.getLegendPanel());
-            legend.addPanel(groupOther.getLegendPanel());
+        public function getLegendPanels(): Array {
+            return [
+                groupCity.getLegendPanel(),
+                groupStronghold.getLegendPanel(),
+                groupOther.getLegendPanel()
+            ];
         }
 
     }

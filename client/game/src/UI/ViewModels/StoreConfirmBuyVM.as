@@ -21,9 +21,9 @@ package src.UI.ViewModels {
 
         public function buyItem(): Promise {
             return Global.mapComm.Store.purchaseItem(item.id).then(function(): void {
-                dispatch(EVENT_CONFIRM_BUY_ITEM_SUCCESS, item);
+                dispatchWith(EVENT_CONFIRM_BUY_ITEM_SUCCESS, item);
             }).otherwise(function(): void {
-                dispatch(EVENT_CONFIRM_BUY_ITEM_FAILURE, item);
+                dispatchWith(EVENT_CONFIRM_BUY_ITEM_FAILURE, item);
             });
         }
     }

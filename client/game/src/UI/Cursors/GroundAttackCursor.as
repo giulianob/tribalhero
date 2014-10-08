@@ -2,6 +2,7 @@
     import flash.geom.*;
 
     import src.*;
+    import src.FeathersUI.Map.MapOverlayBase;
     import src.Map.*;
     import src.Objects.*;
     import src.Objects.Effects.*;

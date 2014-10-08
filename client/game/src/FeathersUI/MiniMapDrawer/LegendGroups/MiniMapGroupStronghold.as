@@ -1,18 +1,13 @@
-/**
- * Created with IntelliJ IDEA.
- * User: OscarMike
- * Date: 2/23/14
- * Time: 1:09 AM
- * To change this template use File | Settings | File Templates.
- */
-package src.Map.MiniMap.LegendGroups {
-import flash.events.Event;
+package src.FeathersUI.MiniMapDrawer.LegendGroups {
 
-import src.Map.MiniMap.MiniMapLegendPanel;
-import src.Map.MiniMap.MiniMapRegionObject;
-import src.Map.MiniMapDrawers.*;
+    import src.FeathersUI.MiniMapDrawer.Drawers.IMiniMapObjectDrawer;
+    import src.FeathersUI.MiniMapDrawer.Drawers.MiniMapStrongholdDrawer;
+    import src.FeathersUI.MiniMapDrawer.MiniMapLegendPanel;
+import src.FeathersUI.MiniMap.MiniMapRegionObject;
 
-public class MiniMapGroupStronghold {
+    import starling.events.Event;
+
+    public class MiniMapGroupStronghold {
     private var filter : IMiniMapObjectDrawer = new MiniMapStrongholdDrawer();
     private var legendPanel : MiniMapLegendPanel = new MiniMapLegendPanel();
     private var callback : Function = null;
@@ -24,7 +19,9 @@ public class MiniMapGroupStronghold {
     }
 
     private function onChange(e:Event): void {
-        if(callback!=null) callback(e);
+        if (callback != null) {
+            callback();
+        }
     }
 
     public function applyStronghold(obj:MiniMapRegionObject):void {

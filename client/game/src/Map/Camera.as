@@ -78,8 +78,17 @@
 			cuePosition = currentPosition.copy();
 		}
 
+        public function clearCue(): void {
+            cuePosition = null;
+        }
+
 		public function goToCue(): void {
+            if (!cuePosition) {
+                return;
+            }
+
 			currentPosition = cuePosition.copy();
+            fireOnMove();
 		}
 
 		public function get miniMapX(): int

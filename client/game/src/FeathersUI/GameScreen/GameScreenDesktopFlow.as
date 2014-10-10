@@ -7,7 +7,6 @@ package src.FeathersUI.GameScreen {
     import src.FeathersUI.MiniMap.MiniMapVM;
     import src.FeathersUI.MiniMap.MiniMapView;
     import src.Global;
-    import src.Map.MiniMap.MiniMap;
 
     public class GameScreenDesktopFlow extends Flow implements IGameScreenFlow {
         private var mapVM: MapVM;
@@ -24,7 +23,7 @@ package src.FeathersUI.GameScreen {
             var miniMapView: MiniMapView = new MiniMapView(miniMapVM);
             var mapView: MapView = new MapView(mapVM);
             var gameContainerVm: GameScreenVM = new GameScreenVM(mapVM.cities);
-            var gameContainerView: GameScreenDesktopView = new GameScreenDesktopView(gameContainerVm, mapView, miniMapView);
+            var gameContainerView: GameScreenDesktopView = new GameScreenDesktopView(gameContainerVm, mapView, miniMapView, miniMapVM.mapFilter);
 
             Global.starlingStage.navigator.addScreen("gameContainer", new ScreenNavigatorItem(gameContainerView));
             Global.starlingStage.navigator.showScreen("gameContainer");

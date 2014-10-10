@@ -15,14 +15,14 @@ package src.FeathersUI.MiniMapDrawer.LegendGroups {
         private var troopDrawer : MiniMapTroopDrawer = new MiniMapTroopDrawer();
         private var legendPanel : MiniMapLegendPanel = new MiniMapLegendPanel();
 
-        public static const CITY_DEFAULT_COLOR: * = { r: 255, g: 255, b: 255, hex: 0xFFFFFF };
+        public static const CITY_DEFAULT_COLOR: * = 0xFFFFFF;
 
         public static const DEFAULT_COLORS: Array = [
-            { r: 200, g: 200, b: 200, hex: 0xc8c8c8 },
-            { r: 0, g: 156, b: 20, hex: 0x009c14 },
-            { r: 255, g: 255, b: 0, hex: 0xffff00 },
-            { r: 255, g: 100, b: 0, hex: 0xff6400 },
-            { r: 255, g: 0, b: 0, hex: 0xff0000 }
+            0xc8c8c8,
+            0x009c14,
+            0xffff00,
+            0xff6400,
+            0xff0000
         ];
 
         public function MiniMapGroupCity() {

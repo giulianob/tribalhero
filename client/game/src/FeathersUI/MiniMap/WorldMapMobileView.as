@@ -86,7 +86,7 @@ package src.FeathersUI.MiniMap {
             this.filters = new ScrollContainer();
             var verticalLayout: VerticalLayout = new VerticalLayout();
             verticalLayout.horizontalAlign = VerticalLayout.HORIZONTAL_ALIGN_JUSTIFY;
-            verticalLayout.gap = TribalHeroTheme.PADDING_DEFAULT*2;
+            verticalLayout.gap = TribalHeroTheme.PADDING_DEFAULT;
             verticalLayout.padding = TribalHeroTheme.PADDING_DEFAULT;
 
             this.filters.layout = verticalLayout;
@@ -96,7 +96,7 @@ package src.FeathersUI.MiniMap {
             }
 
             drawer.openGesture = Drawers.OPEN_GESTURE_NONE;
-            drawer.rightDrawer = this.filters;            
+            drawer.rightDrawer = this.filters;
 
             addChild(drawer);
         }

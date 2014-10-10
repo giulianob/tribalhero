@@ -2,7 +2,6 @@ package src {
     import src.FeathersUI.Factories.IFlowFactory;
     import src.FeathersUI.Map.MapVM;
     import src.FeathersUI.MiniMap.MiniMapVM;
-    import src.Map.MiniMap.MiniMap;
 
     import starling.core.Starling;
     import starling.utils.AssetManager;

@@ -3,7 +3,6 @@ package src.FeathersUI.Factories {
     import src.FeathersUI.GameScreen.IGameScreenFlow;
     import src.FeathersUI.Map.MapVM;
     import src.FeathersUI.MiniMap.MiniMapVM;
-    import src.Map.MiniMap.MiniMap;
 
     public class MobileFlowFactory implements IFlowFactory {
         private var mapVM: MapVM;

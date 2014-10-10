@@ -9,11 +9,7 @@ package src.FeathersUI.GameScreen {
 
     import src.FeathersUI.Controls.ClippedLayoutGroup;
     import src.FeathersUI.Map.MapView;
-    import src.FeathersUI.MiniMap.MiniMapView;
     import src.FeathersUI.Themes.TribalHeroTheme;
-    import src.Map.City;
-    import src.Map.MiniMap.MiniMap;
-    import src.Map.ScreenPosition;
     import src.Objects.Factories.SpriteFactory;
 
     import starling.events.Event;

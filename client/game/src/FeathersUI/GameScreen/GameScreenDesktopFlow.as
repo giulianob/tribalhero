@@ -1,6 +1,8 @@
 package src.FeathersUI.GameScreen {
     import feathers.controls.ScreenNavigatorItem;
 
+    import flash.events.Event;
+
     import src.FeathersUI.Flow;
     import src.FeathersUI.Map.MapVM;
     import src.FeathersUI.Map.MapView;
@@ -23,7 +25,7 @@ package src.FeathersUI.GameScreen {
             var miniMapView: MiniMapView = new MiniMapView(miniMapVM);
             var mapView: MapView = new MapView(mapVM);
             var gameContainerVm: GameScreenVM = new GameScreenVM(mapVM.cities);
-            var gameContainerView: GameScreenDesktopView = new GameScreenDesktopView(gameContainerVm, mapView, miniMapView, miniMapVM.mapFilter);
+            var gameContainerView: GameScreenDesktopView = new GameScreenDesktopView(gameContainerVm, mapView, miniMapVM, miniMapView);
 
             Global.starlingStage.navigator.addScreen("gameContainer", new ScreenNavigatorItem(gameContainerView));
             Global.starlingStage.navigator.showScreen("gameContainer");

@@ -31,8 +31,8 @@ package src {
             Starling.current.stage.stageWidth = width;
             Starling.current.stage.stageHeight = height;
 
-            trace("DPI: " + DeviceCapabilities.dpi);
-            trace("Screen Inches: " + DeviceCapabilities.screenInchesX(Starling.current.nativeStage) + "x" + DeviceCapabilities.screenInchesY(Starling.current.nativeStage));
+            trace("DPI: " + feathers.system.DeviceCapabilities.dpi);
+            trace("Screen Inches: " + feathers.system.DeviceCapabilities.screenInchesX(Starling.current.nativeStage) + "x" + feathers.system.DeviceCapabilities.screenInchesY(Starling.current.nativeStage));
         }
 
         public function loadAssets(stage: Starling): AssetManager {
@@ -46,6 +46,10 @@ package src {
 
         public function getFlowFactory(mapVM: MapVM, miniMapVM: MiniMapVM): IFlowFactory {
             return new DesktopFlowFactory(mapVM, miniMapVM);
+        }
+
+        public function getCapabilities(): src.DeviceCapabilities {
+            return new src.DeviceCapabilities(false);
         }
     }
 }

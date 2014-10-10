@@ -29,10 +29,7 @@ package src.FeathersUI.MiniMapDrawer {
             button.nameList.add(Button.ALTERNATE_NAME_QUIET_BUTTON);
             button.horizontalAlign = Button.HORIZONTAL_ALIGN_LEFT;
             button.defaultLabelProperties.wordWrap = true;
-
-            if (text != null) {
-                button.label = text;
-            }
+            button.label = text;
 
             addChild(button);
         }

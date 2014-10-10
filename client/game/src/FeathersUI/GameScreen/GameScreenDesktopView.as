@@ -8,10 +8,9 @@ package src.FeathersUI.GameScreen {
     import feathers.layout.HorizontalLayout;
     import feathers.layout.VerticalLayout;
 
-    import src.Constants;
-
     import src.FeathersUI.Controls.HoverTooltip;
     import src.FeathersUI.Map.MapView;
+    import src.FeathersUI.MiniMap.MiniMapVM;
     import src.FeathersUI.MiniMap.MiniMapView;
     import src.FeathersUI.MiniMapDrawer.MiniMapDrawer;
     import src.FeathersUI.Themes.TribalHeroTheme;
@@ -20,7 +19,6 @@ package src.FeathersUI.GameScreen {
     import src.Objects.Factories.SpriteFactory;
 
     import starling.display.DisplayObject;
-
     import starling.events.Event;
     import starling.utils.formatString;
 
@@ -39,12 +37,14 @@ package src.FeathersUI.GameScreen {
         private var miniMapContainerLayoutDataUnzoomed: AnchorLayoutData;
         private var miniMapContainerLayoutDataZoomed: AnchorLayoutData;
         private var minimapContainer: LayoutGroup;
+        private var miniMapVm: MiniMapVM;
 
-        public function GameScreenDesktopView(vm: GameScreenVM, mapView: MapView, miniMap: MiniMapView, miniMapDrawer: MiniMapDrawer) {
+        public function GameScreenDesktopView(vm: GameScreenVM, mapView: MapView, miniMapVm: MiniMapVM, miniMap: MiniMapView) {
             this.vm = vm;
             this.map = mapView;
+            this.miniMapVm = miniMapVm;
             this.minimap = miniMap;
-            this.miniMapDrawer = miniMapDrawer;
+            this.miniMapDrawer = miniMapVm.mapFilter;
         }
 
         override protected function initialize():void
@@ -52,13 +52,15 @@ package src.FeathersUI.GameScreen {
             super.initialize();
 
             map.camera.addEventListener(Camera.ON_MOVE, updateCoordinates);
+            miniMapVm.addEventListener(MiniMapVM.EVENT_NAVIGATE_TO_POINT, onMiniMapNavigateToPoint);
 
             this.layout = new AnchorLayout();
 
+            minimap.layoutData = new AnchorLayoutData(NaN, NaN, 0, 0);
+            minimap.scrollRate = 0.25;
+
             minimapContainer = new LayoutGroup();
             {
-                minimap.layoutData = new AnchorLayoutData(NaN, NaN, 0, 0);
-
                 var minimapTools: LayoutGroup = new LayoutGroup();
                 {
                     var minimapToolsLayoutData: AnchorLayoutData = new AnchorLayoutData(NaN, NaN, TribalHeroTheme.PADDING_DEFAULT);
@@ -133,21 +135,41 @@ package src.FeathersUI.GameScreen {
             map.update();
         }
 
-        private function onTriggerMinimapZoom(event: Event): void {
-            isMinimapZoomed = !isMinimapZoomed;
+        private function onMiniMapNavigateToPoint(): void {
+            closeWorldMap();
+        }
 
+        private function onTriggerMinimapZoom(event: Event): void {
             if (isMinimapZoomed) {
-                minimap.width = 800;
-                minimap.height = 500;
-                minimapContainer.layoutData = miniMapContainerLayoutDataZoomed;
-                minimapContainer.addChild(miniMapFilters);
+                map.camera.goToCue();
+                closeWorldMap();
             }
             else {
-                minimap.width = NaN;
-                minimap.height = NaN;
-                minimapContainer.layoutData = miniMapContainerLayoutDataUnzoomed;
-                minimapContainer.removeChild(miniMapFilters);
+                map.camera.cue();
+                openWorldMap();
             }
+        }
+
+
+        private function openWorldMap(): void {
+            isMinimapZoomed = true;
+            // TODO: Calculate proper size
+            minimap.width = 800;
+            minimap.height = 500;
+            minimapContainer.layoutData = miniMapContainerLayoutDataZoomed;
+            minimapContainer.addChild(miniMapFilters);
+            map.disableMapQueries(true);
+            minimap.showPointers(true);
+        }
+
+        private function closeWorldMap(): void {
+            isMinimapZoomed = false;
+            minimap.width = NaN;
+            minimap.height = NaN;
+            minimapContainer.layoutData = miniMapContainerLayoutDataUnzoomed;
+            minimapContainer.removeChild(miniMapFilters);
+            map.disableMapQueries(false);
+            minimap.showPointers(false);
         }
 
         override public function dispose(): void {

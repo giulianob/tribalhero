@@ -14,5 +14,7 @@ package src {
         function init(starling: Starling): void;
 
         function getFlowFactory(mapVM: MapVM, miniMapVM: MiniMapVM): IFlowFactory;
+
+        function getCapabilities(): DeviceCapabilities;
     }
 }

@@ -148,7 +148,7 @@
             var mapVM: MapVM = new MapVM(objContainer, camera);
 
             Global.map = mapVM;
-			var miniMapVM: MiniMapVM = new MiniMapVM(camera);
+			var miniMapVM: MiniMapVM = new MiniMapVM(camera, mapVM.cities);
 
 			mapVM.usernames.players.add(new Username(Constants.session.playerId, Constants.session.playerName));
 			mapVM.setTimeDelta(Constants.session.timeDelta);

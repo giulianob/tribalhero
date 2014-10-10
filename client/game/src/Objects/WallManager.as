@@ -543,7 +543,7 @@
                     if (walls[radius][typeHash][y][x] === "") continue;
 
                     var mapX: int = pos.x + ( x - int(WALL_WIDTH/2));
-                    var mapY: int = pos.y + ( y - int(WALL_HEIGHT / 2));
+                    var mapY: int = pos.y + ( y - int(WALL_HEIGHT/2));
 
                     if (pos.y % 2 == 1 && y % 2 == 1) mapX += 1;
 

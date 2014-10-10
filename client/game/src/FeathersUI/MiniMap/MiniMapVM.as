@@ -8,6 +8,7 @@ package src.FeathersUI.MiniMap {
     import src.FeathersUI.MiniMapDrawer.MiniMapDrawer;
     import src.FeathersUI.MiniMap.MiniMapRegion;
     import src.FeathersUI.MiniMap.MiniMapRegionList;
+    import src.Map.CityList;
     import src.Map.ScreenPosition;
     import src.Objects.ObjectContainer;
     import src.Util.Util;
@@ -15,6 +16,7 @@ package src.FeathersUI.MiniMap {
     public class MiniMapVM extends ViewModel {
         public static const EVENT_NAVIGATE_TO_POINT: String = "EVENT_NAVIGATE_TO_POINT";
 
+        public var cities: CityList;
         public var regions: MiniMapRegionList;
         public var camera: Camera;
         private var pendingRegions: Dictionary = new Dictionary();
@@ -22,8 +24,9 @@ package src.FeathersUI.MiniMap {
 
         public var mapFilter: MiniMapDrawer = new MiniMapDrawer();
 
-        public function MiniMapVM(camera: Camera) {
+        public function MiniMapVM(camera: Camera, cities: CityList) {
             this.camera = camera;
+            this.cities = cities;
             this.objContainer = new ObjectContainer(false, false);
             this.regions = new MiniMapRegionList();
 

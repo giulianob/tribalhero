@@ -1,7 +1,10 @@
 package src.FeathersUI.Map {
     import feathers.utils.math.clamp;
 
+    import flash.events.MouseEvent;
+
     import flash.geom.Point;
+    import flash.geom.Rectangle;
 
     import src.Constants;
     import src.Global;
@@ -9,10 +12,13 @@ package src.FeathersUI.Map {
     import src.FeathersUI.Map.MapOverlayBase;
     import src.Map.Region;
     import src.Map.ScreenPosition;
+    import src.Map.ScreenPosition;
     import src.Map.TileLocator;
     import src.Objects.*;
     import src.Util.BinaryList.BinaryListEvent;
     import src.Util.Util;
+
+    import starling.core.Starling;
 
     import starling.display.*;
     import starling.events.*;
@@ -82,7 +88,7 @@ package src.FeathersUI.Map {
             regionSpace.addChild(newRegion);
         }
 
-        public function disableMouse(disable: Boolean):void
+        private function disableMouse(disable: Boolean):void
         {
             if (disable) {
                 if (!listenersDefined)
@@ -91,6 +97,7 @@ package src.FeathersUI.Map {
                 }
 
                 mapContainer.removeEventListener(TouchEvent.TOUCH, onTouched);
+                Starling.current.nativeStage.removeEventListener(MouseEvent.MOUSE_WHEEL, nativeStage_mouseWheelHandler);
 
                 listenersDefined = false;
             }
@@ -101,9 +108,40 @@ package src.FeathersUI.Map {
                     return;
                 }
 
+                Starling.current.nativeStage.addEventListener(MouseEvent.MOUSE_WHEEL, nativeStage_mouseWheelHandler, false, 0, true);
                 mapContainer.addEventListener(TouchEvent.TOUCH, onTouched);
 
                 listenersDefined = true;
+            }
+        }
+
+        private function nativeStage_mouseWheelHandler(event: MouseEvent): void {
+            const starlingViewPort:Rectangle = Starling.current.viewPort;
+            var scrollPoint: Point = new Point(
+                            (event.stageX - starlingViewPort.x) / Starling.contentScaleFactor,
+                            (event.stageY - starlingViewPort.y) / Starling.contentScaleFactor);
+
+            this.globalToLocal(scrollPoint, scrollPoint);
+            if (this.hitTest(scrollPoint, true))
+            {
+                var step: int = 10;
+
+                var newValue: Number;
+
+                if (event.delta > 0) {
+                     newValue = camera.zoomFactor + step;
+                }
+
+                if (event.delta < 0) {
+                    newValue = camera.zoomFactor - step;
+                }
+
+                var center: ScreenPosition = camera.mapCenter();
+
+                camera.beginMove();
+                camera.zoomFactor = clamp(newValue, MIN_ZOOM*100, MAX_ZOOM*100);
+                camera.scrollToCenter(center);
+                camera.endMove();
             }
         }
 
@@ -152,6 +190,7 @@ package src.FeathersUI.Map {
                 camera.zoomFactor = mapContainer.scaleX*100.0;
                 camera.endMove();
             }
+
         }
 
         public function disableMapQueries(disabled: Boolean) : void {
@@ -177,7 +216,7 @@ package src.FeathersUI.Map {
         }
 
         public function update(updatePositionFromCamera: Boolean = true): void {
-            if (updatePositionFromCamera) {
+            if (updatePositionFromCamera && !disabledMapQueries) {
                 mapContainer.pivotX = 0;
                 mapContainer.pivotY = 0;
                 mapContainer.x = -camera.currentPosition.getXAsNumber() * camera.getZoomFactorPercentage();

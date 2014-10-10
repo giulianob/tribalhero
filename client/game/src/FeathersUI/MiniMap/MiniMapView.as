@@ -8,10 +8,13 @@ package src.FeathersUI.MiniMap {
 
     import src.Constants;
     import src.Map.Camera;
+    import src.Map.City;
     import src.Map.Position;
     import src.Map.ScreenPosition;
     import src.Map.TileLocator;
+    import src.Objects.Factories.SpriteFactory;
     import src.UI.Components.MiniMapPointer;
+    import src.Util.BinaryList.BinaryListEvent;
     import src.Util.Util;
 
     import starling.display.*;
@@ -22,12 +25,12 @@ package src.FeathersUI.MiniMap {
     import starling.events.TouchPhase;
 
     public class MiniMapView extends FeathersControl {
-        private var pointers: Array = [];
-        private var pointersVisible: Boolean = false;
+        private var pointers: Dictionary = new Dictionary();
         private var cityPointer: MiniMapPointer;
 
         private var mapContainer: Sprite;
         private var bg: Sprite;
+        private var pointerContainer: Sprite;
 
         private var screenRect: Shape;
         private var screenRectWidth: Number;
@@ -37,6 +40,7 @@ package src.FeathersUI.MiniMap {
         private var parseRegionDirtyFlag: Boolean;
 
         private var _backgroundRadius: Number = 10;
+        private var _scrollRate: Number = 1;
 
         private var vm: MiniMapVM;
         private var camera: Camera;
@@ -61,13 +65,21 @@ package src.FeathersUI.MiniMap {
 
             mapContainer.addChild(vm.objContainer);
             bg = new Sprite();
+            pointerContainer = new Sprite();
 
             addChild(bg);
             addChild(mapContainer);
             addChild(screenRect);
+            addChild(pointerContainer);
 
             this.addEventListener(TouchEvent.TOUCH, onTouched);
             this.camera.addEventListener(Camera.ON_MOVE, onCameraMove);
+            this.vm.cities.addEventListener(BinaryListEvent.ADDED, onCityAdded);
+            this.vm.cities.addEventListener(BinaryListEvent.REMOVED, onCityRemoved);
+
+            for each (var city: City in this.vm.cities) {
+                addPointer(new MiniMapPointer(city.primaryPosition.x, city.primaryPosition.y, city.name, city.id));
+            }
         }
 
         public function get backgroundRadius(): Number {
@@ -89,7 +101,7 @@ package src.FeathersUI.MiniMap {
             if (movedTouch) {
                 // one finger touching / one mouse cursor moved
                 movedTouch.getMovement(this, touchMovement);
-                camera.scrollTo(new ScreenPosition(camera.currentPosition.x - touchMovement.x*Constants.miniMapTileRatioW, camera.currentPosition.y - touchMovement.y*Constants.miniMapTileRatioH));
+                camera.scrollTo(new ScreenPosition(camera.currentPosition.x - touchMovement.x*Constants.miniMapTileRatioW*scrollRate, camera.currentPosition.y - touchMovement.y*Constants.miniMapTileRatioH*scrollRate));
             }
 
             var endTouch:Touch = event.getTouch(this, TouchPhase.ENDED);
@@ -107,6 +119,19 @@ package src.FeathersUI.MiniMap {
             super.dispose();
 
             this.camera.removeEventListener(Camera.ON_MOVE, onCameraMove);
+            this.vm.cities.removeEventListener(BinaryListEvent.ADDED, onCityAdded);
+            this.vm.cities.removeEventListener(BinaryListEvent.REMOVED, onCityRemoved);
+        }
+
+        private function onCityRemoved(event: BinaryListEvent): void {
+            var city: City = event.item;
+
+            removeCityPointer(city.id);
+        }
+
+        private function onCityAdded(event: BinaryListEvent): void {
+            var city: City = event.item;
+            addPointer(new MiniMapPointer(city.primaryPosition.x, city.primaryPosition.y, city.name, city.id));
         }
 
         private function onCameraMove(event: Event): void {
@@ -127,10 +152,6 @@ package src.FeathersUI.MiniMap {
                 mapContainer.y = -camera.miniMapY + (this.actualHeight/2 - screenRectHeight/2);
 
                 mapContainer.clipRect = new Rectangle(-mapContainer.x, -mapContainer.y, this.actualWidth, this.actualHeight);
-            }
-
-            if (sizeInvalid) {
-                setUpSizeVariablesForParseRegion();
 
                 // Redraw screen rectangle
                 if (screenRectWidth < this.actualWidth && screenRectHeight < this.actualHeight) {
@@ -141,6 +162,10 @@ package src.FeathersUI.MiniMap {
                     screenRect.x = this.actualWidth/2 - screenRectWidth/2;
                     screenRect.y = this.actualHeight/2 - screenRectHeight/2;
                 }
+            }
+
+            if (sizeInvalid) {
+                setUpSizeVariablesForParseRegion();
 
                 // Set up the black transparent bg
                 bg.removeChildren();
@@ -152,6 +177,7 @@ package src.FeathersUI.MiniMap {
 
             if (cameraChanged || sizeInvalid) {
                 parseRegions();
+                updatePointers(camera.miniMapCenter);
             }
         }
 
@@ -230,52 +256,57 @@ package src.FeathersUI.MiniMap {
             vm.getRegions(requiredRegions);
         }
 
-/*
- public function addPointer(pointer: MiniMapPointer): void {
- pointer.visible = pointersVisible;
- pointers.push(pointer);
- addChild(pointer);
- }
+        public function addPointer(pointer: MiniMapPointer): void {
+            pointers[pointer.cityId] = pointer;
+            pointerContainer.addChild(pointer);
+        }
 
- public function setCityPointer(name: String): void {
- if (cityPointer != null && cityPointer.getPointerName() != name) {
- cityPointer.setIcon(SpriteFactory.getStarlingImage("ICON_MINIMAP_ARROW_BLUE"));
- } else if (cityPointer!=null) {
- return;
- }
+        public function setActiveCityPointer(cityId: int): void {
+            if (cityPointer != null) {
+                if (cityPointer.cityId == cityId) {
+                    return;
+                }
 
- cityPointer = Enumerable.from(pointers).first(function(p:MiniMapPointer):Boolean {
- return p.getPointerName() == name;
- });
+                // reset current city pointer
+                cityPointer.setIcon(SpriteFactory.getStarlingImage("ICON_MINIMAP_ARROW_BLUE"));
+            }
 
- if (cityPointer != null) {
- cityPointer.setIcon(SpriteFactory.getStarlingImage("ICON_MINIMAP_ARROW_RED"));
- }
- }
+            if (pointers[cityId] !== undefined) {
+                cityPointer = pointers[cityId];
+                cityPointer.setIcon(SpriteFactory.getStarlingImage("ICON_MINIMAP_ARROW_RED"));
+            }
+            else {
+                cityPointer = null;
+            }
+        }
 
- public function showPointers(): void {
- if (pointersVisible) return;
- pointersVisible = true;
- for each(var pointer:MiniMapPointer in pointers) {
- pointer.visible = true;
- }
- }
+        public function removeCityPointer(cityId: int): void {
+            if (cityPointer != null && cityPointer.cityId == cityId) {
+                cityPointer = null;
+                removeChild(cityPointer);
+            }
 
- public function hidePointers(): void {
- if (!pointersVisible) return;
- pointersVisible = false;
- for each(var pointer:MiniMapPointer in pointers) {
- pointer.visible = false
- }
- }
+            if (pointers[cityId] !== undefined) {
+                delete pointers[cityId];
+            }
+        }
 
- public function updatePointers(center: Point): void {
- if (!pointersVisible) return;
- for each(var pointer:MiniMapPointer in pointers) {
- pointer.update(center, this.actualWidth, this.actualHeight);
- }
- }
+        public function showPointers(visible: Boolean): void {
+            pointerContainer.visible = visible;
+        }
 
- */
+        public function updatePointers(center: Point): void {
+            for each(var pointer:MiniMapPointer in pointers) {
+                pointer.update(center, this.actualWidth, this.actualHeight);
+            }
+        }
+
+        public function get scrollRate(): Number {
+            return _scrollRate;
+        }
+
+        public function set scrollRate(value: Number): void {
+            _scrollRate = value;
+        }
     }
 }

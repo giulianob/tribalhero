@@ -6,6 +6,8 @@ package src {
     import flash.geom.Rectangle;
     import flash.system.Capabilities;
 
+    import src.DeviceCapabilities;
+
     import src.FeathersUI.Factories.IFlowFactory;
     import src.FeathersUI.Factories.MobileFlowFactory;
     import src.FeathersUI.Map.MapVM;
@@ -34,7 +36,7 @@ package src {
             // Viewport is always the full screen size
             starling.viewPort = new Rectangle(0, 0, screenWidth, screenHeight);
 
-            var dpiRatio: Number = DeviceCapabilities.dpi / 163.0;
+            var dpiRatio: Number = feathers.system.DeviceCapabilities.dpi / 163.0;
 
             // might not need it
             // dpiRatio = findScaleFactor(dpiRatio, dpiRatiosAllowed);
@@ -46,8 +48,8 @@ package src {
             trace("Screen size: " + screenWidth + "x" + screenHeight);
             trace("Stage size: " + starling.stage.stageWidth + "x" + starling.stage.stageHeight);
             trace("Starling ScaleFactor: "  + starling.contentScaleFactor);
-            trace("DPI: " + DeviceCapabilities.dpi);
-            trace("Screen Inches: " + DeviceCapabilities.screenInchesX(starling.nativeStage) + "x" + DeviceCapabilities.screenInchesY(starling.nativeStage));
+            trace("DPI: " + feathers.system.DeviceCapabilities.dpi);
+            trace("Screen Inches: " + feathers.system.DeviceCapabilities.screenInchesX(starling.nativeStage) + "x" + feathers.system.DeviceCapabilities.screenInchesY(starling.nativeStage));
         }
 
         public function loadAssets(starling: Starling): AssetManager {
@@ -85,6 +87,10 @@ package src {
 
         public function getFlowFactory(mapVM: MapVM, miniMapVM: MiniMapVM): IFlowFactory {
             return new MobileFlowFactory(mapVM, miniMapVM);
+        }
+
+        public function getCapabilities(): src.DeviceCapabilities {
+            return new src.DeviceCapabilities(true);
         }
     }
 }

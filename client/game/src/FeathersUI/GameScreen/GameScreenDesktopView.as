@@ -57,6 +57,8 @@ package src.FeathersUI.GameScreen {
 
             minimapContainer = new LayoutGroup();
             {
+                minimap.layoutData = new AnchorLayoutData(NaN, NaN, 0, 0);
+
                 var minimapTools: LayoutGroup = new LayoutGroup();
                 {
                     var minimapToolsLayoutData: AnchorLayoutData = new AnchorLayoutData(NaN, NaN, TribalHeroTheme.PADDING_DEFAULT);

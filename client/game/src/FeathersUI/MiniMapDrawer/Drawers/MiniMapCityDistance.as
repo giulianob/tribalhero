@@ -1,6 +1,8 @@
 package src.FeathersUI.MiniMapDrawer.Drawers {
     import feathers.controls.ToggleButton;
 
+    import src.FeathersUI.MiniMap.MiniMapDiamondIcon;
+
     import src.FeathersUI.MiniMap.MinimapDotIcon;
 
     import src.FeathersUI.MiniMapDrawer.LegendGroups.MiniMapGroupCity;
@@ -27,14 +29,9 @@ package src.FeathersUI.MiniMapDrawer.Drawers {
         private var DEFAULT_COLORS: * = MiniMapGroupCity.DEFAULT_COLORS;
 
         public function applyObject(obj: MiniMapRegionObject): void {
-            var dotSprite: Image;
-
             if (Global.map.cities.get(obj.groupId)) {
                 if (cityButton.isSelected) return;
-
-                dotSprite = SpriteFactory.getStarlingImage("DOT_SPRITE");
-                dotSprite.color = MiniMapGroupCity.CITY_DEFAULT_COLOR.hex;
-                obj.setIcon(dotSprite);
+                obj.setIcon(new MiniMapDiamondIcon(MiniMapGroupCity.CITY_DEFAULT_COLOR).dot);
             } else {
                 // Apply the difficulty transformation to the tile
                 var point: Position = TileLocator.getScreenMinimapToMapCoord(obj.x, obj.y);
@@ -47,39 +44,37 @@ package src.FeathersUI.MiniMapDrawer.Drawers {
                 else if (distance > 400 && !d500Button.isSelected)distanceIdx = 0;
                 else return;
 
-                dotSprite = SpriteFactory.getStarlingImage("DOT_SPRITE");
-                dotSprite.color = DEFAULT_COLORS[distanceIdx].hex;
-                obj.setIcon(dotSprite);
+                obj.setIcon(new MiniMapDiamondIcon(DEFAULT_COLORS[distanceIdx]).dot);
             }
         }
 
         public function applyLegend(legend: MiniMapLegendPanel): void {
-            var cityIcon: Image = new MinimapDotIcon(true, MiniMapGroupCity.CITY_DEFAULT_COLOR).dot;
+            var cityIcon: Image = new MiniMapDiamondIcon(MiniMapGroupCity.CITY_DEFAULT_COLOR).dot;
             legend.addFilterButton(cityButton, StringHelper.localize("MINIMAP_LEGEND_CITY"), cityIcon);
 
-            var d100Icon: Image = new MinimapDotIcon(true, MiniMapGroupCity.DEFAULT_COLORS[4]).dot;
+            var d100Icon: Image = new MiniMapDiamondIcon(MiniMapGroupCity.DEFAULT_COLORS[4]).dot;
             legend.addFilterButton(d100Button, StringHelper.localize("MINIMAP_LEGEND_DISTANCE_LESS_THAN", 100), d100Icon);
 
-            var d200Icon: Image = new MinimapDotIcon(true, MiniMapGroupCity.DEFAULT_COLORS[3]).dot;
+            var d200Icon: Image = new MiniMapDiamondIcon(MiniMapGroupCity.DEFAULT_COLORS[3]).dot;
             legend.addFilterButton(d200Button, StringHelper.localize("MINIMAP_LEGEND_DISTANCE_LESS_THAN", 200), d200Icon);
 
-            var d300Icon: Image = new MinimapDotIcon(true, MiniMapGroupCity.DEFAULT_COLORS[2]).dot;
+            var d300Icon: Image = new MiniMapDiamondIcon(MiniMapGroupCity.DEFAULT_COLORS[2]).dot;
             legend.addFilterButton(d300Button, StringHelper.localize("MINIMAP_LEGEND_DISTANCE_LESS_THAN", 300), d300Icon);
 
-            var d400Icon: Image = new MinimapDotIcon(true, MiniMapGroupCity.DEFAULT_COLORS[1]).dot;
+            var d400Icon: Image = new MiniMapDiamondIcon(MiniMapGroupCity.DEFAULT_COLORS[1]).dot;
             legend.addFilterButton(d400Button, StringHelper.localize("MINIMAP_LEGEND_DISTANCE_LESS_THAN", 400), d400Icon);
 
-            var d500Icon: Image = new MinimapDotIcon(true, MiniMapGroupCity.DEFAULT_COLORS[4]).dot;
+            var d500Icon: Image = new MiniMapDiamondIcon(MiniMapGroupCity.DEFAULT_COLORS[4]).dot;
             legend.addFilterButton(d500Button, StringHelper.localize("MINIMAP_LEGEND_DISTANCE_500"), d500Icon);
         }
 
         public function addOnChangeListener(callback: Function): void {
-            cityButton.addEventListener(Event.TRIGGERED, callback);
-            d100Button.addEventListener(Event.TRIGGERED, callback);
-            d200Button.addEventListener(Event.TRIGGERED, callback);
-            d300Button.addEventListener(Event.TRIGGERED, callback);
-            d400Button.addEventListener(Event.TRIGGERED, callback);
-            d500Button.addEventListener(Event.TRIGGERED, callback);
+            cityButton.addEventListener(Event.CHANGE, callback);
+            d100Button.addEventListener(Event.CHANGE, callback);
+            d200Button.addEventListener(Event.CHANGE, callback);
+            d300Button.addEventListener(Event.CHANGE, callback);
+            d400Button.addEventListener(Event.CHANGE, callback);
+            d500Button.addEventListener(Event.CHANGE, callback);
         }
     }
 }

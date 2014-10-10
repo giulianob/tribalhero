@@ -1,6 +1,8 @@
 package src.FeathersUI.MiniMapDrawer.Drawers {
     import feathers.controls.ToggleButton;
 
+    import src.FeathersUI.MiniMap.MiniMapDiamondIcon;
+
     import src.FeathersUI.MiniMap.MinimapDotIcon;
 
     import src.FeathersUI.MiniMapDrawer.LegendGroups.MiniMapGroupCity;
@@ -22,50 +24,42 @@ package src.FeathersUI.MiniMapDrawer.Drawers {
         private var DEFAULT_COLORS: * = MiniMapGroupCity.DEFAULT_COLORS;
 
         public function applyObject(obj: MiniMapRegionObject): void {
-            var dotSprite: Image;
-
             if (Global.map.cities.get(obj.groupId)) {
                 if (cityButton.isSelected) {
                     return;
                 }
 
-                dotSprite = SpriteFactory.getStarlingImage("DOT_SPRITE");
-                dotSprite.color = MiniMapGroupCity.CITY_DEFAULT_COLOR.hex;
-                obj.setIcon(dotSprite);
+                obj.setIcon(new MiniMapDiamondIcon(MiniMapGroupCity.CITY_DEFAULT_COLOR).dot);
             } else if (obj.extraProps.isNewbie) {
                 if (newbieButton.isSelected) {
                     return;
                 }
 
-                dotSprite = SpriteFactory.getStarlingImage("DOT_SPRITE");
-                dotSprite.color = DEFAULT_COLORS[3].hex;
-                obj.setIcon(dotSprite);
+                obj.setIcon(new MiniMapDiamondIcon(MiniMapGroupCity.DEFAULT_COLORS[3]).dot);
             } else {
                 if (veteranButton.isSelected) {
                     return;
                 }
 
-                dotSprite = SpriteFactory.getStarlingImage("DOT_SPRITE");
-                dotSprite.color = DEFAULT_COLORS[0].hex;
-                obj.setIcon(dotSprite);
+                obj.setIcon(new MiniMapDiamondIcon(MiniMapGroupCity.DEFAULT_COLORS[0]).dot);
             }
         }
 
         public function applyLegend(legend: MiniMapLegendPanel): void {
-            var cityIcon: Image = new MinimapDotIcon(true, MiniMapGroupCity.CITY_DEFAULT_COLOR).dot;
+            var cityIcon: Image = new MiniMapDiamondIcon(MiniMapGroupCity.CITY_DEFAULT_COLOR).dot;
             legend.addFilterButton(cityButton, StringHelper.localize("MINIMAP_LEGEND_CITY"), cityIcon);
 
-            var newbieIcon: Image = new MinimapDotIcon(true, MiniMapGroupCity.DEFAULT_COLORS[3]).dot;
+            var newbieIcon: Image = new MiniMapDiamondIcon(MiniMapGroupCity.DEFAULT_COLORS[3]).dot;
             legend.addFilterButton(newbieButton, StringHelper.localize("MINIMAP_LEGEND_NEWBIE_YES"), newbieIcon);
 
-            var veteranIcon: Image = new MinimapDotIcon(true, MiniMapGroupCity.DEFAULT_COLORS[0]).dot;
+            var veteranIcon: Image = new MiniMapDiamondIcon(MiniMapGroupCity.DEFAULT_COLORS[0]).dot;
             legend.addFilterButton(veteranButton, StringHelper.localize("MINIMAP_LEGEND_NEWBIE_NO"), veteranIcon);
         }
 
         public function addOnChangeListener(callback: Function): void {
-            cityButton.addEventListener(Event.TRIGGERED, callback);
-            newbieButton.addEventListener(Event.TRIGGERED, callback);
-            veteranButton.addEventListener(Event.TRIGGERED, callback);
+            cityButton.addEventListener(Event.CHANGE, callback);
+            newbieButton.addEventListener(Event.CHANGE, callback);
+            veteranButton.addEventListener(Event.CHANGE, callback);
         }
     }
 }

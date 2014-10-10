@@ -8,12 +8,18 @@ package src.FeathersUI.GameScreen {
     import feathers.layout.HorizontalLayout;
     import feathers.layout.VerticalLayout;
 
+    import src.Constants;
+
     import src.FeathersUI.Controls.HoverTooltip;
     import src.FeathersUI.Map.MapView;
     import src.FeathersUI.MiniMap.MiniMapView;
+    import src.FeathersUI.MiniMapDrawer.MiniMapDrawer;
+    import src.FeathersUI.Themes.TribalHeroTheme;
     import src.Map.Camera;
     import src.Map.Position;
     import src.Objects.Factories.SpriteFactory;
+
+    import starling.display.DisplayObject;
 
     import starling.events.Event;
     import starling.utils.formatString;
@@ -27,11 +33,18 @@ package src.FeathersUI.GameScreen {
         private var btnSendFeedback: Button;
         private var btnMute: Button;
         private var lblCoords: Label;
+        private var isMinimapZoomed: Boolean;
+        private var miniMapFilters: LayoutGroup;
+        private var miniMapDrawer: MiniMapDrawer;
+        private var miniMapContainerLayoutDataUnzoomed: AnchorLayoutData;
+        private var miniMapContainerLayoutDataZoomed: AnchorLayoutData;
+        private var minimapContainer: LayoutGroup;
 
-        public function GameScreenDesktopView(vm: GameScreenVM, mapView: MapView, miniMap: MiniMapView) {
+        public function GameScreenDesktopView(vm: GameScreenVM, mapView: MapView, miniMap: MiniMapView, miniMapDrawer: MiniMapDrawer) {
             this.vm = vm;
             this.map = mapView;
             this.minimap = miniMap;
+            this.miniMapDrawer = miniMapDrawer;
         }
 
         override protected function initialize():void
@@ -42,10 +55,14 @@ package src.FeathersUI.GameScreen {
 
             this.layout = new AnchorLayout();
 
-            var minimapContainer: LayoutGroup = new LayoutGroup();
+            minimapContainer = new LayoutGroup();
             {
                 var minimapTools: LayoutGroup = new LayoutGroup();
                 {
+                    var minimapToolsLayoutData: AnchorLayoutData = new AnchorLayoutData(NaN, NaN, TribalHeroTheme.PADDING_DEFAULT);
+                    minimapToolsLayoutData.bottomAnchorDisplayObject = minimap;
+                    minimapTools.layoutData = minimapToolsLayoutData;
+
                     var minimapToolsLayout: HorizontalLayout = new HorizontalLayout();
                     minimapToolsLayout.verticalAlign = HorizontalLayout.VERTICAL_ALIGN_MIDDLE;
                     minimapToolsLayout.gap = 10;
@@ -54,6 +71,7 @@ package src.FeathersUI.GameScreen {
                     btnMinimapZoom = new Button();
                     btnMinimapZoom.styleProvider = null;
                     btnMinimapZoom.defaultIcon = SpriteFactory.getStarlingImage("ICON_MAP");
+                    btnMinimapZoom.addEventListener(Event.TRIGGERED, onTriggerMinimapZoom);
                     new HoverTooltip("World View", btnMinimapZoom).bind();
 
                     btnFind = new Button();
@@ -81,12 +99,27 @@ package src.FeathersUI.GameScreen {
                     minimapTools.addChild(lblCoords);
                 }
 
-                minimapContainer.name = "Minimap Container";
-                var minimapContainerLayout: VerticalLayout = new VerticalLayout();
-                minimapContainerLayout.gap = 5;
-                minimapContainer.layout = minimapContainerLayout;
+                miniMapFilters = new LayoutGroup();
+                {
+                    var miniMapFiltersLayoutData: AnchorLayoutData = new AnchorLayoutData(NaN, NaN, NaN, TribalHeroTheme.PADDING_DEFAULT);
+                    miniMapFiltersLayoutData.leftAnchorDisplayObject = minimap;
+                    miniMapFilters.layoutData = miniMapFiltersLayoutData;
 
-                minimapContainer.layoutData = new AnchorLayoutData(Number.NaN, 20, 20);
+                    var miniMapFiltersLayout:VerticalLayout = new VerticalLayout();
+                    miniMapFiltersLayout.gap = TribalHeroTheme.PADDING_DEFAULT;
+                    miniMapFilters.layout = miniMapFiltersLayout;
+                    for each (var legendPanel: DisplayObject in miniMapDrawer.getLegendPanels()) {
+                        miniMapFilters.addChild(legendPanel);
+                    }
+                }
+
+                minimapContainer.name = "Minimap Container";
+                minimapContainer.layout = new AnchorLayout();
+
+                miniMapContainerLayoutDataUnzoomed = new AnchorLayoutData(NaN, 20, 20);
+                miniMapContainerLayoutDataZoomed = new AnchorLayoutData(NaN, NaN, NaN, NaN, 0, 0);
+
+                minimapContainer.layoutData = miniMapContainerLayoutDataUnzoomed;
 
                 minimapContainer.addChild(minimapTools);
                 minimapContainer.addChild(minimap);
@@ -96,6 +129,23 @@ package src.FeathersUI.GameScreen {
             addChild(minimapContainer);
 
             map.update();
+        }
+
+        private function onTriggerMinimapZoom(event: Event): void {
+            isMinimapZoomed = !isMinimapZoomed;
+
+            if (isMinimapZoomed) {
+                minimap.width = 800;
+                minimap.height = 500;
+                minimapContainer.layoutData = miniMapContainerLayoutDataZoomed;
+                minimapContainer.addChild(miniMapFilters);
+            }
+            else {
+                minimap.width = NaN;
+                minimap.height = NaN;
+                minimapContainer.layoutData = miniMapContainerLayoutDataUnzoomed;
+                minimapContainer.removeChild(miniMapFilters);
+            }
         }
 
         override public function dispose(): void {

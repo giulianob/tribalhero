@@ -115,6 +115,11 @@
 			return list[idx];
 		}
 
+        public function contains(val: *): Boolean
+        {
+            return Util.binarySearch(list, compareFunc, val) >= 0;
+        }
+
         public function getRange(val: * ): Array
 		{
 			var idxs: Array = Util.binarySearchRange(list, compareFunc, val);

@@ -1,6 +1,5 @@
 package src
 {
-    import src.Map.MiniMap.MiniMapLegend;
     import src.Objects.Store.CoinPrice;
 
     public class Constants

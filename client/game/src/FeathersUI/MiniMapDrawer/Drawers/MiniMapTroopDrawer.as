@@ -5,6 +5,7 @@ package src.FeathersUI.MiniMapDrawer.Drawers {
     import src.FeathersUI.MiniMapDrawer.MiniMapLegendPanel;
     import src.FeathersUI.MiniMap.MiniMapRegionObject;
     import src.FeathersUI.MiniMap.MinimapDotIcon;
+    import src.Global;
 
     import starling.display.Image;
     import starling.events.Event;
@@ -19,7 +20,8 @@ package src.FeathersUI.MiniMapDrawer.Drawers {
         public function applyObject(obj: MiniMapRegionObject): void {
             var icon: MinimapDotIcon;
 
-            var friendly: Boolean = Constants.session.tribe.isInTribe(obj.extraProps.tribeId);
+            var friendly: Boolean = Constants.session.tribe.isInTribe(obj.extraProps.tribeId) || Global.map.cities.contains(obj.groupId);
+
             if (friendly && !friendToggleButton.isSelected) {
                 icon = new MinimapDotIcon(false, FRIENDLY_COLOR);
             } else if (!friendly && !foeToggleButton.isSelected) {
@@ -38,8 +40,8 @@ package src.FeathersUI.MiniMapDrawer.Drawers {
         }
 
         public function addOnChangeListener(callback: Function): void {
-            friendToggleButton.addEventListener(Event.TRIGGERED, callback);
-            foeToggleButton.addEventListener(Event.TRIGGERED, callback);
+            friendToggleButton.addEventListener(Event.CHANGE, callback);
+            foeToggleButton.addEventListener(Event.CHANGE, callback);
         }
     }
 }

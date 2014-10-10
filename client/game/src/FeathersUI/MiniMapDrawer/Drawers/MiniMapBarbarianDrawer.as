@@ -29,7 +29,7 @@ package src.FeathersUI.MiniMapDrawer.Drawers {
         }
 
         public function addOnChangeListener(callback: Function): void {
-            toggleButton.addEventListener(Event.TRIGGERED, callback);
+            toggleButton.addEventListener(Event.CHANGE, callback);
         }
     }
 }

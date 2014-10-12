@@ -80,7 +80,7 @@ package src.UI.Cursors {
 
 			if (requiresRoad && !hasRoadNearby) {
 				Global.gameContainer.message.showMessage("This building must be connected to a road and there are no roads available. Build roads first by using your Town Center then try again.");
-			} else if (buildableTiles.size() == 0) {
+			} else if (buildableTiles.length == 0) {
 				Global.gameContainer.message.showMessage("There are no spaces available to build on.");
 			} else {
 				Global.gameContainer.message.showMessage("Double click on a green square to build a " + structPrototype.getName().toLowerCase() + ".");

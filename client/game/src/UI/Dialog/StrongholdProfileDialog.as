@@ -217,8 +217,8 @@
             var f: Formation = new Formation(Formation.Defense);
             for each (troop in profileData.troops) {
                 for each(var formation: Formation in troop.stub) {
-                    if (formation.type != Formation.Defense || formation.size() == 0) continue;
-                    for (var z: int = 0; z < formation.size(); z++) {
+                    if (formation.type != Formation.Defense || formation.length == 0) continue;
+                    for (var z: int = 0; z < formation.length; z++) {
                         var u: Unit = formation.getByIndex(z);
                         var newUnit: Unit = new Unit(u.type, u.count);
                         f.add(newUnit);
@@ -226,7 +226,7 @@
                 }
             }
             s.add(f);
-            if (f.size() > 0) {
+            if (f.length > 0) {
                 addInfo(pnlInfoContainer, StringHelper.localize("STR_TOTAL_TROOPS"), new TroopCompositionGridList(s, 3, 0));
             }
             else {

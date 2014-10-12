@@ -100,7 +100,7 @@
 			for each(var formation: Formation in troop)
 			{
 				//Don't show empty formations for tooltips
-				if (tooltipMode && formation.size() == 0) continue;
+				if (tooltipMode && formation.length == 0) continue;
 
 				var ts: ComplexTroopGridList;
 				var template: * ;
@@ -117,7 +117,7 @@
 
 				ts = new ComplexTroopGridList(city, template, formation.type, tooltipMode);
 
-				for (var z: int = 0; z < formation.size(); z++)
+				for (var z: int = 0; z < formation.length; z++)
 				{
 					var unit: Unit = formation.getByIndex(z);
 

@@ -219,7 +219,7 @@ package src.FeathersUI.Map {
             var outdatedRegions: Array = [];
 
             //remove any outdated regions from regions we have
-            for (var i: int = regions.size() - 1; i >= 0; i--) {
+            for (var i: int = regions.length - 1; i >= 0; i--) {
                 var region: Region = regions.getByIndex(i);
 
                 var found: int = -1;

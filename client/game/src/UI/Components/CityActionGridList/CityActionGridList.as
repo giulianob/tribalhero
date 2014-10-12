@@ -70,7 +70,7 @@
 		public function onUpdateActions(e: Event = null): void {
 			(getModel() as VectorListModel).clear();
 
-			if (city.currentActions.size() == 0) {
+			if (city.currentActions.length == 0) {
 				(getModel() as VectorListModel).append( { 'message': 'There is nothing going on...' } );
 			}
 

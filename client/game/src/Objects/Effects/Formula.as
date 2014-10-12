@@ -276,7 +276,7 @@ import src.Objects.Troop.*;
 		
 		public static function getResourceNewCity() : *
 		{
-			var numberOfCities:Number = Global.map.cities.size();
+			var numberOfCities:Number = Global.map.cities.length;
 			var wagonRequired:Number = 50 * numberOfCities;
 			var wagonCurrent:Number = Global.gameContainer.selectedCity.troops.getDefaultTroop().getIndividualUnitCount(ObjectFactory.getFirstType("Wagon"));
 			var influenceRequired:Number = (80 + 50 * numberOfCities) * numberOfCities;

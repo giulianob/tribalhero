@@ -133,7 +133,7 @@ package src.UI.Dialog {
 
             var btnSetDefault: JButton = new JButton(t("STORE_VIEW_THEME_SET_TROOP_DEFAULT"));
             btnSetDefault.addActionListener(function(e: Event): void {
-                if (Global.map.cities.size() == 1) {
+                if (Global.map.cities.length == 1) {
                     viewModel.setDefaultTroopTheme(Global.map.cities.getByIndex(0));
                 }
                 else {
@@ -158,7 +158,7 @@ package src.UI.Dialog {
 
             var btnSetDefault: JButton = new JButton(t("STORE_VIEW_THEME_SET_DEFAULT"));
             btnSetDefault.addActionListener(function(e: Event): void {
-                if (Global.map.cities.size() == 1) {
+                if (Global.map.cities.length == 1) {
                     viewModel.setDefaultTheme(Global.map.cities.getByIndex(0));
                 }
                 else {
@@ -188,7 +188,7 @@ package src.UI.Dialog {
 
             var btnSetWallTheme: JButton = new JButton(t("STORE_VIEW_THEME_APPLY_WALL"));
             btnSetWallTheme.addActionListener(function(e: Event): void {
-                if (Global.map.cities.size() == 1) {
+                if (Global.map.cities.length == 1) {
                     viewModel.applyWallTheme(Global.map.cities.getByIndex(0));
                 }
                 else {
@@ -218,7 +218,7 @@ package src.UI.Dialog {
 
             var btnSetRoadTheme: JButton = new JButton(t("STORE_VIEW_THEME_APPLY_ROAD"));
             btnSetRoadTheme.addActionListener(function(e: Event): void {
-                if (Global.map.cities.size() == 1) {
+                if (Global.map.cities.length == 1) {
                     viewModel.applyRoadTheme(Global.map.cities.getByIndex(0));
                 }
                 else {
@@ -244,7 +244,7 @@ package src.UI.Dialog {
 
             var btnApplyAll: JButton = new JButton(t("STORE_VIEW_THEME_APPLY_ALL"));
             btnApplyAll.addActionListener(function(e: Event): void {
-                if (Global.map.cities.size() == 1) {
+                if (Global.map.cities.length == 1) {
                     viewModel.applyAllTheme(Global.map.cities.getByIndex(0));
                 }
                 else {

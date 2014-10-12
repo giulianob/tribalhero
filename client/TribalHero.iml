@@ -99,6 +99,7 @@
           <map>
             <entry key="compiler.debug.swf" value="true" />
             <entry key="compiler.define" value="" />
+            <entry key="compiler.keep-generated-actionscript" value="false" />
           </map>
           <option name="additionalConfigFilePath" value="$MODULE_DIR$/GameConfig.Mobile.xml" />
           <option name="additionalOptions" value="-define+=CONFIG::debug,true" />
@@ -112,6 +113,62 @@
           <AirSigningOptions keystore-path="$MODULE_DIR$/tools/airpackager/cert/TribalHero.p12" use-temp-certificate="false" />
         </packaging-android>
         <packaging-ios package-file-name="TribalHero_Android" />
+      </configuration>
+      <configuration name="TribalHero Mobile Release" target-platform="Mobile" pure-as="true" output-file="TribalHero_Mobile_Release.swf" output-folder="$MODULE_DIR$/bin">
+        <dependencies>
+          <entries>
+            <entry library-name="TheMiner_en" library-level="project">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-name="Linq_Flash" library-level="project">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-name="greensock" library-level="project">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-name="flash" library-level="project">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-name="as3corelib" library-level="project">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-name="Game" library-level="project">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-id="91726cc9-f528-40b7-af4b-aa1bbbf70d9b">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-id="78b22ea6-1a66-46eb-9138-a5a0950ffcf3">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-id="0da35611-015a-4bbc-8ef9-2d5940d0ceef">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-id="3e6dda9d-d9e7-4782-8ec2-f01b4abc3bae">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-id="9c11cc8a-5d0a-4ec9-9850-c5cae6c77eb6">
+              <dependency linkage="Merged" />
+            </entry>
+          </entries>
+          <sdk name="airsdk" />
+        </dependencies>
+        <compiler-options>
+          <map>
+            <entry key="compiler.debug.swf" value="false" />
+            <entry key="compiler.define" value="" />
+          </map>
+          <option name="additionalConfigFilePath" value="$MODULE_DIR$/GameConfig.Mobile.xml" />
+        </compiler-options>
+        <packaging-air-desktop />
+        <packaging-android enabled="true" use-generated-descriptor="false" custom-descriptor-path="$MODULE_DIR$/air.application.xml" package-file-name="TribalHero_Mobile_Release">
+          <files-to-package>
+            <FilePathAndPathInPackage file-path="$MODULE_DIR$/../graphics/atlas" path-in-package="atlas" />
+            <FilePathAndPathInPackage file-path="$MODULE_DIR$/../graphics/appicons" path-in-package="appicons" />
+          </files-to-package>
+          <AirSigningOptions keystore-path="$MODULE_DIR$/tools/airpackager/cert/TribalHero.p12" use-temp-certificate="false" />
+        </packaging-android>
+        <packaging-ios package-file-name="TribalHero_Mobile_Release" />
       </configuration>
     </configurations>
     <compiler-options />
@@ -236,6 +293,56 @@
     <orderEntry type="module-library" exported="">
       <library type="flex">
         <properties id="22c36b1b-c152-45d4-bbcb-f0d2ac645a92" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/swc/aswing/AsWing.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="91726cc9-f528-40b7-af4b-aa1bbbf70d9b" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/swc/starling/starling.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="78b22ea6-1a66-46eb-9138-a5a0950ffcf3" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/swc/feathers/feathers.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="0da35611-015a-4bbc-8ef9-2d5940d0ceef" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/swc/feathers/MetalWorksMobileTheme.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="3e6dda9d-d9e7-4782-8ec2-f01b4abc3bae" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/swc/feathers/MetalWorksDesktopTheme.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="9c11cc8a-5d0a-4ec9-9850-c5cae6c77eb6" />
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/swc/aswing/AsWing.swc!/" />
         </CLASSES>

@@ -2,7 +2,9 @@ package src.FeathersUI.GameScreen {
     import feathers.controls.Button;
     import feathers.controls.Label;
     import feathers.controls.LayoutGroup;
+    import feathers.controls.PickerList;
     import feathers.controls.Screen;
+    import feathers.data.ListCollection;
     import feathers.layout.AnchorLayout;
     import feathers.layout.AnchorLayoutData;
     import feathers.layout.HorizontalLayout;
@@ -15,8 +17,10 @@ package src.FeathersUI.GameScreen {
     import src.FeathersUI.MiniMapDrawer.MiniMapDrawer;
     import src.FeathersUI.Themes.TribalHeroTheme;
     import src.Map.Camera;
+    import src.Map.City;
     import src.Map.Position;
     import src.Objects.Factories.SpriteFactory;
+    import src.Util.BinaryList.BinaryListEvent;
 
     import starling.display.DisplayObject;
     import starling.events.Event;
@@ -38,6 +42,9 @@ package src.FeathersUI.GameScreen {
         private var miniMapContainerLayoutDataZoomed: AnchorLayoutData;
         private var minimapContainer: LayoutGroup;
         private var miniMapVm: MiniMapVM;
+        private var selectedCityButton: Button;
+        private var cityPickerList: PickerList;
+        private var cityPickerListData: ListCollection;
 
         public function GameScreenDesktopView(vm: GameScreenVM, mapView: MapView, miniMapVm: MiniMapVM, miniMap: MiniMapView) {
             this.vm = vm;
@@ -58,6 +65,26 @@ package src.FeathersUI.GameScreen {
 
             minimap.layoutData = new AnchorLayoutData(NaN, NaN, 0, 0);
             minimap.scrollRate = 0.25;
+
+            var menuContainer: LayoutGroup = new LayoutGroup();
+            {
+                menuContainer.layoutData = new AnchorLayoutData(TribalHeroTheme.PADDING_DEFAULT, NaN, NaN, TribalHeroTheme.PADDING_DEFAULT);
+
+                menuContainer.layout = new HorizontalLayout();
+
+                cityPickerList = new PickerList();
+                cityPickerList.labelFunction = function(item: Object): String { return ""; };
+                cityPickerList.maxWidth = 24;
+                cityPickerList.dataProvider = initializeCityPickerListData();
+                cityPickerList.selectedIndex = getCityPickerIndex(vm.selectedCity);
+                cityPickerList.addEventListener(Event.CHANGE, onCityPickerListChange);
+
+                selectedCityButton = new Button();
+                selectedCityButton.label = vm.selectedCity != null ? vm.selectedCity.name : "";
+
+                menuContainer.addChild(selectedCityButton);
+                menuContainer.addChild(cityPickerList);
+            }
 
             minimapContainer = new LayoutGroup();
             {
@@ -131,8 +158,38 @@ package src.FeathersUI.GameScreen {
 
             addChild(map);
             addChild(minimapContainer);
+            addChild(menuContainer);
 
             map.update();
+        }
+
+        private function onCityPickerListChange(event: Event): void {
+            if (!cityPickerList.selectedItem) {
+                vm.selectedCity = null;
+            }
+            else {
+                vm.selectedCity = vm.cities.get(cityPickerList.selectedItem.cityId);
+            }
+        }
+
+        private function initializeCityPickerListData(): ListCollection {
+            vm.cities.addEventListener(BinaryListEvent.ADDED, onCityAdded);
+            vm.cities.addEventListener(BinaryListEvent.REMOVED, onCityRemoved);
+
+            cityPickerListData = new ListCollection();
+
+            for each (var city: City in vm.cities.toArray().sortOn("id")) {
+                addCityToPickerListData(city);
+            }
+
+            return cityPickerListData;
+        }
+
+        private function addCityToPickerListData(city: City): void {
+            cityPickerListData.addItem({
+                cityId: city.id,
+                label: city.name
+            });
         }
 
         private function onMiniMapNavigateToPoint(): void {
@@ -175,17 +232,46 @@ package src.FeathersUI.GameScreen {
         override public function dispose(): void {
             super.dispose();
 
+            vm.cities.removeEventListener(BinaryListEvent.ADDED, onCityAdded);
+            vm.cities.removeEventListener(BinaryListEvent.REMOVED, onCityRemoved);
             map.camera.removeEventListener(Camera.ON_MOVE, updateCoordinates);
         }
 
-        override public function validate(): void {
-            super.validate();
+        private function onCityRemoved(event: BinaryListEvent): void {
+            var city: City = event.item;
+            for (var i: int = 0; i < cityPickerListData.length; i++) {
+                if (cityPickerListData.getItemAt(i).cityId !== city.id) {
+                    continue;
+                }
+
+                cityPickerListData.removeItemAt(i);
+                break;
+            }
+        }
+
+        private function onCityAdded(event: BinaryListEvent): void {
+            var city: City = event.item;
+            addCityToPickerListData(city);
         }
 
         private function updateCoordinates(e: Event = null): void {
             var point: Position = map.camera.mapCenter().toPosition();
 
             lblCoords.text = formatString("({0},{1})", point.x, point.y);
+        }
+
+        private function getCityPickerIndex(city: City): int {
+            if (city == null) {
+                return -1;
+            }
+
+            for (var i:int = 0; i < cityPickerListData.length; i++) {
+                if (cityPickerListData.getItemAt(i).cityId == city.id) {
+                    return i;
+                }
+            }
+
+            return -1;
         }
     }
 }

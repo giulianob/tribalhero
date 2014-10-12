@@ -76,7 +76,7 @@
 			for each(var formation: Formation in stub)
 			{
 				packet.writeUByte(formation.type);
-				packet.writeUByte(formation.size());
+				packet.writeUByte(formation.length);
 
 				for each (var unit: Unit in formation)
 				{

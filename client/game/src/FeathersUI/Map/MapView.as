@@ -190,10 +190,10 @@ package src.FeathersUI.Map {
                 camera.zoomFactor = mapContainer.scaleX*100.0;
                 camera.endMove();
             }
-
         }
 
         public function disableMapQueries(disabled: Boolean) : void {
+            disableMouse(disabled);
             objContainer.disableMouse(disabled);
             disabledMapQueries = disabled;
 

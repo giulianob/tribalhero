@@ -1,6 +1,8 @@
 package src.Map {
     import mx.utils.StringUtil;
 
+    import src.Constants;
+
     import src.Util.StringHelper;
 
     public class Position {
@@ -94,6 +96,14 @@ package src.Map {
 
         public function toScreenPosition(): ScreenPosition {
             return TileLocator.getScreenCoord(this);
+        }
+
+        public function toTileCenteredScreenPosition(): ScreenPosition {
+            var screenPos: ScreenPosition = TileLocator.getScreenCoord(this);
+            screenPos.x += Constants.tileW/2;
+            screenPos.y += Constants.tileH/2;
+
+            return screenPos;
         }
 
         public function toString(): String {

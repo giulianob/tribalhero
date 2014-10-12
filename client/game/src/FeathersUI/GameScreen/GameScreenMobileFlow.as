@@ -26,13 +26,13 @@ package src.FeathersUI.GameScreen {
         }
 
         public function show(): void {
-            mapVM.camera.scrollToCenter(mapVM.cities[0].primaryPosition.toScreenPosition());
-
             miniMapVM.addEventListener(MiniMapVM.EVENT_NAVIGATE_TO_POINT, onMiniMapNavigateToPoint);
 
             // Main game screen setup
+            var gameContainerVm: GameScreenVM = new GameScreenVM(mapVM.camera, mapVM.cities);
+            gameContainerVm.zoomToSelectedCity();
+
             mapView = new MapView(mapVM);
-            var gameContainerVm: GameScreenVM = new GameScreenVM(mapVM.cities);
             var gameContainerView: GameScreenMobileView = new GameScreenMobileView(gameContainerVm, mapView);
             gameContainerView.addEventListener(GameScreenMobileView.EVENT_VIEW_MINIMAP, onViewMinimap);
 

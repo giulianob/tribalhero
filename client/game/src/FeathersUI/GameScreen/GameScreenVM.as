@@ -1,5 +1,6 @@
 package src.FeathersUI.GameScreen {
     import src.FeathersUI.ViewModel;
+    import src.Map.Camera;
     import src.Map.City;
     import src.Map.CityList;
 
@@ -8,8 +9,10 @@ package src.FeathersUI.GameScreen {
 
         private var _cities: CityList;
         private var _selectedCity: City;
+        private var camera: Camera;
 
-        public function GameScreenVM(cities: CityList) {
+        public function GameScreenVM(camera: Camera, cities: CityList) {
+            this.camera = camera;
             this._cities = cities;
 
             if (cities.length > 0) {
@@ -29,6 +32,14 @@ package src.FeathersUI.GameScreen {
             _selectedCity = value;
 
             dispatchWith(EVENT_SELECTED_CITY_CHANGED);
+        }
+
+        public function zoomToSelectedCity(): void {
+            if (!selectedCity) {
+                return;
+            }
+
+            camera.scrollToCenter(selectedCity.primaryPosition.toTileCenteredScreenPosition());
         }
     }
 }

@@ -6,18 +6,23 @@ namespace Game.Module.Remover
 {
     public class NewbieIdleSelector : IPlayerSelector
     {
-        #region IPlayerSelector Members
+        private readonly IDbManager dbManager;
+
+        public NewbieIdleSelector(IDbManager dbManager)
+        {
+            this.dbManager = dbManager;
+        }
 
         public IEnumerable<uint> GetPlayerIds()
         {
-            using (var reader = DbPersistance.Current.ReaderQuery(string.Format(@"
+            using (var reader = dbManager.ReaderQuery(string.Format(@"
                                                                                 SELECT DISTINCT players.id player_id 
                                                                                 FROM players 
                                                                                 INNER JOIN cities ON cities.player_id = players.id 
                                                                                 WHERE  
                                                                                     (
-                                                                                        (cities.VALUE <= 9 AND players.last_login < DATE_SUB(Utc_timestamp(), INTERVAL 3 DAY))
-                                                                                     OR (cities.VALUE <= 15 AND players.last_login < DATE_SUB(Utc_timestamp(), INTERVAL 7 DAY))
+                                                                                        (cities.deleted = 0 AND cities.VALUE <= 9 AND players.last_login < DATE_SUB(Utc_timestamp(), INTERVAL 3 DAY))
+                                                                                     OR (cities.deleted = 0 AND cities.VALUE <= 15 AND players.last_login < DATE_SUB(Utc_timestamp(), INTERVAL 7 DAY))
                                                                                     )
                                                                                     AND players.online = 0                                                                             
                                                                                     AND (SELECT COUNT(*) 
@@ -32,7 +37,5 @@ namespace Game.Module.Remover
                 }
             }
         }
-
-        #endregion
     }
 }

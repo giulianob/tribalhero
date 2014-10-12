@@ -1,44 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
-<!-- $TexturePacker:SmartUpdate:0261f811bc32e6f9b6756b00b656e02e:e0502dd35f61c63f2531ce23bf4c339c:8f3239cb2f4160886615eb4f6be191c7$ -->
+<!-- $TexturePacker:SmartUpdate:0f5d43761bafc617953e59de309917a2:d028416e62fa5462bac24ab4b6407ed9:8f3239cb2f4160886615eb4f6be191c7$ -->
 <TextureAtlas imagePath="ICONS_ATLAS.png">
-    <SubTexture name="COUNT_BUBBLE" x="65" y="156" width="23" height="21"/>
-    <SubTexture name="DOT_SPRITE" x="2" y="241" width="21" height="12"/>
-    <SubTexture name="ICON_ALERT" x="39" y="178" rotated="true" width="23" height="6"/>
-    <SubTexture name="ICON_ARROW_LEFT" x="80" y="78" rotated="true" width="20" height="24" frameX="0" frameY="-2" frameWidth="24" frameHeight="24"/>
-    <SubTexture name="ICON_ARROW_RIGHT" x="80" y="104" rotated="true" width="20" height="24" frameX="0" frameY="-2" frameWidth="24" frameHeight="24"/>
-    <SubTexture name="ICON_BELL" x="2" y="52" width="24" height="24"/>
-    <SubTexture name="ICON_BOOK_SMALL" x="28" y="52" width="24" height="24"/>
-    <SubTexture name="ICON_CHECKMARK" x="54" y="52" width="24" height="24"/>
-    <SubTexture name="ICON_CLOCK" x="102" y="59" width="24" height="24"/>
-    <SubTexture name="ICON_COIN" x="25" y="241" width="12" height="12"/>
-    <SubTexture name="ICON_CROP" x="2" y="78" width="24" height="24"/>
-    <SubTexture name="ICON_GLOBE" x="28" y="78" width="24" height="24"/>
-    <SubTexture name="ICON_GLOBE_STANDALONE" x="98" y="163" width="18" height="18"/>
-    <SubTexture name="ICON_GOLD" x="54" y="78" width="24" height="24"/>
-    <SubTexture name="ICON_HAMMER" x="80" y="130" rotated="true" width="20" height="24" frameX="0" frameY="-4" frameWidth="24" frameHeight="24"/>
-    <SubTexture name="ICON_IRON" x="102" y="2" rotated="true" width="24" height="27"/>
-    <SubTexture name="ICON_LABOR" x="102" y="85" width="24" height="24"/>
-    <SubTexture name="ICON_LEVEL_UP" x="2" y="104" width="24" height="24"/>
-    <SubTexture name="ICON_MAP" x="28" y="104" width="24" height="24"/>
-    <SubTexture name="ICON_MESSAGING" x="54" y="104" width="24" height="24"/>
-    <SubTexture name="ICON_MINIMAP_ARROW_BLUE" x="39" y="156" width="24" height="20" frameX="0" frameY="-2" frameWidth="24" frameHeight="24"/>
-    <SubTexture name="ICON_MINIMAP_ARROW_RED" x="80" y="104" rotated="true" width="20" height="24" frameX="0" frameY="-2" frameWidth="24" frameHeight="24"/>
-    <SubTexture name="ICON_MINUS" x="90" y="156" rotated="true" width="6" height="16" frameX="-3" frameY="-10" frameWidth="24" frameHeight="24"/>
-    <SubTexture name="ICON_PAPER_SCROLL" x="2" y="2" width="48" height="48"/>
-    <SubTexture name="ICON_PAPER_SCROLL_ALERT" x="52" y="2" width="48" height="48"/>
-    <SubTexture name="ICON_PLUS" x="64" y="179" width="16" height="16" frameX="-4" frameY="-4" frameWidth="24" frameHeight="24"/>
-    <SubTexture name="ICON_QUESTION" x="28" y="167" rotated="true" width="8" height="24" frameX="0" frameY="-14" frameWidth="24" frameHeight="24"/>
-    <SubTexture name="ICON_RED_X" x="102" y="111" width="24" height="24"/>
-    <SubTexture name="ICON_SHIELD" x="2" y="130" width="24" height="24"/>
-    <SubTexture name="ICON_SINGLE_SWORD" x="28" y="130" width="24" height="24"/>
-    <SubTexture name="ICON_STAR" x="54" y="130" width="24" height="24"/>
-    <SubTexture name="ICON_STAR_EMPTY" x="102" y="137" width="24" height="24"/>
-    <SubTexture name="ICON_STAR_HALF" x="2" y="163" width="24" height="24"/>
-    <SubTexture name="ICON_SWORD" x="2" y="189" width="24" height="24"/>
-    <SubTexture name="ICON_UNFRIEND" x="2" y="215" width="24" height="24"/>
-    <SubTexture name="ICON_UPGRADE" x="80" y="52" width="20" height="24" frameX="-2" frameY="0" frameWidth="24" frameHeight="24"/>
-    <SubTexture name="ICON_WOOD" x="102" y="31" rotated="true" width="24" height="26"/>
-    <SubTexture name="MINIMAP_LARGE_CIRCLE_SPRITE" x="28" y="156" width="9" height="9"/>
-    <SubTexture name="MINIMAP_SMALL_CIRCLE_SPRITE" x="90" y="174" width="6" height="6"/>
+    <SubTexture name="COUNT_BUBBLE" x="28" y="530" width="23" height="21"/>
+    <SubTexture name="DOT_SPRITE" x="490" y="215" rotated="true" width="12" height="21"/>
+    <SubTexture name="ICON_ALERT" x="504" y="215" width="6" height="23"/>
+    <SubTexture name="ICON_ARROW_LEFT" x="490" y="111" rotated="true" width="20" height="24" frameX="0" frameY="-2" frameWidth="24" frameHeight="24"/>
+    <SubTexture name="ICON_ARROW_RIGHT" x="490" y="137" rotated="true" width="20" height="24" frameX="0" frameY="-2" frameWidth="24" frameHeight="24"/>
+    <SubTexture name="ICON_BATTLE_REPORT_MENU" x="69" y="464" width="62" height="62"/>
+    <SubTexture name="ICON_BELL" x="464" y="79" width="24" height="24"/>
+    <SubTexture name="ICON_BOOK_SMALL" x="464" y="105" width="24" height="24"/>
+    <SubTexture name="ICON_CHECKMARK" x="464" y="131" width="24" height="24"/>
+    <SubTexture name="ICON_CITY_INFO_MENU" x="389" y="464" width="60" height="60"/>
+    <SubTexture name="ICON_CLOCK" x="464" y="157" width="24" height="24"/>
+    <SubTexture name="ICON_COIN" x="490" y="238" width="12" height="12"/>
+    <SubTexture name="ICON_CROP" x="464" y="183" width="24" height="24"/>
+    <SubTexture name="ICON_GLOBE" x="464" y="209" width="24" height="24"/>
+    <SubTexture name="ICON_GLOBE_STANDALONE" x="492" y="57" width="18" height="18"/>
+    <SubTexture name="ICON_GOLD" x="464" y="235" width="24" height="24"/>
+    <SubTexture name="ICON_HAMMER" x="490" y="163" rotated="true" width="20" height="24" frameX="0" frameY="-4" frameWidth="24" frameHeight="24"/>
+    <SubTexture name="ICON_IRON" x="464" y="27" width="27" height="24"/>
+    <SubTexture name="ICON_LABOR" x="464" y="261" width="24" height="24"/>
+    <SubTexture name="ICON_LEVEL_UP" x="464" y="287" width="24" height="24"/>
+    <SubTexture name="ICON_MAIN_MENU" x="464" y="2" rotated="true" width="33" height="23"/>
+    <SubTexture name="ICON_MAP" x="464" y="313" width="24" height="24"/>
+    <SubTexture name="ICON_MESSAGE_MENU" x="133" y="464" rotated="true" width="62" height="60"/>
+    <SubTexture name="ICON_MESSAGING" x="464" y="339" width="24" height="24"/>
+    <SubTexture name="ICON_MINIMAP_ARROW_BLUE" x="490" y="189" rotated="true" width="20" height="24" frameX="0" frameY="-2" frameWidth="24" frameHeight="24"/>
+    <SubTexture name="ICON_MINIMAP_ARROW_RED" x="490" y="137" rotated="true" width="20" height="24" frameX="0" frameY="-2" frameWidth="24" frameHeight="24"/>
+    <SubTexture name="ICON_MINUS" x="492" y="77" width="16" height="6" frameX="-3" frameY="-10" frameWidth="24" frameHeight="24"/>
+    <SubTexture name="ICON_PAPER_SCROLL" x="451" y="469" width="48" height="48"/>
+    <SubTexture name="ICON_PAPER_SCROLL_ALERT" x="451" y="519" width="48" height="48"/>
+    <SubTexture name="ICON_PLUS" x="493" y="39" width="16" height="16" frameX="-4" frameY="-4" frameWidth="24" frameHeight="24"/>
+    <SubTexture name="ICON_QUESTION" x="499" y="13" rotated="true" width="8" height="24" frameX="0" frameY="-14" frameWidth="24" frameHeight="24"/>
+    <SubTexture name="ICON_RANKING_MENU" x="197" y="464" rotated="true" width="62" height="60"/>
+    <SubTexture name="ICON_RED_X" x="464" y="365" width="24" height="24"/>
+    <SubTexture name="ICON_SHIELD" x="464" y="391" width="24" height="24"/>
+    <SubTexture name="ICON_SINGLE_SWORD" x="464" y="417" width="24" height="24"/>
+    <SubTexture name="ICON_STAR" x="464" y="443" width="24" height="24"/>
+    <SubTexture name="ICON_STAR_EMPTY" x="133" y="526" width="24" height="24"/>
+    <SubTexture name="ICON_STAR_HALF" x="69" y="528" width="24" height="24"/>
+    <SubTexture name="ICON_STORE_MENU" x="2" y="464" rotated="true" width="65" height="64" frameX="-1" frameY="0" frameWidth="66" frameHeight="65"/>
+    <SubTexture name="ICON_SWORD" x="95" y="528" width="24" height="24"/>
+    <SubTexture name="ICON_TRIBE_MENU" x="261" y="464" rotated="true" width="62" height="60"/>
+    <SubTexture name="ICON_TROOP_MENU" x="325" y="464" rotated="true" width="62" height="60"/>
+    <SubTexture name="ICON_UNFRIEND" x="2" y="530" width="24" height="24"/>
+    <SubTexture name="ICON_UPGRADE" x="490" y="85" width="20" height="24" frameX="-2" frameY="0" frameWidth="24" frameHeight="24"/>
+    <SubTexture name="ICON_WOOD" x="464" y="53" width="26" height="24"/>
+    <SubTexture name="MINIMAP_LARGE_CIRCLE_SPRITE" x="499" y="2" width="9" height="9"/>
+    <SubTexture name="MINIMAP_SMALL_CIRCLE_SPRITE" x="504" y="240" width="6" height="6"/>
+    <SubTexture name="anvil-bronze" x="2" y="2" width="75" height="75"/>
+    <SubTexture name="anvil-gold" x="79" y="2" width="75" height="75"/>
+    <SubTexture name="anvil-honorary" x="156" y="2" width="75" height="75"/>
+    <SubTexture name="anvil-silver" x="233" y="2" width="75" height="75"/>
+    <SubTexture name="arrowshield-bronze" x="310" y="2" width="75" height="75"/>
+    <SubTexture name="arrowshield-gold" x="387" y="2" width="75" height="75"/>
+    <SubTexture name="arrowshield-honorary" x="2" y="79" width="75" height="75"/>
+    <SubTexture name="arrowshield-silver" x="79" y="79" width="75" height="75"/>
+    <SubTexture name="axe-bronze" x="156" y="79" width="75" height="75"/>
+    <SubTexture name="axe-gold" x="233" y="79" width="75" height="75"/>
+    <SubTexture name="axe-honorary" x="310" y="79" width="75" height="75"/>
+    <SubTexture name="axe-silver" x="387" y="79" width="75" height="75"/>
+    <SubTexture name="bar-bronze" x="2" y="156" width="75" height="75"/>
+    <SubTexture name="bar-gold" x="79" y="156" width="75" height="75"/>
+    <SubTexture name="bar-honorary" x="156" y="156" width="75" height="75"/>
+    <SubTexture name="bar-silver" x="233" y="156" width="75" height="75"/>
+    <SubTexture name="chalice-bronze" x="310" y="156" width="75" height="75"/>
+    <SubTexture name="chalice-gold" x="387" y="156" width="75" height="75"/>
+    <SubTexture name="chalice-honorary" x="2" y="233" width="75" height="75"/>
+    <SubTexture name="chalice-silver" x="79" y="233" width="75" height="75"/>
+    <SubTexture name="chest-bronze" x="156" y="233" width="75" height="75"/>
+    <SubTexture name="chest-gold" x="233" y="233" width="75" height="75"/>
+    <SubTexture name="chest-honorary" x="310" y="233" width="75" height="75"/>
+    <SubTexture name="chest-silver" x="387" y="233" width="75" height="75"/>
+    <SubTexture name="coins-bronze" x="2" y="310" width="75" height="75"/>
+    <SubTexture name="coins-gold" x="79" y="310" width="75" height="75"/>
+    <SubTexture name="coins-honorary" x="156" y="310" width="75" height="75"/>
+    <SubTexture name="coins-silver" x="233" y="310" width="75" height="75"/>
+    <SubTexture name="tower-bronze" x="310" y="310" width="75" height="75"/>
+    <SubTexture name="tower-gold" x="387" y="310" width="75" height="75"/>
+    <SubTexture name="tower-honorary" x="2" y="387" width="75" height="75"/>
+    <SubTexture name="tower-silver" x="79" y="387" width="75" height="75"/>
+    <SubTexture name="wing-man-bronze" x="156" y="387" width="75" height="75"/>
+    <SubTexture name="wing-man-gold" x="233" y="387" width="75" height="75"/>
+    <SubTexture name="wing-man-honorary" x="310" y="387" width="75" height="75"/>
+    <SubTexture name="wing-man-silver" x="387" y="387" width="75" height="75"/>
 </TextureAtlas>

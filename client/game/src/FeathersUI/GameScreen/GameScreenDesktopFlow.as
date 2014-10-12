@@ -20,11 +20,11 @@ package src.FeathersUI.GameScreen {
         }
 
         public function show(): void {
-            mapVM.camera.scrollToCenter(mapVM.cities[0].primaryPosition.toScreenPosition());
-
             var miniMapView: MiniMapView = new MiniMapView(miniMapVM);
+            var gameContainerVm: GameScreenVM = new GameScreenVM(mapVM.camera, mapVM.cities);
+            gameContainerVm.zoomToSelectedCity();
+
             var mapView: MapView = new MapView(mapVM);
-            var gameContainerVm: GameScreenVM = new GameScreenVM(mapVM.cities);
             var gameContainerView: GameScreenDesktopView = new GameScreenDesktopView(gameContainerVm, mapView, miniMapVM, miniMapView);
 
             Global.starlingStage.navigator.addScreen("gameContainer", new ScreenNavigatorItem(gameContainerView));

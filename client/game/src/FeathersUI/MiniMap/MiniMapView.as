@@ -101,7 +101,7 @@ package src.FeathersUI.MiniMap {
             if (movedTouch) {
                 // one finger touching / one mouse cursor moved
                 movedTouch.getMovement(this, touchMovement);
-                camera.scrollTo(new ScreenPosition(camera.currentPosition.x - touchMovement.x*Constants.miniMapTileRatioW*scrollRate, camera.currentPosition.y - touchMovement.y*Constants.miniMapTileRatioH*scrollRate));
+                camera.scrollTo(new ScreenPosition(camera.currentPosition.x - touchMovement.x*Constants.miniMapTileRatioW, camera.currentPosition.y - touchMovement.y*Constants.miniMapTileRatioH));
             }
 
             var endTouch:Touch = event.getTouch(this, TouchPhase.ENDED);

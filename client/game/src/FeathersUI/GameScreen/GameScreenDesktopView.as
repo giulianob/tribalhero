@@ -10,20 +10,29 @@ package src.FeathersUI.GameScreen {
     import feathers.layout.HorizontalLayout;
     import feathers.layout.VerticalLayout;
 
+    import flash.net.URLRequest;
+    import flash.net.navigateToURL;
+
+    import src.Constants;
+
     import src.FeathersUI.Controls.HoverTooltip;
     import src.FeathersUI.Map.MapView;
     import src.FeathersUI.MiniMap.MiniMapVM;
     import src.FeathersUI.MiniMap.MiniMapView;
     import src.FeathersUI.MiniMapDrawer.MiniMapDrawer;
     import src.FeathersUI.Themes.TribalHeroTheme;
+    import src.Global;
     import src.Map.Camera;
     import src.Map.City;
     import src.Map.Position;
+    import src.MusicPlayer;
     import src.Objects.Factories.SpriteFactory;
+    import src.UI.Dialog.GoToDialog;
     import src.Util.BinaryList.BinaryListEvent;
 
     import starling.display.DisplayObject;
     import starling.events.Event;
+    import starling.filters.ColorMatrixFilter;
     import starling.utils.formatString;
 
     public class GameScreenDesktopView extends Screen {
@@ -74,13 +83,13 @@ package src.FeathersUI.GameScreen {
 
                 cityPickerList = new PickerList();
                 cityPickerList.labelFunction = function(item: Object): String { return ""; };
-                cityPickerList.maxWidth = 24;
                 cityPickerList.dataProvider = initializeCityPickerListData();
                 cityPickerList.selectedIndex = getCityPickerIndex(vm.selectedCity);
                 cityPickerList.addEventListener(Event.CHANGE, onCityPickerListChange);
 
                 selectedCityButton = new Button();
                 selectedCityButton.label = vm.selectedCity != null ? vm.selectedCity.name : "";
+                selectedCityButton.addEventListener(Event.TRIGGERED, onSelectedCityButtonTriggered);
 
                 menuContainer.addChild(selectedCityButton);
                 menuContainer.addChild(cityPickerList);
@@ -109,16 +118,21 @@ package src.FeathersUI.GameScreen {
                     btnFind.styleProvider = null;
                     btnFind.defaultIcon = SpriteFactory.getStarlingImage("ICON_GLOBE_STANDALONE");
                     new HoverTooltip("Find...", btnFind).bind();
+                    btnFind.addEventListener(Event.TRIGGERED, onBtnFindTriggered);
 
                     btnSendFeedback = new Button();
                     btnSendFeedback.styleProvider = null;
                     btnSendFeedback.defaultIcon = SpriteFactory.getStarlingImage("ICON_BOOK_SMALL");
                     new HoverTooltip("Send Feedback", btnSendFeedback).bind();
+                    btnSendFeedback.addEventListener(Event.TRIGGERED, onBtnSendFeedbackTriggered);
 
                     btnMute = new Button();
                     btnMute.styleProvider = null;
                     btnMute.defaultIcon = SpriteFactory.getStarlingImage("ICON_BELL");
                     new HoverTooltip("Play/Pause Music", btnMute).bind();
+                    btnMute.addEventListener(Event.TRIGGERED, onBtnMuteTriggered);
+                    setBtnMuteStyle();
+                    Global.musicPlayer.events.addEventListener(MusicPlayer.STATE_CHANGE, onMusicPlayerStateChanged);
 
                     lblCoords = new Label();
                     updateCoordinates();
@@ -161,6 +175,19 @@ package src.FeathersUI.GameScreen {
             addChild(menuContainer);
 
             map.update();
+        }
+
+        private function onBtnSendFeedbackTriggered(event: Event): void {
+            navigateToURL(new URLRequest(Constants.mainWebsite + "feedback"), "_blank");
+        }
+
+        private function onBtnFindTriggered(event: Event): void {
+            var goToDialog: GoToDialog = new GoToDialog();
+            goToDialog.show();
+        }
+
+        private function onSelectedCityButtonTriggered(event: Event): void {
+            vm.zoomToSelectedCity();
         }
 
         private function onCityPickerListChange(event: Event): void {
@@ -232,6 +259,7 @@ package src.FeathersUI.GameScreen {
         override public function dispose(): void {
             super.dispose();
 
+            Global.musicPlayer.events.removeEventListener(MusicPlayer.STATE_CHANGE, onMusicPlayerStateChanged);
             vm.cities.removeEventListener(BinaryListEvent.ADDED, onCityAdded);
             vm.cities.removeEventListener(BinaryListEvent.REMOVED, onCityRemoved);
             map.camera.removeEventListener(Camera.ON_MOVE, updateCoordinates);
@@ -273,5 +301,25 @@ package src.FeathersUI.GameScreen {
 
             return -1;
         }
+
+        private function onMusicPlayerStateChanged(event: *): void {
+            setBtnMuteStyle();
+        }
+
+        private function setBtnMuteStyle(): void {
+            if (Global.musicPlayer.isMuted) {
+                var color: ColorMatrixFilter = new ColorMatrixFilter();
+                color.adjustSaturation(-1);
+                btnMute.filter = color;
+            }
+            else {
+                btnMute.filter = null;
+            }
+        }
+
+        private function onBtnMuteTriggered(event: Event): void {
+            Global.musicPlayer.toggle();
+        }
+
     }
 }

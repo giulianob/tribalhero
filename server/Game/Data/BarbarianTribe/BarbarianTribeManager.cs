@@ -174,13 +174,16 @@ namespace Game.Data.BarbarianTribe
             }
 
             dbManager.Delete(barbarianTribe);
+
             return true;
         }
 
         public void RelocateAsNeeded()
-        {            
-            var barbarianTribesToDelete = barbarianTribes.Values.Where(bt => (bt.Created.Add(TimeSpan.FromSeconds(Config.barbariantribe_idle_duration_in_sec)) < DateTime.UtcNow &&
-                                                                              bt.LastAttacked == DateTime.MinValue) || bt.CampRemains == 0)
+        {
+            var minIdleTime = TimeSpan.FromSeconds(Config.barbariantribe_idle_duration_in_sec);
+
+            var barbarianTribesToDelete = barbarianTribes.Values.Where(bt => (bt.Created.Add(minIdleTime) < DateTime.UtcNow && bt.LastAttacked.Add(minIdleTime) < DateTime.UtcNow) ||
+                                                                             bt.CampRemains == 0)
                                                          .ToArray();
 
             foreach(var barbarianTribe in barbarianTribesToDelete)

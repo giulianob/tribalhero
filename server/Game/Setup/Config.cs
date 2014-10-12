@@ -164,7 +164,7 @@ namespace Game.Setup
 
         public static int barbariantribe_generate = 2200; // not used anymore in new weighted algo but old impl. is still here so leaving it
         public static int barbariantribe_camp_count = 10;
-        public static int barbariantribe_idle_check_interval_in_sec = 1800;
+        public static int barbariantribe_idle_check_interval_in_sec = 3600;
         public static int barbariantribe_idle_duration_in_sec = 86400 * 2;
         public static double barbarian_tribes_npc_randomness = 0.4;           
 

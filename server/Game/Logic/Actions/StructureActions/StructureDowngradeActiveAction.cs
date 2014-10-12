@@ -102,7 +102,8 @@ namespace Game.Logic.Actions
                 return Error.StructureUndestroyable;
             }
 
-            var buildTime = TimeSpan.FromHours(1).TotalSeconds;
+            var buildTime = formula.BuildTime(structureCsvFactory.GetTime(structure.Type, (byte)(structure.Lvl + 1)), city, structure.Technologies)
+                                   .Clamp((int)TimeSpan.FromMinutes(3).TotalSeconds, (int)TimeSpan.FromHours(1).TotalSeconds);
             
             endTime = DateTime.UtcNow.AddSeconds(CalculateTime(buildTime));
             BeginTime = DateTime.UtcNow;

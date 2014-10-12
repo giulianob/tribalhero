@@ -33,7 +33,7 @@ package src.UI.Tutorial.Steps
 		}		
 		
 		override public function execute(): void {					
-			if (map.cities.size() > 1) {
+			if (map.cities.length > 1) {
 				this.complete();
 				return;
 			}

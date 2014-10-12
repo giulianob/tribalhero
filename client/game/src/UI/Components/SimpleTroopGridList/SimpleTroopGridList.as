@@ -162,7 +162,7 @@
 
 				var ts: SimpleTroopGridList = new SimpleTroopGridList(templateManager, formation.type);
 
-				for (var z: int = 0; z < formation.size(); z++)
+				for (var z: int = 0; z < formation.length; z++)
 				{
 					unit = formation.getByIndex(z);
 

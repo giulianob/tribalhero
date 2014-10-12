@@ -83,7 +83,7 @@ package src.FeathersUI.MiniMap {
 
         public function getRegions(requiredRegions: Dictionary): void {
             //remove any outdated regions from regions we have
-            for (var i: int = regions.size() - 1; i >= 0; i--) {
+            for (var i: int = regions.length - 1; i >= 0; i--) {
                 var region: MiniMapRegion = regions.getByIndex(i);
 
                 if (requiredRegions[region.id] == null) {

@@ -101,7 +101,7 @@
 			return list[index];
 		}
 
-		public function size(): int
+		public function get length(): int
 		{
 			return list.length;
 		}

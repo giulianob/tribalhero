@@ -35,11 +35,19 @@ namespace Game.Comm
             processor.RegisterCommand("BarbarianTribeCreate", Create, PlayerRights.Admin);
             processor.RegisterCommand("BarbarianTribeRelocate", Relocate, PlayerRights.Admin);
             processor.RegisterCommand("BarbarianTribeRelocateAllIdle", RelocateAllIdle, PlayerRights.Admin);
+            processor.RegisterCommand("BarbarianTribeRelocateAsNeeded", RelocateAsNeeded, PlayerRights.Admin);
         }
 
         private string RelocateAllIdle(Session session, string[] parms)
         {
             barbarianTribeManager.RelocateIdleBarbCamps();
+
+            return "OK!";
+        }
+
+        private string RelocateAsNeeded(Session session, string[] parms)
+        {
+            barbarianTribeManager.RelocateAsNeeded();
 
             return "OK!";
         }

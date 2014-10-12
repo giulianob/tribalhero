@@ -91,19 +91,30 @@ namespace Game.Data.BarbarianTribe
                 }
 
                 byte level;
-                if (cityIp > 0)
+                // Make sure non-empty regions have at least 1 low level barb
+                if (region.CityIps.Count > 0 && i + 1 == barbarianTribesToCreate && region.BarbLevels.All(barbLevel => barbLevel < 2 || barbLevel > 4))
+                {
+                    level = (byte)Config.Random.Next(2, 5);
+                }
+                // If we are generating for a specific city 
+                else if (cityIp > 0)
                 {
                     // Returns a random barb level within a 5 level range.
                     // The range is determined by the provided city_ip. 
                     // E.g., a city with 150 ip will result in barb lvl 4-8.
                     level = (byte)((cityIp / CITY_IP_PER_BARB_LVL).Clamp(1, 6) + Config.Random.Next(0, 5));
                 }
+                // Pick a random one if we already have a low level and we are generating the free barb
                 else
                 {
-                    level = (byte)Config.Random.Next(1, 11);
+                    level = (byte)Config.Random.Next(2, 11);
                 }
 
-                yield return new BarbarianTribeConfiguration(level.Clamp((byte)1, (byte)10), position);
+                level = level.Clamp((byte)1, (byte)10);
+
+                region.BarbLevels.Add(level);
+
+                yield return new BarbarianTribeConfiguration(level, position);
 
                 i++;
             }

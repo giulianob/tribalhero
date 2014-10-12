@@ -49,7 +49,7 @@ namespace Game.Comm
             }
 
             ProcessorCommand cmdWorker;
-            if (!commands.TryGetValue(cmd, out cmdWorker) || cmdWorker.RightsRequired > session.Player.Rights)
+            if (!commands.TryGetValue(cmd.ToLower(), out cmdWorker) || cmdWorker.RightsRequired > session.Player.Rights)
             {
                 return "Command not found";
             }

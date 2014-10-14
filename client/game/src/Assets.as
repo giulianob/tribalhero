@@ -4,6 +4,7 @@
     import flash.display.Sprite;
     import flash.events.Event;
     import flash.geom.Point;
+    import flash.system.Capabilities;
     import flash.utils.Dictionary;
     import flash.utils.describeType;
 
@@ -115,6 +116,19 @@
                     }
                 }
 
+                // Generate a json output to help migrating over to starling
+                // use http://www.uize.com/examples/json-prettifier.html to sort by key
+                if (Capabilities.isDebugger) {
+                    var starlingMapPositions: Object = {};
+                    for (var key: Object in embedPositionCache) {
+                        var name = key.toString().split(":")[0];
+                        starlingMapPositions[name] = { x: embedPositionCache[key].x, y: embedPositionCache[key].y };
+                    }
+
+                    var mapPositionsJson: String = JSON.stringify(starlingMapPositions);
+
+                    trace(mapPositionsJson);
+                }
             }
         }
 

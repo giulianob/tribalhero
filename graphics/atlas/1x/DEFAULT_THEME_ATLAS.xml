@@ -1,38 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
-<!-- $TexturePacker:SmartUpdate:cf44273e16fc302ebebcf80235c5766f:da82da1269ac05aeaca1ce69506980bf:d87927e16edf9aaacda1660132d555a3$ -->
+<!-- $TexturePacker:SmartUpdate:5315eed57f9d31405bf2189eca1218b8:da82da1269ac05aeaca1ce69506980bf:d87927e16edf9aaacda1660132d555a3$ -->
 <TextureAtlas imagePath="DEFAULT_THEME_ATLAS.png">
-    <SubTexture name="DEFAULT_ARMORY_STRUCTURE" x="179" y="388" width="56" height="39"/>
-    <SubTexture name="DEFAULT_BARBARIAN_TRIBE_STRUCTURE" x="120" y="148" width="106" height="60"/>
-    <SubTexture name="DEFAULT_BARRACK_STRUCTURE" x="2" y="296" width="75" height="46"/>
-    <SubTexture name="DEFAULT_BASEMENT_STRUCTURE" x="129" y="429" width="49" height="30"/>
-    <SubTexture name="DEFAULT_BASEMENT_TMP_STRUCTURE" x="129" y="461" width="35" height="21"/>
+    <SubTexture name="DEFAULT_ARMORY_STRUCTURE" x="179" y="387" width="56" height="39"/>
+    <SubTexture name="DEFAULT_BARBARIAN_TRIBE_STRUCTURE" x="119" y="148" width="106" height="60"/>
+    <SubTexture name="DEFAULT_BARRACK_STRUCTURE" x="2" y="296" width="75" height="45" frameX="0" frameY="-1" frameWidth="75" frameHeight="46"/>
+    <SubTexture name="DEFAULT_BASEMENT_STRUCTURE" x="57" y="451" width="49" height="30"/>
+    <SubTexture name="DEFAULT_BASEMENT_TMP_STRUCTURE" x="108" y="451" width="35" height="21"/>
     <SubTexture name="DEFAULT_BLACKSMITH_STRUCTURE" x="79" y="336" width="58" height="39"/>
     <SubTexture name="DEFAULT_BUILDING_1" x="139" y="336" width="40" height="25" frameX="0" frameY="-2" frameWidth="40" frameHeight="27"/>
-    <SubTexture name="DEFAULT_BUILDING_2" x="181" y="350" width="57" height="36" frameX="0" frameY="-2" frameWidth="57" frameHeight="38"/>
-    <SubTexture name="DEFAULT_BUILDING_3" x="181" y="350" width="57" height="36" frameX="0" frameY="-2" frameWidth="57" frameHeight="38"/>
-    <SubTexture name="DEFAULT_CANNON_TOWER_STRUCTURE" x="2" y="453" width="34" height="37"/>
-    <SubTexture name="DEFAULT_DEAD_FIELD_STRUCTURE" x="118" y="391" width="55" height="36"/>
+    <SubTexture name="DEFAULT_BUILDING_2" x="181" y="350" width="57" height="35" frameX="0" frameY="-3" frameWidth="57" frameHeight="38"/>
+    <SubTexture name="DEFAULT_BUILDING_3" x="181" y="350" width="57" height="35" frameX="0" frameY="-3" frameWidth="57" frameHeight="38"/>
+    <SubTexture name="DEFAULT_CANNON_TOWER_STRUCTURE" x="145" y="428" width="34" height="37"/>
+    <SubTexture name="DEFAULT_DEAD_FIELD_STRUCTURE" x="2" y="380" width="55" height="36"/>
     <SubTexture name="DEFAULT_FARM_STRUCTURE" x="182" y="315" width="65" height="33"/>
-    <SubTexture name="DEFAULT_FIELD_STRUCTURE" x="60" y="377" width="56" height="35"/>
-    <SubTexture name="DEFAULT_FOREST_CAMP_STRUCTURE" x="114" y="484" width="47" height="24"/>
-    <SubTexture name="DEFAULT_FOUNDATION" x="163" y="484" width="37" height="24"/>
-    <SubTexture name="DEFAULT_FOUNDRY_STRUCTURE" x="74" y="449" width="53" height="33"/>
-    <SubTexture name="DEFAULT_GRAPE_FIELD_STRUCTURE" x="2" y="344" width="56" height="36"/>
-    <SubTexture name="DEFAULT_LUMBERMILL_STRUCTURE" x="2" y="382" width="55" height="37"/>
+    <SubTexture name="DEFAULT_FIELD_STRUCTURE" x="117" y="391" width="55" height="35" frameX="-1" frameY="0" frameWidth="56" frameHeight="35"/>
+    <SubTexture name="DEFAULT_FOREST_CAMP_STRUCTURE" x="42" y="485" width="47" height="24"/>
+    <SubTexture name="DEFAULT_FOUNDATION" x="91" y="483" width="37" height="24"/>
+    <SubTexture name="DEFAULT_FOUNDRY_STRUCTURE" x="2" y="450" width="53" height="33"/>
+    <SubTexture name="DEFAULT_GRAPE_FIELD_STRUCTURE" x="2" y="343" width="56" height="35" frameX="0" frameY="0" frameWidth="56" frameHeight="36"/>
+    <SubTexture name="DEFAULT_LUMBERMILL_STRUCTURE" x="60" y="377" width="55" height="37"/>
     <SubTexture name="DEFAULT_MARKET_STRUCTURE" x="203" y="245" width="49" height="33"/>
-    <SubTexture name="DEFAULT_REFINERY_STRUCTURE" x="59" y="414" width="54" height="33"/>
+    <SubTexture name="DEFAULT_REFINERY_STRUCTURE" x="59" y="416" width="54" height="33"/>
     <SubTexture name="DEFAULT_STABLE_STRUCTURE" x="96" y="278" width="84" height="56"/>
     <SubTexture name="DEFAULT_STRONGHOLD_STRUCTURE" x="2" y="2" width="128" height="78"/>
-    <SubTexture name="DEFAULT_THUMBNAIL" x="2" y="82" width="116" height="76"/>
-    <SubTexture name="DEFAULT_TOWER_STRUCTURE" x="38" y="453" width="34" height="36"/>
-    <SubTexture name="DEFAULT_TOWNCENTER_STRUCTURE" x="132" y="2" width="121" height="79"/>
+    <SubTexture name="DEFAULT_THUMBNAIL" x="2" y="82" width="115" height="76" frameX="-1" frameY="0" frameWidth="116" frameHeight="76"/>
+    <SubTexture name="DEFAULT_TOWER_STRUCTURE" x="130" y="474" width="34" height="36"/>
+    <SubTexture name="DEFAULT_TOWNCENTER_STRUCTURE" x="132" y="2" width="120" height="79" frameX="-1" frameY="0" frameWidth="121" frameHeight="79"/>
     <SubTexture name="DEFAULT_TRADING_POST_STRUCTURE" x="2" y="235" width="92" height="59"/>
-    <SubTexture name="DEFAULT_TRAINING_GROUND_STRUCTURE" x="120" y="83" width="107" height="63"/>
-    <SubTexture name="DEFAULT_TRIBAL_CARNIVAL_STRUCTURE" x="139" y="363" width="38" height="26"/>
-    <SubTexture name="DEFAULT_TRIBAL_FAIR_STRUCTURE" x="74" y="484" width="38" height="26"/>
+    <SubTexture name="DEFAULT_TRAINING_GROUND_STRUCTURE" x="119" y="83" width="107" height="63"/>
+    <SubTexture name="DEFAULT_TRIBAL_CARNIVAL_STRUCTURE" x="2" y="485" width="38" height="25" frameX="0" frameY="-1" frameWidth="38" frameHeight="26"/>
+    <SubTexture name="DEFAULT_TRIBAL_FAIR_STRUCTURE" x="139" y="363" width="38" height="26"/>
     <SubTexture name="DEFAULT_TRIBAL_FESTIVAL_STRUCTURE" x="203" y="210" width="51" height="33"/>
-    <SubTexture name="DEFAULT_TRIBAL_GATHERING_STRUCTURE" x="2" y="421" width="54" height="30"/>
+    <SubTexture name="DEFAULT_TRIBAL_GATHERING_STRUCTURE" x="2" y="418" width="54" height="30"/>
     <SubTexture name="DEFAULT_TROOP" x="182" y="280" width="69" height="33"/>
     <SubTexture name="DEFAULT_UNIVERSITY_STRUCTURE" x="2" y="160" width="101" height="73"/>
     <SubTexture name="DEFAULT_WORKSHOP_STRUCTURE" x="105" y="210" width="96" height="66"/>

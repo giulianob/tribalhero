@@ -5,7 +5,7 @@ package src.UI.Sidebars.StrongholdInfo.Buttons {
 
     import src.Constants;
     import src.Global;
-    import src.Objects.Actions.ActionButton;
+    import src.FeathersUI.Controls.ActionButton;
     import src.Objects.Stronghold.Stronghold;
     import src.UI.Components.SimpleTooltip;
     import src.UI.Tooltips.TextTooltip;

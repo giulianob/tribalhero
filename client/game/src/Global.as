@@ -3,6 +3,7 @@
     import flash.display.Stage;
 
     import src.FeathersUI.Map.MapVM;
+    import src.Map.City;
 
     import src.Map.MapComm;
 
@@ -15,5 +16,6 @@
 		public static var main: Main;
 		public static var mapComm: MapComm;
 		public static var musicPlayer: MusicPlayer;
+        public static var selectedCity: City;
 	}
 }

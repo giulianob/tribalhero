@@ -10,7 +10,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
     import org.aswing.ext.MultilineLabel;
 
     import src.Objects.*;
-    import src.Objects.Actions.ActionButton;
+    import src.FeathersUI.Controls.ActionButton;
     import src.UI.Cursors.*;
     import src.UI.LookAndFeel.GameLookAndFeel;
     import src.UI.Tooltips.Tooltip;
@@ -34,14 +34,14 @@ public class BuildRoadButton extends ActionButton
             
             tooltipPnl.appendAll(lblBuildRoad, lblBuildRoadDescription);            
             tooltip.getUI().insert(0, tooltipPnl);
-            tooltip.bind(this);
+            // tooltip.bind(this);
             
 			addEventListener(MouseEvent.CLICK, onMouseClick);
 		}
 
 		public function onMouseClick(MouseEvent: Event):void
 		{
-			if (isEnabled())
+			if (isEnabled)
 			{
 				var cursor: BuildRoadCursor = new BuildRoadCursor();
 				cursor.init(parentObj);

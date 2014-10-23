@@ -5,6 +5,7 @@
 */
 
 package src.Objects.Actions {
+    import src.FeathersUI.Controls.ActionButton;
     import src.Objects.Prototypes.StructurePrototype;
     import src.Objects.SimpleGameObject;
 

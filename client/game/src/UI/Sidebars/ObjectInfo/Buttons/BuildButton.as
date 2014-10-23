@@ -1,23 +1,21 @@
 ﻿
 package src.UI.Sidebars.ObjectInfo.Buttons {
-    import flash.events.Event;
     import flash.events.MouseEvent;
 
+    import src.FeathersUI.Controls.ActionButton;
     import src.Global;
     import src.Map.City;
     import src.Map.CityObject;
     import src.Objects.*;
-    import src.Objects.Actions.ActionButton;
     import src.Objects.Actions.BuildAction;
-    import src.Objects.Actions.CurrentActiveAction;
-    import src.Objects.Actions.StructureUpgradeAction;
     import src.Objects.Effects.Formula;
-    import src.Objects.Factories.*;
     import src.Objects.Prototypes.*;
     import src.UI.Cursors.*;
     import src.UI.Tooltips.StructureBuildTooltip;
     import src.Util.StringHelper;
     import src.Util.Util;
+
+    import starling.events.Event;
 
     public class BuildButton extends ActionButton
 	{
@@ -32,7 +30,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 			buildToolTip = new StructureBuildTooltip(parentObj as StructureObject, structPrototype);
 
-			addEventListener(MouseEvent.CLICK, onMouseClick);
+			addEventListener(Event.TRIGGERED, onTriggered);
 			addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
 			addEventListener(MouseEvent.MOUSE_MOVE, onMouseOver);
 			addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
@@ -48,9 +46,9 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			buildToolTip.hide();
 		}
 
-		public function onMouseClick(MouseEvent: Event):void
+		public function onTriggered(event: Event):void
 		{
-			if (isEnabled())
+			if (isEnabled)
 			{
                 var city: City = Global.map.cities.get(parentObj.groupId);
 

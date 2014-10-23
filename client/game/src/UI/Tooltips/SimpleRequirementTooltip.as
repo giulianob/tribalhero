@@ -10,7 +10,7 @@
     import org.aswing.SoftBoxLayout;
     import org.aswing.ext.MultilineLabel;
 
-    import src.Objects.Actions.ActionButton;
+    import src.FeathersUI.Controls.ActionButton;
     import src.Objects.Effects.RequirementFormula;
     import src.Objects.GameObject;
     import src.Objects.Prototypes.EffectReqPrototype;

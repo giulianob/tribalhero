@@ -5,7 +5,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
     import src.Global;
     import src.Objects.*;
-    import src.Objects.Actions.ActionButton;
+    import src.FeathersUI.Controls.ActionButton;
     import src.UI.Components.SimpleTooltip;
     import src.UI.Dialog.SendResourceDialog;
 
@@ -15,14 +15,14 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			super(parentObj, "Send Resources");
 
-			new SimpleTooltip(this, "Send resources to other players.");
+//			new SimpleTooltip(this, "Send resources to other players.");
 
 			addEventListener(MouseEvent.CLICK, onMouseClick);
 		}
 
 		public function onMouseClick(MouseEvent: Event):void
 		{
-			if (isEnabled())
+			if (isEnabled)
 			{						
 				var picker: SendResourceDialog = new SendResourceDialog(parentObj as StructureObject, function(dlg: SendResourceDialog) : void {
 					Global.mapComm.City.sendResources(dlg.amount(), parentObj.groupId, parentObj.objectId, dlg.cityName());

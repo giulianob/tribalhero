@@ -13,6 +13,7 @@ package src.Graphics {
     import src.StarlingStage;
 
     import starling.display.Image;
+    import starling.display.Sprite;
     import starling.textures.Texture;
 
     public class WallTileset {
@@ -39,7 +40,8 @@ package src.Graphics {
             }
 
             var tile: Image = new Image(wallTile);
-            tile.y = Constants.tileH * -1;
+            tile.pivotY = Constants.tileH;
+
             return tile;
         }
 

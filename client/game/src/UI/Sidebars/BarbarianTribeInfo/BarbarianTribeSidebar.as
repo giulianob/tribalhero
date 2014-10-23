@@ -58,14 +58,14 @@ package src.UI.Sidebars.BarbarianTribeInfo {
 
             addStatRow(StringHelper.localize("BARBARIAN_TRIBE_UPKEEP"), tribe.upkeep().toString());
 
-            pnlGroups.append(new SendAttackButton(tribe, new Location(Location.BARBARIAN_TRIBE, tribe.objectId)));
+            // pnlGroups.append(new SendAttackButton(tribe, new Location(Location.BARBARIAN_TRIBE, tribe.objectId)));
 
             var buttons: Array = [];
 
             //Special Case Buttons
             switch (tribe.state.getStateType()) {
                 case SimpleGameObject.STATE_BATTLE:
-                    pnlGroups.append(new ViewBattleButton(tribe));
+               //     pnlGroups.append(new ViewBattleButton(tribe));
                     break;
             }
         }

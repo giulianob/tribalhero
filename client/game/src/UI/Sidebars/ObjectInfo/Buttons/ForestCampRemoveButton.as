@@ -5,7 +5,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
     import src.Global;
     import src.Objects.*;
-    import src.Objects.Actions.ActionButton;
+    import src.FeathersUI.Controls.ActionButton;
     import src.UI.Tooltips.TextTooltip;
 
     public class ForestCampRemoveButton extends ActionButton
@@ -36,7 +36,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		
 		public function onMouseClick(MouseEvent: Event):void
 		{
-			if (isEnabled())
+			if (isEnabled)
 			{
 				Global.mapComm.Objects.removeForestCamp(parentObj.groupId, parentObj.objectId);
 			}

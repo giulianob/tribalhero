@@ -4,7 +4,7 @@
 
     import src.Global;
     import src.Objects.*;
-    import src.Objects.Actions.ActionButton;
+    import src.FeathersUI.Controls.ActionButton;
     import src.UI.Tooltips.TextTooltip;
 
     public class DefaultActionButton extends ActionButton

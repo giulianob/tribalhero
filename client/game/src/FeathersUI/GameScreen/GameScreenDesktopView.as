@@ -2,8 +2,10 @@ package src.FeathersUI.GameScreen {
     import feathers.controls.Button;
     import feathers.controls.Label;
     import feathers.controls.LayoutGroup;
+    import feathers.controls.Panel;
     import feathers.controls.PickerList;
     import feathers.controls.Screen;
+    import feathers.core.FeathersControl;
     import feathers.data.ListCollection;
     import feathers.layout.AnchorLayout;
     import feathers.layout.AnchorLayoutData;
@@ -14,12 +16,15 @@ package src.FeathersUI.GameScreen {
     import flash.net.navigateToURL;
 
     import src.Constants;
-
     import src.FeathersUI.Controls.HoverTooltip;
+    import src.FeathersUI.Controls.Spacer;
+    import src.FeathersUI.Map.MapVM;
     import src.FeathersUI.Map.MapView;
     import src.FeathersUI.MiniMap.MiniMapVM;
     import src.FeathersUI.MiniMap.MiniMapView;
     import src.FeathersUI.MiniMapDrawer.MiniMapDrawer;
+    import src.FeathersUI.ObjectInfo.IObjectInfoView;
+    import src.FeathersUI.ObjectInfo.SidebarViewFactory;
     import src.FeathersUI.Themes.TribalHeroTheme;
     import src.Global;
     import src.Map.Camera;
@@ -27,6 +32,7 @@ package src.FeathersUI.GameScreen {
     import src.Map.Position;
     import src.MusicPlayer;
     import src.Objects.Factories.SpriteFactory;
+    import src.Objects.SimpleGameObject;
     import src.UI.Dialog.GoToDialog;
     import src.Util.BinaryList.BinaryListEvent;
 
@@ -38,7 +44,10 @@ package src.FeathersUI.GameScreen {
     public class GameScreenDesktopView extends Screen {
         private var vm: GameScreenVM;
         private var map: MapView;
+        private var mapVm: MapVM;
         private var minimap: MiniMapView;
+        private var miniMapVm: MiniMapVM;
+
         private var btnMinimapZoom: Button;
         private var btnFind: Button;
         private var btnSendFeedback: Button;
@@ -50,17 +59,29 @@ package src.FeathersUI.GameScreen {
         private var miniMapContainerLayoutDataUnzoomed: AnchorLayoutData;
         private var miniMapContainerLayoutDataZoomed: AnchorLayoutData;
         private var minimapContainer: LayoutGroup;
-        private var miniMapVm: MiniMapVM;
-        private var selectedCityButton: Button;
+        private var btnSelectedCity: Button;
         private var cityPickerList: PickerList;
         private var cityPickerListData: ListCollection;
+        private var btnCityOverview: Button;
+        private var btnBattleReports: Button;
+        private var btnMessages: Button;
+        private var btnTribe: Button;
+        private var btnTribeInfo: Button;
+        private var btnTribeMessageBoard: Button;
+        private var btnTribeStrongholds: Button;
+        private var btnRanking: Button;
+        private var btnStore: Button;
+        private var sidebarContainer: Panel;
+        private var sidebarFactory: SidebarViewFactory;
 
-        public function GameScreenDesktopView(vm: GameScreenVM, mapView: MapView, miniMapVm: MiniMapVM, miniMap: MiniMapView) {
+        public function GameScreenDesktopView(vm: GameScreenVM, mapVm: MapVM, mapView: MapView, miniMapVm: MiniMapVM, miniMap: MiniMapView) {
             this.vm = vm;
+            this.mapVm = mapVm;
             this.map = mapView;
             this.miniMapVm = miniMapVm;
             this.minimap = miniMap;
             this.miniMapDrawer = miniMapVm.mapFilter;
+            this.sidebarFactory = new SidebarViewFactory();
         }
 
         override protected function initialize():void
@@ -68,12 +89,21 @@ package src.FeathersUI.GameScreen {
             super.initialize();
 
             map.camera.addEventListener(Camera.ON_MOVE, updateCoordinates);
+
+            mapVm.addEventListener(MapVM.EVENT_OBJECT_SELECTED, onObjectSelected);
+            mapVm.addEventListener(MapVM.EVENT_OBJECT_DESELECTED, onObjectDeselected);
+
             miniMapVm.addEventListener(MiniMapVM.EVENT_NAVIGATE_TO_POINT, onMiniMapNavigateToPoint);
 
             this.layout = new AnchorLayout();
 
             minimap.layoutData = new AnchorLayoutData(NaN, NaN, 0, 0);
             minimap.scrollRate = 0.25;
+
+            sidebarContainer = new Panel();
+            sidebarContainer.layout = new VerticalLayout();
+            sidebarContainer.layoutData = new AnchorLayoutData(TribalHeroTheme.PADDING_DEFAULT, TribalHeroTheme.PADDING_DEFAULT);
+            closeSidebar();
 
             var menuContainer: LayoutGroup = new LayoutGroup();
             {
@@ -87,12 +117,31 @@ package src.FeathersUI.GameScreen {
                 cityPickerList.selectedIndex = getCityPickerIndex(vm.selectedCity);
                 cityPickerList.addEventListener(Event.CHANGE, onCityPickerListChange);
 
-                selectedCityButton = new Button();
-                selectedCityButton.label = vm.selectedCity != null ? vm.selectedCity.name : "";
-                selectedCityButton.addEventListener(Event.TRIGGERED, onSelectedCityButtonTriggered);
+                btnSelectedCity = new Button();
+                btnSelectedCity.label = vm.selectedCity != null ? vm.selectedCity.name : "";
+                btnSelectedCity.addEventListener(Event.TRIGGERED, onSelectedCityButtonTriggered);
 
-                menuContainer.addChild(selectedCityButton);
+//                btnCityOverview = new Button();
+//
+//                btnBattleReports = new Button();
+//
+//                btnMessages = new Button();
+//
+//                btnTribe = new Button();
+//
+//                btnTribeInfo = new Button();
+//
+//                btnTribeMessageBoard = new Button();
+//
+//                btnTribeStrongholds = new Button();
+//
+//                btnRanking = new Button();
+//
+//                btnStore = new Button();
+
+                menuContainer.addChild(btnSelectedCity);
                 menuContainer.addChild(cityPickerList);
+                menuContainer.addChild(new Spacer(TribalHeroTheme.PADDING_DEFAULT*2));
             }
 
             minimapContainer = new LayoutGroup();
@@ -172,9 +221,23 @@ package src.FeathersUI.GameScreen {
 
             addChild(map);
             addChild(minimapContainer);
+            addChild(sidebarContainer);
             addChild(menuContainer);
 
             map.update();
+        }
+
+        private function onObjectSelected(obj: SimpleGameObject): void {
+            var sidebar: IObjectInfoView = sidebarFactory.getSidebar(obj);
+
+            closeSidebar();
+            sidebarContainer.headerProperties.title = sidebar.title;
+            sidebarContainer.addChild(FeathersControl(sidebar));
+            sidebarContainer.visible = true;
+        }
+
+        private function onObjectDeselected(): void {
+            closeSidebar();
         }
 
         private function onBtnSendFeedbackTriggered(event: Event): void {
@@ -225,15 +288,16 @@ package src.FeathersUI.GameScreen {
 
         private function onTriggerMinimapZoom(event: Event): void {
             if (isMinimapZoomed) {
+                sidebarContainer.visible = sidebarContainer.numChildren > 0;
                 map.camera.goToCue();
                 closeWorldMap();
             }
             else {
+                sidebarContainer.visible = false;
                 map.camera.cue();
                 openWorldMap();
             }
         }
-
 
         private function openWorldMap(): void {
             isMinimapZoomed = true;
@@ -321,5 +385,9 @@ package src.FeathersUI.GameScreen {
             Global.musicPlayer.toggle();
         }
 
+        private function closeSidebar(): void {
+            sidebarContainer.removeChildren();
+            sidebarContainer.visible = false;
+        }
     }
 }

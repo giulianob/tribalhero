@@ -5,6 +5,7 @@
 */
 
 package src.Objects.Actions {
+    import src.FeathersUI.Controls.ActionButton;
     import src.Global;
     import src.Objects.Factories.UnitFactory;
     import src.Objects.Prototypes.StructurePrototype;

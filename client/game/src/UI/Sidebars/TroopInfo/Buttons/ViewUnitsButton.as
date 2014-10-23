@@ -3,7 +3,7 @@ package src.UI.Sidebars.TroopInfo.Buttons {
     import flash.events.Event;
     import flash.events.MouseEvent;
 
-    import src.Objects.Actions.ActionButton;
+    import src.FeathersUI.Controls.ActionButton;
     import src.Objects.GameObject;
     import src.Objects.Troop.*;
     import src.UI.Dialog.TroopInfoDialog;
@@ -37,7 +37,7 @@ package src.UI.Sidebars.TroopInfo.Buttons {
 
 		public function onMouseClick(event: Event):void
 		{
-			if (isEnabled())
+			if (isEnabled)
 			{
 				var troopInfo: TroopInfoDialog = new TroopInfoDialog(parentObj as TroopObject);
 

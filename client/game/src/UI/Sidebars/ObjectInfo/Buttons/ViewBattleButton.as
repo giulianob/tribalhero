@@ -4,7 +4,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
     import flash.events.MouseEvent;
 
     import src.Global;
-    import src.Objects.Actions.ActionButton;
+    import src.FeathersUI.Controls.ActionButton;
     import src.Objects.SimpleGameObject;
     import src.Objects.States.BattleState;
     import src.UI.Tooltips.TextTooltip;
@@ -42,7 +42,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		public function onMouseClick(event: Event):void
 		{
-			if (isEnabled())
+			if (isEnabled)
 			{
 				if (parentObj.state is BattleState) {
 					Global.mapComm.Battle.viewBattle((parentObj.state as BattleState).battleId);

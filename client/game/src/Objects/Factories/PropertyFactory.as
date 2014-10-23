@@ -11,7 +11,6 @@
 
 			for each (var propNode: XML in data.Property.*) {
 				var propPrototype: PropertyPrototype = new PropertyPrototype(
-                    propNode.@index,
                     propNode.@type,
                     propNode.@name,
                     propNode.@datatype,

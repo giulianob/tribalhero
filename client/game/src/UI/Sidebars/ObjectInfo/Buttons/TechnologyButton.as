@@ -11,7 +11,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
     import src.Global;
     import src.Map.City;
     import src.Map.CityObject;
-    import src.Objects.Actions.ActionButton;
+    import src.FeathersUI.Controls.ActionButton;
     import src.Objects.Actions.TechUpgradeAction;
     import src.Objects.Factories.TechnologyFactory;
     import src.Objects.Prototypes.*;
@@ -49,7 +49,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		public function onMouseClick(MouseEvent: Event):void
 		{
-			if (isEnabled())
+			if (isEnabled)
 			{
 				Global.mapComm.City.technologyUpgrade(parentObj.groupId, parentObj.objectId, techPrototype.techtype);
 			}

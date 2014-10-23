@@ -84,6 +84,16 @@ package src.Util {
             sprite.scaleY = size.height / sprite.height;
         }
 
+        public static function resizeStarlingSprite(sprite: starling.display.DisplayObject, targetW: Number, targetH: Number): void {
+            sprite.scaleX = 1;
+            sprite.scaleY = 1;
+
+            var size: IntDimension = Util.calculateSize(sprite.width, sprite.height, targetW, targetH);
+
+            sprite.scaleX = size.width / sprite.width;
+            sprite.scaleY = size.height / sprite.height;
+        }
+
 		public static function createTopAlignedScrollPane(component: Component): JScrollPane {
 			var scrollPane: JScrollPane = new JScrollPane(new JViewport(component, true), JScrollPane.SCROLLBAR_AS_NEEDED, JScrollPane.SCROLLBAR_AS_NEEDED);
 			(scrollPane.getViewport() as JViewport).setVerticalAlignment(AsWingConstants.TOP);

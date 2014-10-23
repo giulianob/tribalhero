@@ -3,6 +3,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
     import flash.events.*;
 
     import src.*;
+    import src.FeathersUI.Controls.ActionButton;
     import src.Objects.*;
     import src.Objects.Actions.*;
     import src.UI.Tooltips.*;
@@ -40,8 +41,9 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		public function onMouseClick(event: Event):void
 		{
-			if (isEnabled())			
-				Global.mapComm.Objects.gatherResource(parentObj.groupId, parentObj.objectId);
+			if (isEnabled) {
+                Global.mapComm.Objects.gatherResource(parentObj.groupId, parentObj.objectId);
+            }
 
 			event.stopImmediatePropagation();
 		}

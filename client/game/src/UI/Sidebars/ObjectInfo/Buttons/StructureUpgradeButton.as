@@ -8,7 +8,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
     import src.Global;
     import src.Map.City;
     import src.Map.CityObject;
-    import src.Objects.Actions.ActionButton;
+    import src.FeathersUI.Controls.ActionButton;
     import src.Objects.Actions.BuildAction;
     import src.Objects.Actions.CurrentActiveAction;
     import src.Objects.Actions.StructureUpgradeAction;
@@ -59,7 +59,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		public function onMouseClick(MouseEvent: Event):void
 		{
-			if (isEnabled())
+			if (isEnabled)
 			{
 				Global.mapComm.Objects.upgradeStructure(parentObj.groupId, parentObj.objectId);
 			}

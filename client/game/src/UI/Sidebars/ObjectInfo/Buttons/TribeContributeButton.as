@@ -7,7 +7,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
     import src.Map.City;
     import src.Map.CityObject;
     import src.Objects.*;
-    import src.Objects.Actions.ActionButton;
+    import src.FeathersUI.Controls.ActionButton;
     import src.UI.Dialog.InfoDialog;
     import src.UI.Dialog.TribeContributeDialog;
     import src.UI.Tooltips.SimpleRequirementTooltip;
@@ -28,7 +28,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		public function onMouseClick(MouseEvent: Event):void
 		{
-			if (isEnabled())
+			if (isEnabled)
 			{						
 				var dlg: TribeContributeDialog = new TribeContributeDialog(parentObj as StructureObject, function(dlg: TribeContributeDialog) : void {
 					dlg.getFrame().dispose();

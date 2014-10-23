@@ -5,7 +5,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
     import src.Global;
     import src.Objects.*;
-    import src.Objects.Actions.ActionButton;
+    import src.FeathersUI.Controls.ActionButton;
     import src.Objects.Factories.StructureFactory;
     import src.Objects.Prototypes.StructurePrototype;
     import src.UI.Dialog.LaborMoveDialog;
@@ -47,7 +47,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		public function onMouseClick(MouseEvent: Event):void
 		{
-			if (isEnabled())
+			if (isEnabled)
 			{
 				var inputDialog: LaborMoveDialog = new LaborMoveDialog(parentObj as StructureObject, onAcceptDialog);
 				inputDialog.show();

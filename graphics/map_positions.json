@@ -1,96 +1,502 @@
 {
-   "FOREST_LVL_1":{"x":22,"y":-4},
-   "FOREST_LVL_2":{"x":23,"y":-7},
-   "FOREST_LVL_3":{"x":12,"y":-3},
-   "FOREST_LVL_4":{"x":4,"y":19},
-   "DEFAULT_BARBARIAN_TRIBE_STRUCTURE":{"x":66,"y":-41},
-   "DEFAULT_TROOP":{"x":7,"y":2},
-   "DEFAULT_ARMORY_STRUCTURE":{"x":15,"y":-11},
-   "DEFAULT_FIELD_STRUCTURE":{"x":25,"y":4},
-   "DEFAULT_BARRACK_STRUCTURE":{"x":93,"y":-16},
-   "DEFAULT_FOUNDATION":{"x":42,"y":-24},
-   "DEFAULT_BUILDING_1":{"x":32,"y":1},
-   "DEFAULT_BUILDING_2":{"x":102,"y":-3},
-   "DEFAULT_BUILDING_3":{"x":177,"y":68},
-   "DEFAULT_EMBASSY_STRUCTURE":{"x":24,"y":6},
-   "DEFAULT_FOUNDRY_STRUCTURE":{"x":29,"y":-3},
-   "DEFAULT_TRIBAL_CARNIVAL_STRUCTURE":{"x":39,"y":14},
-   "DEFAULT_TRIBAL_FAIR_STRUCTURE":{"x":38,"y":13},
-   "DEFAULT_TRIBAL_FESTIVAL_STRUCTURE":{"x":35,"y":1},
-   "DEFAULT_STRONGHOLD_STRUCTURE":{"x":106,"y":-46},
-   "DEFAULT_TRIBAL_GATHERING_STRUCTURE":{"x":24,"y":6},
-   "DEFAULT_FARM_STRUCTURE":{"x":13,"y":1},
-   "DEFAULT_MARKET_STRUCTURE":{"x":31,"y":6},
-   "DEFAULT_REFINERY_STRUCTURE":{"x":28,"y":0},
-   "DEFAULT_STABLE_STRUCTURE":{"x":78,"y":-26},
-   "DEFAULT_TOWER_STRUCTURE":{"x":46,"y":-18},
-   "DEFAULT_TOWNCENTER_STRUCTURE":{"x":124,"y":-50},
-   "DEFAULT_TRADING_POST_STRUCTURE":{"x":66,"y":-23},
-   "DEFAULT_UNIVERSITY_STRUCTURE":{"x":46,"y":-52},
-   "DEFAULT_LUMBERMILL_STRUCTURE":{"x":17,"y":-10},
-   "DEFAULT_WORKSHOP_STRUCTURE":{"x":76,"y":-46},
-   "DEFAULT_TRAINING_GROUND_STRUCTURE":{"x":53,"y":-24},
-   "DEFAULT_CANNON_TOWER_STRUCTURE":{"x":46,"y":-18},
-   "DEFAULT_BLACKSMITH_STRUCTURE":{"x":14,"y":-19},
-   "DEFAULT_BASEMENT_STRUCTURE":{"x":30,"y":6},
-   "DEFAULT_BASEMENT_TMP_STRUCTURE":{"x":43,"y":16},
-   "DEFAULT_FOREST_CAMP_STRUCTURE":{"x":36,"y":4},
-   "DEFAULT_DEAD_FIELD_STRUCTURE":{"x":25,"y":4},
-   "DEFAULT_GRAPE_FIELD_STRUCTURE":{"x":25,"y":4},
-   "PIRATES_BUILDING_1":{"x":32,"y":1},
-   "PIRATES_BUILDING_2":{"x":102,"y":-3},
-   "PIRATES_BUILDING_3":{"x":177,"y":68},
-   "PIRATES_ARMORY_STRUCTURE":{"x":25,"y":-18},
-   "PIRATES_FIELD_STRUCTURE":{"x":24,"y":5},
-   "PIRATES_BARRACK_STRUCTURE":{"x":75,"y":-52},
-   "PIRATES_FOUNDRY_STRUCTURE":{"x":27,"y":-7},
-   "PIRATES_STRONGHOLD_STRUCTURE":{"x":117,"y":-94},
-   "PIRATES_FARM_STRUCTURE":{"x":19,"y":-17},
-   "PIRATES_MARKET_STRUCTURE":{"x":16,"y":-11},
-   "PIRATES_REFINERY_STRUCTURE":{"x":32,"y":-24},
-   "PIRATES_STABLE_STRUCTURE":{"x":74,"y":-50},
-   "PIRATES_TOWER_STRUCTURE":{"x":25,"y":-51},
-   "PIRATES_TOWNCENTER_STRUCTURE":{"x":80,"y":-86},
-   "PIRATES_TRADING_POST_STRUCTURE":{"x":56,"y":-14},
-   "PIRATES_UNIVERSITY_STRUCTURE":{"x":60,"y":-110},
-   "PIRATES_LUMBERMILL_STRUCTURE":{"x":11,"y":-13},
-   "PIRATES_WORKSHOP_STRUCTURE":{"x":36,"y":-76},
-   "PIRATES_TRAINING_GROUND_STRUCTURE":{"x":74,"y":-13},
-   "PIRATES_CANNON_TOWER_STRUCTURE":{"x":25,"y":-51},
-   "PIRATES_BLACKSMITH_STRUCTURE":{"x":19,"y":-47},
-   "PIRATES_BASEMENT_STRUCTURE":{"x":29,"y":4},
-   "PIRATES_FOREST_CAMP_STRUCTURE":{"x":23,"y":2},
-   "PIRATES_DEAD_FIELD_STRUCTURE":{"x":28,"y":10},
-   "PIRATES_GRAPE_FIELD_STRUCTURE":{"x":25,"y":7},
-   "FEUDALJAPAN_ARMORY_STRUCTURE":{"x":26,"y":-11},
-   "FEUDALJAPAN_FIELD_STRUCTURE":{"x":34,"y":9},
-   "FEUDALJAPAN_BARRACK_STRUCTURE":{"x":24,"y":-53},
-   "FEUDALJAPAN_FOUNDRY_STRUCTURE":{"x":5,"y":-29},
-   "FEUDALJAPAN_STRONGHOLD_STRUCTURE":{"x":-3,"y":-90},
-   "FEUDALJAPAN_FARM_STRUCTURE":{"x":12,"y":-8},
-   "FEUDALJAPAN_MARKET_STRUCTURE":{"x":15,"y":3},
-   "FEUDALJAPAN_REFINERY_STRUCTURE":{"x":-7,"y":-47},
-   "FEUDALJAPAN_STABLE_STRUCTURE":{"x":40,"y":-30},
-   "FEUDALJAPAN_TOWER_STRUCTURE":{"x":34,"y":-34},
-   "FEUDALJAPAN_TOWNCENTER_STRUCTURE":{"x":88,"y":-93},
-   "FEUDALJAPAN_TRADING_POST_STRUCTURE":{"x":21,"y":-82},
-   "FEUDALJAPAN_UNIVERSITY_STRUCTURE":{"x":47,"y":-60},
-   "FEUDALJAPAN_LUMBERMILL_STRUCTURE":{"x":11,"y":-5},
-   "FEUDALJAPAN_WORKSHOP_STRUCTURE":{"x":39,"y":-36},
-   "FEUDALJAPAN_TRAINING_GROUND_STRUCTURE":{"x":28,"y":-74},
-   "FEUDALJAPAN_CANNON_TOWER_STRUCTURE":{"x":34,"y":-34},
-   "FEUDALJAPAN_BLACKSMITH_STRUCTURE":{"x":21,"y":-42},
-   "FEUDALJAPAN_BASEMENT_STRUCTURE":{"x":6,"y":4},
-   "FEUDALJAPAN_BASEMENT_TMP_STRUCTURE":{"x":26,"y":11},
-   "FEUDALJAPAN_FOREST_CAMP_STRUCTURE":{"x":24,"y":8},
-   "FEUDALJAPAN_DEAD_FIELD_STRUCTURE":{"x":34,"y":9},
-   "FEUDALJAPAN_GRAPE_FIELD_STRUCTURE":{"x":28,"y":7},
-   "FEUDALJAPAN_TRIBAL_CARNIVAL_STRUCTURE":{"x":22,"y":-14},
-   "FEUDALJAPAN_TRIBAL_FAIR_STRUCTURE":{"x":30,"y":5},
-   "FEUDALJAPAN_TRIBAL_FESTIVAL_STRUCTURE":{"x":17,"y":9},
-   "FEUDALJAPAN_TRIBAL_GATHERING_STRUCTURE":{"x":21,"y":-7},
-   "FEUDALJAPAN_BUILDING_1":{"x":32,"y":1},
-   "FEUDALJAPAN_BUILDING_2":{"x":102,"y":-3},
-   "FEUDALJAPAN_BUILDING_3":{"x":177,"y":68},   
-   "WARELEPHANT_TROOP":{"x":30,"y":-50}
+   "DEFAULT_BARBARIAN_TRIBE_STRUCTURE": {
+      "x": 66,
+      "y": -41
+   },
+   "DEFAULT_ARMORY_STRUCTURE": {
+      "x": 15,
+      "y": -11
+   },
+   "DEFAULT_BARRACK_STRUCTURE": {
+      "x": 93,
+      "y": -16
+   },
+   "DEFAULT_BASEMENT_STRUCTURE": {
+      "x": 30,
+      "y": 6
+   },
+   "DEFAULT_BASEMENT_TMP_STRUCTURE": {
+      "x": 43,
+      "y": 16
+   },
+   "DEFAULT_BLACKSMITH_STRUCTURE": {
+      "x": 14,
+      "y": -19
+   },
+   "DEFAULT_BUILDING_1": {
+      "x": 32,
+      "y": 1
+   },
+   "DEFAULT_BUILDING_2": {
+      "x": 102,
+      "y": -3
+   },
+   "DEFAULT_BUILDING_3": {
+      "x": 177,
+      "y": 68
+   },
+   "DEFAULT_CANNON_TOWER_STRUCTURE": {
+      "x": 46,
+      "y": -18
+   },
+   "DEFAULT_DEAD_FIELD_STRUCTURE": {
+      "x": 25,
+      "y": 4
+   },
+   "DEFAULT_EMBASSY_STRUCTURE": {
+      "x": 24,
+      "y": 6
+   },
+   "DEFAULT_FARM_STRUCTURE": {
+      "x": 13,
+      "y": 1
+   },
+   "DEFAULT_FIELD_STRUCTURE": {
+      "x": 25,
+      "y": 4
+   },
+   "DEFAULT_FOREST_CAMP_STRUCTURE": {
+      "x": 36,
+      "y": 4
+   },
+   "DEFAULT_FOUNDATION": {
+      "x": 42,
+      "y": -24
+   },
+   "DEFAULT_FOUNDRY_STRUCTURE": {
+      "x": 29,
+      "y": -3
+   },
+   "DEFAULT_GRAPE_FIELD_STRUCTURE": {
+      "x": 25,
+      "y": 4
+   },
+   "DEFAULT_LUMBERMILL_STRUCTURE": {
+      "x": 17,
+      "y": -10
+   },
+   "DEFAULT_MARKET_STRUCTURE": {
+      "x": 31,
+      "y": 6
+   },
+   "DEFAULT_REFINERY_STRUCTURE": {
+      "x": 28,
+      "y": 0
+   },
+   "DEFAULT_STABLE_STRUCTURE": {
+      "x": 78,
+      "y": -26
+   },
+   "DEFAULT_STRONGHOLD_STRUCTURE": {
+      "x": 14,
+      "y": -52
+   },
+   "DEFAULT_TOWER_STRUCTURE": {
+      "x": 46,
+      "y": -18
+   },
+   "DEFAULT_TOWNCENTER_STRUCTURE": {
+      "x": 124,
+      "y": -50
+   },
+   "DEFAULT_TRADING_POST_STRUCTURE": {
+      "x": 66,
+      "y": -23
+   },
+   "DEFAULT_TRAINING_GROUND_STRUCTURE": {
+      "x": 53,
+      "y": -24
+   },
+   "DEFAULT_TRIBAL_CARNIVAL_STRUCTURE": {
+      "x": 39,
+      "y": 14
+   },
+   "DEFAULT_TRIBAL_FAIR_STRUCTURE": {
+      "x": 38,
+      "y": 13
+   },
+   "DEFAULT_TRIBAL_FESTIVAL_STRUCTURE": {
+      "x": 35,
+      "y": 1
+   },
+   "DEFAULT_TRIBAL_GATHERING_STRUCTURE": {
+      "x": 24,
+      "y": 6
+   },
+   "DEFAULT_TROOP": {
+      "x": 7,
+      "y": 2
+   },
+   "DEFAULT_UNIVERSITY_STRUCTURE": {
+      "x": 46,
+      "y": -52
+   },
+   "DEFAULT_WORKSHOP_STRUCTURE": {
+      "x": 76,
+      "y": -46
+   },
+   "FEUDALJAPAN_ARMORY_STRUCTURE": {
+      "x": 26,
+      "y": -11
+   },
+   "FEUDALJAPAN_BARRACK_STRUCTURE": {
+      "x": 24,
+      "y": -53
+   },
+   "FEUDALJAPAN_BASEMENT_STRUCTURE": {
+      "x": 6,
+      "y": 4
+   },
+   "FEUDALJAPAN_BASEMENT_TMP_STRUCTURE": {
+      "x": 26,
+      "y": 11
+   },
+   "FEUDALJAPAN_BLACKSMITH_STRUCTURE": {
+      "x": 21,
+      "y": -42
+   },
+   "FEUDALJAPAN_BUILDING_1": {
+      "x": 32,
+      "y": 1
+   },
+   "FEUDALJAPAN_BUILDING_2": {
+      "x": 102,
+      "y": -3
+   },
+   "FEUDALJAPAN_BUILDING_3": {
+      "x": 177,
+      "y": 68
+   },
+   "FEUDALJAPAN_CANNON_TOWER_STRUCTURE": {
+      "x": 34,
+      "y": -34
+   },
+   "FEUDALJAPAN_DEAD_FIELD_STRUCTURE": {
+      "x": 34,
+      "y": 9
+   },
+   "FEUDALJAPAN_FARM_STRUCTURE": {
+      "x": 12,
+      "y": -8
+   },
+   "FEUDALJAPAN_FIELD_STRUCTURE": {
+      "x": 34,
+      "y": 9
+   },
+   "FEUDALJAPAN_FOREST_CAMP_STRUCTURE": {
+      "x": 24,
+      "y": 8
+   },
+   "FEUDALJAPAN_FOUNDRY_STRUCTURE": {
+      "x": 5,
+      "y": -29
+   },
+   "FEUDALJAPAN_GRAPE_FIELD_STRUCTURE": {
+      "x": 28,
+      "y": 7
+   },
+   "FEUDALJAPAN_LUMBERMILL_STRUCTURE": {
+      "x": 11,
+      "y": -5
+   },
+   "FEUDALJAPAN_MARKET_STRUCTURE": {
+      "x": 15,
+      "y": 3
+   },
+   "FEUDALJAPAN_REFINERY_STRUCTURE": {
+      "x": -7,
+      "y": -47
+   },
+   "FEUDALJAPAN_STABLE_STRUCTURE": {
+      "x": 40,
+      "y": -30
+   },
+   "FEUDALJAPAN_STRONGHOLD_STRUCTURE": {
+      "x": -3,
+      "y": -90
+   },
+   "FEUDALJAPAN_TOWER_STRUCTURE": {
+      "x": 34,
+      "y": -34
+   },
+   "FEUDALJAPAN_TOWNCENTER_STRUCTURE": {
+      "x": 88,
+      "y": -93
+   },
+   "FEUDALJAPAN_TRADING_POST_STRUCTURE": {
+      "x": 21,
+      "y": -82
+   },
+   "FEUDALJAPAN_TRAINING_GROUND_STRUCTURE": {
+      "x": 28,
+      "y": -74
+   },
+   "FEUDALJAPAN_TRIBAL_CARNIVAL_STRUCTURE": {
+      "x": 22,
+      "y": -14
+   },
+   "FEUDALJAPAN_TRIBAL_FAIR_STRUCTURE": {
+      "x": 30,
+      "y": 5
+   },
+   "FEUDALJAPAN_TRIBAL_FESTIVAL_STRUCTURE": {
+      "x": 17,
+      "y": 9
+   },
+   "FEUDALJAPAN_TRIBAL_GATHERING_STRUCTURE": {
+      "x": 21,
+      "y": -7
+   },
+   "FEUDALJAPAN_UNIVERSITY_STRUCTURE": {
+      "x": 47,
+      "y": -60
+   },
+   "FEUDALJAPAN_WORKSHOP_STRUCTURE": {
+      "x": 39,
+      "y": -36
+   },
+   "FOREST_LVL_1": {
+      "x": 22,
+      "y": -4
+   },
+   "FOREST_LVL_2": {
+      "x": 23,
+      "y": -7
+   },
+   "FOREST_LVL_3": {
+      "x": 12,
+      "y": -3
+   },
+   "FOREST_LVL_4": {
+      "x": 4,
+      "y": -19
+   },
+   "LOVELACE_TROOP": {
+      "x": 38,
+      "y": -20
+   },
+   "PANZERN470_TROOP": {
+      "x": 28,
+      "y": -24
+   },
+   "PIRATES_ARMORY_STRUCTURE": {
+      "x": 25,
+      "y": -18
+   },
+   "PIRATES_BARRACK_STRUCTURE": {
+      "x": 75,
+      "y": -52
+   },
+   "PIRATES_BASEMENT_STRUCTURE": {
+      "x": 29,
+      "y": 4
+   },
+   "PIRATES_BLACKSMITH_STRUCTURE": {
+      "x": 19,
+      "y": -47
+   },
+   "PIRATES_BUILDING_1": {
+      "x": 32,
+      "y": 1
+   },
+   "PIRATES_BUILDING_2": {
+      "x": 102,
+      "y": -3
+   },
+   "PIRATES_BUILDING_3": {
+      "x": 177,
+      "y": 68
+   },
+   "PIRATES_CANNON_TOWER_STRUCTURE": {
+      "x": 25,
+      "y": -51
+   },
+   "PIRATES_DEAD_FIELD_STRUCTURE": {
+      "x": 28,
+      "y": 10
+   },
+   "PIRATES_FARM_STRUCTURE": {
+      "x": 19,
+      "y": -17
+   },
+   "PIRATES_FIELD_STRUCTURE": {
+      "x": 24,
+      "y": 5
+   },
+   "PIRATES_FOREST_CAMP_STRUCTURE": {
+      "x": 23,
+      "y": 2
+   },
+   "PIRATES_FOUNDRY_STRUCTURE": {
+      "x": 27,
+      "y": -7
+   },
+   "PIRATES_GRAPE_FIELD_STRUCTURE": {
+      "x": 25,
+      "y": 7
+   },
+   "PIRATES_LUMBERMILL_STRUCTURE": {
+      "x": 11,
+      "y": -13
+   },
+   "PIRATES_MARKET_STRUCTURE": {
+      "x": 16,
+      "y": -11
+   },
+   "PIRATES_REFINERY_STRUCTURE": {
+      "x": 32,
+      "y": -24
+   },
+   "PIRATES_STABLE_STRUCTURE": {
+      "x": 74,
+      "y": -50
+   },
+   "PIRATES_STRONGHOLD_STRUCTURE": {
+      "x": 35,
+      "y": -96
+   },
+   "PIRATES_TOWER_STRUCTURE": {
+      "x": 25,
+      "y": -51
+   },
+   "PIRATES_TOWNCENTER_STRUCTURE": {
+      "x": 80,
+      "y": -86
+   },
+   "PIRATES_TRADING_POST_STRUCTURE": {
+      "x": 56,
+      "y": -14
+   },
+   "PIRATES_TRAINING_GROUND_STRUCTURE": {
+      "x": 74,
+      "y": -13
+   },
+   "PIRATES_UNIVERSITY_STRUCTURE": {
+      "x": 60,
+      "y": -110
+   },
+   "PIRATES_WORKSHOP_STRUCTURE": {
+      "x": 36,
+      "y": -76
+   },
+   "STEAMWORKS_ARMORY_STRUCTURE": {
+      "x": 8,
+      "y": -20
+   },
+   "STEAMWORKS_BARRACK_STRUCTURE": {
+      "x": 80,
+      "y": -34
+   },
+   "STEAMWORKS_BASEMENT_STRUCTURE": {
+      "x": 30,
+      "y": 2
+   },
+   "STEAMWORKS_BLACKSMITH_STRUCTURE": {
+      "x": 24,
+      "y": -46
+   },
+   "STEAMWORKS_BUILDING_1": {
+      "x": 32,
+      "y": 1
+   },
+   "STEAMWORKS_BUILDING_2": {
+      "x": 102,
+      "y": -3
+   },
+   "STEAMWORKS_BUILDING_3": {
+      "x": 177,
+      "y": 68
+   },
+   "STEAMWORKS_CANNON_TOWER_STRUCTURE": {
+      "x": 50,
+      "y": -17
+   },
+   "STEAMWORKS_DEAD_FIELD_STRUCTURE": {
+      "x": 16,
+      "y": -17
+   },
+   "STEAMWORKS_FARM_STRUCTURE": {
+      "x": 16,
+      "y": -35
+   },
+   "STEAMWORKS_FIELD_STRUCTURE": {
+      "x": 16,
+      "y": -17
+   },
+   "STEAMWORKS_FOREST_CAMP_STRUCTURE": {
+      "x": 33,
+      "y": -11
+   },
+   "STEAMWORKS_FOUNDRY_STRUCTURE": {
+      "x": 20,
+      "y": -23
+   },
+   "STEAMWORKS_GRAPE_FIELD_STRUCTURE": {
+      "x": 16,
+      "y": -16
+   },
+   "STEAMWORKS_LUMBERMILL_STRUCTURE": {
+      "x": 15,
+      "y": -35
+   },
+   "STEAMWORKS_MARKET_STRUCTURE": {
+      "x": 20,
+      "y": -10
+   },
+   "STEAMWORKS_REFINERY_STRUCTURE": {
+      "x": 17,
+      "y": -19
+   },
+   "STEAMWORKS_STABLE_STRUCTURE": {
+      "x": 72,
+      "y": -58
+   },
+   "STEAMWORKS_STRONGHOLD_STRUCTURE": {
+      "x": 3,
+      "y": -81
+   },
+   "STEAMWORKS_TOWER_STRUCTURE": {
+      "x": 41,
+      "y": -31
+   },
+   "STEAMWORKS_TOWNCENTER_STRUCTURE": {
+      "x": 96,
+      "y": -90
+   },
+   "STEAMWORKS_TRADING_POST_STRUCTURE": {
+      "x": 71,
+      "y": -24
+   },
+   "STEAMWORKS_TRAINING_GROUND_STRUCTURE": {
+      "x": 23,
+      "y": -57
+   },
+   "STEAMWORKS_TRIBAL_CARNIVAL_STRUCTURE": {
+      "x": 18,
+      "y": -29
+   },
+   "STEAMWORKS_TRIBAL_FAIR_STRUCTURE": {
+      "x": 23,
+      "y": -24
+   },
+   "STEAMWORKS_TRIBAL_FESTIVAL_STRUCTURE": {
+      "x": 25,
+      "y": -31
+   },
+   "STEAMWORKS_UNIVERSITY_STRUCTURE": {
+      "x": 21,
+      "y": -95
+   },
+   "STEAMWORKS_WORKSHOP_STRUCTURE": {
+      "x": 42,
+      "y": -82
+   },
+   "T47ONEEYE_TROOP": {
+      "x": 42,
+      "y": -10
+   },
+   "WARELEPHANT_TROOP": {
+      "x": 30,
+      "y": -50
+   }
 }

@@ -2,6 +2,7 @@ set "PATH=C:/Program Files/CodeAndWeb/TexturePacker/bin;%PATH%"
 
 set "DEFAULT_SETTINGS=--format sparrow --variant 0.5:1x --variant 0.75:1.5x --variant 1:2x"
 set "DEFAULT_THEME_SETTINGS=%DEFAULT_SETTINGS% --ignore-files *_BANNER.png --ignore-files *_WALL.png"
+set "DEFAULT_WALL_SETTINGS=%DEFAULT_SETTINGS% --trim-mode None --padding 0"
 
 :: Until we have icons that are actually HD
 set "TMP_ICON_SETTINGS=--format sparrow --enable-rotation --variant 1:1x --variant 1.5:1.5x --variant 2:2x"
@@ -13,7 +14,7 @@ set "TMP_ICON_SETTINGS=--format sparrow --enable-rotation --variant 1:1x --varia
 ::  TILESET.png
 
 :: Default Theme
-TexturePacker.exe %DEFAULT_SETTINGS%^
+TexturePacker.exe %DEFAULT_WALL_SETTINGS%^
   --data atlas\{v}\DEFAULT_THEME_WALL_ATLAS.xml^
   --sheet atlas\{v}\DEFAULT_THEME_WALL_ATLAS.png^
   themes\default\DEFAULT_WALL.png
@@ -24,7 +25,7 @@ TexturePacker.exe %DEFAULT_THEME_SETTINGS%^
   themes\default
 
 :: Pirate Theme
-TexturePacker.exe %DEFAULT_SETTINGS%^
+TexturePacker.exe %DEFAULT_WALL_SETTINGS%^
   --data atlas\{v}\PIRATES_THEME_WALL_ATLAS.xml^
   --sheet atlas\{v}\PIRATES_THEME_WALL_ATLAS.png^
   themes\pirates\PIRATES_WALL.png
@@ -35,7 +36,7 @@ TexturePacker.exe %DEFAULT_THEME_SETTINGS%^
   themes\pirates
 
 :: Feudal Japan Theme
-TexturePacker.exe %DEFAULT_SETTINGS%^
+TexturePacker.exe %DEFAULT_WALL_SETTINGS%^
   --data atlas\{v}\FEUDALJAPAN_THEME_WALL_ATLAS.xml^
   --sheet atlas\{v}\FEUDALJAPAN_THEME_WALL_ATLAS.png^
   themes\feudaljapan\FEUDALJAPAN_WALL.png

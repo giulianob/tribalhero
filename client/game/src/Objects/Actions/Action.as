@@ -14,13 +14,13 @@ package src.Objects.Actions {
 	public class Action {
 		
 		public static const groups: Object = [
-			{ name: "Build and Upgrade", actions: [ StructureUpgradeButton, BuildButton ] },
-			{ name: "Train Units", actions: [ TrainButton] },
-			{ name: "Upgrade Units", actions: [ UnitUpgradeButton ] },
-			{ name: "Convert Structure", actions: [ StructureChangeButton ] },
-			{ name: "Research", actions: [ TechnologyButton ] },
-			{ name: "Other", actions: [ DefaultActionButton, ForestCampBuildButton, LaborMoveButton, BuildRoadButton, DestroyRoadButton, MarketButton, ViewDestinationButton, ViewBattleButton, ViewUnitsButton, ForestCampRemoveButton, StructureUserDowngradeButton, SendResourcesButton, StructureSelfDestroyButton, ResourceGatherButton, TribeContributeButton, SendAttackButton, SendReinforcementButton] },
-		];	
+			{ order: 1, name: "Build and Upgrade", actions: [ StructureUpgradeButton, BuildButton ] },
+			{ order: 2, name: "Train Units", actions: [ TrainButton] },
+			{ order: 3, name: "Upgrade Units", actions: [ UnitUpgradeButton ] },
+			{ order: 4, name: "Convert Structure", actions: [ StructureChangeButton ] },
+			{ order: 5, name: "Research", actions: [ TechnologyButton ] },
+			{ order: 6, name: "Other", actions: [ DefaultActionButton, ForestCampBuildButton, LaborMoveButton, BuildRoadButton, DestroyRoadButton, MarketButton, ViewDestinationButton, ViewBattleButton, ViewUnitsButton, ForestCampRemoveButton, StructureUserDowngradeButton, SendResourcesButton, StructureSelfDestroyButton, ResourceGatherButton, TribeContributeButton, SendAttackButton, SendReinforcementButton] },
+		];
 		
 		public static const CONCURRENCY_STANDALONE: int = 1;
 		public static const CONCURRENCY_NORMAL: int = 2;

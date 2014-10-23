@@ -64,8 +64,8 @@
             addStatRow(t("STR_GATEMAX"), stronghold.gateMax.toString(), null, t("STRONGHOLD_GATE_MAX_HP_TOOLTIP"));
 
 			if (Constants.session.tribe.isInTribe(stronghold.tribeId)) {
-				pnlGroups.append(new ViewStrongholdButton(stronghold));
-				pnlGroups.append(new SendReinforcementButton(stronghold, new Location(Location.STRONGHOLD, stronghold.id)));
+				//pnlGroups.append(new ViewStrongholdButton(stronghold));
+				//pnlGroups.append(new SendReinforcementButton(stronghold, new Location(Location.STRONGHOLD, stronghold.id)));
 
                 if (Constants.session.tribe.hasRight(Tribe.SET_THEME)) {
                     themeDropdown = new JPopupMenu();
@@ -103,7 +103,7 @@
                 }
 
 			} else {
-				pnlGroups.append(new SendAttackButton(stronghold,new Location(Location.STRONGHOLD, stronghold.id)));
+				//pnlGroups.append(new SendAttackButton(stronghold,new Location(Location.STRONGHOLD, stronghold.id)));
 			}
 
 
@@ -113,7 +113,7 @@
 			switch(stronghold.state.getStateType())
 			{
 				case SimpleGameObject.STATE_BATTLE:
-					pnlGroups.append(new ViewBattleButton(stronghold));
+					//pnlGroups.append(new ViewBattleButton(stronghold));
 				break;
 			}		
 		}

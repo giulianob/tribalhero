@@ -7,7 +7,7 @@ import System.Linq.Enumerable;
 
 	import src.Global;
 import src.Map.CityObject;
-    import src.Objects.Actions.ActionButton;
+    import src.FeathersUI.Controls.ActionButton;
 	import src.Objects.Actions.ForestCampBuildAction;
 import src.Objects.Effects.Formula;
 	import src.Objects.Factories.*;
@@ -47,7 +47,7 @@ import src.Util.StringHelper;
 
 		public function onMouseClick(event: Event):void
 		{
-			if (isEnabled())
+			if (isEnabled)
 			{
                 var obj: * = Enumerable.from(Global.gameContainer.selectedCity.objects).firstOrNone(function(obj: CityObject): Boolean {
                     return ObjectFactory.isType("Lumbermill", obj.type);

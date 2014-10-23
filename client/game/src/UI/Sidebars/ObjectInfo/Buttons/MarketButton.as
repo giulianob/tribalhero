@@ -5,7 +5,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
     import src.Global;
     import src.Objects.*;
-    import src.Objects.Actions.ActionButton;
+    import src.FeathersUI.Controls.ActionButton;
     import src.Objects.Effects.Formula;
     import src.UI.Dialog.InfoDialog;
     import src.UI.Dialog.MarketBuyDialog;
@@ -45,7 +45,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		public function onMouseClick(MouseEvent: Event):void
 		{
-			if (isEnabled())
+			if (isEnabled)
 			{
 				pnlGetPrices = InfoDialog.showMessageDialog("Loading", "Getting current market prices...", null, null, true, false, 0);
 

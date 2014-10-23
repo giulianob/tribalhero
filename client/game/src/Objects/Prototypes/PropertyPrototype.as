@@ -5,13 +5,6 @@
  */
 
 package src.Objects.Prototypes {
-    import flash.display.DisplayObject;
-    import flash.utils.getDefinitionByName;
-
-    import org.aswing.AssetIcon;
-
-    import src.Objects.Factories.SpriteFactory;
-
     public class PropertyPrototype {
 
 		public static const VISIBILITY_PRIVATE: int = 0;
@@ -26,7 +19,7 @@ package src.Objects.Prototypes {
 		public var icon: String;
 		public var tooltip: String;
 
-		public function PropertyPrototype(index: int, type: int, name: String, datatype: String, visibility: int, perHour: Boolean, icon: String, tooltip: String) {
+		public function PropertyPrototype(type: int, name: String, datatype: String, visibility: int, perHour: Boolean, icon: String, tooltip: String) {
 			this.type = type;
 			this.name = name;
 			this.datatype = datatype;
@@ -72,11 +65,11 @@ package src.Objects.Prototypes {
 			return a.type - value;
 		}
 
-		public function getIcon(): AssetIcon 
+		public function getIcon(): String
 		{
 			if (icon == "" || icon == null) return null;
 
-			return new AssetIcon(SpriteFactory.getFlashSprite("ICON_" + icon));
+			return "ICON_" + icon;
 		}
 		
 		public function toString(value: *): String
@@ -84,6 +77,7 @@ package src.Objects.Prototypes {
             if (value == undefined) {
                 return "";
             }
+
             if (datatype=="STRING") {
                 return value;
             }
@@ -91,10 +85,10 @@ package src.Objects.Prototypes {
 			return (perHour && value > 0 ? "+" : "") + (int(value) != value ? value.toFixed(2) : value.toString()) + (perHour ? "/hour" : "");
 		}
 
-        public function getLocalizeKey() : String {
-            return "STRUCTURE_PROPERTY_" + name.toUpperCase().replace(' ','_');
+        public function getName(): String {
+            return t("STRUCTURE_PROPERTY_" + name.toUpperCase().replace(' ','_'));
         }
-	}
+    }
 
 }
 

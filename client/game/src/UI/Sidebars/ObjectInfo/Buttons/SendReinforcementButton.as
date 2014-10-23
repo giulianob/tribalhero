@@ -4,7 +4,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
     import flash.events.MouseEvent;
 
     import src.Global;
-    import src.Objects.Actions.ActionButton;
+    import src.FeathersUI.Controls.ActionButton;
     import src.Objects.Location;
     import src.Objects.Process.ReinforcementSendProcess;
     import src.Objects.SimpleGameObject;
@@ -21,14 +21,14 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			super(parentObj, "Send Reinforcement");
 
 			this.location = location;
-			new SimpleTooltip(this, "Send Reinforcement");
+//			new SimpleTooltip(this, "Send Reinforcement");
 
 			addEventListener(MouseEvent.CLICK, onMouseClick);
 		}
 
 		public function onMouseClick(event: Event):void
 		{
-			if (isEnabled())
+			if (isEnabled)
 			{
 				var process : ReinforcementSendProcess = new ReinforcementSendProcess(Global.gameContainer.selectedCity, location);
 				process.execute();

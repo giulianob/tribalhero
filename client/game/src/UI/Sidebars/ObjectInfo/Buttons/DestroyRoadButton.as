@@ -4,7 +4,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
     import flash.events.MouseEvent;
 
     import src.Objects.*;
-    import src.Objects.Actions.ActionButton;
+    import src.FeathersUI.Controls.ActionButton;
     import src.UI.Components.SimpleTooltip;
     import src.UI.Cursors.*;
 
@@ -14,14 +14,14 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			super(parentObj, "Destroy Road");
 
-			new SimpleTooltip(this, "Destroy Road");
+			// new SimpleTooltip(this, "Destroy Road");
 
 			addEventListener(MouseEvent.CLICK, onMouseClick);
 		}
 
 		public function onMouseClick(MouseEvent: Event):void
 		{
-			if (isEnabled())
+			if (isEnabled)
 			{
 				var cursor: DestroyRoadCursor = new DestroyRoadCursor();
 				cursor.init(parentObj);

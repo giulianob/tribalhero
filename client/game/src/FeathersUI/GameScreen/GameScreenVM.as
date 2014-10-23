@@ -1,5 +1,6 @@
 package src.FeathersUI.GameScreen {
     import src.FeathersUI.ViewModel;
+    import src.Global;
     import src.Map.Camera;
     import src.Map.City;
     import src.Map.CityList;
@@ -16,7 +17,7 @@ package src.FeathersUI.GameScreen {
             this._cities = cities;
 
             if (cities.length > 0) {
-                _selectedCity = cities.getByIndex(0);
+                selectedCity = cities.getByIndex(0);
             }
         }
 
@@ -31,6 +32,7 @@ package src.FeathersUI.GameScreen {
         public function set selectedCity(value: City): void {
             _selectedCity = value;
 
+            Global.selectedCity = value;
             dispatchWith(EVENT_SELECTED_CITY_CHANGED);
         }
 

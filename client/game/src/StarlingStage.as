@@ -38,7 +38,7 @@ package src {
 
             stageInitDeferred = new Deferred();
 
-            new Starling(StarlingStage, stage).start();
+            new Starling(StarlingStage, stage, null, null, "auto", "auto").start();
 
             return stageInitDeferred.promise;
         }

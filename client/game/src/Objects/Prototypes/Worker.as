@@ -6,7 +6,7 @@
 
 package src.Objects.Prototypes {
     import src.Objects.Actions.Action;
-    import src.Objects.Actions.ActionButton;
+    import src.FeathersUI.Controls.ActionButton;
     import src.Objects.Actions.IAction;
     import src.Objects.Actions.TechUpgradeAction;
     import src.Objects.SimpleGameObject;

@@ -9,6 +9,8 @@ package src.UI.Sidebars.ObjectInfo {
     import org.aswing.border.*;
     import org.aswing.ext.*;
 
+    import src.FeathersUI.Controls.ActionButton;
+
     import src.FlashAssets;
     import src.Constants;
     import src.Global;
@@ -24,8 +26,8 @@ package src.UI.Sidebars.ObjectInfo {
     import src.UI.Dialog.StoreDialog;
     import src.UI.Flows.StoreFlow;
     import src.UI.Sidebars.ObjectInfo.Buttons.*;
-    import src.UI.Sidebars.ObjectInfo.CustomInfo.CustomInfoFactory;
-    import src.UI.Sidebars.ObjectInfo.CustomInfo.ICustomInfo;
+    import src.FeathersUI.ObjectInfo.CustomInfo.CustomObjectPropertyFactory;
+    import src.FeathersUI.ObjectInfo.CustomInfo.ICustomObjectProperties;
     import src.UI.ViewModels.StoreDialogVM;
     import src.Util.BinaryList.*;
     import src.Util.DateUtil;
@@ -168,10 +170,10 @@ package src.UI.Sidebars.ObjectInfo {
 					buttons = buttons.concat(StructureFactory.getButtons(structureObject)).concat(StructureFactory.getTechButtons(structureObject));
 				}
 
-                var customInfo:ICustomInfo = (new CustomInfoFactory()).getCustomInfo(city,structureObject);
-                if(customInfo!=null) {
-                    customInfo.loadForm(pnlStats);
-                }
+//                var customInfo:ICustomInfo = (new CustomObjectPropertyFactory()).getCustomInfo(city,structureObject);
+//                if(customInfo!=null) {
+//                    customInfo.loadForm(pnlStats);
+//                }
             }
 			else {
 				propPrototype = PropertyFactory.getProperties(gameObject.type, PropertyPrototype.VISIBILITY_PUBLIC);
@@ -239,7 +241,7 @@ package src.UI.Sidebars.ObjectInfo {
 				for each(var groupButton: ActionButton in groupedButtons) {
 					if (groupButton.parentAction == null) continue;
 
-					pnlGroup.append(groupButton);
+					//pnlGroup.append(groupButton);
 				}
 
 				pnlGroups.append(pnlGroup);

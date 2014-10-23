@@ -35,29 +35,46 @@ package feathers.system
 		public static var screenPixelHeight:Number = NaN;
 		
 		/**
-		 * The DPI to be used by Feathers. Defaults to the value of
-		 * <code>Capabilities.screenDPI</code>, but may be overridden. For
-		 * example, if one wishes to demo a mobile app in the desktop browser,
-		 * a custom DPI will override the real DPI of the desktop screen. 
+		 * The screen denisty to be used by Feathers. Defaults to the value of
+		 * <code>flash.system.Capabilities.screenDPI</code>, but may be
+		 * overridden. For example, if one wishes to demo a mobile app in a
+		 * desktop browser, a custom screen density will override the real
+		 * density of the desktop screen.
+		 *
+		 * @default flash.system.Capabilities.screenDPI
+		 *
+		 * @see http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/system/Capabilities.html#screenDPI Full description of flash.system.Capabilities.screenDPI in Adobe's Flash Platform API Reference
 		 */
 		public static var dpi:int = Capabilities.screenDPI;
 
 		/**
 		 * Determines if this device is probably a tablet, based on the physical
 		 * width and height, in inches, calculated using the full-screen
-		 * dimensions and the screen DPI.
+		 * dimensions and the screen density.
 		 */
 		public static function isTablet(stage:Stage):Boolean
 		{
-			const screenWidth:Number = isNaN(screenPixelWidth) ? stage.fullScreenWidth : screenPixelWidth;
-			const screenHeight:Number = isNaN(screenPixelHeight) ? stage.fullScreenHeight : screenPixelHeight;
-			return (Math.max(screenWidth, screenHeight) / dpi) >= tabletScreenMinimumInches;
+			var screenWidth:Number = screenPixelWidth;
+			if(screenWidth !== screenWidth) //isNaN
+			{
+				screenWidth = stage.fullScreenWidth;
+			}
+			var screenHeight:Number = screenPixelHeight;
+			if(screenHeight !== screenHeight) //isNaN
+			{
+				screenHeight = stage.fullScreenHeight;
+			}
+			if(screenWidth < screenHeight)
+			{
+				screenWidth = screenHeight;
+			}
+			return (screenWidth / dpi) >= tabletScreenMinimumInches;
 		}
 
 		/**
 		 * Determines if this device is probably a phone, based on the physical
 		 * width and height, in inches, calculated using the full-screen
-		 * dimensions and the screen DPI.
+		 * dimensions and the screen density.
 		 */
 		public static function isPhone(stage:Stage):Boolean
 		{
@@ -66,21 +83,29 @@ package feathers.system
 
 		/**
 		 * The physical width of the device, in inches. Calculated using the
-		 * full-screen width and the screen DPI.
+		 * full-screen width and the screen density.
 		 */
 		public static function screenInchesX(stage:Stage):Number
 		{
-			const screenWidth:Number = isNaN(screenPixelWidth) ? stage.fullScreenWidth : screenPixelWidth;
+			var screenWidth:Number = screenPixelWidth;
+			if(screenWidth !== screenWidth) //isNaN
+			{
+				screenWidth = stage.fullScreenWidth;
+			}
 			return screenWidth / dpi;
 		}
 
 		/**
 		 * The physical height of the device, in inches. Calculated using the
-		 * full-screen height and the screen DPI.
+		 * full-screen height and the screen density.
 		 */
 		public static function screenInchesY(stage:Stage):Number
 		{
-			const screenHeight:Number = isNaN(screenPixelHeight) ? stage.fullScreenHeight : screenPixelHeight;
+			var screenHeight:Number = screenPixelHeight;
+			if(screenHeight !== screenHeight) //isNaN
+			{
+				screenHeight = stage.fullScreenHeight;
+			}
 			return screenHeight / dpi;
 		}
 	}

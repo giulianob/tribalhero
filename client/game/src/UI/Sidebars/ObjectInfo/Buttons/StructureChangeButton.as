@@ -7,7 +7,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
     import src.Map.City;
     import src.Map.CityObject;
     import src.Objects.*;
-    import src.Objects.Actions.ActionButton;
+    import src.FeathersUI.Controls.ActionButton;
     import src.Objects.Effects.Formula;
     import src.Objects.Prototypes.StructurePrototype;
     import src.UI.Tooltips.StructureChangeTooltip;
@@ -50,7 +50,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		public function onMouseClick(MouseEvent: Event):void
 		{
-			if (isEnabled())
+			if (isEnabled)
 			{
 				Global.mapComm.Objects.changeStructure(parentObj.groupId, parentObj.objectId, nextStructPrototype.type, nextStructPrototype.level);
 			}

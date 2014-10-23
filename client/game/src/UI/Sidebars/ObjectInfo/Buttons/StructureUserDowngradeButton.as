@@ -4,7 +4,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
     import flash.events.MouseEvent;
 
     import src.Objects.*;
-    import src.Objects.Actions.ActionButton;
+    import src.FeathersUI.Controls.ActionButton;
     import src.UI.Components.SimpleTooltip;
     import src.UI.Cursors.*;
 
@@ -14,14 +14,14 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			super(parentObj, "Destroy Structures");
 
-			new SimpleTooltip(this, "Destroy other structures. You will not receive back any resources for destroying structures.");
+//			new SimpleTooltip(this, "Destroy other structures. You will not receive back any resources for destroying structures.");
 
 			addEventListener(MouseEvent.CLICK, onMouseClick);
 		}
 
 		public function onMouseClick(MouseEvent: Event):void
 		{
-			if (isEnabled())
+			if (isEnabled)
 			{
 				var cursor: StructureDowngradeCursor = new StructureDowngradeCursor(parentObj as StructureObject);
 			}

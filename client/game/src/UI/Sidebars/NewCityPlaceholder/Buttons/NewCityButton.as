@@ -6,7 +6,7 @@ package src.UI.Sidebars.NewCityPlaceholder.Buttons {
     import src.Constants;
     import src.Global;
     import src.Map.Position;
-    import src.Objects.Actions.ActionButton;
+    import src.FeathersUI.Controls.ActionButton;
     import src.Objects.Effects.Formula;
     import src.Objects.Factories.*;
     import src.Objects.NewCityPlaceholder;
@@ -58,7 +58,7 @@ package src.UI.Sidebars.NewCityPlaceholder.Buttons {
 
 		public function onMouseClick(event: Event):void
 		{
-			if (isEnabled())
+			if (isEnabled)
 			{
 				var dlg: CreateCityDialog = new CreateCityDialog(function(sender: CreateCityDialog) : void {				
 					var mapPos: Position = newCityPlaceholder.primaryPosition.toPosition();

@@ -167,7 +167,7 @@
 			Global.mapComm.General.readLoginInfo(packet);
             Global.gameContainer.setMap(mapVM, miniMapVM);
 
-            var gameScreen: IGameScreenFlow = bootstrapper.getFlowFactory(mapVM, miniMapVM).createGameScreenFlow();;
+            var gameScreen: IGameScreenFlow = bootstrapper.getFlowFactory(mapVM, miniMapVM).createGameScreenFlow();
             gameScreen.show();
 		}
     }

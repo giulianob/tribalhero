@@ -24,6 +24,10 @@ package src.Objects.Factories {
             return sprite;
         }
 
+        public static function doesSpriteExist(typeName: String): Boolean {
+            return Global.starlingStage.assets.getTexture(typeName) !== null;
+        }
+
         public static function getStarlingImage(typeName: String): Image
         {
             var mainImage: Texture = Global.starlingStage.assets.getTexture(typeName);
@@ -42,6 +46,5 @@ package src.Objects.Factories {
 
             return new Point(position.x, position.y);
         }
-
     }
 }

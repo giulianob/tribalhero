@@ -29,6 +29,10 @@ package src.FeathersUI.Map {
     import starling.utils.formatString;
 
     public class MapVM extends ViewModel {
+        public static const EVENT_OBJECT_SELECTED: String = "EVENT_OBJECT_SELECTED";
+
+        public static const EVENT_OBJECT_DESELECTED: String = "EVENT_OBJECT_DESELECTED";
+
         public var regions: RegionManager;
 
         public var camera: Camera;
@@ -145,7 +149,7 @@ package src.FeathersUI.Map {
                     selectedObject.setSelected(false);
                 }
 
-                Global.gameContainer.setSidebar(null);
+                dispatchWith(EVENT_OBJECT_DESELECTED);
             }
 
             selectedObject = obj;
@@ -193,22 +197,7 @@ package src.FeathersUI.Map {
 
             obj.setSelected(true);
 
-            var sidebar: GameJSidebar;
-
-            if (obj is StructureObject)
-                sidebar = new ObjectInfoSidebar(obj as StructureObject);
-            else if (obj is TroopObject)
-                sidebar = new TroopInfoSidebar(obj as TroopObject);
-            else if (obj is Forest)
-                sidebar = new ForestInfoSidebar(obj as Forest);
-            else if (obj is Stronghold)
-                sidebar = new StrongholdInfoSidebar(obj as Stronghold);
-            else if (obj is NewCityPlaceholder)
-                sidebar = new NewCityPlaceholderSidebar(obj as NewCityPlaceholder);
-            else if (obj is BarbarianTribe)
-                sidebar = new BarbarianTribeSidebar(obj as BarbarianTribe);
-
-            Global.gameContainer.setSidebar(sidebar);
+            dispatchWith(EVENT_OBJECT_SELECTED, obj);
         }
 
         private function onSelectedObjectDisposed(e: Event): void {

@@ -6,7 +6,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
     import src.Global;
     import src.Map.Position;
     import src.Map.ScreenPosition;
-    import src.Objects.Actions.ActionButton;
+    import src.FeathersUI.Controls.ActionButton;
     import src.Objects.GameObject;
     import src.UI.Tooltips.TextTooltip;
 
@@ -47,7 +47,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		public function onMouseClick(event: Event):void
 		{
-			if (isEnabled())
+			if (isEnabled)
 			{
 				var pt: ScreenPosition = mapDestinationPos.toScreenPosition();
 				Global.map.camera.scrollToCenter(pt);

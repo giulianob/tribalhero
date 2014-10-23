@@ -57,5 +57,9 @@ package src.FeathersUI.Controls {
                 accessory: control
             });
         }
+
+        public function clear(): void {
+            listData.removeAll();
+        }
     }
 }
